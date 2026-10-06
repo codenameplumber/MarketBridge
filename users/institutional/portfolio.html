@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Portfolio" data-sub="Public trading profile" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- PROFILE HERO -->
+    <section class="profile-hero">
+      <div class="avatar avatar-lg avatar-ring" id="portAvatar" style="background:var(--vy-brand)">JT</div>
+      <div style="text-align:center">
+        <div class="row g2 center">
+          <span class="ph-name" id="portName">—</span>
+          <span class="badge badge-verified" id="portTier">—</span>
+        </div>
+        <div class="ph-handle" id="portCompany">—</div>
+      </div>
+      <p class="ph-bio" id="portBio">—</p>
+      <div class="row g2">
+        <button class="btn btn-primary" id="btnFollow" style="min-width:150px">
+          <span data-icon="userplus"></span> Follow</button>
+        <button class="btn btn-ghost" aria-label="Share"><span data-icon="link"></span></button>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO STATS -->
+    <div class="stat-grid">
+      <div class="stat-cell"><div class="stat-v" id="portBalance">—</div><div class="stat-k">Portfolio</div></div>
+      <div class="stat-cell"><div class="stat-v c-up" id="portProfit">—</div><div class="stat-k">Total Profit</div></div>
+      <div class="stat-cell"><div class="stat-v" id="portWinRate">—</div><div class="stat-k">Avg Win Rate</div></div>
+      <div class="stat-cell"><div class="stat-v" id="portFollowers">—</div><div class="stat-k">Followers</div></div>
+    </div>
+
+    <!-- GROWTH CHART -->
+    <section class="card">
+      <div class="label">Portfolio Growth</div>
+      <div data-chart="area" data-seed="instgrowth" data-h="160" class="mt3"></div>
+    </section>
+
+    <!-- LINKED ACCOUNTS (visible only) -->
+    <section class="page-section">
+      <div class="label mb2">Trading Accounts</div>
+      <div id="portAccounts" class="stack"></div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="page-section" id="portTeamSection">
+      <div class="label mb2">Team</div>
+      <div id="portTeam" class="row g2 wrap"></div>
+    </section>
+
+    <!-- ACHIEVEMENTS -->
+    <section class="page-section" id="portAchvSection">
+      <div class="between mb2">
+        <div class="label">Achievements</div>
+        <span class="t-xs c-3" id="portAchvCount">&mdash;</span>
+      </div>
+      <div id="portAchievements" class="row g2 wrap"></div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
+<script src="../../assets/js/components/achievements.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+(function () {
+  var fmt = MB.fmt;
+
+  MB.api.get('institutional').then(function (r) {
+    var d = r.data || {};
+    var stats = d.portfolio_stats || {};
+
+    /* hero */
+    MB.$('#portName').textContent = 'John Trader';
+    MB.$('#portTier').textContent = d.tier || '—';
+    MB.$('#portCompany').textContent = d.company || '';
+    MB.$('#portBio').textContent = d.bio || '';
+
+    /* stats */
+    MB.$('#portBalance').textContent = fmt.money(stats.total_balance);
+    var profCls = stats.total_profit >= 0 ? 'c-up' : 'c-down';
+    MB.$('#portProfit').className = 'stat-v ' + profCls;
+    MB.$('#portProfit').textContent = (stats.total_profit >= 0 ? '+' : '') + fmt.money(stats.total_profit);
+    MB.$('#portWinRate').textContent = fmt.pct(stats.avg_win_rate);
+    MB.$('#portFollowers').textContent = stats.followers || 0;
+
+    /* visible accounts only */
+    var accts = (d.linked_accounts || []).filter(function (a) { return a.visible; });
+    MB.$('#portAccounts').innerHTML = accts.length ? accts.map(function (a) {
+      return MB.card.instAccountPublic(a);
+    }).join('') : '<div class="empty">No accounts shared publicly</div>';
+
+    /* team */
+    var team = d.team || [];
+    if (team.length) {
+      MB.$('#portTeam').innerHTML = team.map(function (t) {
+        return '<div class="chip">' +
+          '<span class="avatar avatar-xs" style="background:' + MB.avatarColor(t.name) + '">' +
+            t.name.charAt(0) + '</span>' +
+          '<span>' + MB.esc(t.name) + '</span>' +
+          '<span class="badge t-xs">' + t.role + '</span>' +
+        '</div>';
+      }).join('');
+    } else {
+      MB.$('#portTeamSection').style.display = 'none';
+    }
+  });
+
+  /* achievements */
+  MB.api.get('achievements').then(function (r) {
+    var d = r.data || {};
+    var badges = (d.badges || []).filter(function (b) { return b.earned; });
+    MB.$('#portAchvCount').textContent = badges.length + ' earned';
+    if (badges.length) {
+      MB.$('#portAchievements').innerHTML = MB.card.achievementBadges(d.badges || []);
+    } else {
+      MB.$('#portAchvSection').style.display = 'none';
+    }
+  });
+})();
+</script>
+</body>
+</html>

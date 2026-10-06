@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Transfer — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Transfer" data-sub="Between your own Deriv accounts" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div class="card">
+      <div class="field">
+        <label for="tFrom">From</label>
+        <select class="select" id="tFrom">
+          <option>Live Account (USD) — $2,450.80</option>
+          <option>Demo Account (USD) — $10,000.00</option>
+        </select>
+      </div>
+      <div class="center" style="margin:12px 0;color:var(--mb-green)">
+        <span data-icon="down" data-icon-size="22"></span>
+      </div>
+      <div class="field">
+        <label for="tTo">To</label>
+        <select class="select" id="tTo">
+          <option>Funds USD (Referral) — $0.00</option>
+          <option>Demo Account (USD) — $10,000.00</option>
+        </select>
+      </div>
+
+      <div class="field mt4">
+        <label for="tAmount">Amount (USD)</label>
+        <div class="stepper">
+          <input class="input num" id="tAmount" type="number" value="100" min="1">
+          <button type="button" data-step="tAmount:-50" aria-label="Decrease">−</button>
+          <button type="button" data-step="tAmount:50" aria-label="Increase">+</button>
+        </div>
+      </div>
+
+      <div class="field mt4">
+        <label for="tNote">Note (optional)</label>
+        <input class="input" id="tNote" type="text" placeholder="Add note…">
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg mt4" id="btnTransfer">Transfer</button>
+    </div>
+
+    <div class="alert alert-info">
+      <span data-icon="info"></span>
+      <div class="t-xs">Transfers are executed by Deriv between accounts you own.
+      KonfluenX only submits the instruction.</div>
+    </div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  document.getElementById('btnTransfer').addEventListener('click', function () {
+    this.disabled = true; this.textContent = 'Transferring…';
+    MB.api.post('transfers', { amount: Number(document.getElementById('tAmount').value) })
+      .then(function () { MB.toast('Transfer submitted to Deriv'); });
+  });
+});
+</script>
+</body>
+</html>

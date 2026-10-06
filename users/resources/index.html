@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resources — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Resources" data-sub="Learn, grow and improve your trading" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <div class="input-icon">
+      <span data-icon="search"></span>
+      <input class="input" id="resSearch" type="search" placeholder="Search resources…">
+    </div>
+
+    <div class="chips page-bleed" data-group id="resCat">
+      <button class="chip is-active" data-value="all">All</button>
+      <button class="chip" data-value="courses">Courses</button>
+      <button class="chip" data-value="guides">Guides</button>
+      <button class="chip" data-value="videos">Videos</button>
+      <button class="chip" data-value="webinars">Webinars</button>
+    </div>
+
+    <section class="page-section">
+      <div class="sec-head"><h2>Continue learning</h2></div>
+      <div class="hscroll page-bleed" id="inProgress"></div>
+    </section>
+
+    <section class="page-section">
+      <div class="sec-head"><h2 id="listTitle">All resources</h2></div>
+      <div class="filter-row">
+        <span class="filter-count"><span id="resCount">0</span> resources</span>
+      </div>
+      <div class="stack g3" id="resList"></div>
+    </section>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  MB.render({ into: '#inProgress', from: 'resources', skeleton: false,
+    filter: function (r) { return r.progress_percent > 0; },
+    template: MB.card.resource });
+
+  /* Was a hand-rolled filter + full-list render. Moved onto the shared
+     collection so it paginates like every other list, and so the chips,
+     the search box and the count stay in step automatically. */
+  function resourceRow(r) {
+    return '<a class="list-row" style="border-radius:12px;border:1px solid var(--mb-border);' +
+      'background:var(--mb-surface);margin-bottom:0" href="detail.html?slug=' + r.slug + '">' +
+      '<span class="none" style="width:44px;height:44px;border-radius:8px;overflow:hidden;' +
+      'background:var(--mb-surface-2)"><span data-chart="candle" data-seed="' + r.id +
+      '" data-h="44" style="display:block"></span></span>' +
+      '<span class="grow" style="min-width:0">' +
+        '<span class="row g2"><span class="lr-title truncate">' + MB.esc(r.title) + '</span>' +
+        (r.is_live ? '<span class="badge badge-lost">Live</span>' : '') + '</span>' +
+        '<span class="lr-sub truncate">' + MB.esc(r.summary) + '</span>' +
+        (r.progress_percent ? '<span class="progress mt2" style="display:block"><i style="width:' +
+          r.progress_percent + '%"></i></span>' : '') +
+      '</span>' +
+      '<span class="none" style="text-align:right">' +
+        '<span class="badge badge-neutral">' + MB.esc(r.level) + '</span></span></a>';
+  }
+
+  var res = MB.collection({
+    from: 'resources', into: '#resList', template: resourceRow,
+    perPage: 8, mode: 'pages', countInto: '#resCount', skeletonCount: 3,
+    initial: { category: 'all', q: '' },
+    filters: {
+      category: function (r, v) { return v === 'all' || r.category === v; },
+      q: function (r, v) {
+        return !v || (r.title + ' ' + r.summary).toLowerCase().indexOf(v) > -1;
+      }
+    },
+    emptyIcon: 'book', emptyTitle: 'Nothing found',
+    emptyText: 'Try another category or a different search.'
+  });
+  res.bind('#resCat', 'category');
+  res.bindInput('#resSearch', 'q');
+
+  MB.$('#resCat').addEventListener('mb:change', function (e) {
+    var cat = e.detail.value;
+    MB.$('#listTitle').textContent =
+      cat === 'all' ? 'All resources' : cat.charAt(0).toUpperCase() + cat.slice(1);
+  });
+});
+</script>
+</body>
+</html>

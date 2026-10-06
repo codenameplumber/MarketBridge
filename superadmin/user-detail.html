@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="superadmin" data-nav="users" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <a class="icon-btn none" href="users.html" aria-label="Back"><span data-icon="back"></span></a>
+      <div class="grow">
+        <h1 id="pageTitle">User</h1>
+        <div class="sub" id="pageSub"></div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      
+    </header>
+
+    <main class="admin-body">
+      
+      <div class="detail-hero" id="hero"></div>
+      <div id="stats"></div>
+
+      <div class="admin-tabs" id="tabs">
+        <button class="is-active" data-t="overview">Overview</button>
+        <button data-t="trading">Trading</button>
+        <button data-t="transactions">Transactions</button>
+        <button data-t="rooms">Rooms</button>
+        <button data-t="security">Security</button>
+      </div>
+
+      <div id="paneOverview"></div>
+      <div id="paneTrading" class="hide"></div>
+      <div id="paneTransactions" class="hide"></div>
+      <div id="paneRooms" class="hide"></div>
+      <div id="paneSecurity" class="hide"></div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/uploads.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+  function statusBadge(s) {
+    var map = {
+      active:'badge-active', approved:'badge-active', completed:'badge-active',
+      published:'badge-active', resolved:'badge-active', verified:'badge-active', free:'badge-active',
+      pending:'badge-warn', pending_approval:'badge-warn', under_review:'badge-warn',
+      scheduled:'badge-warn', redirected:'badge-warn', flagged:'badge-warn', paid:'badge-info',
+      draft:'badge-neutral', inactive:'badge-neutral', expired:'badge-neutral', abandoned:'badge-neutral',
+      banned:'badge-lost', rejected:'badge-lost', failed:'badge-lost', blocked:'badge-lost'
+    };
+    return '<span class="badge ' + (map[s] || 'badge-neutral') + '">' +
+      String(s).replace(/_/g, ' ') + '</span>';
+  }
+  function userCell(name, handle, href) {
+    var inner = '<div class="cell-user">' + MB.avatar({ username: name }, 'avatar-sm') +
+      '<div><div class="n">' + MB.esc(name) + '</div>' +
+      (handle ? '<div class="h">' + MB.esc(handle) + '</div>' : '') + '</div></div>';
+    return href ? '<a class="cell-link" href="' + href + '">' + inner + '</a>' : inner;
+  }
+  function acts(extra) {
+    return '<div class="row-actions">' + (extra || '') +
+      '<button class="row-action" aria-label="More">' + MB.icon('more', 15) + '</button></div>';
+  }
+  function row(k, v, sub) {
+    return '<div class="info-row"><span class="ir-k">' + MB.esc(k) + '</span>' +
+      '<span class="ir-v">' + v + (sub ? '<span class="sub">' + MB.esc(sub) + '</span>' : '') + '</span></div>';
+  }
+  /* Horizontal stat band with working arrow controls */
+
+MB.ready(function () {
+  var uname = new URLSearchParams(location.search).get('u');
+
+  Promise.all([MB.api.list('admin/users'), MB.api.list('admin/transactions')]).then(function (r) {
+    var users = r[0], tx = r[1];
+    var u = users.filter(function (x) { return x.username === uname; })[0] || users[0];
+    var mine = tx.filter(function (t) { return t.user === u.username; });
+
+    document.getElementById('pageTitle').textContent = u.display_name;
+    document.getElementById('pageSub').textContent = '@' + u.username + ' · ' + u.email;
+
+    /* ---- hero ---- */
+    document.getElementById('hero').innerHTML =
+      MB.avatar(u, 'avatar-xl') +
+      '<div class="dh-main">' +
+        '<div class="dh-name">' + MB.esc(u.display_name) + '</div>' +
+        '<div class="dh-sub">@' + MB.esc(u.username) + ' · joined ' + MB.fmt.date(u.joined_at) +
+          ' · last seen ' + MB.fmt.ago(u.last_seen_at) + '</div>' +
+        '<div class="dh-badges">' + statusBadge(u.status) +
+          '<span class="badge badge-neutral">' + u.role.replace(/_/g,' ') + '</span>' +
+          (u.is_verified ? '<span class="badge badge-verified">Verified</span>' : '') +
+          (u.deriv.connected ? '<span class="badge badge-info">Deriv ' + u.deriv.account_type + '</span>'
+                             : '<span class="badge badge-warn">No Deriv account</span>') +
+          (u.flags.reports_against ? '<span class="badge badge-lost">' + u.flags.reports_against + ' reports</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="dh-actions">' +
+        '<button class="btn btn-ghost btn-sm"><span data-icon="mail"></span> Email</button>' +
+        '<button class="btn btn-ghost btn-sm"><span data-icon="warning"></span> Warn</button>' +
+        '<button class="btn btn-ghost btn-sm" id="btnSuspend"><span data-icon="ban"></span> Suspend</button>' +
+        '<button class="btn btn-sell btn-sm" id="btnBan"><span data-icon="close"></span> ' +
+          (u.status === 'banned' ? 'Unban' : 'Ban') + '</button>' +
+      '</div>';
+
+    MB.statSlider('#stats', 'This account', [
+      { k:'Followers', v: MB.fmt.compact(u.followers), d: 6.2 },
+      { k:'Following', v: MB.fmt.compact(u.following), spark:false },
+      { k:'Signals posted', v: u.signals, d: 3.4 },
+      { k:'Total trades', v: MB.fmt.compact(u.trading.total_trades), d: 9.1 },
+      { k:'Win rate', v: u.trading.win_rate + '%', d: u.trading.win_rate > 55 ? 2.1 : -1.4 },
+      { k:'Net P/L', v: MB.fmt.signed(u.trading.net_pl), d: u.trading.net_pl >= 0 ? 4.8 : -4.8,
+        tone: u.trading.net_pl >= 0 ? 'accent' : 'danger' },
+      { k:'Balance (cached)', v: u.deriv.connected ? MB.fmt.money(u.deriv.last_recorded_balance) : '—',
+        note: u.deriv.connected ? 'read ' + MB.fmt.ago(u.deriv.balance_recorded_at) : 'not connected' },
+      { k:'Rooms joined', v: u.rooms.length, spark:false },
+      { k:'Reports against', v: u.flags.reports_against,
+        tone: u.flags.reports_against > 2 ? 'danger' : '', spark:false }
+    ]);
+
+    /* ---- overview ---- */
+    document.getElementById('paneOverview').innerHTML =
+      '<div class="detail-cols">' +
+        '<section class="panel"><div class="panel-head"><h2>Basic information</h2></div>' +
+          '<div class="panel-body"><div class="info-list">' +
+            row('Full name', MB.esc(u.display_name)) +
+            row('Username', '@' + MB.esc(u.username)) +
+            row('Email', MB.esc(u.email)) +
+            row('Phone', MB.esc(u.phone)) +
+            row('Role', u.role.replace(/_/g,' ')) +
+            row('Status', statusBadge(u.status)) +
+            row('Verified', u.is_verified ? 'Yes' : 'No') +
+            row('Joined', MB.fmt.date(u.joined_at)) +
+            row('Last seen', MB.fmt.ago(u.last_seen_at)) +
+            row('Posts', String(u.posts)) +
+          '</div></div></section>' +
+
+        '<section class="panel"><div class="panel-head"><h2>Deriv account</h2>' +
+          '<span class="t-xs c-3">cached read</span></div>' +
+          '<div class="panel-body"><div class="info-list">' +
+            (u.deriv.connected
+              ? row('Deriv ID', MB.esc(u.deriv.deriv_id)) +
+                row('Account type', u.deriv.account_type) +
+                row('Landing company', u.deriv.landing_company) +
+                row('Currency', u.deriv.currency) +
+                row('Last recorded balance',
+                    '<span class="num">' + MB.fmt.money(u.deriv.last_recorded_balance) + '</span>',
+                    'read ' + MB.fmt.ago(u.deriv.balance_recorded_at)) +
+                row('Scopes granted', u.deriv.scopes.join(', '))
+              : '<p class="t-sm c-2">This user has not connected a Deriv account.</p>') +
+          '</div>' +
+          '<div class="alert alert-green" style="margin-top:16px"><span data-icon="shield"></span>' +
+            '<div class="t-xs">This balance is a cached read of Deriv, not a KonfluenX ledger. ' +
+            'Deriv remains authoritative.</div></div>' +
+          '</div></section>' +
+      '</div>';
+
+    /* ---- trading ---- */
+    var t = u.trading;
+    document.getElementById('paneTrading').innerHTML =
+      '<div class="detail-cols">' +
+        '<section class="panel"><div class="panel-head"><h2>Trading activity</h2></div>' +
+          '<div class="panel-body panel-body-flush"><div class="mini-stats">' +
+            '<div><div class="v">' + t.total_trades + '</div><div class="k">Trades</div></div>' +
+            '<div><div class="v c-up">' + t.wins + '</div><div class="k">Wins</div></div>' +
+            '<div><div class="v c-down">' + t.losses + '</div><div class="k">Losses</div></div>' +
+            '<div><div class="v">' + t.win_rate + '%</div><div class="k">Win rate</div></div>' +
+            '<div><div class="v">' + t.open_positions + '</div><div class="k">Open</div></div>' +
+          '</div></div>' +
+          '<div class="panel-body"><div data-chart="area" data-seed="u' + u.id + '" data-h="170"></div></div>' +
+        '</section>' +
+        '<section class="panel"><div class="panel-head"><h2>Summary</h2></div>' +
+          '<div class="panel-body"><div class="info-list">' +
+            row('Net P/L', '<span class="num ' + (t.net_pl >= 0 ? 'c-up' : 'c-down') + '">' +
+                MB.fmt.signed(t.net_pl) + '</span>') +
+            row('Total volume', '<span class="num">' + MB.fmt.money(t.total_volume, null, 0) + '</span>') +
+            row('Favourite market', MB.esc(t.favourite_market)) +
+            row('Signals posted', String(u.signals)) +
+          '</div></div></section>' +
+      '</div>';
+
+    /* ---- transactions ---- */
+    var dep = mine.filter(function (x) { return x.direction === 'deposit' && x.status === 'completed'; })
+                  .reduce(function (a, x) { return a + x.amount; }, 0);
+    var wd  = mine.filter(function (x) { return x.direction === 'withdrawal' && x.status === 'completed'; })
+                  .reduce(function (a, x) { return a + x.amount; }, 0);
+    document.getElementById('paneTransactions').innerHTML =
+      '<div class="panel" style="margin-bottom:16px"><div class="panel-body panel-body-flush">' +
+        '<div class="mini-stats">' +
+          '<div><div class="v">' + mine.length + '</div><div class="k">Transactions</div></div>' +
+          '<div><div class="v c-up num">' + MB.fmt.money(dep, null, 0) + '</div><div class="k">Deposited</div></div>' +
+          '<div><div class="v c-down num">' + MB.fmt.money(wd, null, 0) + '</div><div class="k">Withdrawn</div></div>' +
+          '<div><div class="v">' + mine.filter(function (x) { return x.status === 'pending_approval'; }).length +
+            '</div><div class="k">Awaiting</div></div>' +
+        '</div></div></div>' +
+      '<div id="txTable"></div>';
+
+    MB.datatable({
+      data: mine, into: '#txTable', perPage: 10, sortKey: 'created_at', sortDir: 'desc',
+      searchPlaceholder: 'Search this user\u2019s transactions…', search: ['reference','method','provider'],
+      columns: [
+        { key:'reference', label:'Reference', sortable:true,
+          render: function (x) { return '<code style="font-size:12px">' + x.reference + '</code>'; } },
+        { key:'direction', label:'Type', sortable:true, filter:['deposit','withdrawal'],
+          render: function (x) { return '<span class="badge ' +
+            (x.direction === 'deposit' ? 'badge-active' : 'badge-info') + '">' + x.direction + '</span>'; } },
+        { key:'provider', label:'Via', sortable:true, filter:['deriv','kaastro'],
+          render: function (x) { return '<span class="c-2">' + x.provider + '<div class="h c-3">' +
+            MB.esc(x.method) + '</div></span>'; } },
+        { key:'amount', label:'Amount', sortable:true, numeric:true,
+          render: function (x) { return MB.fmt.money(x.amount); } },
+        { key:'status', label:'Status', sortable:true,
+          filter:['completed','pending_approval','under_review','rejected','failed','abandoned','redirected'],
+          render: function (x) { return statusBadge(x.status); } },
+        { key:'created_at', label:'When', sortable:true,
+          sortValue: function (x) { return new Date(x.created_at).getTime(); },
+          render: function (x) { return '<span class="c-3">' + MB.fmt.ago(x.created_at) + '</span>'; } }
+      ]
+    });
+
+    /* ---- rooms ---- */
+    document.getElementById('paneRooms').innerHTML =
+      '<section class="panel"><div class="panel-head"><h2>Rooms (' + u.rooms.length + ')</h2></div>' +
+      '<div class="panel-body panel-body-flush">' +
+        (u.rooms.length ? u.rooms.map(function (rm) {
+          return '<div class="session-row">' +
+            '<span class="sr-ic">' + MB.icon(rm.kind === 'trader' ? 'users' : 'community', 17) + '</span>' +
+            '<span class="grow"><span class="sr-d" style="display:block">' + MB.esc(rm.name) + '</span>' +
+            '<span class="sr-m">' + rm.kind + ' room · joined ' + MB.fmt.date(rm.joined_at) + '</span></span>' +
+            '<span class="badge ' + (rm.role === 'owner' ? 'badge-owner' : 'badge-neutral') + ' none">' +
+              rm.role + '</span>' +
+            '<a class="btn btn-ghost btn-xs none" href="community-detail.html?c=' + rm.id + '">Open</a>' +
+          '</div>';
+        }).join('')
+        : '<div class="empty" style="padding:40px"><h3>No rooms</h3><p>This user has not joined any room.</p></div>') +
+      '</div></section>';
+
+    /* ---- security ---- */
+    var sec = u.security;
+    document.getElementById('paneSecurity').innerHTML =
+      '<div class="detail-cols">' +
+        '<section class="panel"><div class="panel-head"><h2>Sessions &amp; devices</h2></div>' +
+          '<div class="panel-body panel-body-flush">' +
+            sec.sessions.map(function (s) {
+              return '<div class="session-row">' +
+                '<span class="sr-ic">' + MB.icon(s.type === 'mobile' ? 'phone' : 'grid', 17) + '</span>' +
+                '<span class="grow"><span class="sr-d" style="display:block">' + MB.esc(s.device) +
+                  (s.current ? ' <span class="badge badge-active">current</span>' : '') + '</span>' +
+                '<span class="sr-m">' + MB.esc(s.browser + ' · ' + s.os) + '</span>' +
+                '<span class="sr-m">' + MB.esc(s.ip + ' · ' + s.location) + '</span></span>' +
+                '<span class="none" style="text-align:right"><span class="sr-m">' +
+                  MB.fmt.ago(s.last_active) + '</span><br>' +
+                  '<button class="btn-remove none" style="margin-top:4px">Revoke</button></span>' +
+              '</div>';
+            }).join('') +
+          '</div></section>' +
+
+        '<section class="panel"><div class="panel-head"><h2>Security</h2></div>' +
+          '<div class="panel-body"><div class="info-list">' +
+            row('Last IP address', '<span class="num">' + MB.esc(sec.last_ip) + '</span>') +
+            row('Last location', MB.esc(sec.last_location) + ' (' + sec.country_code + ')') +
+            row('Last device', MB.esc(sec.last_device), sec.device_type) +
+            row('Operating system', MB.esc(sec.last_os)) +
+            row('Browser', MB.esc(sec.last_browser)) +
+            row('Two-factor', sec.two_factor
+              ? '<span class="c-up">Enabled</span>' : '<span class="c-down">Disabled</span>') +
+            row('Failed logins (30d)', String(sec.failed_logins_30d)) +
+            row('Password changed', MB.fmt.date(sec.password_changed_at)) +
+            row('Warnings', String(u.flags.warnings)) +
+          '</div>' +
+          '<div class="form-actions">' +
+            '<button class="btn btn-ghost btn-sm">Force password reset</button>' +
+            '<button class="btn btn-ghost btn-sm">Revoke all sessions</button>' +
+          '</div></div></section>' +
+      '</div>';
+
+    MB.mountIcons(); MB.mountCharts();
+
+    document.getElementById('btnBan').addEventListener('click', function () {
+      var to = u.status === 'banned' ? 'active' : 'banned';
+      if (!confirm((to === 'banned' ? 'Ban ' : 'Unban ') + u.username + '?')) { return; }
+      MB.api.patch('admin/users/' + u.id, { status: to });
+      MB.toast(u.username + (to === 'banned' ? ' banned' : ' unbanned'));
+    });
+    document.getElementById('btnSuspend').addEventListener('click', function () {
+      MB.api.post('admin/users/' + u.id + '/suspend');
+      MB.toast(u.username + ' suspended for 7 days');
+    });
+  });
+
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-t]'); if (!b) { return; }
+    MB.$$('#tabs button').forEach(function (x) { x.classList.remove('is-active'); });
+    b.classList.add('is-active');
+    ['overview','trading','transactions','rooms','security'].forEach(function (k) {
+      document.getElementById('pane' + k.charAt(0).toUpperCase() + k.slice(1))
+        .classList.toggle('hide', k !== b.getAttribute('data-t'));
+    });
+  });
+});
+</script>
+</body>
+</html>

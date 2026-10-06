@@ -1,0 +1,110 @@
+{
+  "data": {
+    "status": "active",
+    "tier": "Professional",
+    "verified": true,
+    "verified_at": "2026-08-10T14:00:00Z",
+    "company": "JT Capital",
+    "bio": "Systematic volatility trader specialising in Deriv synthetics. 4+ years of consistent returns across Volatility and Crash/Boom indices.",
+    "website": "",
+    "linked_accounts": [
+      {
+        "id": "acct_01",
+        "login": "MTR40012884",
+        "platform": "MT5",
+        "type": "Standard",
+        "currency": "USD",
+        "balance": 24350.80,
+        "profit_total": 8420.50,
+        "profit_pct": 52.8,
+        "drawdown_max": 12.4,
+        "trades_total": 1842,
+        "win_rate": 67.2,
+        "visible": true,
+        "linked_at": "2026-05-20T10:00:00Z"
+      },
+      {
+        "id": "acct_02",
+        "login": "MTR40015321",
+        "platform": "MT5",
+        "type": "Synthetic",
+        "currency": "USD",
+        "balance": 43209.15,
+        "profit_total": 18930.00,
+        "profit_pct": 78.0,
+        "drawdown_max": 8.1,
+        "trades_total": 3201,
+        "win_rate": 71.5,
+        "visible": true,
+        "linked_at": "2026-06-12T15:30:00Z"
+      },
+      {
+        "id": "acct_03",
+        "login": "MTR40018790",
+        "platform": "MT5",
+        "type": "Financial",
+        "currency": "USD",
+        "balance": 5100.00,
+        "profit_total": -320.00,
+        "profit_pct": -5.9,
+        "drawdown_max": 22.0,
+        "trades_total": 145,
+        "win_rate": 48.3,
+        "visible": false,
+        "linked_at": "2026-09-01T08:00:00Z"
+      }
+    ],
+    "documents": [
+      {
+        "id": "doc_01",
+        "type": "government_id",
+        "label": "Government-issued ID",
+        "status": "approved",
+        "uploaded_at": "2026-08-05T09:00:00Z",
+        "reviewed_at": "2026-08-10T14:00:00Z"
+      },
+      {
+        "id": "doc_02",
+        "type": "proof_of_address",
+        "label": "Proof of address",
+        "status": "approved",
+        "uploaded_at": "2026-08-05T09:05:00Z",
+        "reviewed_at": "2026-08-10T14:00:00Z"
+      },
+      {
+        "id": "doc_03",
+        "type": "trading_statement",
+        "label": "Trading statement (6 months)",
+        "status": "approved",
+        "uploaded_at": "2026-08-06T11:00:00Z",
+        "reviewed_at": "2026-08-10T14:00:00Z"
+      }
+    ],
+    "team": [
+      {
+        "id": "tm_01",
+        "name": "Sarah Kim",
+        "role": "analyst",
+        "email": "sarah@jtcapital.com",
+        "added_at": "2026-08-20T10:00:00Z"
+      },
+      {
+        "id": "tm_02",
+        "name": "Marcus Chen",
+        "role": "trader",
+        "email": "marcus@jtcapital.com",
+        "added_at": "2026-09-01T14:00:00Z"
+      }
+    ],
+    "portfolio_stats": {
+      "total_balance": 72659.95,
+      "total_profit": 27030.50,
+      "total_profit_pct": 59.3,
+      "avg_win_rate": 62.3,
+      "accounts_visible": 2,
+      "accounts_total": 3,
+      "followers": 284,
+      "portfolio_views": 1520
+    }
+  }
+}

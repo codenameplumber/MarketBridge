@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Offline — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="" data-root="">
+
+<div class="auth-wrap" style="justify-content:center;text-align:center;align-items:center">
+
+  <span style="color:var(--mb-text-3)" data-icon="globe" data-icon-size="56"></span>
+
+  <h1 class="t-h1 mt6">You are offline</h1>
+  <p class="t-sm c-2 mt3" style="max-width:34ch">
+    KonfluenX needs a connection for live prices, trading and posting.
+    Anything you viewed recently is still available.
+  </p>
+
+  <div class="alert alert-warn mt8" style="text-align:left;max-width:360px">
+    <span data-icon="warning"></span>
+    <div>
+      <strong>Never trade on a cached price.</strong> We deliberately do not serve
+      stored prices while offline — a stale number is worse than no number.
+    </div>
+  </div>
+
+  <div class="stack g3 mt8" style="width:100%;max-width:320px">
+    <button class="btn btn-primary btn-block" onclick="location.reload()">
+      <span data-icon="refresh"></span> Try again
+    </button>
+    <a class="btn btn-ghost btn-block" href="users/index.html">Open cached dashboard</a>
+  </div>
+
+</div>
+
+<script src="assets/js/core/icons.js"></script>
+<script src="assets/js/core/util.js"></script>
+<script>
+MB.ready(function () {
+  MB.mountIcons();
+  /* Reload automatically the moment the connection returns. */
+  window.addEventListener('online', function () { location.reload(); });
+});
+</script>
+</body>
+</html>

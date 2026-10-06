@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transactions — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="admin" data-nav="transactions" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      
+      <div class="grow">
+        <h1 id="pageTitle">Transactions</h1>
+        <div class="sub" id="pageSub">Deposits, withdrawals and the approval queue</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      
+    </header>
+    <main class="admin-body">
+      <div class="alert alert-green">
+        <span data-icon="shield"></span>
+        <div class="t-sm"><strong>These are intents and handoffs, not a ledger.</strong>
+        Approving a withdrawal releases it to Deriv or Kaastro to execute — the money
+        itself never moves through KonfluenX.</div>
+      </div>
+      <div id="stats"></div>
+      <div class="admin-tabs" id="tabs">
+        <button class="is-active" data-t="queue">Approval queue</button>
+        <button data-t="all">All transactions</button>
+        <button data-t="deposits">Deposits</button>
+        <button data-t="withdrawals">Withdrawals</button>
+      </div>
+      <div id="bulk"></div>
+      <div id="table"></div>
+    </main>
+  </div>
+</div>
+
+<div class="slideover-scrim" id="soScrim"></div>
+<aside class="slideover" id="slideover" role="dialog" aria-modal="true" aria-label="Details">
+  <div class="slideover-head">
+    <h2 class="t-h3" id="soTitle">Details</h2>
+    <button class="drawer-close" id="soClose" aria-label="Close"><span data-icon="close"></span></button>
+  </div>
+  <div class="slideover-body" id="soBody"></div>
+</aside>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/uploads.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+  function statusBadge(s) {
+    var map = {
+      active:'badge-active', approved:'badge-active', completed:'badge-active',
+      published:'badge-active', resolved:'badge-active', verified:'badge-active', free:'badge-active',
+      pending:'badge-warn', pending_approval:'badge-warn', under_review:'badge-warn',
+      scheduled:'badge-warn', redirected:'badge-warn', flagged:'badge-warn', paid:'badge-info',
+      draft:'badge-neutral', inactive:'badge-neutral', expired:'badge-neutral', abandoned:'badge-neutral',
+      banned:'badge-lost', rejected:'badge-lost', failed:'badge-lost', blocked:'badge-lost', hidden:'badge-lost'
+    };
+    return '<span class="badge ' + (map[s] || 'badge-neutral') + '">' +
+      String(s).replace(/_/g, ' ') + '</span>';
+  }
+  function userCell(name, handle, href) {
+    var inner = '<div class="cell-user">' + MB.avatar({ username: name }, 'avatar-sm') +
+      '<div><div class="n">' + MB.esc(name) + '</div>' +
+      (handle ? '<div class="h">' + MB.esc(handle) + '</div>' : '') + '</div></div>';
+    return href ? '<a class="cell-link" href="' + href + '">' + inner + '</a>' : inner;
+  }
+  function acts(extra) {
+    return '<div class="row-actions">' + (extra || '') +
+      '<button class="row-action" aria-label="More">' + MB.icon('more', 15) + '</button></div>';
+  }
+  function row(k, v, sub) {
+    return '<div class="info-row"><span class="ir-k">' + MB.esc(k) + '</span>' +
+      '<span class="ir-v">' + v + (sub ? '<span class="sub">' + MB.esc(sub) + '</span>' : '') + '</span></div>';
+  }
+  function openSO(title, html) {
+    document.getElementById('soTitle').textContent = title;
+    document.getElementById('soBody').innerHTML = html;
+    document.getElementById('slideover').classList.add('is-open');
+    document.getElementById('soScrim').classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    MB.mountIcons(document.getElementById('soBody'));
+    MB.mountCharts(document.getElementById('soBody'));
+  }
+  function closeSO() {
+    document.getElementById('slideover').classList.remove('is-open');
+    document.getElementById('soScrim').classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  MB.ready(function () {
+    var c = document.getElementById('soClose'), s = document.getElementById('soScrim');
+    if (c) { c.addEventListener('click', closeSO); }
+    if (s) { s.addEventListener('click', closeSO); }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeSO(); } });
+  });
+
+MB.ready(function () {
+  var ALL = [], dt = null, tab = 'queue';
+
+  MB.api.get('admin/transactions').then(function (res) {
+    ALL = res.data;
+    var m = res.meta;
+    var completed = ALL.filter(function (t) { return t.status === 'completed'; });
+    var fees = completed.reduce(function (a, t) { return a + t.fee; }, 0);
+
+    MB.statSlider('#stats', 'Money movement', [
+      { k:'Awaiting approval', v: m.pending_approval,
+        tone: m.pending_approval ? 'warn' : '', spark:false },
+      { k:'Under review', v: m.under_review, spark:false },
+      { k:'Deposits (settled)', v: MB.fmt.money(m.deposits_total, null, 0), d: 14.2, tone:'accent' },
+      { k:'Withdrawals (settled)', v: MB.fmt.money(m.withdrawals_total, null, 0), d: 9.4 },
+      { k:'Net flow', v: MB.fmt.signed(m.deposits_total - m.withdrawals_total),
+        d: (m.deposits_total - m.withdrawals_total) >= 0 ? 6.1 : -6.1 },
+      { k:'Fees collected', v: MB.fmt.money(fees, null, 0), d: 7.8 },
+      { k:'Transactions', v: MB.fmt.compact(ALL.length), d: 11.9 },
+      { k:'Failed', v: ALL.filter(function (t) { return t.status === 'failed'; }).length,
+        tone:'danger', spark:false }
+    ]);
+
+    document.getElementById('bulk').innerHTML =
+      '<div class="bulk-bar"><span class="bb-t">Bulk actions</span>' +
+        '<button class="btn btn-primary btn-sm" data-bulk="approve">' + MB.icon('check', 15) + ' Approve selected</button>' +
+        '<button class="btn btn-ghost btn-sm" data-bulk="review">' + MB.icon('eye', 15) + ' Mark under review</button>' +
+        '<button class="btn btn-sell btn-sm" data-bulk="reject">' + MB.icon('close', 15) + ' Reject selected</button>' +
+      '</div>';
+    MB.mountIcons(document.getElementById('bulk'));
+    MB.$$('[data-bulk]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var n = dt ? dt.selected().length : 0;
+        if (!n) { MB.toast('Select some rows first', 'err'); return; }
+        MB.toast(b.getAttribute('data-bulk') + ' applied to ' + n + ' transaction' + (n === 1 ? '' : 's'));
+      });
+    });
+
+    build();
+  });
+
+  function rowsFor(t) {
+    if (t === 'queue') {
+      return ALL.filter(function (x) {
+        return x.status === 'pending_approval' || x.status === 'under_review';
+      });
+    }
+    if (t === 'deposits')    { return ALL.filter(function (x) { return x.direction === 'deposit'; }); }
+    if (t === 'withdrawals') { return ALL.filter(function (x) { return x.direction === 'withdrawal'; }); }
+    return ALL;
+  }
+
+  function build() {
+    var rows = rowsFor(tab);
+    dt = MB.datatable({
+      data: rows, into: '#table', perPage: 20, selectable: true,
+      sortKey: 'created_at', sortDir: 'desc',
+      searchPlaceholder: 'Search reference, user or method…',
+      search: ['reference','user','user_name','method','external_ref'],
+      columns: [
+        { key:'reference', label:'Reference', sortable:true,
+          render: function (x) {
+            return '<button class="cell-link" data-view="' + x.id + '" style="text-align:left">' +
+              '<div class="n"><code style="font-size:12px">' + x.reference + '</code></div>' +
+              '<div class="h c-3">' + MB.esc(x.external_ref) + '</div></button>'; } },
+        { key:'user_name', label:'User', sortable:true,
+          render: function (x) { return userCell(x.user_name, '@' + x.user, 'user-detail.html?u=' + x.user); } },
+        { key:'direction', label:'Type', sortable:true, filter:['deposit','withdrawal'],
+          render: function (x) { return '<span class="badge ' +
+            (x.direction === 'deposit' ? 'badge-active' : 'badge-info') + '">' + x.direction + '</span>'; } },
+        { key:'provider', label:'Via', sortable:true, filter:['deriv','kaastro'],
+          render: function (x) { return '<div><div class="n">' + x.provider + '</div>' +
+            '<div class="h c-3">' + MB.esc(x.method) + '</div></div>'; } },
+        { key:'amount', label:'Amount', sortable:true, numeric:true,
+          render: function (x) { return '<div><div class="num">' + MB.fmt.money(x.amount) + '</div>' +
+            '<div class="h c-3 num">fee ' + MB.fmt.money(x.fee) + '</div></div>'; } },
+        { key:'status', label:'Status', sortable:true,
+          filter:['pending_approval','under_review','completed','rejected','failed','abandoned','redirected'],
+          render: function (x) { return statusBadge(x.status); } },
+        { key:'created_at', label:'When', sortable:true,
+          sortValue: function (x) { return new Date(x.created_at).getTime(); },
+          render: function (x) { return '<span class="c-3">' + MB.fmt.ago(x.created_at) + '</span>'; } },
+        { key:'', label:'Actions', align:'right',
+          render: function (x) {
+            var needs = x.status === 'pending_approval' || x.status === 'under_review';
+            return acts(
+              '<button class="row-action" data-view="' + x.id + '" aria-label="View">' + MB.icon('eye', 15) + '</button>' +
+              (needs
+                ? '<button class="row-action is-approve" data-act="approve:' + x.id + '" aria-label="Approve">' +
+                    MB.icon('check', 15) + '</button>' +
+                  '<button class="row-action is-reject" data-act="reject:' + x.id + '" aria-label="Reject">' +
+                    MB.icon('close', 15) + '</button>'
+                : '')); } }
+      ],
+      done: wire
+    });
+  }
+
+  function wire() {
+    MB.$$('[data-view]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var x = ALL.filter(function (t) { return t.id === b.getAttribute('data-view'); })[0];
+        if (!x) { return; }
+        var needs = x.status === 'pending_approval' || x.status === 'under_review';
+        openSO(x.reference,
+          '<div class="alert ' + (needs ? 'alert-warn' : 'alert-info') + '">' +
+            '<span data-icon="' + (needs ? 'warning' : 'info') + '"></span>' +
+            '<div class="t-sm">' + (needs
+              ? 'This withdrawal is waiting on a decision.'
+              : 'No action required — ' + x.status.replace(/_/g,' ') + '.') + '</div></div>' +
+          '<section class="panel"><div class="panel-body"><div class="info-list">' +
+            row('Reference', '<code>' + x.reference + '</code>') +
+            row('External ref', '<code>' + MB.esc(x.external_ref) + '</code>') +
+            row('User', '<a class="link" href="user-detail.html?u=' + x.user + '">' +
+              MB.esc(x.user_name) + '</a>', x.email) +
+            row('Deriv account', MB.esc(x.deriv_account)) +
+            row('Direction', x.direction) +
+            row('Provider', x.provider, x.method) +
+            row('Amount', '<span class="num">' + MB.fmt.money(x.amount) + '</span>') +
+            row('Fee', '<span class="num">' + MB.fmt.money(x.fee) + '</span>') +
+            row('Net to user', '<span class="num">' + MB.fmt.money(x.net) + '</span>') +
+            row('Local value', '<span class="num">' + MB.fmt.compact(x.local_amount) + ' ' +
+              x.local_currency + '</span>') +
+            row('Status', statusBadge(x.status)) +
+            row('Requested', MB.fmt.date(x.created_at)) +
+            (x.handled_by ? row('Handled by', MB.esc(x.handled_by), MB.fmt.ago(x.handled_at)) : '') +
+            (x.note ? row('Note', MB.esc(x.note)) : '') +
+          '</div></div></section>' +
+          '<section class="panel"><div class="panel-head"><h3>Origin</h3></div>' +
+            '<div class="panel-body"><div class="info-list">' +
+              row('IP address', '<span class="num">' + MB.esc(x.ip) + '</span>') +
+              row('Location', MB.esc(x.location)) +
+              row('Device', MB.esc(x.device)) +
+              row('Consent version', x.consent_version) +
+            '</div></div></section>' +
+          (needs
+            ? '<div class="stack g2">' +
+                '<button class="btn btn-primary btn-block" data-so="approve">Approve and release</button>' +
+                '<button class="btn btn-ghost btn-block" data-so="review">Mark under review</button>' +
+                '<button class="btn btn-sell btn-block" data-so="reject">Reject</button>' +
+              '</div>'
+            : ''));
+        MB.$$('[data-so]').forEach(function (s) {
+          s.addEventListener('click', function () {
+            var a = s.getAttribute('data-so');
+            x.status = a === 'approve' ? 'completed' : a === 'reject' ? 'rejected' : 'under_review';
+            x.handled_by = 'admin_sarah';
+            x.handled_at = new Date().toISOString();
+            MB.api.patch('admin/transactions/' + x.id, { action: a });
+            MB.toast(x.reference + ' ' + x.status.replace(/_/g,' '));
+            closeSO(); build();
+          });
+        });
+      });
+    });
+    MB.$$('[data-act]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var p = b.getAttribute('data-act').split(':');
+        var x = ALL.filter(function (t) { return t.id === p[1]; })[0];
+        if (!x || !confirm(p[0] + ' ' + x.reference + ' (' + MB.fmt.money(x.amount) + ')?')) { return; }
+        x.status = p[0] === 'approve' ? 'completed' : 'rejected';
+        MB.api.patch('admin/transactions/' + x.id, { action: p[0] });
+        MB.toast(x.reference + ' ' + x.status);
+        build();
+      });
+    });
+  }
+
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-t]'); if (!b) { return; }
+    MB.$$('#tabs button').forEach(function (x) { x.classList.remove('is-active'); });
+    b.classList.add('is-active');
+    tab = b.getAttribute('data-t');
+    build();
+  });
+});
+</script>
+</body>
+</html>

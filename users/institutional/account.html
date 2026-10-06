@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account Detail — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Account" data-sub="Trading account details" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- ACCOUNT HEADER -->
+    <section class="card" id="acctHeader">
+      <div class="between">
+        <div>
+          <div class="row g2">
+            <span class="t-h3 w-bold" id="adLogin">&mdash;</span>
+            <span class="badge badge-active" id="adPlatform">MT5</span>
+            <span class="badge" id="adType">&mdash;</span>
+          </div>
+          <div class="t-xs c-3 mt1" id="adLinkedDate">Linked &mdash;</div>
+          <div class="t-xs c-3" id="adManagedFor">&mdash;</div>
+        </div>
+        <button class="badge inst-vis-toggle" id="adVisToggle">Hidden</button>
+      </div>
+      <div class="mt3">
+        <div class="label">Balance</div>
+        <div class="row g2 mt1">
+          <div class="t-h2 w-black" id="adBalance">&mdash;</div>
+          <span class="t-sm c-3" id="adCurrency">USD</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE CHART -->
+    <section class="card mt3">
+      <div class="label">Performance</div>
+      <div data-chart="area" data-seed="acctdetail" data-h="160" class="mt3"></div>
+    </section>
+
+    <!-- STAT GRID -->
+    <div class="stat-grid mt3">
+      <div class="stat-cell"><div class="stat-v" id="stBalance">&mdash;</div><div class="stat-k">Balance</div></div>
+      <div class="stat-cell"><div class="stat-v c-up" id="stProfit">&mdash;</div><div class="stat-k">Total Profit</div></div>
+      <div class="stat-cell"><div class="stat-v" id="stReturn">&mdash;</div><div class="stat-k">Return %</div></div>
+      <div class="stat-cell"><div class="stat-v" id="stWinRate">&mdash;</div><div class="stat-k">Win Rate</div></div>
+      <div class="stat-cell"><div class="stat-v" id="stTrades">&mdash;</div><div class="stat-k">Total Trades</div></div>
+      <div class="stat-cell"><div class="stat-v" id="stDrawdown">&mdash;</div><div class="stat-k">Max Drawdown</div></div>
+    </div>
+
+    <!-- TRADES -->
+    <section class="page-section mt3">
+      <div class="between mb2">
+        <div class="label">Trades</div>
+        <span class="t-xs c-3" id="tradeCount">&mdash;</span>
+      </div>
+      <div class="acct-filter-tabs" id="tradeTabs">
+        <button class="acct-filter-tab is-active" data-filter="recent">Recent</button>
+        <button class="acct-filter-tab" data-filter="top">Top Trades</button>
+        <button class="acct-filter-tab" data-filter="worst">Worst Trades</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="tradeList"></div>
+      </div>
+    </section>
+
+    <!-- MONTHLY PERFORMANCE -->
+    <section class="page-section mt3">
+      <div class="between mb2">
+        <div class="label">Monthly Performance</div>
+        <span class="t-xs c-3">Tap a month to expand</span>
+      </div>
+      <div id="monthlyPerf" class="stack g3"></div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+(function () {
+  var fmt = MB.fmt;
+  var id = new URLSearchParams(location.search).get('id');
+
+  /* mock trades with full date/time */
+  var ALL_TRADES = [
+    { market: 'Volatility 75',  dir: 'BUY',  entry: 543210.50, exit: 543890.20, pl:  679.70, date: '2026-10-04T14:23:00Z', month: 'October 2026' },
+    { market: 'Boom 1000',      dir: 'SELL', entry: 8422.10,   exit: 8380.50,   pl:  41.60,  date: '2026-10-04T09:15:00Z', month: 'October 2026' },
+    { market: 'Crash 500',      dir: 'BUY',  entry: 9105.30,   exit: 9042.10,   pl: -63.20,  date: '2026-10-03T18:42:00Z', month: 'October 2026' },
+    { market: 'Volatility 100', dir: 'BUY',  entry: 721540.00, exit: 722310.80, pl:  770.80, date: '2026-10-03T11:05:00Z', month: 'October 2026' },
+    { market: 'Step Index',     dir: 'SELL', entry: 4521.90,   exit: 4590.30,   pl: -68.40,  date: '2026-10-02T22:30:00Z', month: 'October 2026' },
+    { market: 'Volatility 25',  dir: 'BUY',  entry: 283190.40, exit: 283410.70, pl:  220.30, date: '2026-10-01T08:10:00Z', month: 'October 2026' },
+    { market: 'Boom 500',       dir: 'SELL', entry: 9301.20,   exit: 9245.80,   pl:  55.40,  date: '2026-09-28T16:50:00Z', month: 'September 2026' },
+    { market: 'Volatility 50',  dir: 'BUY',  entry: 412050.00, exit: 411820.60, pl: -229.40, date: '2026-09-27T13:20:00Z', month: 'September 2026' },
+    { market: 'Crash 300',      dir: 'BUY',  entry: 6780.40,   exit: 6920.10,   pl:  139.70, date: '2026-09-25T10:00:00Z', month: 'September 2026' },
+    { market: 'Volatility 75',  dir: 'SELL', entry: 541200.00, exit: 540100.50, pl:  1099.50,date: '2026-09-22T07:45:00Z', month: 'September 2026' },
+    { market: 'Boom 1000',      dir: 'BUY',  entry: 8310.00,   exit: 8260.40,   pl: -49.60,  date: '2026-09-18T21:15:00Z', month: 'September 2026' },
+    { market: 'Volatility 100', dir: 'BUY',  entry: 720100.00, exit: 720850.30, pl:  750.30, date: '2026-09-15T14:30:00Z', month: 'September 2026' },
+    { market: 'Step Index',     dir: 'BUY',  entry: 4480.20,   exit: 4510.90,   pl:  30.70,  date: '2026-08-30T09:00:00Z', month: 'August 2026' },
+    { market: 'Volatility 25',  dir: 'SELL', entry: 282400.00, exit: 282900.50, pl: -500.50, date: '2026-08-25T17:40:00Z', month: 'August 2026' },
+    { market: 'Crash 500',      dir: 'SELL', entry: 9200.00,   exit: 9050.10,   pl:  149.90, date: '2026-08-20T11:25:00Z', month: 'August 2026' },
+    { market: 'Volatility 75',  dir: 'BUY',  entry: 540500.00, exit: 542100.00, pl:  1600.00,date: '2026-08-15T08:30:00Z', month: 'August 2026' },
+    { market: 'Boom 500',       dir: 'SELL', entry: 9100.00,   exit: 9180.50,   pl: -80.50,  date: '2026-07-28T15:10:00Z', month: 'July 2026' },
+    { market: 'Volatility 50',  dir: 'BUY',  entry: 410200.00, exit: 411400.00, pl:  1200.00,date: '2026-07-20T12:45:00Z', month: 'July 2026' },
+    { market: 'Crash 300',      dir: 'SELL', entry: 6650.00,   exit: 6700.20,   pl: -50.20,  date: '2026-07-15T19:30:00Z', month: 'July 2026' },
+    { market: 'Volatility 100', dir: 'BUY',  entry: 718000.00, exit: 719200.00, pl:  1200.00,date: '2026-07-10T06:00:00Z', month: 'July 2026' }
+  ];
+
+  function fmtDate(iso) {
+    var d = new Date(iso);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h = d.getHours(); var m = d.getMinutes();
+    var ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() +
+      ', ' + h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+  }
+
+  function renderTrade(t) {
+    var plCls = t.pl >= 0 ? 'c-up' : 'c-down';
+    var dirColor = t.dir === 'BUY' ? 'var(--mb-green)' : 'var(--mb-sell)';
+    var dirIcon = t.dir === 'BUY' ? 'arrow-up' : 'arrow-down';
+    var plSign = t.pl >= 0 ? '+' : '-';
+
+    return '<div class="acct-trade-row">' +
+      '<div class="between">' +
+        '<div class="row g2">' +
+          '<span style="color:' + dirColor + ';display:flex;align-items:center" data-icon="' + dirIcon + '" data-icon-size="16"></span>' +
+          '<div>' +
+            '<div class="w-semi t-sm">' + MB.esc(t.market) + ' <span class="badge t-xs" style="vertical-align:middle">' + t.dir + '</span></div>' +
+            '<div class="t-xs c-3 mt1">' + fmtDate(t.date) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div class="' + plCls + ' w-bold t-sm">' + plSign + '$' + Math.abs(t.pl).toFixed(2) + '</div>' +
+          '<div class="t-xs c-3">Entry ' + t.entry.toFixed(2) + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderTradeList(trades) {
+    MB.$('#tradeList').innerHTML = trades.length ? trades.map(renderTrade).join('') :
+      '<div style="padding:var(--mb-s4);text-align:center" class="t-sm c-3">No trades</div>';
+    MB.mountIcons(MB.$('#tradeList'));
+  }
+
+  /* filter tabs */
+  MB.$('#tradeTabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('.acct-filter-tab');
+    if (!btn) return;
+    MB.$$('.acct-filter-tab').forEach(function (b) { b.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+    var filter = btn.getAttribute('data-filter');
+    var sorted;
+    if (filter === 'top') {
+      sorted = ALL_TRADES.slice().sort(function (a, b) { return b.pl - a.pl; }).slice(0, 10);
+    } else if (filter === 'worst') {
+      sorted = ALL_TRADES.slice().sort(function (a, b) { return a.pl - b.pl; }).slice(0, 10);
+    } else {
+      sorted = ALL_TRADES.slice(0, 10);
+    }
+    MB.$('#tradeCount').textContent = sorted.length + ' of ' + ALL_TRADES.length;
+    renderTradeList(sorted);
+  });
+
+  MB.api.get('institutional').then(function (r) {
+    var d = r.data || {};
+    var accts = d.linked_accounts || [];
+    var a = accts.filter(function (x) { return x.id === id; })[0] || accts[0];
+    if (!a) return;
+
+    /* header */
+    MB.$('#adLogin').textContent = a.login;
+    MB.$('#adPlatform').textContent = a.platform;
+    MB.$('#adType').textContent = a.type;
+    MB.$('#adCurrency').textContent = a.currency;
+    MB.$('#adBalance').textContent = fmt.money(a.balance);
+    MB.$('#adLinkedDate').textContent = 'Linked ' + fmt.ago(a.linked_at);
+
+    /* management duration */
+    var linkedDate = new Date(a.linked_at);
+    var now = new Date();
+    var diffMs = now - linkedDate;
+    var diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    var diffMonths = Math.floor(diffDays / 30);
+    var durText = diffMonths > 0 ? diffMonths + ' month' + (diffMonths > 1 ? 's' : '') + ' (' + diffDays + ' days)' : diffDays + ' days';
+    MB.$('#adManagedFor').textContent = 'Managing for ' + durText;
+
+    /* visibility toggle */
+    var visBtn = MB.$('#adVisToggle');
+    visBtn.textContent = a.visible ? 'Visible' : 'Hidden';
+    visBtn.className = 'badge inst-vis-toggle ' + (a.visible ? 'badge-active' : '');
+    visBtn.addEventListener('click', function () {
+      a.visible = !a.visible;
+      visBtn.textContent = a.visible ? 'Visible' : 'Hidden';
+      visBtn.className = 'badge inst-vis-toggle ' + (a.visible ? 'badge-active' : '');
+    });
+
+    /* stat grid */
+    MB.$('#stBalance').textContent = fmt.money(a.balance);
+    var profitCls = a.profit_total >= 0 ? 'c-up' : 'c-down';
+    MB.$('#stProfit').textContent = (a.profit_total >= 0 ? '+' : '') + fmt.money(a.profit_total);
+    MB.$('#stProfit').className = 'stat-v ' + profitCls;
+    MB.$('#stReturn').textContent = fmt.pct(a.profit_pct);
+    MB.$('#stReturn').className = 'stat-v ' + profitCls;
+    MB.$('#stWinRate').textContent = fmt.pct(a.win_rate);
+    MB.$('#stTrades').textContent = a.trades_total || 0;
+    MB.$('#stDrawdown').textContent = fmt.pct(a.drawdown_max);
+
+    /* topbar title */
+    var topTitle = MB.$('.topbar-title');
+    if (topTitle) topTitle.textContent = a.login;
+
+    /* initial trade list (recent) */
+    var recent = ALL_TRADES.slice(0, 10);
+    MB.$('#tradeCount').textContent = recent.length + ' of ' + ALL_TRADES.length;
+    renderTradeList(recent);
+
+    /* monthly performance with expandable trades */
+    var months = [
+      { month: 'October 2026',   trades: 48,  winRate: 72.1, pl: 1631.40 },
+      { month: 'September 2026', trades: 312, winRate: 69.8, pl: 3240.50 },
+      { month: 'August 2026',    trades: 489, winRate: 65.1, pl: 2810.30 },
+      { month: 'July 2026',      trades: 520, winRate: 71.2, pl: 4120.80 }
+    ];
+
+    MB.$('#monthlyPerf').innerHTML = months.map(function (m, idx) {
+      var mCls = m.pl >= 0 ? 'c-up' : 'c-down';
+      var mSign = m.pl >= 0 ? '+' : '';
+      var monthTrades = ALL_TRADES.filter(function (t) { return t.month === m.month; });
+
+      return '<div class="card" style="padding:0;overflow:hidden">' +
+        '<div class="acct-month-row between" data-month="' + idx + '" style="padding:var(--mb-s3)">' +
+          '<div>' +
+            '<div class="w-bold">' + MB.esc(m.month) + '</div>' +
+            '<div class="t-xs c-3 mt1">' + m.trades + ' trades &middot; ' + fmt.pct(m.winRate) + ' win rate</div>' +
+          '</div>' +
+          '<div style="text-align:right" class="row g3">' +
+            '<span class="' + mCls + ' w-bold">' + mSign + '$' + Math.abs(m.pl).toFixed(2) + '</span>' +
+            '<span data-icon="chevdown" data-icon-size="14" class="c-3" style="transition:transform .2s"></span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="acct-month-trades" id="monthTrades' + idx + '">' +
+          (monthTrades.length ? monthTrades.map(renderTrade).join('') :
+            '<div style="padding:var(--mb-s3);text-align:center" class="t-xs c-3">Detailed trades for this month</div>') +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    /* toggle monthly trade expansion */
+    MB.$$('.acct-month-row').forEach(function (row) {
+      row.addEventListener('click', function () {
+        var idx = row.getAttribute('data-month');
+        var panel = MB.$('#monthTrades' + idx);
+        var chevron = row.querySelector('[data-icon="chevdown"]');
+        panel.classList.toggle('is-open');
+        if (chevron) {
+          chevron.style.transform = panel.classList.contains('is-open') ? 'rotate(180deg)' : '';
+        }
+      });
+    });
+
+    MB.mountIcons();
+    MB.mountCharts();
+  });
+})();
+</script>
+</body>
+</html>

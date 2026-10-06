@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Achievements — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Achievements" data-sub="Celebrate your milestones" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- SUMMARY -->
+    <section class="card achv-summary" id="achvSummary">
+      <div class="between mb3">
+        <div>
+          <div class="t-h2 w-black"><span id="achvEarned">0</span><span class="c-3"> / </span><span id="achvTotal">10</span></div>
+          <div class="t-xs c-3">badges earned</div>
+        </div>
+        <div class="achv-ring" id="achvRing">
+          <svg viewBox="0 0 80 80" width="80" height="80">
+            <circle cx="40" cy="40" r="34" fill="none" stroke="var(--mb-border)" stroke-width="6"/>
+            <circle cx="40" cy="40" r="34" fill="none" stroke="var(--mb-green)" stroke-width="6"
+                    stroke-dasharray="213.6" stroke-dashoffset="213.6" stroke-linecap="round"
+                    transform="rotate(-90 40 40)" id="achvArc"/>
+          </svg>
+          <span class="achv-ring-pct" id="achvPct">0%</span>
+        </div>
+      </div>
+      <div class="t-xs c-3">Rarest badge: <b id="achvRarest">&mdash;</b></div>
+    </section>
+
+    <!-- BADGE GRID -->
+    <section class="page-section">
+      <div class="between mb2">
+        <div class="label">All Badges</div>
+        <div class="tabs tabs-sm" data-group id="achvFilter">
+          <button class="tab is-active" data-value="all">All</button>
+          <button class="tab" data-value="earned">Earned</button>
+          <button class="tab" data-value="locked">Locked</button>
+        </div>
+      </div>
+      <div class="achv-grid" id="achvGrid"></div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/achievements.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+(function () {
+  var root = MB.root();
+
+  MB.api.get('achievements').then(function (r) {
+    var d = r.data || {};
+    var badges = d.badges || [];
+    var summary = d.summary || {};
+
+    /* summary */
+    MB.$('#achvEarned').textContent = summary.earned || 0;
+    MB.$('#achvTotal').textContent = summary.total || 10;
+    var pct = Math.round(((summary.earned || 0) / (summary.total || 10)) * 100);
+    MB.$('#achvPct').textContent = pct + '%';
+    var circ = 2 * Math.PI * 34;
+    MB.$('#achvArc').setAttribute('stroke-dashoffset', circ - (circ * pct / 100));
+
+    var rarest = badges.find(function (b) { return b.id === summary.rarest; });
+    if (rarest) { MB.$('#achvRarest').textContent = rarest.name; }
+
+    /* render grid */
+    function renderGrid(filter) {
+      var list = badges;
+      if (filter === 'earned') { list = badges.filter(function (b) { return b.earned; }); }
+      if (filter === 'locked') { list = badges.filter(function (b) { return !b.earned; }); }
+
+      MB.$('#achvGrid').innerHTML = list.map(function (b) {
+        return MB.card.achievement(b);
+      }).join('');
+    }
+
+    renderGrid('all');
+
+    /* filter tabs */
+    MB.$$('#achvFilter .tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        MB.$$('#achvFilter .tab').forEach(function (t) { t.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        renderGrid(btn.getAttribute('data-value'));
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

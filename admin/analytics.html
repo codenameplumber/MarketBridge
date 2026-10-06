@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analytics — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="admin" data-nav="analytics" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <div class="grow">
+        <h1>Analytics</h1>
+        <div class="sub">Engagement, trading and content performance</div>
+      </div>
+      <div class="admin-search none">
+        <div class="input-icon"><span data-icon="search"></span>
+          <input class="input" type="search" placeholder="Search…" aria-label="Search"></div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      
+    </header>
+
+    <main class="admin-body">
+
+      <div class="kpi-grid" id="aKpis"></div>
+
+      <div class="admin-cols c-even">
+        <section class="panel">
+          <div class="panel-head"><h2>Signals published</h2></div>
+          <div class="panel-body"><div data-chart="area" data-seed="sigvol" data-h="180"></div></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Trades executed</h2></div>
+          <div class="panel-body"><div data-chart="area" data-seed="tradevol" data-h="180"></div></div>
+        </section>
+      </div>
+
+      <div class="admin-cols c-even">
+        <section class="panel">
+          <div class="panel-head"><h2>Executable vs Analysis</h2></div>
+          <div class="panel-body"><div id="kindSplit"></div></div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>Most active markets</h2></div>
+          <div class="panel-body panel-body-flush"><div id="topMarkets"></div></div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+MB.ready(function () {
+  MB.api.get('admin/stats').then(function (r) {
+    var t = r.data.totals;
+    document.getElementById('aKpis').innerHTML = [
+      ['Signals', MB.fmt.compact(t.signals), t.signals_delta],
+      ['Trades', MB.fmt.compact(t.trades), t.trades_delta],
+      ['Active users', MB.fmt.compact(t.active_users), t.active_delta],
+      ['Partner revenue', MB.fmt.money(t.revenue, null, 0), t.revenue_delta]
+    ].map(function (x) {
+      var up = x[2] >= 0;
+      return '<div class="kpi"><div class="k">' + x[0] + '</div><div class="v">' + x[1] + '</div>' +
+        '<div class="d ' + (up ? 'c-up' : 'c-down') + '">' + MB.icon(up ? 'trendup' : 'trenddown', 13) +
+        MB.fmt.pct(x[2]) + '</div></div>';
+    }).join('');
+    MB.mountIcons();
+  });
+
+  MB.api.list('signals').then(function (rows) {
+    var ex = rows.filter(function (s) { return s.kind === 'executable'; }).length;
+    var an = rows.length - ex;
+    var pct = Math.round(ex / rows.length * 100);
+    document.getElementById('kindSplit').innerHTML =
+      '<div class="between"><span class="t-sm w-semi c-up">Executable</span>' +
+      '<span class="t-sm w-bold">' + ex + ' (' + pct + '%)</span></div>' +
+      '<div class="progress mt2" style="height:10px"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="between mt4"><span class="t-sm w-semi c-info">Analysis</span>' +
+      '<span class="t-sm w-bold">' + an + ' (' + (100 - pct) + '%)</span></div>' +
+      '<div class="progress mt2" style="height:10px"><i style="width:' + (100 - pct) +
+        '%;background:var(--mb-info)"></i></div>' +
+      '<p class="t-xs c-3 mt4">A healthy platform carries both. A sharp drop in the ' +
+      'executable share usually means the capability registry has gone stale.</p>';
+  });
+
+  MB.api.list('markets').then(function (rows) {
+    document.getElementById('topMarkets').innerHTML = rows.slice(0, 6).map(function (m, i) {
+      return '<div class="lb-row"><span class="lb-rank' + (i < 3 ? ' r' + (i + 1) : '') + '">' +
+        (i + 1) + '</span><span class="grow lb-name">' + m.short_name + '</span>' +
+        '<span class="lb-metric">' + MB.fmt.compact(m.community.post_count) + ' posts</span></div>';
+    }).join('');
+  });
+});
+</script>
+</body>
+</html>

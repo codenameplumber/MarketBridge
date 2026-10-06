@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact — KonfluenX</title>
+<meta name="description" content="Reach the KonfluenX team: support, account and trading questions, partnerships, content reports and press.">
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/public.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body class="site" data-shell="site" data-nav="contact" data-root="">
+
+<div data-render="site-header"></div>
+
+<main>
+  <section class="section">
+    <div class="container">
+
+      <div class="section-head" style="margin-bottom:48px">
+        <div class="section-eyebrow">Contact</div>
+        <h2>Talk to us</h2>
+        <p>
+          Real answers from people who work on the platform. Pick the route that
+          matches what you need and we will get it to the right person.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+
+        <!-- ---------------------------------------------------------- -->
+        <div class="stack g4">
+
+          <div class="contact-method">
+            <span data-icon="chat"></span>
+            <div>
+              <div class="cm-t">Support</div>
+              <div class="cm-d">
+                Account access, connecting Deriv, a trade that did not behave as
+                expected. Fastest route, staffed 7 days a week.<br>
+                <a class="link" href="mailto:support@vybe.app">support@vybe.app</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <span data-icon="flag"></span>
+            <div>
+              <div class="cm-t">Report content</div>
+              <div class="cm-d">
+                Scams, misleading signals, harassment or spam. Reports are anonymous
+                and reviewed by the moderation team.<br>
+                <span class="c-3">Use the &ldquo;Report&rdquo; option on any post or signal, or email</span>
+                <a class="link" href="mailto:moderation@vybe.app">moderation@vybe.app</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <span data-icon="briefcase"></span>
+            <div>
+              <div class="cm-t">Partnerships &amp; mentors</div>
+              <div class="cm-d">
+                Running a trading education business, or want to publish courses and
+                run mentorship sessions on KonfluenX?<br>
+                <a class="link" href="mailto:partners@vybe.app">partners@vybe.app</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="contact-method">
+            <span data-icon="shield"></span>
+            <div>
+              <div class="cm-t">Security</div>
+              <div class="cm-d">
+                Found a vulnerability? Report it privately and we will respond within
+                two working days. Please do not disclose publicly first.<br>
+                <a class="link" href="mailto:security@vybe.app">security@vybe.app</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warn mt2">
+            <span data-icon="warning"></span>
+            <div>
+              <strong>We will never ask for your Deriv password</strong>, your API
+              token or a payment to &ldquo;unlock&rdquo; a withdrawal. Anyone who does is
+              not us. Forward it to
+              <a class="link" href="mailto:security@vybe.app">security@vybe.app</a>.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ---------------------------------------------------------- -->
+        <div class="card" style="padding:28px">
+          <h3 class="t-h2">Send a message</h3>
+          <p class="t-sm c-2 mt2">
+            Most messages get a reply within one working day.
+          </p>
+
+          <form class="stack g4 mt6" id="contactForm" novalidate>
+            <div class="field">
+              <label for="cName">Your name</label>
+              <input class="input" id="cName" name="name" type="text" autocomplete="name" placeholder="John David" required>
+            </div>
+
+            <div class="field">
+              <label for="cEmail">Email address</label>
+              <input class="input" id="cEmail" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+            </div>
+
+            <div class="field">
+              <label for="cTopic">What is this about?</label>
+              <select class="select" id="cTopic" name="topic">
+                <option value="support">Support — my account or a trade</option>
+                <option value="deriv">Connecting my Deriv account</option>
+                <option value="signals">Signals, results or a win rate</option>
+                <option value="report">Reporting content or a user</option>
+                <option value="partners">Partnerships and mentorship</option>
+                <option value="press">Press and media</option>
+                <option value="other">Something else</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="cMsg">Message</label>
+              <textarea class="textarea" id="cMsg" name="message" placeholder="Tell us what happened, and include your username if it relates to your account." required></textarea>
+              <span class="field-hint">Never include passwords or API tokens in a message.</span>
+            </div>
+
+            <label class="check">
+              <input type="checkbox" id="cAgree" required>
+              <span class="box"><span data-icon="check"></span></span>
+              <span class="c-2">I have read the <a class="link" href="privacy.html">Privacy Policy</a> and agree to be contacted about this enquiry.</span>
+            </label>
+
+            <button class="btn btn-primary btn-block" type="submit">
+              <span data-icon="send"></span> Send message
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       BEFORE YOU WRITE
+       =================================================================== -->
+  <section class="section section-alt">
+    <div class="container container-narrow">
+      <div class="section-head is-centered">
+        <div class="section-eyebrow">Faster than email</div>
+        <h2>These come up most</h2>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>My Deriv balance looks wrong or out of date</summary>
+          <div class="faq-body">
+            The balance shown in KonfluenX is a cached read of your Deriv account
+            with the time it was fetched underneath it. If it looks stale, pull to
+            refresh on the dashboard, or open Settings &rarr; Connected Deriv Account
+            and reconnect. Deriv is always the authority — if the two disagree,
+            Deriv is right.
+          </div>
+        </details>
+        <details>
+          <summary>A signal I followed shows a different result to my trade</summary>
+          <div class="faq-body">
+            A signal's result is resolved from the contract or the price feed, not
+            from your individual entry. If you entered at a different moment, took a
+            different stake or used a different duration, your outcome will differ.
+            Open the contract in Trade History to see exactly what your position did.
+          </div>
+        </details>
+        <details>
+          <summary>Why can't I trade a signal I am looking at?</summary>
+          <div class="faq-body">
+            It is an analysis signal. It carries entry, stop loss and target levels
+            that do not map to a Deriv contract we can execute from here, so it shows
+            <strong>View Market</strong> instead of a trade button. That is deliberate —
+            we would rather tell you than give you a button that fails.
+          </div>
+        </details>
+        <details>
+          <summary>How do I delete my account?</summary>
+          <div class="faq-body">
+            Settings &rarr; Account Settings &rarr; Delete account, or email support and
+            we will do it. Deleting removes your profile, posts and comments. Signals
+            you published stay in aggregate form, without your identity attached, so
+            that the win rates other people relied on when following you do not
+            silently change. Deleting on KonfluenX does not close your Deriv
+            account — do that with Deriv directly.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div data-render="site-footer"></div>
+
+<script src="assets/js/core/icons.js"></script>
+<script src="assets/js/core/util.js"></script>
+<script src="assets/js/core/api.js"></script>
+<script src="assets/js/core/collection.js"></script>
+<script src="assets/js/core/charts.js"></script>
+<script src="assets/js/core/ws.js"></script>
+<script src="assets/js/core/shell.js"></script>
+<script src="assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var form = document.getElementById('contactForm');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var ok = true;
+    ['cName', 'cEmail', 'cMsg'].forEach(function (id) {
+      var el = document.getElementById(id);
+      var bad = !el.value.trim() || (id === 'cEmail' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value));
+      el.classList.toggle('is-error', bad);
+      if (bad) { ok = false; }
+    });
+    if (!document.getElementById('cAgree').checked) {
+      ok = false;
+      MB.toast('Please accept the privacy policy', 'err');
+    }
+    if (!ok) { return; }
+
+    /* Stage 2: MB.api.post('contact', data) */
+    MB.api.post('contact', {
+      name: document.getElementById('cName').value,
+      email: document.getElementById('cEmail').value,
+      topic: document.getElementById('cTopic').value,
+      message: document.getElementById('cMsg').value
+    }).then(function () {
+      form.reset();
+      MB.toast('Message sent — we will reply by email');
+    });
+  });
+});
+</script>
+</body>
+</html>

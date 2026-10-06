@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Results — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Results" data-sub="Track performance and achievements" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <div class="chips page-bleed" data-group id="rTabs">
+      <button class="chip is-active" data-value="overview">Overview</button>
+      <button class="chip" data-value="performance">My Performance</button>
+      <button class="chip" data-value="providers">Signal Providers</button>
+    </div>
+
+    <section class="card">
+      <div class="between">
+        <div class="t-sm w-bold">Overall Performance</div>
+        <select class="select none" style="width:auto;height:32px;padding:0 30px 0 10px;font-size:12px">
+          <option>This Week</option><option>This Month</option><option>All Time</option>
+        </select>
+      </div>
+      <div class="stat-grid mt4">
+        <div class="stat-cell"><div class="stat-v" id="rTotal">—</div><div class="stat-k">Signals</div></div>
+        <div class="stat-cell"><div class="stat-v c-up" id="rWins">—</div><div class="stat-k">Wins</div></div>
+        <div class="stat-cell"><div class="stat-v c-down" id="rLoss">—</div><div class="stat-k">Losses</div></div>
+        <div class="stat-cell"><div class="stat-v c-up" id="rRate">—</div><div class="stat-k">Win rate</div></div>
+      </div>
+      <div class="stat-grid cols-3 mt3">
+        <div class="stat-cell"><div class="stat-v c-up num" id="rPL">—</div><div class="stat-k">Profit / Loss</div></div>
+        <div class="stat-cell"><div class="stat-v num" id="rRR">—</div><div class="stat-k">Avg R/R</div></div>
+        <div class="stat-cell"><div class="stat-v c-up num" id="rBest">—</div><div class="stat-k">Best signal</div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="between"><div class="t-sm w-bold">Performance Chart</div>
+        <span class="badge badge-active">Profit</span></div>
+      <div data-chart="area" data-seed="results" data-h="150" class="mt3"></div>
+    </section>
+
+    <!-- Verified Deriv P&L is kept visually and structurally separate -->
+    <div class="alert alert-info">
+      <span data-icon="info"></span>
+      <div class="t-xs"><strong>Two different numbers.</strong> Verified P/L comes from
+      real contracts on your Deriv account. Signal performance describes published
+      signals and is not money earned. They are never combined.</div>
+    </div>
+
+    <section class="page-section">
+      <div class="sec-head"><h2>Recent Results</h2>
+        <a href="../trade/history.html">View all</a></div>
+      <div class="list" id="rRecent"></div>
+    </section>
+
+    <a class="btn btn-ghost btn-block" href="leaderboard.html">
+      <span data-icon="results"></span> Open leaderboards</a>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  MB.api.get('me').then(function (r) {
+    var p = r.data.performance;
+    document.getElementById('rTotal').textContent = p.total_signals;
+    document.getElementById('rWins').textContent = p.wins;
+    document.getElementById('rLoss').textContent = p.losses;
+    document.getElementById('rRate').textContent = p.win_rate + '%';
+    document.getElementById('rPL').textContent = MB.fmt.signed(p.total_pl);
+    document.getElementById('rRR').textContent = '1:' + p.avg_risk_reward;
+    document.getElementById('rBest').textContent = MB.fmt.signed(p.best_signal);
+  });
+  MB.render({ into: '#rRecent', from: 'history', limit: 5, template: MB.card.historyRow, skeleton: false });
+});
+</script>
+</body>
+</html>

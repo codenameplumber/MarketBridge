@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resource — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Resource" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <section class="card" style="padding:0;overflow:hidden">
+      <div class="resource-cover" style="aspect-ratio:16/9">
+        <div data-chart="candle" data-seed="detailcover" data-h="190"></div>
+        <span class="play" style="width:56px;height:56px"><span data-icon="play" data-icon-size="20"></span></span>
+      </div>
+      <div class="pad">
+        <h1 class="t-h2" id="rTitle">—</h1>
+        <p class="t-sm c-2 mt2" id="rSummary">—</p>
+        <div class="row g2 mt3" id="rBadges"></div>
+      </div>
+    </section>
+
+    <div class="tabs" data-group id="rdTabs">
+      <button class="tab is-active" data-value="about">About</button>
+      <button class="tab" data-value="lessons">Lessons</button>
+      <button class="tab" data-value="comments">Comments</button>
+    </div>
+
+    <section id="paneAbout" class="page-section">
+      <div class="card">
+        <div class="stack g3">
+          <div class="row g3"><span class="none c-up" data-icon="book" data-icon-size="18"></span>
+            <span class="t-sm" id="rLessons">— lessons</span></div>
+          <div class="row g3"><span class="none c-up" data-icon="clock" data-icon-size="18"></span>
+            <span class="t-sm" id="rDuration">—</span></div>
+          <div class="row g3"><span class="none c-up" data-icon="results" data-icon-size="18"></span>
+            <span class="t-sm">Certificate of completion</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="label">Your progress</div>
+        <div class="between mt2"><span class="t-h2 w-black c-up" id="rProgress">0%</span>
+          <span class="t-xs c-3">complete</span></div>
+        <div class="progress mt3"><i id="rBar" style="width:0"></i></div>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg">Continue learning</button>
+    </section>
+
+    <section id="paneLessons" class="hide">
+      <div class="list" id="lessonList"></div>
+    </section>
+
+    <section id="paneComments" class="hide">
+      <div class="card" style="padding:0"><div id="rComments" style="padding:0 16px"></div></div>
+    </section>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var slug = new URLSearchParams(location.search).get('slug');
+  MB.api.list('resources').then(function (rows) {
+    var r = rows.filter(function (x) { return !slug || x.slug === slug; })[0] || rows[0];
+    MB.$('.topbar-title').textContent = r.title;
+    document.getElementById('rTitle').textContent = r.title;
+    document.getElementById('rSummary').textContent = r.summary;
+    document.getElementById('rBadges').innerHTML =
+      '<span class="badge badge-neutral">' + r.level + '</span>' +
+      '<span class="badge badge-info">' + r.type + '</span>';
+    document.getElementById('rLessons').textContent = (r.lesson_count || 0) + ' lessons';
+    document.getElementById('rDuration').textContent = MB.fmt.duration(r.duration_seconds) + ' total length';
+    document.getElementById('rProgress').textContent = (r.progress_percent || 0) + '%';
+    document.getElementById('rBar').style.width = (r.progress_percent || 0) + '%';
+
+    var n = r.lesson_count || 6;
+    var html = '';
+    for (var i = 1; i <= n; i++) {
+      var done = (i / n) * 100 <= (r.progress_percent || 0);
+      html += '<div class="list-row"><span class="none" style="color:var(--mb-' +
+        (done ? 'green' : 'text-3') + ')">' + MB.icon(done ? 'check' : 'play', 18) + '</span>' +
+        '<span class="grow"><span class="lr-title" style="display:block">Lesson ' + i + '</span>' +
+        '<span class="lr-sub">' + MB.fmt.duration(240 + i * 30) + '</span></span>' +
+        '<span class="lr-chev">' + MB.icon('chevright', 18) + '</span></div>';
+    }
+    document.getElementById('lessonList').innerHTML = html;
+    MB.mountIcons(); MB.mountCharts();
+  });
+
+  MB.collection({
+    from: 'comments', into: '#rComments', template: MB.card.comment,
+    perPage: 10, mode: 'more', skeleton: false,
+    emptyIcon: 'comment', emptyTitle: 'No replies yet',
+    emptyText: 'Be the first to reply.'
+  });
+  document.getElementById('rdTabs').addEventListener('mb:change', function (e) {
+    document.getElementById('paneAbout').classList.toggle('hide', e.detail.value !== 'about');
+    document.getElementById('paneLessons').classList.toggle('hide', e.detail.value !== 'lessons');
+    document.getElementById('paneComments').classList.toggle('hide', e.detail.value !== 'comments');
+  });
+});
+</script>
+</body>
+</html>

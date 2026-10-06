@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Profile — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="My Profile" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- ================================================================
+         IDENTITY
+         ================================================================ -->
+    <a class="pf-card" href="settings.html">
+      <span class="pf-av" id="meAvatar"></span>
+      <span class="pf-id">
+        <span class="pf-name">
+          <span id="meName">&mdash;</span>
+          <span class="pf-tick" id="meTick" hidden data-icon="check" data-icon-size="11"></span>
+          <span class="tag-mod" id="meMod" hidden>
+            <span data-icon="shield" data-icon-size="10"></span> Moderator</span>
+        </span>
+        <span class="pf-handle" id="meHandle">&mdash;</span>
+        <span class="pf-verified" id="meVerified" hidden>
+          <span data-icon="check" data-icon-size="12"></span> Verified Trader
+        </span>
+      </span>
+      <span class="pf-chev" data-icon="chevright" data-icon-size="18"></span>
+    </a>
+
+    <div class="pf-meta">
+      <span class="pf-chip"><i class="dot dot-live"></i> Active Trader</span>
+      <span class="pf-chip"><span data-icon="calendar" data-icon-size="13"></span>
+        <span id="meSince">&mdash;</span></span>
+    </div>
+
+    <!-- ================================================================
+         TOTAL DERIV BALANCE
+         Computed from the connected accounts — never a number we keep.
+         ================================================================ -->
+    <section class="total-balance tb-compact">
+      <div class="tb-head">
+        <span class="tb-label">Total Deriv Balance</span>
+        <button class="icon-btn" id="btnHide" aria-label="Hide balance"
+                style="width:24px;height:24px"><span data-icon="eye" data-icon-size="15"></span></button>
+        <span class="grow"></span>
+        <select class="select select-sm" id="balRange" aria-label="Balance period">
+          <option value="24H">24H</option>
+          <option value="7D">7D</option>
+          <option value="30D">30D</option>
+          <option value="ALL">All time</option>
+        </select>
+      </div>
+      <div class="tb-amount" id="tbAmount">$0.00<span class="cur">USD</span></div>
+      <div class="tb-delta c-up" id="tbDelta">&mdash;</div>
+      <span class="tb-spark"><span data-spark="up" data-seed="pfbal" data-h="56" data-sw="2"></span></span>
+    </section>
+
+    <!-- ================================================================
+         DERIV ACCOUNTS
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Deriv Accounts</h2>
+        <a href="../wallet/accounts.html">View all</a></div>
+      <div class="list" id="acctList"></div>
+    </section>
+
+    <!-- ================================================================
+         QUICK ACTIONS
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Quick Actions</h2></div>
+      <nav class="qa-grid" aria-label="Account quick actions">
+        <a class="qa-tile" href="../wallet/transfer.html">
+          <span class="qa-ic" style="color:var(--mb-green)" data-icon="refresh" data-icon-size="20"></span>
+          <span class="qa-t">Transfer<br>Money</span>
+        </a>
+        <a class="qa-tile" href="../wallet/history.html">
+          <span class="qa-ic" style="color:var(--vy-teal)" data-icon="file" data-icon-size="20"></span>
+          <span class="qa-t">Transaction<br>History</span>
+        </a>
+        <a class="qa-tile" href="../wallet/statement.html">
+          <span class="qa-ic" style="color:var(--mb-info)" data-icon="book" data-icon-size="20"></span>
+          <span class="qa-t">Account<br>Statement</span>
+        </a>
+        <a class="qa-tile" href="../../contact.html">
+          <span class="qa-ic" style="color:var(--vy-brand)" data-icon="chat" data-icon-size="20"></span>
+          <span class="qa-t">Deriv<br>Support</span>
+        </a>
+      </nav>
+    </section>
+
+    <!-- ================================================================
+         PERFORMANCE OVERVIEW
+         ================================================================ -->
+    <section class="card">
+      <div class="between">
+        <div class="t-sm w-bold">Performance Overview</div>
+        <select class="select select-sm" id="perfRange" aria-label="Performance period">
+          <option value="all">All time</option>
+          <option value="90">90 days</option>
+          <option value="30">30 days</option>
+          <option value="7">7 days</option>
+        </select>
+      </div>
+
+      <div class="perf-grid mt3">
+        <div><div class="pg-v c-up" id="meWins">&mdash;</div><div class="pg-k">Wins</div></div>
+        <div><div class="pg-v c-down" id="meLosses">&mdash;</div><div class="pg-k">Losses</div></div>
+        <div><div class="pg-v" id="meWin">&mdash;</div><div class="pg-k">Win Rate</div></div>
+        <div><div class="pg-v c-up num" id="mePL">&mdash;</div><div class="pg-k">Total P/L</div></div>
+      </div>
+
+      <div data-chart="area" data-seed="meprofile" data-h="150" data-h-min="120" class="mt4"></div>
+      <div class="axis-x" aria-hidden="true">
+        <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span>
+        <span>Sep</span><span>Nov</span><span>Now</span>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SOCIAL COUNTS
+         ================================================================ -->
+    <div class="stat-grid cols-3">
+      <a class="stat-cell" href="../community/index.html">
+        <div class="stat-v" id="meFollowers">&mdash;</div><div class="stat-k">Followers</div></a>
+      <a class="stat-cell" href="../community/index.html">
+        <div class="stat-v" id="meFollowing">&mdash;</div><div class="stat-k">Following</div></a>
+      <a class="stat-cell" href="../signals/index.html">
+        <div class="stat-v" id="meSignals">&mdash;</div><div class="stat-k">Signals</div></a>
+    </div>
+
+    <!-- ================================================================
+         RECENT SIGNALS / POSTS
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Recent Signals</h2>
+        <a href="../signals/index.html">View all</a></div>
+      <div class="tabs" data-group id="meTabs">
+        <button class="tab is-active" data-value="signals">Signals</button>
+        <button class="tab" data-value="posts">Posts</button>
+      </div>
+      <div id="paneMeSignals" class="stack g3 mt3"></div>
+      <div id="paneMePosts" class="stack g3 mt3 hide"></div>
+    </section>
+
+    <a class="btn btn-ghost btn-block" href="settings.html">
+      <span data-icon="settings"></span> Settings &amp; more</a>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+
+  /* ---- identity, balance and performance ----------------------------- */
+  MB.api.get('me').then(function (r) {
+    var u = r.data, p = u.performance, d = u.deriv || {};
+
+    MB.$('#meAvatar').innerHTML = MB.avatar(u, 'avatar-xl');
+    MB.$('#meName').textContent = u.display_name;
+    MB.$('#meHandle').textContent = '@' + u.username;
+    if (u.is_verified) { MB.$('#meTick').hidden = false; MB.$('#meVerified').hidden = false; }
+    /* A moderator is a normal member with an extra badge — no separate app. */
+    if (u.role === 'moderator') { MB.$('#meMod').hidden = false; }
+    MB.$('#meSince').textContent = 'Since ' + (u.member_since || 'Apr 2023');
+
+    MB.$('#tbAmount').innerHTML = MB.fmt.money(d.total_balance || 0) +
+      '<span class="cur">' + MB.esc(d.currency || 'USD') + '</span>';
+
+    var up = p.today_pl >= 0;
+    MB.$('#tbDelta').className = 'tb-delta ' + (up ? 'c-up' : 'c-down');
+    MB.$('#tbDelta').textContent =
+      MB.fmt.signed(p.today_pl) + ' (' + MB.fmt.pct(p.today_pct) + ') today';
+
+    MB.$('#meWins').textContent = p.wins;
+    MB.$('#meLosses').textContent = p.losses;
+    MB.$('#meWin').textContent = p.win_rate.toFixed(1) + '%';
+    MB.$('#mePL').textContent = MB.fmt.signed(p.total_pl);
+    MB.$('#meFollowers').textContent = MB.fmt.compact(u.followers);
+    MB.$('#meFollowing').textContent = MB.fmt.compact(u.following);
+    MB.$('#meSignals').textContent = u.signals_count;
+
+    MB.mountIcons(document);
+  });
+
+  /* ---- the connected Deriv accounts ---------------------------------- */
+  MB.api.get('accounts').then(function (r) {
+    var host = MB.$('#acctList');
+    host.innerHTML = r.data.map(function (a) {
+      return '<a class="acct-row" href="../wallet/account-detail.html?id=' + a.id + '">' +
+        '<span class="acct-badge ' + a.badge + '">' + MB.esc(a.badge_text) + '</span>' +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="ar-n">' + MB.esc(a.short) + '</span>' +
+          '<span class="ar-s">' + MB.esc(a.subtitle) +
+'</span>' +
+        '</span>' +
+        '<span class="ar-v">' + MB.fmt.money(a.balance, a.currency) + '</span>' +
+        '<span class="ar-chev" data-icon="chevright" data-icon-size="17"></span>' +
+      '</a>';
+    }).join('');
+    MB.mountIcons(host);
+  });
+
+  /* ---- feed tabs ------------------------------------------------------ */
+  MB.render({ into: '#paneMeSignals', from: 'signals', limit: 3, template: MB.card.signal });
+  MB.render({ into: '#paneMePosts', from: 'posts', limit: 3, template: MB.card.post });
+  MB.$('#meTabs').addEventListener('mb:change', function (e) {
+    MB.$('#paneMeSignals').classList.toggle('hide', e.detail.value !== 'signals');
+    MB.$('#paneMePosts').classList.toggle('hide', e.detail.value !== 'posts');
+  });
+
+  /* ---- hide the balance ----------------------------------------------- */
+  var hidden = false;
+  MB.$('#btnHide').addEventListener('click', function () {
+    hidden = !hidden;
+    MB.$('#tbAmount').classList.toggle('is-masked', hidden);
+    MB.$('#tbDelta').classList.toggle('is-masked', hidden);
+    this.innerHTML = MB.icon(hidden ? 'eyeoff' : 'eye', 15);
+  });
+});
+</script>
+</body>
+</html>

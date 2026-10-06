@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IB / Partner Status — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="IB / Partner Status" data-sub="Deriv Partner Programme" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- ================================================================
+         STATUS
+         ================================================================ -->
+    <section class="card">
+      <div class="between">
+        <div>
+          <div class="t-xs c-3">Programme</div>
+          <div class="t-h3 w-bold" id="pgName">&mdash;</div>
+        </div>
+        <span class="badge badge-active" id="pgStatus">&mdash;</span>
+      </div>
+
+      <div class="tier-row mt4">
+        <span class="tier-badge" id="pgTier">&mdash;</span>
+        <div class="grow">
+          <div class="between t-xs c-3">
+            <span>Progress to <b id="pgNext">&mdash;</b></span>
+            <span id="pgProg">&mdash;</span>
+          </div>
+          <div class="bar mt2"><span id="pgBar" style="width:0%"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         REFERRAL LINK
+         ================================================================ -->
+    <section class="card">
+      <div class="t-sm w-bold">Your referral link</div>
+      <p class="t-xs c-3 mt2">
+        Anyone who opens a Deriv account through this link is attributed to you
+        by Deriv.
+      </p>
+      <div class="copy-field mt3">
+        <input class="input" id="pgUrl" readonly value="">
+        <button class="btn btn-brand btn-sm" data-copy="#pgUrl">
+          <span data-icon="copy"></span> Copy</button>
+      </div>
+      <div class="row g2 mt3">
+        <span class="t-xs c-3">Code</span>
+        <span class="t-xs w-bold num" id="pgCode">&mdash;</span>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         FUNNEL — clicks through to funded
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Referral funnel</h2>
+        <span class="t-xs c-3" id="pgConv">&mdash;</span></div>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="stat-v" id="pgClicks">&mdash;</div><div class="stat-k">Clicks</div></div>
+        <div class="stat-cell"><div class="stat-v" id="pgSignups">&mdash;</div><div class="stat-k">Signed up</div></div>
+        <div class="stat-cell"><div class="stat-v c-up" id="pgFunded">&mdash;</div><div class="stat-k">Funded</div></div>
+        <div class="stat-cell"><div class="stat-v" id="pgActive">&mdash;</div><div class="stat-k">Active</div></div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         EARNINGS — paid by Deriv, never held by KonfluenX
+         ================================================================ -->
+    <section class="card">
+      <div class="between">
+        <div>
+          <div class="t-xs c-3">Commission earned (all time)</div>
+          <div class="t-h1 w-black num c-up" id="pgEarned">&mdash;</div>
+        </div>
+        <div style="text-align:right">
+          <div class="t-xs c-3">This month</div>
+          <div class="t-h3 w-bold num" id="pgMonth">&mdash;</div>
+        </div>
+      </div>
+      <div data-chart="area" data-seed="ibearn" data-h="130" data-h-min="110" class="mt4"></div>
+
+      <div class="alert alert-green mt4">
+        <span data-icon="shield"></span>
+        <div class="t-xs"><strong>Deriv pays this, not KonfluenX.</strong> Commission is
+        calculated and settled by Deriv into your Deriv account under their partner
+        terms. KonfluenX never holds or forwards partner money, and these figures are a
+        read of Deriv&rsquo;s reporting.</div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         PAYOUTS
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Payout history</h2></div>
+      <div class="list" id="pgPayouts"></div>
+    </section>
+
+    <!-- ================================================================
+         REFERRALS
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Your referrals</h2>
+        <span class="t-xs c-3"><span id="pgRefCount">0</span> total</span></div>
+      <div class="chips" data-group id="refTabs">
+        <button class="chip is-active" data-value="all">All</button>
+        <button class="chip" data-value="funded">Funded</button>
+        <button class="chip" data-value="signed_up">Signed up</button>
+        <button class="chip" data-value="pending">Pending</button>
+      </div>
+      <div class="list mt3" id="pgReferrals"></div>
+    </section>
+
+    <a class="btn btn-ghost btn-block" href="../../contact.html">
+      <span data-icon="chat"></span> Questions about the programme</a>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  MB.api.get('partner').then(function (r) {
+    var p = r.data, s = p.stats, t = p.tier_progress;
+
+    MB.$('#pgName').textContent = p.programme;
+    MB.$('#pgStatus').textContent = p.status;
+    MB.$('#pgTier').textContent = p.tier;
+    MB.$('#pgNext').textContent = p.next_tier;
+    MB.$('#pgProg').textContent = t.current + ' / ' + t.target + ' ' + t.metric;
+    MB.$('#pgBar').style.width = Math.min(100, (t.current / t.target) * 100) + '%';
+
+    MB.$('#pgUrl').value = p.referral_url;
+    MB.$('#pgCode').textContent = p.referral_code;
+
+    MB.$('#pgClicks').textContent = MB.fmt.compact(s.clicks);
+    MB.$('#pgSignups').textContent = s.signups;
+    MB.$('#pgFunded').textContent = s.funded;
+    MB.$('#pgActive').textContent = s.active_traders;
+    MB.$('#pgConv').textContent = s.conversion_pct.toFixed(1) + '% convert';
+
+    MB.$('#pgEarned').textContent = MB.fmt.money(s.earned_total, s.currency);
+    MB.$('#pgMonth').textContent = MB.fmt.money(s.earned_month, s.currency);
+
+    /* ---- payouts ---- */
+    MB.$('#pgPayouts').innerHTML = p.payouts.slice().reverse().map(function (o) {
+      var st = o.status === 'paid' ? 'badge-active' : 'badge-warn';
+      return '<div class="list-row">' +
+        '<span class="lr-icon">' + MB.icon('wallet', 20) + '</span>' +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="lr-title" style="display:block">' + MB.esc(o.period) + '</span>' +
+          '<span class="lr-sub">' + o.referrals_funded + ' funded &middot; ' +
+            MB.fmt.money(o.volume, o.currency) + ' volume</span></span>' +
+        '<span class="none" style="text-align:right">' +
+          '<span class="lr-value num c-up" style="display:block;font-weight:700">' +
+            MB.fmt.money(o.amount, o.currency) + '</span>' +
+          '<span class="badge ' + st + '">' + o.status + '</span></span></div>';
+    }).join('');
+    MB.mountIcons(MB.$('#pgPayouts'));
+
+    /* ---- referrals, filterable ---- */
+    var c = MB.collection({
+      data: p.referrals, into: '#pgReferrals', perPage: 8, mode: 'more',
+      countInto: '#pgRefCount', skeleton: false,
+      initial: { status: 'all' },
+      filters: { status: function (x, v) { return v === 'all' || x.status === v; } },
+      template: function (x) {
+        var tone = { funded: 'badge-active', signed_up: 'badge-neutral',
+                     pending: 'badge-warn' }[x.status];
+        var label = x.status.replace('_', ' ');
+        return '<div class="list-row">' +
+          '<span class="avatar avatar-sm">' + MB.esc(x.name.replace(/[^A-Z]/g, '').slice(0, 2)) + '</span>' +
+          '<span class="grow" style="min-width:0">' +
+            '<span class="lr-title" style="display:block">' + MB.esc(x.name) + '</span>' +
+            '<span class="lr-sub">joined ' + MB.fmt.ago(x.signed_up_at) +
+              (x.volume ? ' &middot; ' + MB.fmt.money(x.volume) + ' volume' : '') + '</span></span>' +
+          '<span class="none" style="text-align:right">' +
+            '<span class="lr-value num ' + (x.commission ? 'c-up' : 'c-3') +
+              '" style="display:block;font-weight:700">' +
+              (x.commission ? MB.fmt.money(x.commission) : '&mdash;') + '</span>' +
+            '<span class="badge ' + tone + '">' + label + '</span></span></div>';
+      },
+      emptyIcon: 'users', emptyTitle: 'No referrals in this state',
+      emptyText: 'Share your link to bring traders in.'
+    });
+    c.bind('#refTabs', 'status');
+
+    MB.mountIcons(document);
+    MB.mountCharts(document);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connect Deriv — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="auth" data-root="../">
+
+<div class="auth-wrap" id="stepConnect">
+
+  <div class="between">
+    <a class="topbar-back" href="../users/index.html" aria-label="Skip for now">
+      <span data-icon="back" data-icon-size="22"></span>
+    </a>
+    <button class="icon-btn" data-theme-toggle aria-label="Switch theme"></button>
+  </div>
+
+  <div class="auth-head">
+    <h1>Connect your Deriv account</h1>
+    <p>Trading requires a linked Deriv account. Everything else on KonfluenX works without one.</p>
+  </div>
+
+  <!-- What we ask for, stated before they authorise -->
+  <div class="card">
+    <div class="label">KonfluenX will ask Deriv for</div>
+
+    <div class="stack g4 mt4">
+      <div class="row g3" style="align-items:flex-start">
+        <span class="none c-up" data-icon="eye" data-icon-size="18"></span>
+        <div>
+          <div class="t-sm w-semi">Read your account details</div>
+          <div class="t-xs c-2">Account type, currency and balance, so we can show them accurately.</div>
+        </div>
+      </div>
+
+      <div class="row g3" style="align-items:flex-start">
+        <span class="none c-up" data-icon="trade" data-icon-size="18"></span>
+        <div>
+          <div class="t-sm w-semi">Place trades you approve</div>
+          <div class="t-xs c-2">Only orders you explicitly confirm. Nothing is ever placed automatically.</div>
+        </div>
+      </div>
+
+      <div class="row g3" style="align-items:flex-start">
+        <span class="none c-up" data-icon="chart" data-icon-size="18"></span>
+        <div>
+          <div class="t-sm w-semi">Read your contract history</div>
+          <div class="t-xs c-2">So your results and performance figures are real, not self-reported.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-green mt4">
+    <span data-icon="lock"></span>
+    <div class="t-sm">
+      <strong>We never see your Deriv password.</strong> You sign in on Deriv's own site.
+      We receive an encrypted access token that you can revoke at any time, from here
+      or from Deriv.
+    </div>
+  </div>
+
+  <div class="stack g3 mt6">
+    <button class="btn btn-primary btn-block btn-lg" id="btnConnect">
+      <span data-icon="link"></span> Connect with Deriv
+    </button>
+    <a class="btn btn-ghost btn-block" href="https://deriv.com" target="_blank" rel="noopener">
+      <span data-icon="external"></span> I don't have a Deriv account yet
+    </a>
+    <a class="btn btn-outline btn-block" href="../users/index.html">Skip for now</a>
+  </div>
+
+  <div class="auth-foot t-xs">
+    By connecting you agree to our <a class="link" href="../terms.html">Terms</a>.
+    Your use of Deriv remains governed by Deriv's own terms.
+  </div>
+
+</div>
+
+<!-- ======================================================================
+     SUCCESS STATE — mirrors screen 13 "Connected Deriv Account"
+     ====================================================================== -->
+<div class="auth-wrap hide" id="stepFail" style="text-align:center;align-items:center">
+
+  <div style="margin-top:60px;color:var(--mb-sell)" data-icon="warning" data-icon-size="64"></div>
+
+  <h1 class="t-h1 mt5">Could not connect</h1>
+  <p class="t-sm c-2 mt2">
+    We could not reach Deriv to finish authorising your account. Nothing was
+    changed, and no permission was granted.
+  </p>
+
+  <div class="stack g2 mt8" style="width:100%">
+    <button class="btn btn-brand btn-block" onclick="location.reload()">
+      <span data-icon="refresh"></span> Try again</button>
+    <a class="btn btn-ghost btn-block" href="../users/index.html">
+      Continue without connecting</a>
+  </div>
+
+  <p class="t-xs c-3 mt4">
+    You can browse markets, read signals and use the community without a
+    connected account. Trading needs one.
+  </p>
+</div>
+
+<div class="auth-wrap hide" id="stepDone" style="text-align:center;align-items:center">
+
+  <div style="margin-top:60px;color:var(--mb-green)" data-icon="check" data-icon-size="64"></div>
+
+  <h1 class="t-h1 mt5">Deriv account connected</h1>
+  <p class="t-sm c-2 mt2">You are ready to trade.</p>
+
+  <div class="list mt8" style="width:100%;text-align:left">
+    <div class="list-row"><span class="grow lr-title">Deriv ID</span><span class="lr-value num" id="dcId">&mdash;</span></div>
+    <div class="list-row"><span class="grow lr-title">Name</span><span class="lr-value" id="dcName">&mdash;</span></div>
+    <div class="list-row"><span class="grow lr-title">Account type</span><span class="lr-value" id="dcType">&mdash;</span></div>
+    <div class="list-row"><span class="grow lr-title">Currency</span><span class="lr-value" id="dcCur">&mdash;</span></div>
+    <div class="list-row"><span class="grow lr-title">Accounts found</span><span class="lr-value num" id="dcAccounts">&mdash;</span></div>
+    <div class="list-row"><span class="grow lr-title">Permissions</span><span class="lr-value" id="dcScopes">&mdash;</span></div>
+    <div class="list-row"><span class="grow lr-title">Status</span><span class="badge badge-active" id="dcStatus">&mdash;</span></div>
+  </div>
+
+  <p class="t-xs c-3 mt4">
+    <span data-icon="lock" data-icon-size="12" style="display:inline-block;vertical-align:-2px"></span>
+    We never store your Deriv password.
+  </p>
+
+  <div class="stack g3 mt8" style="width:100%">
+    <a class="btn btn-primary btn-block btn-lg" href="../users/index.html">Go to dashboard</a>
+    <a class="btn btn-ghost btn-block" href="../users/trade/index.html">Start trading</a>
+  </div>
+
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script src="../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  MB.mountIcons();
+
+  document.getElementById('btnConnect').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = 'Opening Deriv…';
+
+    /* Stage 2:
+         GET /api/v1/deriv/authorize-url  -> redirect the browser to Deriv
+         Deriv redirects back to /auth/deriv-callback with a code
+         POST /api/v1/deriv/callback      -> exchange, store encrypted token,
+                                             enumerate accounts
+       The prototype jumps straight to the success state. */
+    MB.api.get('deriv/connection').then(function (r) {
+      var d = r.data;
+      setTimeout(function () {
+        document.getElementById('dcId').textContent = d.deriv_id;
+        document.getElementById('dcName').textContent = d.name;
+        document.getElementById('dcType').textContent =
+          d.account_type === 'real' ? 'Real' : 'Demo';
+        document.getElementById('dcCur').textContent = d.currency;
+        document.getElementById('dcAccounts').textContent = d.accounts_found;
+        document.getElementById('dcScopes').textContent = d.scopes_granted.join(', ');
+        document.getElementById('dcStatus').textContent = d.status;
+
+        document.getElementById('stepConnect').classList.add('hide');
+        document.getElementById('stepDone').classList.remove('hide');
+        MB.mountIcons();
+        MB.toast('Deriv account connected');
+      }, 700);
+    }).catch(function () {
+      /* Never strand the user on the spinner — say what happened and let
+         them retry. Stage 2 surfaces Deriv's own error here. */
+      document.getElementById('stepConnect').classList.add('hide');
+      var fail = document.getElementById('stepFail');
+      if (fail) { fail.classList.remove('hide'); }
+      MB.toast('Could not reach Deriv. Please try again.', 'err', 4000);
+    });
+  });
+});
+</script>
+</body>
+</html>

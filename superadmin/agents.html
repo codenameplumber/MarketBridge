@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agents — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="superadmin" data-nav="agents" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+
+      <div class="grow">
+        <h1>Agents</h1>
+        <div class="sub">Deriv payment agents, and which of them your users see</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      <button class="btn btn-ghost btn-sm" id="btnSync" data-can="agent.sync">
+        <span data-icon="refresh"></span> Sync from Deriv</button>
+    </header>
+
+    <main class="admin-body">
+
+      <div class="alert alert-warn">
+        <span data-icon="warning"></span>
+        <div class="t-xs"><strong>Only ticked agents are shown to users.</strong>
+        This list comes from Deriv&rsquo;s payment agent directory &mdash; KonfluenX does
+        not vet, endorse or transact with any of them, and money never moves
+        through KonfluenX. Ticking an agent only decides whether their WhatsApp appears
+        on the deposit screen.</div>
+      </div>
+
+      <div id="stats"></div>
+      <div id="table"></div>
+
+      <div class="alert alert-info">
+        <span data-icon="info"></span>
+        <div class="t-xs">Rates shown are indicative figures the agent last
+        advertised. Users always confirm the live rate with the agent directly
+        over WhatsApp before sending anything.</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+MB.ready(function () {
+  MB.api.get('agents').then(function (r) {
+    var rows = r.data, meta = r.meta;
+
+    function visibleCount() {
+      return rows.filter(function (a) { return a.is_visible; }).length;
+    }
+
+    function paintStats() {
+      MB.statSlider('#stats', 'Agent directory', [
+        { k: 'Listed by Deriv', v: meta.total, spark: false },
+        { k: 'Visible to users', v: visibleCount(), tone: 'accent',
+          note: 'shown on deposit', spark: false },
+        { k: 'Deriv verified', v: meta.deriv_verified, spark: false },
+        { k: 'Hidden', v: meta.total - visibleCount(),
+          note: 'not offered', spark: false },
+        { k: 'Countries', v: meta.countries, spark: false },
+        { k: 'Last sync', v: MB.fmt.ago(meta.synced_at), spark: false }
+      ]);
+    }
+    paintStats();
+
+    MB.datatable({
+      data: rows, into: '#table', perPage: 12, sortKey: 'name', selectable: true,
+      searchPlaceholder: 'Search agents by name, country, city or Deriv ID…',
+      search: ['name', 'country', 'city', 'deriv_loginid', 'whatsapp'],
+      columns: [
+        { key: 'is_visible', label: 'Shown', sortable: true,
+          filter: ['visible', 'hidden'],
+          filterValue: function (a) { return a.is_visible ? 'visible' : 'hidden'; },
+          render: function (a) {
+            /* The one control this page exists for. */
+            return '<label class="check agent-toggle" data-can="agent.toggle_visibility">' +
+              '<input type="checkbox" data-vis="' + a.id + '"' +
+                (a.is_visible ? ' checked' : '') +
+                ' aria-label="Show ' + MB.esc(a.name) + ' to users">' +
+              '<span class="box">' + MB.icon('check', 12) + '</span></label>';
+          } },
+        { key: 'name', label: 'Agent', sortable: true,
+          render: function (a) {
+            return '<div class="cell-user">' +
+              '<span class="avatar avatar-sm">' + MB.fmt.initials(a.name) + '</span>' +
+              '<div><div class="n">' + MB.esc(a.name) +
+                (a.is_deriv_verified
+                  ? ' <span class="badge badge-active">Deriv verified</span>' : '') +
+              '</div>' +
+              '<div class="h c-3 num">' + MB.esc(a.deriv_loginid) + '</div></div></div>';
+          } },
+        { key: 'country', label: 'Location', sortable: true,
+          render: function (a) {
+            return '<span class="c-2">' + MB.esc(a.city) + '</span>' +
+              '<div class="h c-3">' + MB.esc(a.country) + '</div>';
+          } },
+        { key: 'currency', label: 'Currency', sortable: true,
+          render: function (a) { return '<span class="num">' + MB.esc(a.currency) + '</span>'; } },
+        { key: 'indicative_rate', label: 'Rate / USD', sortable: true, numeric: true,
+          render: function (a) {
+            return '<span class="num">' + MB.fmt.price(a.indicative_rate,
+              a.indicative_rate >= 100 ? 0 : 2) + '</span>' +
+              '<div class="h c-3">indicative</div>';
+          } },
+        { key: 'whatsapp', label: 'WhatsApp', sortable: false,
+          render: function (a) {
+            return '<a class="c-2 num" href="https://wa.me/' +
+              a.whatsapp.replace(/[^0-9]/g, '') +
+              '" target="_blank" rel="noopener">' + MB.esc(a.whatsapp) + '</a>';
+          } },
+        { key: 'deposits_30d', label: 'Volume 30d', sortable: true, numeric: true,
+          render: function (a) {
+            return a.deposits_30d
+              ? '<span class="num">' + MB.fmt.money(a.deposits_30d, null, 0) + '</span>'
+              : '<span class="c-3">&mdash;</span>';
+          } },
+        { key: 'avg_response_minutes', label: 'Replies in', sortable: true, numeric: true,
+          render: function (a) { return '<span class="c-3">~' + a.avg_response_minutes + 'm</span>'; } },
+        { key: 'rating', label: 'Rating', sortable: true, numeric: true,
+          render: function (a) {
+            return a.rating
+              ? '<span class="c-up w-bold">' + a.rating.toFixed(1) + '</span>'
+              : '<span class="c-3">unrated</span>';
+          } }
+      ],
+      done: function () { wireToggles(); }
+    });
+
+    function wireToggles() {
+      MB.$$('[data-vis]').forEach(function (box) {
+        box.addEventListener('change', function () {
+          var id = box.getAttribute('data-vis');
+          var agent = rows.filter(function (a) { return a.id === id; })[0];
+          if (!agent) { return; }
+
+          /* Hiding is safe; showing puts an agent in front of users about to
+             send money, so that direction asks first. */
+          if (!box.checked) {
+            agent.is_visible = false;
+            paintStats();
+            MB.toast(agent.name + ' hidden from users', 'ok');
+            return;
+          }
+          box.checked = false;
+          MB.confirm({
+            title: 'Show ' + agent.name + ' to users?',
+            body: 'They will appear on the deposit screen with their WhatsApp, ' +
+                  'and users will contact them directly to send money. ' +
+                  (agent.is_deriv_verified
+                    ? 'This agent is verified by Deriv.'
+                    : 'This agent is NOT verified by Deriv.'),
+            confirm: 'Show to users'
+          }).then(function (ok) {
+            if (!ok) { return; }
+            box.checked = true;
+            agent.is_visible = true;
+            paintStats();
+            MB.toast(agent.name + ' is now visible to users', 'ok');
+          });
+        });
+      });
+    }
+
+    MB.$('#btnSync').addEventListener('click', function () {
+      MB.toast('Re-reading Deriv’s agent directory — wired to POST /agents/sync', 'ok');
+    });
+  });
+});
+</script>
+</body>
+</html>

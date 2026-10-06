@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Signal Detail — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="signals" data-root="../../" data-title="Signal Detail" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <div id="sigHost"></div>
+
+    <section class="page-section">
+      <div class="sec-head"><h2>About this signal</h2></div>
+      <div class="card">
+        <div class="alert alert-green">
+          <span data-icon="check"></span>
+          <div class="t-sm"><strong>This signal is executable.</strong> It maps to a Deriv
+          contract KonfluenX can configure and buy, so the trade button opens a
+          pre-filled ticket rather than sending you elsewhere.</div>
+        </div>
+        <div class="stat-grid cols-3 mt4">
+          <div class="stat-cell"><div class="stat-v c-up" id="aWin">78%</div><div class="stat-k">Win rate</div></div>
+          <div class="stat-cell"><div class="stat-v" id="aSig">156</div><div class="stat-k">Signals</div></div>
+          <div class="stat-cell"><div class="stat-v" id="aFol">1.2K</div><div class="stat-k">Followers</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="sec-head"><h2>Comments</h2><a href="#">View all</a></div>
+      <div class="card" style="padding:0">
+        <div id="sigComments" style="padding:0 16px"></div>
+        <div class="comment-bar">
+          <input class="input" placeholder="Write a comment…" aria-label="Write a comment">
+          <button class="icon-btn none" style="color:var(--mb-green)" aria-label="Send">
+            <span data-icon="send"></span></button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var id = new URLSearchParams(location.search).get('id');
+  MB.api.list('signals').then(function (rows) {
+    var s = rows.filter(function (x) { return x.kind === 'executable' && (!id || x.id === id); })[0] || rows[0];
+    document.getElementById('sigHost').innerHTML = MB.card.signal(s);
+    document.getElementById('aWin').textContent = (s.author.win_rate || 0) + '%';
+    document.getElementById('aSig').textContent = s.author.signals_count;
+    document.getElementById('aFol').textContent = MB.fmt.compact(s.author.followers);
+    MB.mountIcons(); MB.mountCharts();
+  });
+  MB.collection({
+    from: 'comments', into: '#sigComments', template: MB.card.comment,
+    perPage: 10, mode: 'more', skeleton: false,
+    emptyIcon: 'comment', emptyTitle: 'No replies yet',
+    emptyText: 'Be the first to reply.'
+  });
+});
+</script>
+</body>
+</html>

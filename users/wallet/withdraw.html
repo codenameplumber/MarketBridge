@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Withdraw Funds — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Withdraw Funds" data-sub="Choose how to withdraw" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <section class="balance">
+      <div class="balance-label">Available to withdraw</div>
+      <div class="balance-amount" id="wAvail">$2,310.50</div>
+      <div class="balance-stamp">Held at Deriv &middot; on hold <span id="wHold">$140.30</span></div>
+    </section>
+
+    <div class="segment segment-green" data-group id="wMethod">
+      <button class="is-active" data-value="kaastro">Kaastro <b class="seg-rec">Recommended</b></button>
+      <button data-value="deriv">Deriv</button>
+    </div>
+
+    <div id="paneDeriv" class="hide">
+      <a class="pay-option" href="#">
+        <span class="po-num">1</span>
+        <span class="grow">
+          <span class="po-title">Withdraw with Deriv</span>
+          <span class="po-desc">Continue to Deriv to view and use the withdrawal
+          methods available for your account.</span>
+        </span>
+      </a>
+      <a class="btn btn-ghost btn-block mt4" href="#">Continue to Deriv →</a>
+    </div>
+
+    <div id="paneKaastro">
+      <div class="card">
+        <div class="label">1. Enter amount (USD)</div>
+        <div class="field mt3">
+          <div class="row g2">
+            <input class="input num grow" id="wAmount" type="number" value="100" min="10">
+            <span class="btn btn-ghost none" style="pointer-events:none">USD</span>
+          </div>
+          <span class="field-hint">Available balance: <span id="wAvail2">$2,310.50</span></span>
+        </div>
+
+        <div class="label mt6">2. You will receive (USD)</div>
+        <div class="t-h1 w-black c-up num mt2" id="wReceive">95.50 USD</div>
+        <div class="t-xs c-3">Fee: <span id="wFee">4.50 USD</span></div>
+
+        <div class="alert alert-green mt4">
+          <span data-icon="check"></span>
+          <div class="t-xs"><strong>Already registered with Kaastro?</strong> Continue
+          straight through &mdash; your details are already verified there.</div>
+        </div>
+
+        <div class="alert alert-info mt3">
+          <span data-icon="info"></span>
+          <div class="t-xs"><strong>Not registered yet?</strong> Creating a Kaastro
+          account takes a few minutes and unlocks better rates, faster settlement and
+          a full record of every withdrawal. You only do it once.</div>
+        </div>
+
+        <div class="alert alert-info mt3">
+          <span data-icon="info"></span>
+          <div class="t-xs">You will be redirected to Kaastro Wallet to complete your
+          withdrawal. Their fees and processing times apply.</div>
+        </div>
+
+        <a class="btn btn-trade btn-block mt4" href="leaving.html?to=kaastro&amp;dir=withdrawal">
+          Continue to Kaastro Wallet <span data-icon="external"></span></a>
+        <a class="btn btn-ghost btn-block mt2" href="leaving.html?to=kaastro&amp;dir=register">
+          Register on Kaastro <span data-icon="external"></span></a>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <span data-icon="shield"></span>
+      <div class="t-xs">Withdrawals go to your own verified accounts only. KonfluenX
+      never takes custody of the funds at any point in this flow.</div>
+    </div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  MB.api.get('me').then(function (r) {
+    var d = r.data.deriv;
+    document.getElementById('wAvail').textContent = MB.fmt.money(d.available);
+    document.getElementById('wAvail2').textContent = MB.fmt.money(d.available);
+    document.getElementById('wHold').textContent = MB.fmt.money(d.on_hold);
+  });
+
+  var FEE = 4.5;
+  function recalc() {
+    var amt = Number(document.getElementById('wAmount').value || 0);
+    var net = Math.max(0, amt - FEE);
+    document.getElementById('wReceive').textContent = net.toFixed(2) + ' USD';
+    document.getElementById('wFee').textContent = FEE.toFixed(2) + ' USD';
+  }
+  document.getElementById('wAmount').addEventListener('input', recalc);
+  recalc();
+
+  document.getElementById('wMethod').addEventListener('mb:change', function (e) {
+    document.getElementById('paneDeriv').classList.toggle('hide', e.detail.value !== 'deriv');
+    document.getElementById('paneKaastro').classList.toggle('hide', e.detail.value !== 'kaastro');
+  });
+});
+</script>
+</body>
+</html>

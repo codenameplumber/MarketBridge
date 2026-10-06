@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Report Content — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-root="../../" data-title="Report Content" data-back="../index.html" data-bare data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page page-full">
+
+    <h2 class="t-h3">What are you reporting?</h2>
+
+    <div class="card" style="padding:0 16px">
+      <label class="radio-row"><input type="radio" name="reason" value="inappropriate" checked>
+        <span class="dot"></span><span>Inappropriate Content</span></label>
+      <label class="radio-row"><input type="radio" name="reason" value="spam_misleading">
+        <span class="dot"></span><span>Spam / Misleading</span></label>
+      <label class="radio-row"><input type="radio" name="reason" value="hate_harassment">
+        <span class="dot"></span><span>Hate Speech / Harassment</span></label>
+      <label class="radio-row"><input type="radio" name="reason" value="scam_fraud">
+        <span class="dot"></span><span>Scam / Fraud</span></label>
+      <label class="radio-row"><input type="radio" name="reason" value="violence_threats">
+        <span class="dot"></span><span>Violence / Threats</span></label>
+      <label class="radio-row"><input type="radio" name="reason" value="other">
+        <span class="dot"></span><span>Other</span></label>
+    </div>
+
+    <div class="field">
+      <label for="rDetails">Additional details (optional)</label>
+      <textarea class="textarea" id="rDetails" maxlength="300"
+        placeholder="Please describe the issue…"></textarea>
+      <span class="field-hint"><span id="rCount">0</span>/300</span>
+    </div>
+
+    <button class="btn btn-primary btn-block btn-lg" id="btnReport">Submit Report</button>
+
+    <p class="t-xs c-3" style="text-align:center">
+      Reports are anonymous to the person reported and reviewed by our moderation team.
+    </p>
+  </main>
+
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  document.getElementById('rDetails').addEventListener('input', function () {
+    document.getElementById('rCount').textContent = this.value.length;
+  });
+  document.getElementById('btnReport').addEventListener('click', function () {
+    var reason = (document.querySelector('input[name=reason]:checked') || {}).value;
+    this.disabled = true; this.textContent = 'Submitting…';
+    MB.api.post('reports', { reason: reason, details: document.getElementById('rDetails').value })
+      .then(function () {
+        MB.toast('Report submitted — thank you');
+        setTimeout(function () { history.back(); }, 900);
+      });
+  });
+});
+</script>
+</body>
+</html>

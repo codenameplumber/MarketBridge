@@ -1,0 +1,268 @@
+{
+  "data": [
+    {
+      "id": "badge_001",
+      "name": "Founding Member",
+      "icon": "shield",
+      "tier": "legendary",
+      "description": "One of the earliest members of KonfluenX",
+      "status": "active",
+      "holders": 143,
+      "criteria": {
+        "type": "account_created_before",
+        "threshold": "2026-06-01",
+        "secondary": null
+      },
+      "created_at": "2026-05-15T00:00:00.000Z",
+      "updated_at": "2026-09-01T10:22:00.000Z"
+    },
+    {
+      "id": "badge_002",
+      "name": "Top Signal Provider",
+      "icon": "signal",
+      "tier": "gold",
+      "description": "Consistently delivers high-quality trading signals",
+      "status": "active",
+      "holders": 27,
+      "criteria": {
+        "type": "win_rate",
+        "threshold": 65,
+        "secondary": {
+          "type": "min_signals",
+          "threshold": 50
+        }
+      },
+      "created_at": "2026-05-20T00:00:00.000Z",
+      "updated_at": "2026-09-10T14:05:00.000Z"
+    },
+    {
+      "id": "badge_003",
+      "name": "Consistent Trader",
+      "icon": "calendar",
+      "tier": "silver",
+      "description": "Shows up week after week without fail",
+      "status": "active",
+      "holders": 89,
+      "criteria": {
+        "type": "consecutive_weeks_active",
+        "threshold": 12,
+        "secondary": null
+      },
+      "created_at": "2026-06-01T00:00:00.000Z",
+      "updated_at": "2026-09-05T08:30:00.000Z"
+    },
+    {
+      "id": "badge_004",
+      "name": "Community Contributor",
+      "icon": "message",
+      "tier": "bronze",
+      "description": "An active and valued voice in the community",
+      "status": "active",
+      "holders": 204,
+      "criteria": {
+        "type": "messages_posted",
+        "threshold": 50,
+        "secondary": {
+          "type": "reactions_received",
+          "threshold": 100
+        }
+      },
+      "created_at": "2026-06-05T00:00:00.000Z",
+      "updated_at": "2026-09-12T16:45:00.000Z"
+    },
+    {
+      "id": "badge_005",
+      "name": "Market Specialist",
+      "icon": "target",
+      "tier": "gold",
+      "description": "Deep expertise in a specific market category",
+      "status": "active",
+      "holders": 41,
+      "criteria": {
+        "type": "signals_in_one_market",
+        "threshold": 30,
+        "secondary": {
+          "type": "win_rate",
+          "threshold": 70
+        }
+      },
+      "created_at": "2026-06-10T00:00:00.000Z",
+      "updated_at": "2026-09-08T11:20:00.000Z"
+    },
+    {
+      "id": "badge_006",
+      "name": "Trading Mentor",
+      "icon": "users",
+      "tier": "gold",
+      "description": "Helps others grow as traders through guidance",
+      "status": "active",
+      "holders": 18,
+      "criteria": {
+        "type": "followers_with_win_rate_above",
+        "threshold": 10,
+        "secondary": {
+          "type": "follower_win_rate",
+          "threshold": 55
+        }
+      },
+      "created_at": "2026-06-15T00:00:00.000Z",
+      "updated_at": "2026-09-11T09:50:00.000Z"
+    },
+    {
+      "id": "badge_007",
+      "name": "Rising Trader",
+      "icon": "trending",
+      "tier": "bronze",
+      "description": "Showing impressive improvement in trading performance",
+      "status": "active",
+      "holders": 156,
+      "criteria": {
+        "type": "win_rate_improvement_30d",
+        "threshold": 15,
+        "secondary": null
+      },
+      "created_at": "2026-06-20T00:00:00.000Z",
+      "updated_at": "2026-09-14T13:10:00.000Z"
+    },
+    {
+      "id": "badge_008",
+      "name": "KonfluenX Partner",
+      "icon": "star",
+      "tier": "legendary",
+      "description": "Official partner recognized by the KonfluenX team",
+      "status": "active",
+      "holders": 8,
+      "criteria": {
+        "type": "manual_approval",
+        "threshold": null,
+        "secondary": null
+      },
+      "created_at": "2026-07-01T00:00:00.000Z",
+      "updated_at": "2026-09-15T17:30:00.000Z"
+    },
+    {
+      "id": "badge_009",
+      "name": "Analysis Expert",
+      "icon": "chart",
+      "tier": "silver",
+      "description": "Known for detailed and insightful market analysis",
+      "status": "active",
+      "holders": 63,
+      "criteria": {
+        "type": "analysis_signals",
+        "threshold": 20,
+        "secondary": {
+          "type": "avg_bookmarks",
+          "threshold": 10
+        }
+      },
+      "created_at": "2026-07-10T00:00:00.000Z",
+      "updated_at": "2026-09-09T12:00:00.000Z"
+    },
+    {
+      "id": "badge_010",
+      "name": "Streak Master",
+      "icon": "fire",
+      "tier": "silver",
+      "description": "Maintains an extraordinary daily activity streak",
+      "status": "active",
+      "holders": 350,
+      "criteria": {
+        "type": "consecutive_days_active",
+        "threshold": 30,
+        "secondary": null
+      },
+      "created_at": "2026-07-15T00:00:00.000Z",
+      "updated_at": "2026-09-13T15:40:00.000Z"
+    }
+  ],
+  "meta": {
+    "total": 10,
+    "active": 10,
+    "total_holders": 1099,
+    "criteria_types": [
+      "account_created_before",
+      "win_rate",
+      "consecutive_weeks_active",
+      "messages_posted",
+      "signals_in_one_market",
+      "followers_with_win_rate_above",
+      "win_rate_improvement_30d",
+      "manual_approval",
+      "analysis_signals",
+      "consecutive_days_active"
+    ]
+  },
+  "recent_awards": [
+    {
+      "id": "aw_001",
+      "user": { "username": "crypto_sage", "display_name": "Crypto Sage" },
+      "badge": "Streak Master",
+      "badge_id": "badge_010",
+      "awarded_at": "2026-10-04T18:22:00.000Z"
+    },
+    {
+      "id": "aw_002",
+      "user": { "username": "signal_queen", "display_name": "Signal Queen" },
+      "badge": "Top Signal Provider",
+      "badge_id": "badge_002",
+      "awarded_at": "2026-10-04T14:10:00.000Z"
+    },
+    {
+      "id": "aw_003",
+      "user": { "username": "trade_maverick", "display_name": "Trade Maverick" },
+      "badge": "Rising Trader",
+      "badge_id": "badge_007",
+      "awarded_at": "2026-10-04T09:45:00.000Z"
+    },
+    {
+      "id": "aw_004",
+      "user": { "username": "chart_whisperer", "display_name": "Chart Whisperer" },
+      "badge": "Analysis Expert",
+      "badge_id": "badge_009",
+      "awarded_at": "2026-10-03T21:30:00.000Z"
+    },
+    {
+      "id": "aw_005",
+      "user": { "username": "bull_runner", "display_name": "Bull Runner" },
+      "badge": "Consistent Trader",
+      "badge_id": "badge_003",
+      "awarded_at": "2026-10-03T16:55:00.000Z"
+    },
+    {
+      "id": "aw_006",
+      "user": { "username": "alpha_trader", "display_name": "Alpha Trader" },
+      "badge": "Market Specialist",
+      "badge_id": "badge_005",
+      "awarded_at": "2026-10-03T11:20:00.000Z"
+    },
+    {
+      "id": "aw_007",
+      "user": { "username": "forex_phantom", "display_name": "Forex Phantom" },
+      "badge": "Community Contributor",
+      "badge_id": "badge_004",
+      "awarded_at": "2026-10-02T22:40:00.000Z"
+    },
+    {
+      "id": "aw_008",
+      "user": { "username": "synth_king", "display_name": "Synth King" },
+      "badge": "Trading Mentor",
+      "badge_id": "badge_006",
+      "awarded_at": "2026-10-02T08:15:00.000Z"
+    },
+    {
+      "id": "aw_009",
+      "user": { "username": "pip_hunter", "display_name": "Pip Hunter" },
+      "badge": "Founding Member",
+      "badge_id": "badge_001",
+      "awarded_at": "2026-10-01T19:05:00.000Z"
+    },
+    {
+      "id": "aw_010",
+      "user": { "username": "deriv_pro", "display_name": "Deriv Pro" },
+      "badge": "Streak Master",
+      "badge_id": "badge_010",
+      "awarded_at": "2026-10-01T14:30:00.000Z"
+    }
+  ]
+}

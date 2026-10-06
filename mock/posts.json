@@ -1,0 +1,5079 @@
+{
+  "data": [
+    {
+      "id": "pst_official",
+      "author": {
+        "id": "usr_mb",
+        "username": "KonfluenX",
+        "display_name": "KonfluenX Official",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": null,
+        "signals_count": 0,
+        "followers": 24500
+      },
+      "market": null,
+      "room_id": null,
+      "kind": "announcement",
+      "body": "New mentorship session today at 8PM GMT+1. Don\u2019t miss it! \ud83c\udfaf",
+      "tags": [
+        "Announcement"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 89,
+        "comments": 32,
+        "shares": 16
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-02T04:32:20.383Z"
+    },
+    {
+      "id": "pst_frxGBPUSD_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "frxGBPUSD",
+        "name": "GBP/USD",
+        "short_name": "GBP/USD",
+        "pair": "GBP/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.26418,
+        "change_pct_24h": 0.14
+      },
+      "room_id": "room_frxGBPUSD",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst200"
+        }
+      ],
+      "engagement": {
+        "likes": 49,
+        "comments": 70,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-02T03:43:20.382Z"
+    },
+    {
+      "id": "pst_frxXAUUSD_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "frxXAUUSD",
+        "name": "Gold / USD",
+        "short_name": "XAU/USD",
+        "pair": "XAU/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 2342.18,
+        "change_pct_24h": -0.68
+      },
+      "room_id": "room_frxXAUUSD",
+      "kind": "post",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 15,
+        "comments": 65,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-02T03:17:20.382Z"
+    },
+    {
+      "id": "pst_1HZ100V_0",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "1HZ100V",
+        "name": "Volatility 100 (1s) Index",
+        "short_name": "V100 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1247.84,
+        "change_pct_24h": -0.82
+      },
+      "room_id": "room_1HZ100V",
+      "kind": "market_talk",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 109,
+        "comments": 32,
+        "shares": 6
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-02T03:00:20.381Z"
+    },
+    {
+      "id": "pst_frxEURJPY_1",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "frxEURJPY",
+        "name": "EUR/JPY",
+        "short_name": "EUR/JPY",
+        "pair": "EUR/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ],
+        "last_price": 164.372,
+        "change_pct_24h": -0.44
+      },
+      "room_id": "room_frxEURJPY",
+      "kind": "post",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst271"
+        }
+      ],
+      "engagement": {
+        "likes": 124,
+        "comments": 17,
+        "shares": 9
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-02T01:16:20.382Z"
+    },
+    {
+      "id": "pst_BOOM300_0",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "BOOM300",
+        "name": "Boom 300 Index",
+        "short_name": "Boom 300",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ],
+        "last_price": 7418.02,
+        "change_pct_24h": -0.31
+      },
+      "room_id": "room_BOOM300",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst120"
+        }
+      ],
+      "engagement": {
+        "likes": 75,
+        "comments": 32,
+        "shares": 23
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T16:21:20.382Z"
+    },
+    {
+      "id": "pst_frxXPTUSD_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "frxXPTUSD",
+        "name": "Platinum / USD",
+        "short_name": "XPT/USD",
+        "pair": "XPT/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 962.4,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_frxXPTUSD",
+      "kind": "market_talk",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 36,
+        "comments": 27,
+        "shares": 9
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T13:28:20.383Z"
+    },
+    {
+      "id": "pst_R_100_0",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "R_100",
+        "name": "Volatility 100 Index",
+        "short_name": "V100",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1245.1,
+        "change_pct_24h": 0.64
+      },
+      "room_id": "room_R_100",
+      "kind": "discussion",
+      "body": "Consolidation getting tight. Expecting expansion soon.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst30"
+        }
+      ],
+      "engagement": {
+        "likes": 12,
+        "comments": 49,
+        "shares": 3
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T11:39:20.382Z"
+    },
+    {
+      "id": "pst_R_75_0",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "R_75",
+        "name": "Volatility 75 Index",
+        "short_name": "V75",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 542871.21,
+        "change_pct_24h": -1.17
+      },
+      "room_id": "room_R_75",
+      "kind": "post",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 53,
+        "comments": 30,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T09:36:20.381Z"
+    },
+    {
+      "id": "pst_R_50_1",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "R_50",
+        "name": "Volatility 50 Index",
+        "short_name": "V50",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 238.76,
+        "change_pct_24h": 0.68
+      },
+      "room_id": "room_R_50",
+      "kind": "post",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 58,
+        "comments": 48,
+        "shares": 1
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T09:25:20.382Z"
+    },
+    {
+      "id": "pst_frxEURGBP_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "frxEURGBP",
+        "name": "EUR/GBP",
+        "short_name": "EUR/GBP",
+        "pair": "EUR/GBP",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ],
+        "last_price": 0.85922,
+        "change_pct_24h": 0.09
+      },
+      "room_id": "room_frxEURGBP",
+      "kind": "discussion",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 166,
+        "comments": 56,
+        "shares": 23
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T09:19:20.382Z"
+    },
+    {
+      "id": "pst_1HZ100V_1",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "1HZ100V",
+        "name": "Volatility 100 (1s) Index",
+        "short_name": "V100 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1247.84,
+        "change_pct_24h": -0.82
+      },
+      "room_id": "room_1HZ100V",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 70,
+        "comments": 19,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T01:49:20.381Z"
+    },
+    {
+      "id": "pst_R_10_1",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "R_10",
+        "name": "Volatility 10 Index",
+        "short_name": "V10",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 6842.3,
+        "change_pct_24h": 0.22
+      },
+      "room_id": "room_R_10",
+      "kind": "discussion",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 16,
+        "comments": 54,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-09-01T00:00:20.382Z"
+    },
+    {
+      "id": "pst_frxNZDUSD_1",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "frxNZDUSD",
+        "name": "NZD/USD",
+        "short_name": "NZD/USD",
+        "pair": "NZD/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ],
+        "last_price": 0.60184,
+        "change_pct_24h": -0.19
+      },
+      "room_id": "room_frxNZDUSD",
+      "kind": "discussion",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 40,
+        "comments": 24,
+        "shares": 16
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T18:02:20.382Z"
+    },
+    {
+      "id": "pst_JD75_0",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "JD75",
+        "name": "Jump 75 Index",
+        "short_name": "Jump 75",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 14028.33,
+        "change_pct_24h": -0.32
+      },
+      "room_id": "room_JD75",
+      "kind": "discussion",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 146,
+        "comments": 40,
+        "shares": 14
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T17:19:20.382Z"
+    },
+    {
+      "id": "pst_WTIUSD_0",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "WTIUSD",
+        "name": "Crude Oil / USD",
+        "short_name": "WTI/USD",
+        "pair": "WTI/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 78.42,
+        "change_pct_24h": 0.88
+      },
+      "room_id": "room_WTIUSD",
+      "kind": "market_talk",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 36,
+        "comments": 46,
+        "shares": 21
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T12:52:20.383Z"
+    },
+    {
+      "id": "pst_frxUSDCAD_1",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "frxUSDCAD",
+        "name": "USD/CAD",
+        "short_name": "USD/CAD",
+        "pair": "USD/CAD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.35894,
+        "change_pct_24h": -0.11
+      },
+      "room_id": "room_frxUSDCAD",
+      "kind": "discussion",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 153,
+        "comments": 49,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T12:02:20.382Z"
+    },
+    {
+      "id": "pst_cryLTCUSD_1",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "cryLTCUSD",
+        "name": "Litecoin / USD",
+        "short_name": "LTC/USD",
+        "pair": "LTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 84.62,
+        "change_pct_24h": 0.94
+      },
+      "room_id": "room_cryLTCUSD",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 173,
+        "comments": 59,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T11:44:20.382Z"
+    },
+    {
+      "id": "pst_OTC_SPC_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "OTC_SPC",
+        "name": "US 500",
+        "short_name": "US 500",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 5284.42,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_OTC_SPC",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 13,
+        "comments": 31,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T11:01:20.383Z"
+    },
+    {
+      "id": "pst_frxEURUSD_0",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "frxEURUSD",
+        "name": "EUR/USD",
+        "short_name": "EUR/USD",
+        "pair": "EUR/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.08642,
+        "change_pct_24h": -0.21
+      },
+      "room_id": "room_frxEURUSD",
+      "kind": "discussion",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst190"
+        }
+      ],
+      "engagement": {
+        "likes": 93,
+        "comments": 7,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T09:27:20.382Z"
+    },
+    {
+      "id": "pst_crySOLUSD_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "crySOLUSD",
+        "name": "Solana / USD",
+        "short_name": "SOL/USD",
+        "pair": "SOL/USD",
+        "category": "crypto",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 172.44,
+        "change_pct_24h": 3.42
+      },
+      "room_id": "room_crySOLUSD",
+      "kind": "post",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst310"
+        }
+      ],
+      "engagement": {
+        "likes": 161,
+        "comments": 18,
+        "shares": 10
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T09:21:20.382Z"
+    },
+    {
+      "id": "pst_1HZ50V_0",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "1HZ50V",
+        "name": "Volatility 50 (1s) Index",
+        "short_name": "V50 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 239.14,
+        "change_pct_24h": -0.71
+      },
+      "room_id": "room_1HZ50V",
+      "kind": "discussion",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 93,
+        "comments": 52,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-31T00:14:20.382Z"
+    },
+    {
+      "id": "pst_1HZ100V_2",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "1HZ100V",
+        "name": "Volatility 100 (1s) Index",
+        "short_name": "V100 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1247.84,
+        "change_pct_24h": -0.82
+      },
+      "room_id": "room_1HZ100V",
+      "kind": "post",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 158,
+        "comments": 66,
+        "shares": 15
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T18:35:20.381Z"
+    },
+    {
+      "id": "pst_CRASH500_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "CRASH500",
+        "name": "Crash 500 Index",
+        "short_name": "Crash 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 4291.63,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_CRASH500",
+      "kind": "post",
+      "body": "Session recap: three setups, two hit, one stopped. Net green.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 164,
+        "comments": 54,
+        "shares": 10
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T17:59:20.382Z"
+    },
+    {
+      "id": "pst_frxEURUSD_3",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "frxEURUSD",
+        "name": "EUR/USD",
+        "short_name": "EUR/USD",
+        "pair": "EUR/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.08642,
+        "change_pct_24h": -0.21
+      },
+      "room_id": "room_frxEURUSD",
+      "kind": "post",
+      "body": "Consolidation getting tight. Expecting expansion soon.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst193"
+        }
+      ],
+      "engagement": {
+        "likes": 129,
+        "comments": 47,
+        "shares": 6
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T15:42:20.382Z"
+    },
+    {
+      "id": "pst_WTIUSD_1",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "WTIUSD",
+        "name": "Crude Oil / USD",
+        "short_name": "WTI/USD",
+        "pair": "WTI/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 78.42,
+        "change_pct_24h": 0.88
+      },
+      "room_id": "room_WTIUSD",
+      "kind": "discussion",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst411"
+        }
+      ],
+      "engagement": {
+        "likes": 42,
+        "comments": 38,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T11:03:20.383Z"
+    },
+    {
+      "id": "pst_cryLTCUSD_0",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "cryLTCUSD",
+        "name": "Litecoin / USD",
+        "short_name": "LTC/USD",
+        "pair": "LTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 84.62,
+        "change_pct_24h": 0.94
+      },
+      "room_id": "room_cryLTCUSD",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "ICT"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst330"
+        }
+      ],
+      "engagement": {
+        "likes": 171,
+        "comments": 7,
+        "shares": 11
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T10:27:20.382Z"
+    },
+    {
+      "id": "pst_frxUSDJPY_0",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "frxUSDJPY",
+        "name": "USD/JPY",
+        "short_name": "USD/JPY",
+        "pair": "USD/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 151.284,
+        "change_pct_24h": 0.38
+      },
+      "room_id": "room_frxUSDJPY",
+      "kind": "market_talk",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 167,
+        "comments": 56,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T09:50:20.382Z"
+    },
+    {
+      "id": "pst_R_10_0",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "R_10",
+        "name": "Volatility 10 Index",
+        "short_name": "V10",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 6842.3,
+        "change_pct_24h": 0.22
+      },
+      "room_id": "room_R_10",
+      "kind": "market_talk",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 58,
+        "comments": 38,
+        "shares": 9
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T08:51:20.382Z"
+    },
+    {
+      "id": "pst_JD100_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "JD100",
+        "name": "Jump 100 Index",
+        "short_name": "Jump 100",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 6210.9,
+        "change_pct_24h": -0.55
+      },
+      "room_id": "room_JD100",
+      "kind": "market_talk",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 41,
+        "comments": 52,
+        "shares": 5
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T08:49:20.382Z"
+    },
+    {
+      "id": "pst_1HZ75V_3",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "1HZ75V",
+        "name": "Volatility 75 (1s) Index",
+        "short_name": "V75 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 542893.42,
+        "change_pct_24h": 1.28
+      },
+      "room_id": "room_1HZ75V",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst03"
+        }
+      ],
+      "engagement": {
+        "likes": 50,
+        "comments": 9,
+        "shares": 5
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T08:07:20.381Z"
+    },
+    {
+      "id": "pst_stpRNG_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "stpRNG",
+        "name": "Step Index",
+        "short_name": "Step",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary"
+        ],
+        "last_price": 1602.45,
+        "change_pct_24h": -0.91
+      },
+      "room_id": "room_stpRNG",
+      "kind": "discussion",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 168,
+        "comments": 57,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T07:58:20.382Z"
+    },
+    {
+      "id": "pst_OTC_N225_1",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "OTC_N225",
+        "name": "Japan 225",
+        "short_name": "JP 225",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 38420.5,
+        "change_pct_24h": -0.36
+      },
+      "room_id": "room_OTC_N225",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 46,
+        "comments": 39,
+        "shares": 23
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T06:48:20.383Z"
+    },
+    {
+      "id": "pst_frxUSDCAD_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "frxUSDCAD",
+        "name": "USD/CAD",
+        "short_name": "USD/CAD",
+        "pair": "USD/CAD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.35894,
+        "change_pct_24h": -0.11
+      },
+      "room_id": "room_frxUSDCAD",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 122,
+        "comments": 56,
+        "shares": 10
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T06:45:20.382Z"
+    },
+    {
+      "id": "pst_BOOM300_1",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "BOOM300",
+        "name": "Boom 300 Index",
+        "short_name": "Boom 300",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ],
+        "last_price": 7418.02,
+        "change_pct_24h": -0.31
+      },
+      "room_id": "room_BOOM300",
+      "kind": "post",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 170,
+        "comments": 14,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T05:27:20.382Z"
+    },
+    {
+      "id": "pst_frxEURUSD_2",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "frxEURUSD",
+        "name": "EUR/USD",
+        "short_name": "EUR/USD",
+        "pair": "EUR/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.08642,
+        "change_pct_24h": -0.21
+      },
+      "room_id": "room_frxEURUSD",
+      "kind": "market_talk",
+      "body": "Session recap: three setups, two hit, one stopped. Net green.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 116,
+        "comments": 45,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T04:17:20.382Z"
+    },
+    {
+      "id": "pst_cryBTCUSD_3",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "cryBTCUSD",
+        "name": "Bitcoin / USD",
+        "short_name": "BTC/USD",
+        "pair": "BTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 68420.5,
+        "change_pct_24h": -2.14
+      },
+      "room_id": "room_cryBTCUSD",
+      "kind": "market_talk",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 19,
+        "comments": 58,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T02:11:20.382Z"
+    },
+    {
+      "id": "pst_frxEURUSD_1",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "frxEURUSD",
+        "name": "EUR/USD",
+        "short_name": "EUR/USD",
+        "pair": "EUR/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.08642,
+        "change_pct_24h": -0.21
+      },
+      "room_id": "room_frxEURUSD",
+      "kind": "market_talk",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 164,
+        "comments": 10,
+        "shares": 5
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T00:39:20.382Z"
+    },
+    {
+      "id": "pst_cryXRPUSD_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "cryXRPUSD",
+        "name": "XRP / USD",
+        "short_name": "XRP/USD",
+        "pair": "XRP/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 0.6284,
+        "change_pct_24h": 1.12
+      },
+      "room_id": "room_cryXRPUSD",
+      "kind": "discussion",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 75,
+        "comments": 60,
+        "shares": 17
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-30T00:08:20.382Z"
+    },
+    {
+      "id": "pst_CRASH1000_0",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "CRASH1000",
+        "name": "Crash 1000 Index",
+        "short_name": "Crash 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 4820.15,
+        "change_pct_24h": -0.58
+      },
+      "room_id": "room_CRASH1000",
+      "kind": "post",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 100,
+        "comments": 44,
+        "shares": 17
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-29T20:33:20.382Z"
+    },
+    {
+      "id": "pst_CRASH500_2",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "CRASH500",
+        "name": "Crash 500 Index",
+        "short_name": "Crash 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 4291.63,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_CRASH500",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 152,
+        "comments": 26,
+        "shares": 8
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-29T18:36:20.382Z"
+    },
+    {
+      "id": "pst_frxAUDUSD_0",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "frxAUDUSD",
+        "name": "AUD/USD",
+        "short_name": "AUD/USD",
+        "pair": "AUD/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 0.65712,
+        "change_pct_24h": -0.26
+      },
+      "room_id": "room_frxAUDUSD",
+      "kind": "post",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst220"
+        }
+      ],
+      "engagement": {
+        "likes": 78,
+        "comments": 4,
+        "shares": 23
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-29T12:54:20.382Z"
+    },
+    {
+      "id": "pst_stpRNG_2",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "stpRNG",
+        "name": "Step Index",
+        "short_name": "Step",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary"
+        ],
+        "last_price": 1602.45,
+        "change_pct_24h": -0.91
+      },
+      "room_id": "room_stpRNG",
+      "kind": "market_talk",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst82"
+        }
+      ],
+      "engagement": {
+        "likes": 55,
+        "comments": 19,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-29T06:13:20.382Z"
+    },
+    {
+      "id": "pst_CRASH500_3",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "CRASH500",
+        "name": "Crash 500 Index",
+        "short_name": "Crash 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 4291.63,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_CRASH500",
+      "kind": "discussion",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 133,
+        "comments": 49,
+        "shares": 21
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-29T04:08:20.382Z"
+    },
+    {
+      "id": "pst_frxXAGUSD_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "frxXAGUSD",
+        "name": "Silver / USD",
+        "short_name": "XAG/USD",
+        "pair": "XAG/USD",
+        "category": "commodities",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 27.842,
+        "change_pct_24h": 1.14
+      },
+      "room_id": "room_frxXAGUSD",
+      "kind": "post",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst381"
+        }
+      ],
+      "engagement": {
+        "likes": 164,
+        "comments": 67,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-28T16:26:20.383Z"
+    },
+    {
+      "id": "pst_BOOM500_1",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "BOOM500",
+        "name": "Boom 500 Index",
+        "short_name": "Boom 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 9120.44,
+        "change_pct_24h": -0.74
+      },
+      "room_id": "room_BOOM500",
+      "kind": "post",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst111"
+        }
+      ],
+      "engagement": {
+        "likes": 165,
+        "comments": 3,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-28T16:08:20.382Z"
+    },
+    {
+      "id": "pst_JD25_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "JD25",
+        "name": "Jump 25 Index",
+        "short_name": "Jump 25",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ],
+        "last_price": 3182.77,
+        "change_pct_24h": -0.27
+      },
+      "room_id": "room_JD25",
+      "kind": "post",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 77,
+        "comments": 63,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-28T11:09:20.382Z"
+    },
+    {
+      "id": "pst_OTC_FTSE_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "OTC_FTSE",
+        "name": "UK 100",
+        "short_name": "UK 100",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 8142.3,
+        "change_pct_24h": 0.18
+      },
+      "room_id": "room_OTC_FTSE",
+      "kind": "post",
+      "body": "Consolidation getting tight. Expecting expansion soon.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst451"
+        }
+      ],
+      "engagement": {
+        "likes": 13,
+        "comments": 42,
+        "shares": 16
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-28T10:44:20.383Z"
+    },
+    {
+      "id": "pst_cryADAUSD_0",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "cryADAUSD",
+        "name": "Cardano / USD",
+        "short_name": "ADA/USD",
+        "pair": "ADA/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 0.4482,
+        "change_pct_24h": 1.24
+      },
+      "room_id": "room_cryADAUSD",
+      "kind": "discussion",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 132,
+        "comments": 18,
+        "shares": 14
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-28T05:32:20.382Z"
+    },
+    {
+      "id": "pst_JD75_1",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "JD75",
+        "name": "Jump 75 Index",
+        "short_name": "Jump 75",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 14028.33,
+        "change_pct_24h": -0.32
+      },
+      "room_id": "room_JD75",
+      "kind": "discussion",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Swing"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 145,
+        "comments": 55,
+        "shares": 17
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T18:00:20.382Z"
+    },
+    {
+      "id": "pst_JD25_0",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "JD25",
+        "name": "Jump 25 Index",
+        "short_name": "Jump 25",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ],
+        "last_price": 3182.77,
+        "change_pct_24h": -0.27
+      },
+      "room_id": "room_JD25",
+      "kind": "post",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 24,
+        "comments": 13,
+        "shares": 3
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T14:10:20.382Z"
+    },
+    {
+      "id": "pst_cryETHUSD_0",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "cryETHUSD",
+        "name": "Ethereum / USD",
+        "short_name": "ETH/USD",
+        "pair": "ETH/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 3542.18,
+        "change_pct_24h": 1.68
+      },
+      "room_id": "room_cryETHUSD",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 151,
+        "comments": 16,
+        "shares": 12
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T08:13:20.382Z"
+    },
+    {
+      "id": "pst_OTC_SPC_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "OTC_SPC",
+        "name": "US 500",
+        "short_name": "US 500",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 5284.42,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_OTC_SPC",
+      "kind": "post",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 151,
+        "comments": 56,
+        "shares": 21
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T07:24:20.383Z"
+    },
+    {
+      "id": "pst_stpRNG_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "stpRNG",
+        "name": "Step Index",
+        "short_name": "Step",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary"
+        ],
+        "last_price": 1602.45,
+        "change_pct_24h": -0.91
+      },
+      "room_id": "room_stpRNG",
+      "kind": "discussion",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 86,
+        "comments": 69,
+        "shares": 13
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T03:04:20.382Z"
+    },
+    {
+      "id": "pst_frxGBPUSD_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "frxGBPUSD",
+        "name": "GBP/USD",
+        "short_name": "GBP/USD",
+        "pair": "GBP/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.26418,
+        "change_pct_24h": 0.14
+      },
+      "room_id": "room_frxGBPUSD",
+      "kind": "post",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst201"
+        }
+      ],
+      "engagement": {
+        "likes": 158,
+        "comments": 14,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T01:13:20.382Z"
+    },
+    {
+      "id": "pst_R_50_0",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "R_50",
+        "name": "Volatility 50 Index",
+        "short_name": "V50",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 238.76,
+        "change_pct_24h": 0.68
+      },
+      "room_id": "room_R_50",
+      "kind": "market_talk",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 164,
+        "comments": 31,
+        "shares": 17
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-27T01:10:20.382Z"
+    },
+    {
+      "id": "pst_frxXAUUSD_3",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "frxXAUUSD",
+        "name": "Gold / USD",
+        "short_name": "XAU/USD",
+        "pair": "XAU/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 2342.18,
+        "change_pct_24h": -0.68
+      },
+      "room_id": "room_frxXAUUSD",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 31,
+        "comments": 48,
+        "shares": 16
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-26T22:55:20.383Z"
+    },
+    {
+      "id": "pst_OTC_N225_0",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "OTC_N225",
+        "name": "Japan 225",
+        "short_name": "JP 225",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 38420.5,
+        "change_pct_24h": -0.36
+      },
+      "room_id": "room_OTC_N225",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 115,
+        "comments": 31,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-26T20:22:20.383Z"
+    },
+    {
+      "id": "pst_OTC_GDAXI_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "OTC_GDAXI",
+        "name": "Germany 40",
+        "short_name": "GER 40",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 18642.8,
+        "change_pct_24h": 0.62
+      },
+      "room_id": "room_OTC_GDAXI",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst461"
+        }
+      ],
+      "engagement": {
+        "likes": 110,
+        "comments": 14,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-26T15:27:20.383Z"
+    },
+    {
+      "id": "pst_frxXPDUSD_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "frxXPDUSD",
+        "name": "Palladium / USD",
+        "short_name": "XPD/USD",
+        "pair": "XPD/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 1024.6,
+        "change_pct_24h": 0.31
+      },
+      "room_id": "room_frxXPDUSD",
+      "kind": "discussion",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 63,
+        "comments": 24,
+        "shares": 11
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-26T07:54:20.383Z"
+    },
+    {
+      "id": "pst_frxXPDUSD_0",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "frxXPDUSD",
+        "name": "Palladium / USD",
+        "short_name": "XPD/USD",
+        "pair": "XPD/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 1024.6,
+        "change_pct_24h": 0.31
+      },
+      "room_id": "room_frxXPDUSD",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 143,
+        "comments": 3,
+        "shares": 0
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-26T02:23:20.383Z"
+    },
+    {
+      "id": "pst_BOOM1000_1",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "BOOM1000",
+        "name": "Boom 1000 Index",
+        "short_name": "Boom 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 8342.11,
+        "change_pct_24h": -1.12
+      },
+      "room_id": "room_BOOM1000",
+      "kind": "market_talk",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 110,
+        "comments": 35,
+        "shares": 6
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T22:15:20.382Z"
+    },
+    {
+      "id": "pst_frxXAUUSD_0",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "frxXAUUSD",
+        "name": "Gold / USD",
+        "short_name": "XAU/USD",
+        "pair": "XAU/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 2342.18,
+        "change_pct_24h": -0.68
+      },
+      "room_id": "room_frxXAUUSD",
+      "kind": "market_talk",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 33,
+        "comments": 9,
+        "shares": 22
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T21:56:20.382Z"
+    },
+    {
+      "id": "pst_CRASH300_0",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "CRASH300",
+        "name": "Crash 300 Index",
+        "short_name": "Crash 300",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ],
+        "last_price": 6104.88,
+        "change_pct_24h": 0.19
+      },
+      "room_id": "room_CRASH300",
+      "kind": "discussion",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 16,
+        "comments": 44,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T21:49:20.382Z"
+    },
+    {
+      "id": "pst_cryXRPUSD_0",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "cryXRPUSD",
+        "name": "XRP / USD",
+        "short_name": "XRP/USD",
+        "pair": "XRP/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 0.6284,
+        "change_pct_24h": 1.12
+      },
+      "room_id": "room_cryXRPUSD",
+      "kind": "discussion",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst320"
+        }
+      ],
+      "engagement": {
+        "likes": 20,
+        "comments": 11,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T15:34:20.382Z"
+    },
+    {
+      "id": "pst_frxXAGUSD_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "frxXAGUSD",
+        "name": "Silver / USD",
+        "short_name": "XAG/USD",
+        "pair": "XAG/USD",
+        "category": "commodities",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 27.842,
+        "change_pct_24h": 1.14
+      },
+      "room_id": "room_frxXAGUSD",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 74,
+        "comments": 69,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T15:28:20.383Z"
+    },
+    {
+      "id": "pst_frxEURJPY_0",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "frxEURJPY",
+        "name": "EUR/JPY",
+        "short_name": "EUR/JPY",
+        "pair": "EUR/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ],
+        "last_price": 164.372,
+        "change_pct_24h": -0.44
+      },
+      "room_id": "room_frxEURJPY",
+      "kind": "discussion",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 152,
+        "comments": 30,
+        "shares": 14
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T13:28:20.382Z"
+    },
+    {
+      "id": "pst_cryBTCUSD_2",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "cryBTCUSD",
+        "name": "Bitcoin / USD",
+        "short_name": "BTC/USD",
+        "pair": "BTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 68420.5,
+        "change_pct_24h": -2.14
+      },
+      "room_id": "room_cryBTCUSD",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 118,
+        "comments": 0,
+        "shares": 17
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T08:39:20.382Z"
+    },
+    {
+      "id": "pst_CRASH500_1",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "CRASH500",
+        "name": "Crash 500 Index",
+        "short_name": "Crash 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 4291.63,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_CRASH500",
+      "kind": "post",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 124,
+        "comments": 48,
+        "shares": 5
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T07:50:20.382Z"
+    },
+    {
+      "id": "pst_frxXAUUSD_2",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "frxXAUUSD",
+        "name": "Gold / USD",
+        "short_name": "XAU/USD",
+        "pair": "XAU/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 2342.18,
+        "change_pct_24h": -0.68
+      },
+      "room_id": "room_frxXAUUSD",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 126,
+        "comments": 21,
+        "shares": 21
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-25T01:13:20.382Z"
+    },
+    {
+      "id": "pst_BOOM1000_2",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "BOOM1000",
+        "name": "Boom 1000 Index",
+        "short_name": "Boom 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 8342.11,
+        "change_pct_24h": -1.12
+      },
+      "room_id": "room_BOOM1000",
+      "kind": "market_talk",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst102"
+        }
+      ],
+      "engagement": {
+        "likes": 163,
+        "comments": 61,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T21:47:20.382Z"
+    },
+    {
+      "id": "pst_OTC_GDAXI_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "OTC_GDAXI",
+        "name": "Germany 40",
+        "short_name": "GER 40",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 18642.8,
+        "change_pct_24h": 0.62
+      },
+      "room_id": "room_OTC_GDAXI",
+      "kind": "market_talk",
+      "body": "Consolidation getting tight. Expecting expansion soon.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 17,
+        "comments": 34,
+        "shares": 0
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T21:05:20.383Z"
+    },
+    {
+      "id": "pst_OTC_DJI_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "OTC_DJI",
+        "name": "Wall Street 30",
+        "short_name": "US 30",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 39284.1,
+        "change_pct_24h": 0.24
+      },
+      "room_id": "room_OTC_DJI",
+      "kind": "post",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 50,
+        "comments": 60,
+        "shares": 19
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T15:51:20.383Z"
+    },
+    {
+      "id": "pst_RB100_1",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "RB100",
+        "name": "Range Break 100 Index",
+        "short_name": "RB 100",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary"
+        ],
+        "last_price": 1284.66,
+        "change_pct_24h": 0.44
+      },
+      "room_id": "room_RB100",
+      "kind": "discussion",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "ICT"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst91"
+        }
+      ],
+      "engagement": {
+        "likes": 119,
+        "comments": 1,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T15:42:20.382Z"
+    },
+    {
+      "id": "pst_frxUSDCHF_1",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "frxUSDCHF",
+        "name": "USD/CHF",
+        "short_name": "USD/CHF",
+        "pair": "USD/CHF",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 0.90218,
+        "change_pct_24h": 0.07
+      },
+      "room_id": "room_frxUSDCHF",
+      "kind": "market_talk",
+      "body": "Consolidation getting tight. Expecting expansion soon.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst241"
+        }
+      ],
+      "engagement": {
+        "likes": 76,
+        "comments": 49,
+        "shares": 19
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T13:43:20.382Z"
+    },
+    {
+      "id": "pst_BOOM1000_0",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "BOOM1000",
+        "name": "Boom 1000 Index",
+        "short_name": "Boom 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 8342.11,
+        "change_pct_24h": -1.12
+      },
+      "room_id": "room_BOOM1000",
+      "kind": "discussion",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 25,
+        "comments": 61,
+        "shares": 10
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T07:46:20.382Z"
+    },
+    {
+      "id": "pst_RB100_0",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "RB100",
+        "name": "Range Break 100 Index",
+        "short_name": "RB 100",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary"
+        ],
+        "last_price": 1284.66,
+        "change_pct_24h": 0.44
+      },
+      "room_id": "room_RB100",
+      "kind": "post",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 132,
+        "comments": 42,
+        "shares": 22
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-24T00:02:20.382Z"
+    },
+    {
+      "id": "pst_OTC_AS51_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "OTC_AS51",
+        "name": "Australia 200",
+        "short_name": "AUS 200",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 7842.1,
+        "change_pct_24h": -0.29
+      },
+      "room_id": "room_OTC_AS51",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 7,
+        "comments": 64,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-23T15:19:20.383Z"
+    },
+    {
+      "id": "pst_frxGBPJPY_0",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "frxGBPJPY",
+        "name": "GBP/JPY",
+        "short_name": "GBP/JPY",
+        "pair": "GBP/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 191.246,
+        "change_pct_24h": 0.52
+      },
+      "room_id": "room_frxGBPJPY",
+      "kind": "post",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 176,
+        "comments": 22,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-23T12:47:20.382Z"
+    },
+    {
+      "id": "pst_cryBCHUSD_0",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "cryBCHUSD",
+        "name": "Bitcoin Cash / USD",
+        "short_name": "BCH/USD",
+        "pair": "BCH/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 452.18,
+        "change_pct_24h": -0.63
+      },
+      "room_id": "room_cryBCHUSD",
+      "kind": "discussion",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst340"
+        }
+      ],
+      "engagement": {
+        "likes": 123,
+        "comments": 25,
+        "shares": 22
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-23T07:54:20.382Z"
+    },
+    {
+      "id": "pst_R_75_1",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "R_75",
+        "name": "Volatility 75 Index",
+        "short_name": "V75",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 542871.21,
+        "change_pct_24h": -1.17
+      },
+      "room_id": "room_R_75",
+      "kind": "discussion",
+      "body": "Session recap: three setups, two hit, one stopped. Net green.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 114,
+        "comments": 68,
+        "shares": 13
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-23T03:29:20.381Z"
+    },
+    {
+      "id": "pst_OTC_NDX_1",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "OTC_NDX",
+        "name": "US Tech 100",
+        "short_name": "US 100",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 18420.6,
+        "change_pct_24h": -0.88
+      },
+      "room_id": "room_OTC_NDX",
+      "kind": "post",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 88,
+        "comments": 50,
+        "shares": 10
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-23T00:10:20.383Z"
+    },
+    {
+      "id": "pst_frxUSDJPY_1",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "frxUSDJPY",
+        "name": "USD/JPY",
+        "short_name": "USD/JPY",
+        "pair": "USD/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 151.284,
+        "change_pct_24h": 0.38
+      },
+      "room_id": "room_frxUSDJPY",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 64,
+        "comments": 69,
+        "shares": 13
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-22T21:40:20.382Z"
+    },
+    {
+      "id": "pst_CRASH300_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "CRASH300",
+        "name": "Crash 300 Index",
+        "short_name": "Crash 300",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ],
+        "last_price": 6104.88,
+        "change_pct_24h": 0.19
+      },
+      "room_id": "room_CRASH300",
+      "kind": "market_talk",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 118,
+        "comments": 3,
+        "shares": 21
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-22T20:20:20.382Z"
+    },
+    {
+      "id": "pst_BOOM1000_3",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "BOOM1000",
+        "name": "Boom 1000 Index",
+        "short_name": "Boom 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 8342.11,
+        "change_pct_24h": -1.12
+      },
+      "room_id": "room_BOOM1000",
+      "kind": "discussion",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 71,
+        "comments": 38,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-22T19:33:20.382Z"
+    },
+    {
+      "id": "pst_cryDOGUSD_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "cryDOGUSD",
+        "name": "Dogecoin / USD",
+        "short_name": "DOGE/USD",
+        "pair": "DOGE/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 0.1642,
+        "change_pct_24h": 4.18
+      },
+      "room_id": "room_cryDOGUSD",
+      "kind": "discussion",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 148,
+        "comments": 61,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-22T04:47:20.382Z"
+    },
+    {
+      "id": "pst_frxEURGBP_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "frxEURGBP",
+        "name": "EUR/GBP",
+        "short_name": "EUR/GBP",
+        "pair": "EUR/GBP",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ],
+        "last_price": 0.85922,
+        "change_pct_24h": 0.09
+      },
+      "room_id": "room_frxEURGBP",
+      "kind": "discussion",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 127,
+        "comments": 24,
+        "shares": 17
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-22T00:38:20.382Z"
+    },
+    {
+      "id": "pst_cryADAUSD_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "cryADAUSD",
+        "name": "Cardano / USD",
+        "short_name": "ADA/USD",
+        "pair": "ADA/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 0.4482,
+        "change_pct_24h": 1.24
+      },
+      "room_id": "room_cryADAUSD",
+      "kind": "post",
+      "body": "Session recap: three setups, two hit, one stopped. Net green.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 160,
+        "comments": 70,
+        "shares": 23
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T22:01:20.382Z"
+    },
+    {
+      "id": "pst_frxNZDUSD_0",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "frxNZDUSD",
+        "name": "NZD/USD",
+        "short_name": "NZD/USD",
+        "pair": "NZD/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ],
+        "last_price": 0.60184,
+        "change_pct_24h": -0.19
+      },
+      "room_id": "room_frxNZDUSD",
+      "kind": "discussion",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 107,
+        "comments": 50,
+        "shares": 7
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T20:29:20.382Z"
+    },
+    {
+      "id": "pst_OTC_NDX_0",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "OTC_NDX",
+        "name": "US Tech 100",
+        "short_name": "US 100",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 18420.6,
+        "change_pct_24h": -0.88
+      },
+      "room_id": "room_OTC_NDX",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 138,
+        "comments": 17,
+        "shares": 9
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T19:19:20.383Z"
+    },
+    {
+      "id": "pst_frxUSDCHF_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "frxUSDCHF",
+        "name": "USD/CHF",
+        "short_name": "USD/CHF",
+        "pair": "USD/CHF",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 0.90218,
+        "change_pct_24h": 0.07
+      },
+      "room_id": "room_frxUSDCHF",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Swing"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst240"
+        }
+      ],
+      "engagement": {
+        "likes": 66,
+        "comments": 9,
+        "shares": 14
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T16:24:20.382Z"
+    },
+    {
+      "id": "pst_R_25_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "R_25",
+        "name": "Volatility 25 Index",
+        "short_name": "V25",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 95.21,
+        "change_pct_24h": 0.35
+      },
+      "room_id": "room_R_25",
+      "kind": "discussion",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 156,
+        "comments": 21,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T14:30:20.382Z"
+    },
+    {
+      "id": "pst_BOOM500_0",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "BOOM500",
+        "name": "Boom 500 Index",
+        "short_name": "Boom 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 9120.44,
+        "change_pct_24h": -0.74
+      },
+      "room_id": "room_BOOM500",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 79,
+        "comments": 32,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T11:51:20.382Z"
+    },
+    {
+      "id": "pst_cryETHUSD_1",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "cryETHUSD",
+        "name": "Ethereum / USD",
+        "short_name": "ETH/USD",
+        "pair": "ETH/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 3542.18,
+        "change_pct_24h": 1.68
+      },
+      "room_id": "room_cryETHUSD",
+      "kind": "post",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst301"
+        }
+      ],
+      "engagement": {
+        "likes": 174,
+        "comments": 35,
+        "shares": 12
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T11:02:20.382Z"
+    },
+    {
+      "id": "pst_JD100_0",
+      "author": {
+        "id": "usr_mm",
+        "username": "Mr_Market",
+        "display_name": "Mr_Market",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 66,
+        "signals_count": 89,
+        "followers": 402
+      },
+      "market": {
+        "symbol": "JD100",
+        "name": "Jump 100 Index",
+        "short_name": "Jump 100",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 6210.9,
+        "change_pct_24h": -0.55
+      },
+      "room_id": "room_JD100",
+      "kind": "post",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 5,
+        "comments": 26,
+        "shares": 5
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T06:55:20.382Z"
+    },
+    {
+      "id": "pst_1HZ75V_2",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "1HZ75V",
+        "name": "Volatility 75 (1s) Index",
+        "short_name": "V75 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 542893.42,
+        "change_pct_24h": 1.28
+      },
+      "room_id": "room_1HZ75V",
+      "kind": "post",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 89,
+        "comments": 39,
+        "shares": 6
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T06:27:20.381Z"
+    },
+    {
+      "id": "pst_cryBTCUSD_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "cryBTCUSD",
+        "name": "Bitcoin / USD",
+        "short_name": "BTC/USD",
+        "pair": "BTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 68420.5,
+        "change_pct_24h": -2.14
+      },
+      "room_id": "room_cryBTCUSD",
+      "kind": "market_talk",
+      "body": "Session recap: three setups, two hit, one stopped. Net green.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 112,
+        "comments": 53,
+        "shares": 16
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T05:40:20.382Z"
+    },
+    {
+      "id": "pst_OTC_FTSE_0",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "OTC_FTSE",
+        "name": "UK 100",
+        "short_name": "UK 100",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 8142.3,
+        "change_pct_24h": 0.18
+      },
+      "room_id": "room_OTC_FTSE",
+      "kind": "discussion",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst450"
+        }
+      ],
+      "engagement": {
+        "likes": 48,
+        "comments": 63,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-21T00:43:20.383Z"
+    },
+    {
+      "id": "pst_OTC_AS51_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "OTC_AS51",
+        "name": "Australia 200",
+        "short_name": "AUS 200",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 7842.1,
+        "change_pct_24h": -0.29
+      },
+      "room_id": "room_OTC_AS51",
+      "kind": "market_talk",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 101,
+        "comments": 17,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T22:40:20.383Z"
+    },
+    {
+      "id": "pst_stpRNG_3",
+      "author": {
+        "id": "usr_pip",
+        "username": "PipHunter",
+        "display_name": "PipHunter",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 72,
+        "signals_count": 143,
+        "followers": 704
+      },
+      "market": {
+        "symbol": "stpRNG",
+        "name": "Step Index",
+        "short_name": "Step",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary"
+        ],
+        "last_price": 1602.45,
+        "change_pct_24h": -0.91
+      },
+      "room_id": "room_stpRNG",
+      "kind": "post",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 51,
+        "comments": 26,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T21:45:20.382Z"
+    },
+    {
+      "id": "pst_1HZ100V_3",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "1HZ100V",
+        "name": "Volatility 100 (1s) Index",
+        "short_name": "V100 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1247.84,
+        "change_pct_24h": -0.82
+      },
+      "room_id": "room_1HZ100V",
+      "kind": "post",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst23"
+        }
+      ],
+      "engagement": {
+        "likes": 166,
+        "comments": 15,
+        "shares": 24
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T18:51:20.381Z"
+    },
+    {
+      "id": "pst_cryDOGUSD_0",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "cryDOGUSD",
+        "name": "Dogecoin / USD",
+        "short_name": "DOGE/USD",
+        "pair": "DOGE/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 0.1642,
+        "change_pct_24h": 4.18
+      },
+      "room_id": "room_cryDOGUSD",
+      "kind": "discussion",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 48,
+        "comments": 44,
+        "shares": 4
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T17:45:20.382Z"
+    },
+    {
+      "id": "pst_OTC_DJI_0",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "OTC_DJI",
+        "name": "Wall Street 30",
+        "short_name": "US 30",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 39284.1,
+        "change_pct_24h": 0.24
+      },
+      "room_id": "room_OTC_DJI",
+      "kind": "market_talk",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst440"
+        }
+      ],
+      "engagement": {
+        "likes": 85,
+        "comments": 29,
+        "shares": 3
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T10:55:20.383Z"
+    },
+    {
+      "id": "pst_R_25_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "R_25",
+        "name": "Volatility 25 Index",
+        "short_name": "V25",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 95.21,
+        "change_pct_24h": 0.35
+      },
+      "room_id": "room_R_25",
+      "kind": "market_talk",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 146,
+        "comments": 44,
+        "shares": 0
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T10:52:20.382Z"
+    },
+    {
+      "id": "pst_frxAUDUSD_1",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "frxAUDUSD",
+        "name": "AUD/USD",
+        "short_name": "AUD/USD",
+        "pair": "AUD/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 0.65712,
+        "change_pct_24h": -0.26
+      },
+      "room_id": "room_frxAUDUSD",
+      "kind": "post",
+      "body": "Consolidation getting tight. Expecting expansion soon.",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 149,
+        "comments": 0,
+        "shares": 11
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T07:39:20.382Z"
+    },
+    {
+      "id": "pst_CRASH1000_1",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "CRASH1000",
+        "name": "Crash 1000 Index",
+        "short_name": "Crash 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 4820.15,
+        "change_pct_24h": -0.58
+      },
+      "room_id": "room_CRASH1000",
+      "kind": "discussion",
+      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 80,
+        "comments": 59,
+        "shares": 23
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T07:03:20.382Z"
+    },
+    {
+      "id": "pst_cryBCHUSD_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "cryBCHUSD",
+        "name": "Bitcoin Cash / USD",
+        "short_name": "BCH/USD",
+        "pair": "BCH/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 452.18,
+        "change_pct_24h": -0.63
+      },
+      "room_id": "room_cryBCHUSD",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst341"
+        }
+      ],
+      "engagement": {
+        "likes": 82,
+        "comments": 59,
+        "shares": 10
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-20T01:02:20.382Z"
+    },
+    {
+      "id": "pst_frxGBPJPY_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "frxGBPJPY",
+        "name": "GBP/JPY",
+        "short_name": "GBP/JPY",
+        "pair": "GBP/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 191.246,
+        "change_pct_24h": 0.52
+      },
+      "room_id": "room_frxGBPJPY",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 8,
+        "comments": 50,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T18:29:20.382Z"
+    },
+    {
+      "id": "pst_1HZ50V_1",
+      "author": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "market": {
+        "symbol": "1HZ50V",
+        "name": "Volatility 50 (1s) Index",
+        "short_name": "V50 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 239.14,
+        "change_pct_24h": -0.71
+      },
+      "room_id": "room_1HZ50V",
+      "kind": "market_talk",
+      "body": "Posting my full breakdown later tonight, remind me if I forget.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 21,
+        "comments": 28,
+        "shares": 13
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T18:15:20.382Z"
+    },
+    {
+      "id": "pst_crySOLUSD_1",
+      "author": {
+        "id": "usr_gold",
+        "username": "GoldDigger",
+        "display_name": "GoldDigger",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 70,
+        "signals_count": 95,
+        "followers": 466
+      },
+      "market": {
+        "symbol": "crySOLUSD",
+        "name": "Solana / USD",
+        "short_name": "SOL/USD",
+        "pair": "SOL/USD",
+        "category": "crypto",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 172.44,
+        "change_pct_24h": 3.42
+      },
+      "room_id": "room_crySOLUSD",
+      "kind": "post",
+      "body": "This level has held four times now. Fifth time usually breaks it.",
+      "tags": [
+        "Breakout"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst311"
+        }
+      ],
+      "engagement": {
+        "likes": 85,
+        "comments": 48,
+        "shares": 13
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T18:09:20.382Z"
+    },
+    {
+      "id": "pst_R_100_1",
+      "author": {
+        "id": "usr_swing",
+        "username": "SwingMaster",
+        "display_name": "SwingMaster",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": false,
+        "win_rate": 63,
+        "signals_count": 77,
+        "followers": 318
+      },
+      "market": {
+        "symbol": "R_100",
+        "name": "Volatility 100 Index",
+        "short_name": "V100",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1245.1,
+        "change_pct_24h": 0.64
+      },
+      "room_id": "room_R_100",
+      "kind": "post",
+      "body": "Took partials at TP1 and moved stop to break even. Free trade now.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst31"
+        }
+      ],
+      "engagement": {
+        "likes": 53,
+        "comments": 65,
+        "shares": 14
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T14:40:20.382Z"
+    },
+    {
+      "id": "pst_cryBTCUSD_0",
+      "author": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "market": {
+        "symbol": "cryBTCUSD",
+        "name": "Bitcoin / USD",
+        "short_name": "BTC/USD",
+        "pair": "BTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 68420.5,
+        "change_pct_24h": -2.14
+      },
+      "room_id": "room_cryBTCUSD",
+      "kind": "post",
+      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "tags": [
+        "Scalping"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 50,
+        "comments": 33,
+        "shares": 1
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T14:40:20.382Z"
+    },
+    {
+      "id": "pst_1HZ75V_0",
+      "author": {
+        "id": "usr_chain",
+        "username": "ChainScalp",
+        "display_name": "ChainScalp",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 68,
+        "signals_count": 112,
+        "followers": 529
+      },
+      "market": {
+        "symbol": "1HZ75V",
+        "name": "Volatility 75 (1s) Index",
+        "short_name": "V75 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 542893.42,
+        "change_pct_24h": 1.28
+      },
+      "room_id": "room_1HZ75V",
+      "kind": "discussion",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Liquidity Sweep"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 123,
+        "comments": 18,
+        "shares": 8
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T12:42:20.381Z"
+    },
+    {
+      "id": "pst_frxXPTUSD_1",
+      "author": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "market": {
+        "symbol": "frxXPTUSD",
+        "name": "Platinum / USD",
+        "short_name": "XPT/USD",
+        "pair": "XPT/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ],
+        "last_price": 962.4,
+        "change_pct_24h": 0.42
+      },
+      "room_id": "room_frxXPTUSD",
+      "kind": "post",
+      "body": "Clean break of structure here. Anyone else in on this one?",
+      "tags": [
+        "Supply & Demand"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 3,
+        "comments": 50,
+        "shares": 20
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T05:42:20.383Z"
+    },
+    {
+      "id": "pst_1HZ75V_1",
+      "author": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "market": {
+        "symbol": "1HZ75V",
+        "name": "Volatility 75 (1s) Index",
+        "short_name": "V75 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 542893.42,
+        "change_pct_24h": 1.28
+      },
+      "room_id": "room_1HZ75V",
+      "kind": "market_talk",
+      "body": "Anyone running an accumulator strategy on this? Curious about growth rates.",
+      "tags": [
+        "Swing"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 11,
+        "comments": 11,
+        "shares": 9
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-08-19T05:28:20.381Z"
+    }
+  ],
+  "meta": {
+    "page": 1,
+    "per_page": 20,
+    "total": 115
+  }
+}

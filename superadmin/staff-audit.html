@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff Audit — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="superadmin" data-nav="staff-audit" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+
+      <div class="grow">
+        <h1>Staff Audit</h1>
+        <div class="sub">Every action a staff account has taken</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      <button class="btn btn-ghost btn-sm" id="btnExport">
+        <span data-icon="download"></span> Export</button>
+    </header>
+
+    <main class="admin-body">
+
+      <div class="alert alert-info">
+        <span data-icon="lock"></span>
+        <div class="t-xs"><strong>Append-only.</strong> Audit entries cannot be
+        edited or deleted from this console, including by a Super Admin. This is
+        what makes the log worth having &mdash; if it could be rewritten, it would
+        prove nothing.</div>
+      </div>
+
+      <div id="stats"></div>
+      <div id="table"></div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+MB.ready(function () {
+  MB.api.get('admin/staff-audit').then(function (r) {
+    var rows = r.data;
+
+    var high = rows.filter(function (a) { return a.severity === 'high'; }).length;
+    var today = rows.filter(function (a) {
+      return (Date.now() - new Date(a.at)) < 86400000;
+    }).length;
+    var actors = {};
+    rows.forEach(function (a) { actors[a.actor_id] = true; });
+
+    MB.statSlider('#stats', 'Audit activity', [
+      { k: 'Entries',        v: MB.fmt.price(rows.length, 0), spark: false },
+      { k: 'Last 24h',       v: today,  tone: 'accent', spark: false },
+      { k: 'High severity',  v: high,   tone: 'danger',
+        note: 'bans, roles, money', spark: false },
+      { k: 'Staff involved', v: Object.keys(actors).length, spark: false }
+    ]);
+
+    MB.datatable({
+      data: rows, into: '#table', perPage: 20, sortKey: 'at', sortDir: 'desc',
+      searchPlaceholder: 'Search by actor, action or target…',
+      search: ['actor', 'label', 'target', 'action'],
+      columns: [
+        { key: 'at', label: 'When', sortable: true,
+          sortValue: function (a) { return new Date(a.at).getTime(); },
+          render: function (a) {
+            return '<span class="c-2">' + MB.fmt.ago(a.at) + '</span>' +
+              '<div class="h c-3">' + MB.fmt.date(a.at) + '</div>';
+          } },
+        { key: 'actor', label: 'Who', sortable: true,
+          render: function (a) {
+            return '<div class="cell-user">' +
+              '<span class="avatar avatar-sm">' + MB.fmt.initials(a.actor) + '</span>' +
+              '<div><div class="n">' + MB.esc(a.actor) + '</div>' +
+              '<div class="h"><span class="role-tag role-' + a.actor_role + '">' +
+                MB.esc(a.actor_role) + '</span></div></div></div>';
+          } },
+        { key: 'label', label: 'Action', sortable: true,
+          render: function (a) {
+            return '<div class="cell-user">' +
+              '<span class="lr-icon' + (a.severity === 'high' ? ' is-danger' : '') + '">' +
+                MB.icon(a.icon, 16) + '</span>' +
+              '<div><div class="n">' + MB.esc(a.label) + '</div>' +
+              '<div class="h c-3 num">' + MB.esc(a.action) + '</div></div></div>';
+          } },
+        { key: 'target', label: 'Target', sortable: true,
+          render: function (a) { return '<span class="c-2">' + MB.esc(a.target) + '</span>'; } },
+        { key: 'severity', label: 'Severity', sortable: true,
+          filter: ['high', 'normal'],
+          render: function (a) {
+            return a.severity === 'high'
+              ? '<span class="badge badge-lost">high</span>'
+              : '<span class="badge badge-neutral">normal</span>';
+          } },
+        { key: 'actor_role', label: 'Role', sortable: true,
+          filter: ['superadmin', 'admin', 'moderator'],
+          render: function (a) { return '<span class="c-3">' + MB.esc(a.actor_role) + '</span>'; } },
+        { key: 'ip', label: 'IP', sortable: true,
+          render: function (a) { return '<span class="c-3 num">' + MB.esc(a.ip) + '</span>'; } },
+        { key: 'note', label: 'Note',
+          render: function (a) { return '<span class="c-3">' + MB.esc(a.note) + '</span>'; } }
+      ]
+    });
+
+    MB.$('#btnExport').addEventListener('click', function () {
+      MB.toast('Audit export queued — you will get it by email', 'ok');
+    });
+  });
+});
+</script>
+</body>
+</html>

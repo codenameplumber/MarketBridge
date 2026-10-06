@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Signals — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="signals" data-root="../../" data-title="Signals" data-sub="Follow top traders and trade quality signals" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <a class="btn btn-primary btn-block" href="compose.html">
+      <span data-icon="plus"></span> Post New Signal</a>
+
+    <div class="row g2">
+      <div class="input-icon grow">
+        <span data-icon="search"></span>
+        <input class="input" id="sigSearch" type="search" placeholder="Search traders, markets or setups…">
+      </div>
+      <button class="btn btn-ghost none" id="btnFilters">
+        <span data-icon="filter"></span> Filters</button>
+    </div>
+
+    <div class="filter-bar">
+      <div class="chips" data-group id="kindChips">
+        <button class="chip is-active" data-value="all">All</button>
+        <button class="chip" data-value="executable">Executable</button>
+        <button class="chip" data-value="analysis">Analysis</button>
+        <button class="chip" data-value="boosted">Boosted</button>
+        <button class="chip" data-value="active">Active Now</button>
+      </div>
+      <div class="chips" data-group id="catChips"></div>
+      <div class="filter-row">
+        <select class="select grow" id="pairSel" aria-label="Filter by pair">
+          <option value="all">All pairs &amp; markets</option>
+        </select>
+        <span class="filter-count"><span id="sigCount">0</span> signals</span>
+      </div>
+    </div>
+
+    <section class="page-section">
+      <div class="sec-head"><h2>Top Signal Providers</h2>
+        <a href="../results/leaderboard.html">View all</a></div>
+      <div class="hscroll" id="topProviders"></div>
+    </section>
+
+    <section class="page-section">
+      <div class="sec-head"><h2>Latest Signals</h2></div>
+      <div class="stack g3" id="signalFeed"></div>
+    </section>
+
+    <!-- Filter panel -->
+    <div class="filter-panel-scrim" id="fpScrim"></div>
+    <aside class="filter-panel" id="filterPanel" role="dialog" aria-modal="true" aria-label="Filters">
+      <div class="filter-panel-head">
+        <button class="drawer-close" id="fpClose" aria-label="Close"><span data-icon="close"></span></button>
+        <h2>Filters</h2>
+        <button class="reset" id="fpReset">Reset all</button>
+      </div>
+
+      <div class="filter-panel-body">
+        <div class="filter-group">
+          <span class="fg-label">Signal Type</span>
+          <div class="filter-list" id="fpKind">
+            <button class="filter-opt is-on" data-v="all">
+              <span class="grow"><span class="fo-t">All Types</span></span>
+              <span class="fo-box"><span data-icon="check"></span></span></button>
+            <button class="filter-opt" data-v="executable">
+              <span class="grow"><span class="fo-t">Executable Signals</span>
+                <span class="fo-d">Signals you can trade directly</span></span>
+              <span class="fo-box"><span data-icon="check"></span></span></button>
+            <button class="filter-opt" data-v="analysis">
+              <span class="grow"><span class="fo-t">Analysis Signals</span>
+                <span class="fo-d">Market views and ideas only</span></span>
+              <span class="fo-box"><span data-icon="check"></span></span></button>
+            <button class="filter-opt" data-v="boosted">
+              <span class="grow"><span class="fo-t">Boosted Signals</span>
+                <span class="fo-d">Given extra visibility by KonfluenX</span></span>
+              <span class="fo-box"><span data-icon="check"></span></span></button>
+            <button class="filter-opt" data-v="active">
+              <span class="grow"><span class="fo-t">Active Now</span>
+                <span class="fo-d">Signals currently running</span></span>
+              <span class="fo-box"><span data-icon="check"></span></span></button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="fg-label">Market Type</span>
+          <div class="filter-chips" data-group id="fpCat"></div>
+        </div>
+
+        <div class="filter-group">
+          <span class="fg-label">Contract Type (Executable)</span>
+          <div class="filter-chips" data-group id="fpContract">
+            <button class="chip is-active" data-value="all">All</button>
+            <button class="chip" data-value="accumulator">Accumulator</button>
+            <button class="chip" data-value="rise_fall">Rise/Fall</button>
+            <button class="chip" data-value="digits">Digits</button>
+            <button class="chip" data-value="multipliers">Multipliers</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="fg-label">Minimum Win Rate</span>
+          <select class="select" id="fpWin">
+            <option value="0">Any win rate</option>
+            <option value="60">60% and above</option>
+            <option value="70">70% and above</option>
+            <option value="75">75% and above</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <span class="fg-label">Provider</span>
+          <select class="select" id="fpProvider"><option value="all">All providers</option></select>
+        </div>
+
+        <div class="filter-group">
+          <span class="fg-label">Sort By</span>
+          <select class="select" id="fpSort">
+            <option value="latest">Latest</option>
+            <option value="winrate">Highest win rate</option>
+            <option value="engagement">Most engagement</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-panel-foot">
+        <button class="btn btn-primary btn-block" id="fpApply">Apply Filters</button>
+        <div class="count"><span id="fpCount">0</span> signals match your filters</div>
+      </div>
+    </aside>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+  var CATS = [
+    { v:'all', l:'All Markets' }, { v:'synthetic_indices', l:'Synthetics' },
+    { v:'derived', l:'Derived' }, { v:'forex', l:'Forex' },
+    { v:'crypto', l:'Crypto' }, { v:'commodities', l:'Commodities' },
+    { v:'stock_indices', l:'Indices' }
+  ];
+  function catChips() {
+    return CATS.map(function (c, i) {
+      return '<button class="chip' + (i === 0 ? ' is-active' : '') + '" data-value="' + c.v + '">' +
+        c.l + '</button>';
+    }).join('');
+  }
+  function fillPairs(sel, markets, category) {
+    var rows = category === 'all' ? markets
+      : markets.filter(function (m) { return m.category === category; });
+    sel.innerHTML = '<option value="all">All pairs &amp; markets</option>' +
+      rows.map(function (m) {
+        return '<option value="' + m.symbol + '">' + m.short_name + '</option>';
+      }).join('');
+  }
+
+MB.ready(function () {
+  document.getElementById('catChips').innerHTML = catChips();
+  document.getElementById('fpCat').innerHTML = catChips();
+
+  MB.render({ into: '#topProviders', from: 'providers', limit: 8,
+    template: MB.card.provider, skeleton: false });
+
+  var pairSel = document.getElementById('pairSel');
+  var markets = [];
+
+  var c = MB.collection({
+    from: 'signals', into: '#signalFeed', template: MB.card.sig,
+    perPage: 8, mode: 'more', countInto: '#sigCount', skeletonCount: 4,
+    initial: { kind:'all', category:'all', pair:'all', q:'', contract:'all', win:0 },
+    sort: null,
+    filters: {
+      kind: function (s, v) {
+        if (v === 'all') { return true; }
+        if (v === 'boosted') { return s.boost && s.boost.is_boosted; }
+        if (v === 'active') { return s.status === 'active'; }
+        return s.kind === v;
+      },
+      category: function (s, v) { return v === 'all' || s.market.category === v; },
+      pair: function (s, v) { return v === 'all' || s.market.symbol === v; },
+      contract: function (s, v) {
+        return v === 'all' || (s.execution && s.execution.contract_family === v);
+      },
+      win: function (s, v) { return !v || (s.author.win_rate || 0) >= Number(v); },
+      q: function (s, v) {
+        return (s.author.username + ' ' + s.market.name + ' ' + s.market.symbol + ' ' +
+                (s.market.pair || '') + ' ' + s.body).toLowerCase().indexOf(v) > -1;
+      }
+    },
+    emptyIcon: 'signals', emptyTitle: 'No signals match',
+    emptyText: 'Try a different market, pair or filter.',
+    done: function (rows, view) {
+      var n = document.getElementById('fpCount');
+      if (n) { n.textContent = view.length; }
+    }
+  });
+
+  c.bind('#kindChips', 'kind').bindSelect('#pairSel', 'pair').bindInput('#sigSearch', 'q');
+
+  document.getElementById('catChips').addEventListener('mb:change', function (e) {
+    fillPairs(pairSel, markets, e.detail.value);
+    c.set('pair', 'all'); c.set('category', e.detail.value);
+  });
+
+  MB.api.list('markets').then(function (rows) {
+    markets = rows; fillPairs(pairSel, markets, 'all');
+  });
+  MB.api.list('providers').then(function (rows) {
+    document.getElementById('fpProvider').innerHTML += rows.map(function (p) {
+      return '<option value="' + p.username + '">' + p.username + '</option>';
+    }).join('');
+  });
+
+  /* ---- filter panel ---- */
+  var panel = document.getElementById('filterPanel');
+  var scrim = document.getElementById('fpScrim');
+  function openFP() { panel.classList.add('is-open'); scrim.classList.add('is-open'); document.body.style.overflow='hidden'; }
+  function closeFP() { panel.classList.remove('is-open'); scrim.classList.remove('is-open'); document.body.style.overflow=''; }
+  document.getElementById('btnFilters').addEventListener('click', openFP);
+  document.getElementById('fpClose').addEventListener('click', closeFP);
+  scrim.addEventListener('click', closeFP);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && panel.classList.contains('is-open')) { closeFP(); }
+  });
+
+  /* Signal type is single-select — picking one clears the rest. */
+  var fpKind = 'all', fpCat = 'all', fpContract = 'all';
+  document.getElementById('fpKind').addEventListener('click', function (e) {
+    var b = e.target.closest('.filter-opt'); if (!b) { return; }
+    MB.$$('.filter-opt', this).forEach(function (x) { x.classList.remove('is-on'); });
+    b.classList.add('is-on');
+    fpKind = b.getAttribute('data-v');
+  });
+  document.getElementById('fpCat').addEventListener('mb:change', function (e) { fpCat = e.detail.value; });
+  document.getElementById('fpContract').addEventListener('mb:change', function (e) { fpContract = e.detail.value; });
+
+  document.getElementById('fpApply').addEventListener('click', function () {
+    c.set('kind', fpKind);
+    c.set('category', fpCat);
+    c.set('contract', fpContract);
+    c.set('win', document.getElementById('fpWin').value);
+    /* keep the inline chips in step with the panel */
+    MB.$$('#kindChips .chip').forEach(function (x) {
+      x.classList.toggle('is-active', x.getAttribute('data-value') === fpKind);
+    });
+    MB.$$('#catChips .chip').forEach(function (x) {
+      x.classList.toggle('is-active', x.getAttribute('data-value') === fpCat);
+    });
+    closeFP();
+    MB.toast(c.rows().length + ' signals match');
+  });
+
+  document.getElementById('fpReset').addEventListener('click', function () {
+    fpKind = 'all'; fpCat = 'all'; fpContract = 'all';
+    MB.$$('#fpKind .filter-opt').forEach(function (x, i) { x.classList.toggle('is-on', i === 0); });
+    MB.$$('#fpCat .chip, #fpContract .chip').forEach(function (x, i) {
+      x.classList.toggle('is-active', x.getAttribute('data-value') === 'all');
+    });
+    document.getElementById('fpWin').value = '0';
+    document.getElementById('fpProvider').value = 'all';
+    ['kind','category','contract'].forEach(function (k) { c.set(k, 'all'); });
+    c.set('win', 0);
+  });
+});
+</script>
+</body>
+</html>

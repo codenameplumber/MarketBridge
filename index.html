@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KonfluenX — Connect. Discover. Converge.</title>
+<meta name="description" content="KonfluenX is the Deriv-connected social trading platform. Trade supported contracts, follow verified traders, get real signals and join market rooms that matter — in one installable web app.">
+<meta name="theme-color" content="#080B0F">
+<meta property="og:title" content="KonfluenX — Connect. Discover. Converge.">
+<meta property="og:description" content="Deriv provides the trading infrastructure. KonfluenX provides the experience, the community and the education around it.">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/components.css">
+<link rel="stylesheet" href="assets/css/public.css">
+<script>/* Applied before first paint so the theme never flashes. */
+(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body class="site" data-shell="site" data-nav="home" data-root="">
+
+<div data-render="site-header"></div>
+
+<main>
+
+  <!-- ==================================================================
+       HERO
+       =================================================================== -->
+  <section class="hero">
+    <div class="container inner">
+      <div>
+        <span class="hero-eyebrow"><b>&#9679;</b> Built for Deriv traders</span>
+
+        <h1>Trade Deriv.<br>Connect. Learn.<br><em>Win</em> together.</h1>
+
+        <p class="hero-lede">
+          KonfluenX is the social trading platform for Deriv traders.
+          Trade supported contracts, follow verified traders, get real signals and
+          join market rooms that matter.
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn btn-brand btn-lg" href="auth/register.html">
+            <span data-icon="userplus"></span> Create free account
+          </a>
+          <a class="btn btn-outline btn-lg" href="auth/connect-deriv.html">
+            <span data-icon="link"></span> Connect Deriv
+          </a>
+        </div>
+
+        <p class="hero-note hero-assure">
+          <span class="ha-ic" data-icon="shield"></span>
+          <span>
+            <b>We never hold your funds.</b><br>
+            Trades execute on your <span class="hl">Deriv</span> account.
+          </span>
+        </p>
+      </div>
+
+      <!-- Live phone preview of the real Home screen -->
+      <div class="phone" aria-hidden="true">
+        <div class="phone-screen">
+          <div class="phone-notch"><i></i></div>
+          <div class="phone-body">
+
+            <div class="row g2 between" style="padding:6px 0 10px">
+              <span id="phoneBrand"></span>
+              <span class="row g2" style="color:var(--mb-text-3)">
+                <span data-icon="bell" data-icon-size="14"></span>
+                <span class="avatar avatar-xs" style="background:hsl(210 14% 26%)">A</span>
+              </span>
+            </div>
+
+            <div class="balance" style="padding:12px">
+              <div class="balance-label t-xs">Deriv Real Account</div>
+              <div class="balance-amount" style="font-size:23px">2,450.80 <small style="font-size:11px;color:var(--mb-text-3)">USD</small></div>
+              <div class="t-xs c-up" style="margin-top:3px">P&amp;L today +$8.40 (+0.35%)</div>
+              <div class="balance-actions" style="margin-top:10px">
+                <span class="btn btn-trade btn-sm" style="flex:1">Deposit</span>
+                <span class="btn btn-ghost btn-sm" style="flex:1">Withdraw</span>
+              </div>
+            </div>
+
+            <div class="card" style="padding:10px;margin-top:10px">
+              <div class="row g2 between">
+                <span class="t-xs c-2">Volatility 75 (1s) Index</span>
+                <span class="t-xs c-up">+1.28%</span>
+              </div>
+              <div class="m-price" style="font-size:16px;margin-top:2px"
+                   data-tick="1HZ75V" data-tick-flash>542,415.29</div>
+              <div style="margin-top:8px">
+                <span data-chart="candle" data-seed="heroPhone" data-h="86"></span>
+              </div>
+              <div class="row g1" style="margin-top:8px;flex-wrap:wrap">
+                <span class="chip is-active" style="font-size:9px;padding:3px 8px">1s</span>
+                <span class="chip" style="font-size:9px;padding:3px 8px">1m</span>
+                <span class="chip" style="font-size:9px;padding:3px 8px">5m</span>
+                <span class="chip" style="font-size:9px;padding:3px 8px">15m</span>
+                <span class="chip" style="font-size:9px;padding:3px 8px">1h</span>
+              </div>
+            </div>
+
+            <div class="row g2" style="margin-top:10px">
+              <span class="btn btn-trade btn-sm" style="flex:1;flex-direction:column;gap:0;padding:9px">
+                <span style="font-size:11px;font-weight:700">Up</span>
+                <span style="font-size:10px;opacity:.85">10.00 USD</span>
+              </span>
+              <span class="btn btn-sell btn-sm" style="flex:1;flex-direction:column;gap:0;padding:9px">
+                <span style="font-size:11px;font-weight:700">Down</span>
+                <span style="font-size:10px;opacity:.85">10.00 USD</span>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       LIVE MARKET MARQUEE
+       =================================================================== -->
+  <div class="marquee" id="markets" aria-hidden="true">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+
+  <!-- ==================================================================
+       TRUST STRIP
+       =================================================================== -->
+  <section class="section" style="padding-top:var(--mb-s10);padding-bottom:0">
+    <div class="container">
+      <div class="stat-strip">
+        <div>
+          <span class="si" style="color:var(--vy-teal)" data-icon="users" data-icon-size="30"></span>
+          <div class="v">24,500+</div><div class="k">Traders</div>
+        </div>
+        <div>
+          <span class="si" style="color:var(--vy-brand)" data-icon="markets" data-icon-size="30"></span>
+          <div class="v">49+</div><div class="k">Markets</div>
+        </div>
+        <div>
+          <span class="si" style="color:var(--mb-green)" data-icon="activity" data-icon-size="30"></span>
+          <div class="v">3,200+</div><div class="k">Signals Posted</div>
+        </div>
+        <div>
+          <span class="si" style="color:var(--vy-brand)" data-icon="shield" data-icon-size="30"></span>
+          <div class="v">$0</div><div class="k">Funds We Hold</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       MARKET WALL — real tiles, live prices
+       =================================================================== -->
+  <section class="section" id="wall">
+    <div class="container">
+      <div class="section-head is-centered">
+        <div class="section-eyebrow">49 markets, 6 categories</div>
+        <h2>Synthetics, forex, crypto, metals and indices</h2>
+        <p>All of them live, all of them with their own room, signals and traders.</p>
+      </div>
+
+      <div class="showcase showcase-glow">
+        <div class="showcase-head">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="t">Markets &middot; live</span>
+          <span class="grow"></span>
+          <span class="t" id="wallStamp">streaming</span>
+        </div>
+        <div class="showcase-body">
+          <div class="wall" id="marketWall"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       ONE ECOSYSTEM — the six connected surfaces
+       =================================================================== -->
+  <section class="section" id="ecosystem">
+    <div class="container">
+      <div class="eco">
+        <div class="eco-head">
+          <div class="section-eyebrow">One ecosystem</div>
+          <h2>Everything about a market, in one place</h2>
+          <p>Chart, trading, signals, analysis, community and top traders &mdash; all connected.</p>
+        </div>
+
+        <div class="eco-row">
+          <a class="eco-node n-green" href="users/markets/index.html">
+            <span class="en-ring" data-icon="chart" data-icon-size="24"></span>
+            <span class="en-t">Chart</span>
+          </a>
+          <span class="eco-link" aria-hidden="true"></span>
+          <a class="eco-node n-red" href="users/trade/index.html">
+            <span class="en-ring" data-icon="trade" data-icon-size="24"></span>
+            <span class="en-t">Trade</span>
+          </a>
+          <span class="eco-link" aria-hidden="true"></span>
+          <a class="eco-node n-green" href="users/signals/index.html">
+            <span class="en-ring" data-icon="signals" data-icon-size="24"></span>
+            <span class="en-t">Signals</span>
+          </a>
+          <span class="eco-link" aria-hidden="true"></span>
+          <a class="eco-node n-red" href="users/signals/index.html?kind=analysis">
+            <span class="en-ring" data-icon="search" data-icon-size="24"></span>
+            <span class="en-t">Analysis</span>
+          </a>
+          <span class="eco-link" aria-hidden="true"></span>
+          <a class="eco-node n-green" href="users/community/index.html">
+            <span class="en-ring" data-icon="users" data-icon-size="24"></span>
+            <span class="en-t">Community</span>
+          </a>
+          <span class="eco-link" aria-hidden="true"></span>
+          <a class="eco-node n-red" href="users/results/leaderboard.html">
+            <span class="en-ring" data-icon="star" data-icon-size="24"></span>
+            <span class="en-t">Top Traders</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       POWERFUL FEATURES
+       =================================================================== -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head is-centered">
+        <div class="section-eyebrow">Powerful features</div>
+        <h2>Built for serious Deriv traders</h2>
+        <p>
+          Six things every one of them asks for, and none of them bolted on
+          afterwards.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature f-green">
+          <div class="feature-icon"><span data-icon="trade"></span></div>
+          <h3>Real Deriv execution</h3>
+          <p>
+            Trade Accumulators, Rise/Fall, Digits and Multipliers directly on your
+            own connected Deriv account. KonfluenX never takes custody &mdash; the
+            position opens where your money already is.
+          </p>
+        </article>
+
+        <article class="feature f-red">
+          <div class="feature-icon"><span data-icon="results"></span></div>
+          <h3>Verified signal history</h3>
+          <p>
+            Signals lock the moment they publish. Results resolve from the real
+            contract or the price feed, never from a claim, so nobody quietly
+            deletes a loss to inflate a win rate.
+          </p>
+        </article>
+
+        <article class="feature f-green">
+          <div class="feature-icon"><span data-icon="chat"></span></div>
+          <h3>Market rooms</h3>
+          <p>
+            V75, Boom 1000, EUR/USD, BTC/USD &mdash; every pair has its own room.
+            Discuss with the traders in the same market instead of one giant
+            undifferentiated chat.
+          </p>
+        </article>
+
+        <article class="feature f-red">
+          <div class="feature-icon"><span data-icon="star"></span></div>
+          <h3>Top traders</h3>
+          <p>
+            Discover specialists by the markets and strategies they actually trade,
+            check the record behind the badge, and follow the ones that hold up
+            over more than a good week.
+          </p>
+        </article>
+
+        <article class="feature f-green">
+          <div class="feature-icon"><span data-icon="resources"></span></div>
+          <h3>Learning hub</h3>
+          <p>
+            Courses, guides and webinars on Smart Money Concepts, ICT, price action,
+            risk and psychology &mdash; attached to the markets they apply to, with
+            your progress tracked.
+          </p>
+        </article>
+
+        <article class="feature f-red">
+          <div class="feature-icon"><span data-icon="lock"></span></div>
+          <h3>Secure &amp; private</h3>
+          <p>
+            Connecting uses Deriv&rsquo;s own OAuth flow. We never see your Deriv
+            password, we store an encrypted token with only the permissions you
+            grant, and you can revoke it at any time.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       SPLIT FEATURES — product shown, not described
+       =================================================================== -->
+  <section class="section section-alt" id="inside">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-eyebrow">Inside the app</div>
+        <h2>What you actually get</h2>
+      </div>
+
+      <!-- 1 — the trading desk -->
+      <div class="split">
+        <div class="split-art">
+          <div class="showcase">
+            <div class="showcase-head">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="t">Volatility 75 (1s) &middot; Accumulators</span>
+            </div>
+            <div class="showcase-body">
+              <div class="between" style="margin-bottom:12px">
+                <div>
+                  <div class="t-xs c-2">Volatility 75 (1s) Index</div>
+                  <div class="t-h1 w-black num" data-tick="1HZ75V" data-tick-flash>542,893.42</div>
+                </div>
+                <span class="badge badge-active">+1.28%</span>
+              </div>
+              <div class="chart-frame" style="border-radius:10px">
+                <span class="tf">1m</span>
+                <div data-chart="candle" data-seed="homedesk" data-h="190" data-h-min="150"></div>
+              </div>
+              <div class="trade-grid" style="margin-top:12px">
+                <div><div class="label">Growth rate</div><div class="t-sm w-bold">2.00%</div></div>
+                <div><div class="label">Stake</div><div class="t-sm w-bold num">$100.00</div></div>
+              </div>
+              <div class="proposal" style="margin-top:12px">
+                <div class="proposal-row"><span class="pk">Potential payout</span>
+                  <span class="pv payout">$300.00</span></div>
+              </div>
+              <span class="btn btn-primary btn-block mt3" style="pointer-events:none">Buy $100.00</span>
+            </div>
+          </div>
+        </div>
+        <div class="split-copy">
+          <div class="section-eyebrow">Trading</div>
+          <h3>A desk built for the contract you are actually trading</h3>
+          <p>Accumulators get a growth rate. Digits get a digit picker. Multipliers get
+          leverage and a stop. Not one generic form with fields greyed out.</p>
+          <ul class="split-list">
+            <li><span data-icon="check"></span><span>Live proposal price before you commit</span></li>
+            <li><span data-icon="check"></span><span>Executes on your own Deriv account</span></li>
+            <li><span data-icon="check"></span><span>Only contracts Deriv can genuinely execute appear</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 2 — the room -->
+      <div class="split is-flipped">
+        <div class="split-art">
+          <div class="showcase">
+            <div class="showcase-head">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="t">V75 (1s) Room &middot; 2,140 members</span>
+            </div>
+            <div class="showcase-body">
+              <div class="chat-preview">
+                <div class="msg">
+                  <span class="avatar avatar-sm" style="background:hsl(28 58% 42%)">FX</span>
+                  <div class="msg-body">
+                    <div class="msg-head"><span class="msg-name">FX_ProTrader</span>
+                      <span class="badge badge-pro">Pro</span><span class="msg-time">12m</span></div>
+                    <div class="msg-bubble"><div class="msg-text">Liquidity swept below the low. Watching for the push up.</div></div>
+                  </div>
+                </div>
+                <div class="msg">
+                  <span class="avatar avatar-sm" style="background:hsl(268 58% 42%)">QT</span>
+                  <div class="msg-body">
+                    <div class="msg-head"><span class="msg-name">QueenTrader</span>
+                      <span class="badge badge-pro">Pro</span><span class="msg-time">9m</span></div>
+                    <div class="msg-bubble">
+                      <div class="msg-text">Chart attached — this is the level.</div>
+                      <div class="attach"><div class="attach-file">
+                        <span class="af-ic"><span data-icon="file"></span></span>
+                        <span class="grow"><span class="af-n" style="display:block">v75-4h-structure.pdf</span>
+                        <span class="af-s">482 KB</span></span>
+                      </div></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="msg msg-own">
+                  <span class="avatar avatar-sm" style="background:hsl(148 58% 34%)">JD</span>
+                  <div class="msg-body">
+                    <div class="msg-head"><span class="msg-name">You</span><span class="msg-time">now</span></div>
+                    <div class="msg-bubble"><div class="msg-text">Agreed. In at 542,700 with stop below.</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="cluster mt4">
+                <span class="avatar avatar-sm" style="background:hsl(28 58% 42%)">FX</span>
+                <span class="avatar avatar-sm" style="background:hsl(268 58% 42%)">QT</span>
+                <span class="avatar avatar-sm" style="background:hsl(198 58% 42%)">AK</span>
+                <span class="avatar avatar-sm" style="background:hsl(88 58% 34%)">JF</span>
+                <span class="more">+2.1K</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="split-copy">
+          <div class="section-eyebrow">Community</div>
+          <h3>Every pair has a room. Every trader can run one.</h3>
+          <p>Discuss the market you trade with the people trading it — with charts,
+          images and files, not just text.</p>
+          <ul class="split-list">
+            <li><span data-icon="check"></span><span>One room per market, 49 and counting</span></li>
+            <li><span data-icon="check"></span><span>Personal trader rooms you control and moderate</span></li>
+            <li><span data-icon="check"></span><span>Images and files up to 12&nbsp;MB, drag or paste</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3 — discovery -->
+      <div class="split">
+        <div class="split-art">
+          <div class="showcase">
+            <div class="showcase-head">
+              <span class="dots"><i></i><i></i><i></i></span>
+              <span class="t">Top signal providers &middot; 30 days</span>
+            </div>
+            <div class="showcase-body">
+              <div class="list" style="border:0">
+                <div class="lb-row"><span class="lb-rank r1">1</span>
+                  <span class="avatar avatar-sm" style="background:hsl(28 58% 42%)">FX</span>
+                  <span class="grow"><span class="lb-name" style="display:block">FX_ProTrader</span>
+                    <span class="t-xs c-3">156 signals &middot; Synthetics</span></span>
+                  <span class="lb-metric c-up">78%</span></div>
+                <div class="lb-row"><span class="lb-rank r2">2</span>
+                  <span class="avatar avatar-sm" style="background:hsl(268 58% 42%)">QT</span>
+                  <span class="grow"><span class="lb-name" style="display:block">QueenTrader</span>
+                    <span class="t-xs c-3">132 signals &middot; Derived</span></span>
+                  <span class="lb-metric c-up">74%</span></div>
+                <div class="lb-row"><span class="lb-rank r3">3</span>
+                  <span class="avatar avatar-sm" style="background:hsl(198 58% 42%)">PH</span>
+                  <span class="grow"><span class="lb-name" style="display:block">PipHunter</span>
+                    <span class="t-xs c-3">143 signals &middot; Forex</span></span>
+                  <span class="lb-metric c-up">72%</span></div>
+                <div class="lb-row"><span class="lb-rank">4</span>
+                  <span class="avatar avatar-sm" style="background:hsl(88 58% 34%)">CS</span>
+                  <span class="grow"><span class="lb-name" style="display:block">ChainScalp</span>
+                    <span class="t-xs c-3">112 signals &middot; Crypto</span></span>
+                  <span class="lb-metric c-up">68%</span></div>
+              </div>
+              <div class="card mt3" style="background:var(--mb-bg-2)">
+                <div class="label">Performance &middot; all time</div>
+                <div data-chart="area" data-seed="homelb" data-h="120" data-h-min="96" class="mt2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="split-copy">
+          <div class="section-eyebrow">Discovery</div>
+          <h3>Find the people who trade what you trade</h3>
+          <p>Ranked by market and by strategy, with a minimum sample before anyone
+          appears. One winning signal is 100% — and not a rank.</p>
+          <ul class="split-list">
+            <li><span data-icon="check"></span><span>Top V75, top Boom &amp; Crash, top digit traders</span></li>
+            <li><span data-icon="check"></span><span>Signals lock on publish — records cannot be groomed</span></li>
+            <li><span data-icon="check"></span><span>Results resolved from contracts and price data</span></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       EXECUTABLE VS ANALYSIS
+       =================================================================== -->
+  <section class="section section-alt" id="compare">
+    <div class="container">
+      <div class="section-head is-centered">
+        <div class="section-eyebrow">Two kinds of signal</div>
+        <h2>Clear. Honest. Actionable.<br>Never confused.</h2>
+        <p>
+          Some trading ideas can be executed on Deriv. Some cannot. Platforms that
+          blur the two waste your time and cost you money.
+        </p>
+      </div>
+
+      <div class="compare">
+
+        <article class="compare-col is-exec">
+          <div class="compare-head">
+            <div class="compare-mark"><span data-icon="trade"></span></div>
+            <span class="compare-kind">Executable signal</span>
+            <h3>You can trade this right now</h3>
+            <p class="lead">
+              The signal maps to a Deriv contract we can configure and buy on your
+              connected account.
+            </p>
+          </div>
+
+          <ul class="compare-list">
+            <li><span data-icon="check"></span><span>Opens a ticket with market, direction, duration and stake already filled in</span></li>
+            <li><span data-icon="check"></span><span>Executes against your own Deriv account &mdash; we never take custody</span></li>
+            <li><span data-icon="check"></span><span>The result is read from the real contract, so nobody types it in</span></li>
+            <li><span data-icon="check"></span><span>Counts toward verified performance</span></li>
+          </ul>
+
+          <div class="compare-foot">
+            <span class="btn btn-primary btn-block">Trade This Signal</span>
+            <div class="cap">What you see on an executable signal</div>
+          </div>
+        </article>
+
+        <article class="compare-col is-anal">
+          <div class="compare-head">
+            <div class="compare-mark"><span data-icon="chart"></span></div>
+            <span class="compare-kind">Analysis signal</span>
+            <h3>Information, honestly labelled</h3>
+            <p class="lead">
+              A trade idea with entry, stop loss and targets that has no matching
+              Deriv contract.
+            </p>
+          </div>
+
+          <ul class="compare-list">
+            <li><span data-icon="info"></span><span>Shows the entry zone, stop loss and take-profit levels in full</span></li>
+            <li><span data-icon="info"></span><span>Takes you to the market so you can act on it wherever you trade</span></li>
+            <li><span data-icon="info"></span><span>Resolved against the price feed, not the author's word</span></li>
+            <li><span data-icon="info"></span><span>Never pretends to be a one-tap trade</span></li>
+          </ul>
+
+          <div class="compare-foot">
+            <span class="btn btn-analysis btn-block">View Market</span>
+            <div class="cap">What you see on an analysis signal</div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+  <!-- ==================================================================
+       THE LOOP — 01 to 06, discovery to execution
+       =================================================================== -->
+  <section class="section" id="loop">
+    <div class="container">
+      <div class="section-head is-centered">
+        <div class="section-eyebrow">The loop that makes it work</div>
+        <h2>From discovery to execution</h2>
+        <p>Each stage feeds the next, and the last one feeds the first. That circuit
+        is the whole product.</p>
+      </div>
+
+      <div class="loop6">
+        <article class="loop6-step n-green">
+          <span class="ls-ring" data-icon="search" data-icon-size="20"></span>
+          <div class="ls-n">01</div>
+          <div class="ls-t">Discover</div>
+          <div class="ls-d">Find a market</div>
+        </article>
+        <article class="loop6-step n-red">
+          <span class="ls-ring" data-icon="resources" data-icon-size="20"></span>
+          <div class="ls-n">02</div>
+          <div class="ls-t">Learn</div>
+          <div class="ls-d">Study how it moves</div>
+        </article>
+        <article class="loop6-step n-green">
+          <span class="ls-ring" data-icon="chat" data-icon-size="20"></span>
+          <div class="ls-n">03</div>
+          <div class="ls-t">Discuss</div>
+          <div class="ls-d">Join its room</div>
+        </article>
+        <article class="loop6-step n-red">
+          <span class="ls-ring" data-icon="userplus" data-icon-size="20"></span>
+          <div class="ls-n">04</div>
+          <div class="ls-t">Follow</div>
+          <div class="ls-d">Back a specialist</div>
+        </article>
+        <article class="loop6-step n-green">
+          <span class="ls-ring" data-icon="signals" data-icon-size="20"></span>
+          <div class="ls-n">05</div>
+          <div class="ls-t">Signal</div>
+          <div class="ls-d">See their call</div>
+        </article>
+        <article class="loop6-step n-red">
+          <span class="ls-ring" data-icon="trade" data-icon-size="20"></span>
+          <div class="ls-n">06</div>
+          <div class="ls-t">Trade</div>
+          <div class="ls-d">Take it, if executable</div>
+        </article>
+      </div>
+
+      <p class="t-sm c-3" style="display:flex;align-items:center;justify-content:center;gap:7px;margin-top:var(--mb-s6)">
+        <span data-icon="refresh" data-icon-size="13"></span>
+        <span>The result you share becomes the next trader&rsquo;s discovery.</span>
+      </p>
+    </div>
+  </section>
+  <!-- ==================================================================
+       HOW IT WORKS
+       =================================================================== -->
+  <section class="section section-alt" id="steps">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-eyebrow">Getting started</div>
+        <h2>Four steps, about three minutes</h2>
+        <p>No card, no approval queue, nothing to download from a store.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <span class="step-eyebrow">Sign up</span>
+          <h3>Create your account</h3>
+          <p>Email and a password, or continue straight through with Deriv.</p>
+          <span class="step-time"><span data-icon="clock"></span> about 40 seconds</span>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <span class="step-eyebrow">Authorise</span>
+          <h3>Connect Deriv</h3>
+          <p>Grant the permissions you choose. We never see your Deriv password.</p>
+          <span class="step-time"><span data-icon="clock"></span> about 60 seconds</span>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <span class="step-eyebrow">Personalise</span>
+          <h3>Pick your markets</h3>
+          <p>Star the indices you trade. Their signals, rooms and traders fill your feed.</p>
+          <span class="step-time"><span data-icon="clock"></span> about 30 seconds</span>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <span class="step-eyebrow">Go</span>
+          <h3>Trade and share</h3>
+          <p>Open positions from a pre-filled ticket, then post what you learn back.</p>
+          <span class="step-time"><span data-icon="signals"></span> ongoing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ==================================================================
+       INSTALL / DOWNLOAD
+       =================================================================== -->
+  <section class="section">
+    <div class="container">
+      <div class="download" data-install-block>
+        <h2>Install KonfluenX on your phone</h2>
+        <p>
+          It is a web app, so there is no app store, no review queue and no waiting
+          for updates. Install it once and it opens full screen from your home
+          screen, with your markets cached and ready.
+        </p>
+
+        <div class="hero-cta" style="justify-content:center;margin-top:28px">
+          <button class="btn btn-brand btn-lg" data-install>
+            <span data-icon="download"></span> Install now
+          </button>
+          <a class="btn btn-outline btn-lg" href="users/index.html">
+            <span data-icon="external"></span> Open in browser
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       FAQ
+       =================================================================== -->
+  <section class="section" id="faq">
+    <div class="container container-narrow">
+      <div class="section-head is-centered">
+        <div class="section-eyebrow">Questions</div>
+        <h2>Straight answers</h2>
+        <p>The things people actually ask before signing up.</p>
+      </div>
+
+      <div class="faq">
+        <details open>
+          <summary><span class="q-mark"></span><span class="q-text">Does KonfluenX hold my money?</span></summary>
+          <div class="faq-body">No, and it is built so that it cannot. There is no wallet and no balance in our system. Your funds stay in your Deriv account, trades execute there, and the balance you see here is a timestamped read of Deriv &mdash; not a number we maintain. Deposits and withdrawals hand you off to Deriv or to Kaastro, and we tell you clearly when you are leaving.</div>
+        </details>
+        <details>
+          <summary><span class="q-mark"></span><span class="q-text">Is it free?</span></summary>
+          <div class="faq-body">Yes. Creating an account, following traders, reading signals, joining market rooms and taking the courses all cost nothing. KonfluenX earns through Deriv's official partner programme rather than by charging traders for access.</div>
+        </details>
+        <details>
+          <summary><span class="q-mark"></span><span class="q-text">Do you guarantee the signals?</span></summary>
+          <div class="faq-body">No. Signals and analysis are written by other users, not by KonfluenX. We do not verify that any trade will work, and a boosted signal means we gave a post more visibility &mdash; never that we endorse the outcome. What we <strong>do</strong> guarantee is that the track record you see is honest: signals lock on publish, results resolve from evidence, and retracted signals still count against the author.</div>
+        </details>
+        <details>
+          <summary><span class="q-mark"></span><span class="q-text">Which contracts can I actually trade here?</span></summary>
+          <div class="faq-body">Accumulators, Rise/Fall, Digits and Multipliers on supported synthetic indices, plus others as Deriv's API allows. The platform checks what is genuinely executable for each market before it shows you a trade button &mdash; so if you see one, it works. Anything Deriv cannot execute from here is presented as analysis and points you to the right place instead.</div>
+        </details>
+        <details>
+          <summary><span class="q-mark"></span><span class="q-text">Do I need a Deriv account?</span></summary>
+          <div class="faq-body">To trade, yes. You can browse markets, read signals and take part in the community without one. When you are ready to trade, connect an existing Deriv account or create one from the connect screen.</div>
+        </details>
+        <details>
+          <summary><span class="q-mark"></span><span class="q-text">Is my Deriv login safe?</span></summary>
+          <div class="faq-body">We never see it. Connecting uses Deriv's own OAuth flow: you sign in on Deriv's site and grant specific permissions. We store an encrypted access token, never your password, and you can revoke access from your settings or from Deriv at any time.</div>
+        </details>
+      </div>
+
+      <p class="t-sm c-2" style="text-align:center;margin-top:32px">
+        Still unsure about something?
+        <a class="link" href="contact.html">Ask us directly</a> &mdash; a person answers.
+      </p>
+    </div>
+  </section>
+  <!-- ==================================================================
+       CLOSING CTA
+       =================================================================== -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <h2>Start with the market you already trade</h2>
+        <p>Find its room, see who trades it well, and take it from there.</p>
+        <div class="hero-cta" style="justify-content:center;margin-top:var(--mb-s7)">
+          <a class="btn btn-brand btn-lg" href="auth/register.html">
+            <span data-icon="userplus"></span> Create free account
+          </a>
+          <a class="btn btn-outline btn-lg" href="users/markets/index.html">
+            Explore markets <span data-icon="chevright"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div data-render="site-footer"></div>
+
+<script src="assets/js/core/icons.js"></script>
+<script src="assets/js/core/util.js"></script>
+<script src="assets/js/core/api.js"></script>
+<script src="assets/js/core/collection.js"></script>
+<script src="assets/js/core/charts.js"></script>
+<script src="assets/js/core/ws.js"></script>
+<script src="assets/js/components/cards.js"></script>
+<script src="assets/js/core/shell.js"></script>
+<script src="assets/js/core/pwa.js"></script>
+<script>
+/* Market marquee — seeded from the same source the app uses. */
+MB.ready(function () {
+  /* Market wall — real catalogue rows, live prices */
+  MB.api.list('markets').then(function (rows) {
+    var pick = ['1HZ75V','BOOM1000','frxEURUSD','cryBTCUSD','frxXAUUSD','CRASH500','1HZ100V','OTC_NDX'];
+    var wall = pick.map(function (sym) {
+      return rows.filter(function (m) { return m.symbol === sym; })[0];
+    }).filter(Boolean);
+    document.getElementById('marketWall').innerHTML = wall.map(function (m) {
+      var up = m.stats.change_pct_24h >= 0;
+      return '<a class="wall-tile" href="users/markets/detail.html?symbol=' + m.symbol + '">' +
+        '<div class="n">' + MB.esc(m.short_name) + '</div>' +
+        '<div class="cat">' + MB.esc(MB.catLabel(m.category)) + '</div>' +
+        '<div class="p" data-tick="' + m.symbol + '" data-tick-dp="' + m.decimal_places +
+          '" data-tick-flash>' + MB.fmt.price(m.stats.last_price, m.decimal_places) + '</div>' +
+        '<div class="c ' + (up ? 'c-up' : 'c-down') + '">' + MB.fmt.pct(m.stats.change_pct_24h) + '</div>' +
+        '<div class="s"><span data-spark="' + (up ? 'up' : 'down') + '" data-seed="w' + m.symbol +
+          '" data-h="30" data-sw="2"></span></div></a>';
+    }).join('');
+    MB.mountCharts(document.getElementById('marketWall'));
+    MB.mountTicks(document.getElementById('marketWall'));
+  });
+
+  var pb = document.getElementById('phoneBrand');
+  if (pb) { pb.innerHTML = MB.brand({ href: null, small: true }); }
+
+  var track = document.getElementById('marqueeTrack');
+  if (!track) { return; }
+  var seeds = MB.ws.seeds;
+  var html = '';
+  Object.keys(seeds).forEach(function (sym) {
+    var s = seeds[sym];
+    var up = Math.random() > 0.35;
+    html += '<span class="marquee-item"><span class="n">' + s.name.replace(' Index', '') +
+            '</span><span class="p" data-tick="' + sym + '">' + MB.fmt.price(s.price, s.dp) +
+            '</span><span class="c ' + (up ? 'c-up' : 'c-down') + '">' +
+            MB.fmt.pct(up ? Math.random() * 1.6 : -Math.random() * 1.2) + '</span></span>';
+  });
+  track.innerHTML = html + html;   /* doubled for a seamless loop */
+  MB.mountTicks(track);
+});
+</script>
+</body>
+</html>

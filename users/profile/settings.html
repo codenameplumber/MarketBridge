@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Settings — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Settings" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <a class="list-row" href="index.html" style="border-radius:16px;border:1px solid var(--mb-border);background:var(--mb-surface)">
+      <span id="setAvatar"></span>
+      <span class="grow"><span class="lr-title" style="display:block" id="setName">—</span>
+        <span class="lr-sub" id="setHandle">—</span></span>
+      <span class="lr-chev" data-icon="chevright"></span>
+    </a>
+
+    <section class="page-section">
+      <div class="label">Account</div>
+      <div class="list">
+        <a class="list-row" href="#"><span class="lr-icon" data-icon="settings"></span>
+          <span class="grow lr-title">Account Settings</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../../auth/connect-deriv.html">
+          <span class="lr-icon" data-icon="link"></span>
+          <span class="grow"><span class="lr-title" style="display:block">Connected Deriv Account</span>
+          <span class="lr-sub" id="setDeriv">—</span></span>
+          <span class="badge badge-active none">Active</span></a>
+        <a class="list-row" href="#"><span class="lr-icon" data-icon="lock"></span>
+          <span class="grow lr-title">Security</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../notifications.html"><span class="lr-icon" data-icon="bell"></span>
+          <span class="grow lr-title">Notifications</span><span class="lr-chev" data-icon="chevright"></span></a>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="label">Appearance</div>
+      <div class="list">
+        <div class="list-row"><span class="lr-icon" data-icon="sun"></span>
+          <span class="grow lr-title">Theme</span>
+          <div class="segment none" data-group id="themeSeg" style="width:auto">
+            <button data-value="light">Light</button>
+            <button data-value="dark">Dark</button>
+            <button data-value="system">Auto</button>
+          </div></div>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="label">Privacy &amp; legal</div>
+      <div class="list">
+        <a class="list-row" href="#"><span class="lr-icon" data-icon="eye"></span>
+          <span class="grow lr-title">Privacy</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../../faq.html"><span class="lr-icon" data-icon="info"></span>
+          <span class="grow lr-title">Help &amp; Support</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../../terms.html"><span class="lr-icon" data-icon="file"></span>
+          <span class="grow lr-title">Terms &amp; Conditions</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../../privacy.html"><span class="lr-icon" data-icon="shield"></span>
+          <span class="grow lr-title">Privacy Policy</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../../risk-disclosure.html"><span class="lr-icon" data-icon="warning"></span>
+          <span class="grow lr-title">Risk Disclosure</span><span class="lr-chev" data-icon="chevright"></span></a>
+        <a class="list-row" href="../../signal-disclaimer.html"><span class="lr-icon" data-icon="signals"></span>
+          <span class="grow lr-title">Signal Disclaimer</span><span class="lr-chev" data-icon="chevright"></span></a>
+      </div>
+    </section>
+
+    <section class="page-section">
+      <div class="label">App</div>
+      <div class="list">
+        <button class="list-row" data-install><span class="lr-icon" data-icon="download"></span>
+          <span class="grow lr-title" style="text-align:left">Install KonfluenX</span>
+          <span class="lr-chev" data-icon="chevright"></span></button>
+      </div>
+    </section>
+
+    <div class="list">
+      <a class="list-row is-danger" href="../../auth/login.html">
+        <span class="lr-icon" data-icon="logout"></span>
+        <span class="grow lr-title">Log out</span></a>
+    </div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  MB.api.get('me').then(function (r) {
+    var u = r.data;
+    document.getElementById('setAvatar').outerHTML = MB.avatar(u, 'avatar-sm');
+    document.getElementById('setName').textContent = u.display_name;
+    document.getElementById('setHandle').textContent = '@' + u.username;
+    document.getElementById('setDeriv').textContent =
+      u.deriv.connected ? u.deriv.deriv_id + ' · ' + u.deriv.account_type : 'Not connected';
+  });
+
+  var seg = document.getElementById('themeSeg');
+  var cur = MB.theme.get();
+  MB.$$('button', seg).forEach(function (b) {
+    b.classList.toggle('is-active', b.getAttribute('data-value') === cur);
+  });
+  seg.addEventListener('mb:change', function (e) {
+    MB.theme.set(e.detail.value);
+    MB.toast('Theme: ' + e.detail.value);
+  });
+});
+</script>
+</body>
+</html>

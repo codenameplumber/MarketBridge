@@ -1,0 +1,118 @@
+{
+  "data": [
+    {
+      "id": "n01",
+      "type": "signal_posted",
+      "title": "FX_ProTrader posted a new signal",
+      "body": "V75 (1s) Index · BUY",
+      "deep_link": "signals/detail-executable.html",
+      "actor": {
+        "id": "usr_fx",
+        "username": "FX_ProTrader",
+        "display_name": "FX_ProTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 78,
+        "signals_count": 156,
+        "followers": 1245
+      },
+      "read_at": null,
+      "created_at": "2026-09-01T23:34:35.416Z"
+    },
+    {
+      "id": "n02",
+      "type": "signal_result",
+      "title": "Your signal reached TP1",
+      "body": "Boom 1000 Index",
+      "deep_link": "signals/index.html",
+      "actor": null,
+      "read_at": null,
+      "created_at": "2026-09-01T23:21:35.416Z"
+    },
+    {
+      "id": "n03",
+      "type": "comment",
+      "title": "JamesFX commented on your post",
+      "body": "Check my analysis on V75…",
+      "deep_link": "community/post-detail.html",
+      "actor": {
+        "id": "usr_james",
+        "username": "JamesFX",
+        "display_name": "JamesFX",
+        "avatar_url": null,
+        "is_verified": false,
+        "is_pro": true,
+        "win_rate": 69,
+        "signals_count": 98,
+        "followers": 611
+      },
+      "read_at": null,
+      "created_at": "2026-09-01T22:36:35.417Z"
+    },
+    {
+      "id": "n04",
+      "type": "follow",
+      "title": "QueenTrader started following you",
+      "body": "",
+      "deep_link": "signals/provider.html",
+      "actor": {
+        "id": "usr_queen",
+        "username": "QueenTrader",
+        "display_name": "QueenTrader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 74,
+        "signals_count": 132,
+        "followers": 962
+      },
+      "read_at": "2026-09-01T21:56:35.417Z",
+      "created_at": "2026-09-01T21:36:35.417Z"
+    },
+    {
+      "id": "n05",
+      "type": "signal_updated",
+      "title": "A signal you follow was updated",
+      "body": "Crash 500 Index",
+      "deep_link": "signals/index.html",
+      "actor": {
+        "id": "usr_alpha",
+        "username": "AlphaKing",
+        "display_name": "AlphaKing",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": 71,
+        "signals_count": 201,
+        "followers": 842
+      },
+      "read_at": "2026-09-01T21:06:35.417Z",
+      "created_at": "2026-09-01T20:36:35.417Z"
+    },
+    {
+      "id": "n06",
+      "type": "system",
+      "title": "New mentorship session scheduled",
+      "body": "Live Market Analysis · 8PM GMT+1",
+      "deep_link": "resources/index.html",
+      "actor": {
+        "id": "usr_mb",
+        "username": "KonfluenX",
+        "display_name": "KonfluenX Official",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": false,
+        "win_rate": null,
+        "signals_count": 0,
+        "followers": 24500
+      },
+      "read_at": "2026-09-01T20:16:35.417Z",
+      "created_at": "2026-09-01T18:36:35.417Z"
+    }
+  ],
+  "meta": {
+    "total": 6,
+    "unread": 3
+  }
+}

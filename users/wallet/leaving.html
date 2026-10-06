@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Leaving KonfluenX — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-root="../../" data-title="Leaving KonfluenX" data-back="deposit.html" data-bare data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page page-full">
+
+    <div style="text-align:center;padding-top:24px">
+      <h1 class="t-h1">You are leaving<br><span class="c-up">KonfluenX</span></h1>
+
+      <div class="leaving-hop">
+        <span class="hop-node" style="color:var(--mb-green)" data-icon="markets" data-icon-size="28"></span>
+        <span class="hop-arrow" data-icon="chevright" data-icon-size="22"></span>
+        <span class="hop-node" style="color:var(--mb-green);border-color:var(--mb-green-line)">
+          <span data-icon="check" data-icon-size="24"></span></span>
+        <span class="hop-arrow" data-icon="chevright" data-icon-size="22"></span>
+        <span class="hop-node" style="font-weight:800;font-size:11px;color:var(--mb-green)">KAASTRO</span>
+      </div>
+
+      <p class="t-sm c-2" id="leadText">
+        You are about to be redirected to Kaastro to complete your deposit securely.
+      </p>
+    </div>
+
+    <div class="leaving-points">
+      <div class="leaving-point"><span data-icon="shield"></span>
+        <span>Kaastro is a separate service operated by an independent company.</span></div>
+      <div class="leaving-point"><span data-icon="users"></span>
+        <span>You may need to create an account or verify your identity with them.</span></div>
+      <div class="leaving-point"><span data-icon="lock"></span>
+        <span>Your funds move between Kaastro and Deriv. KonfluenX never holds them.</span></div>
+      <div class="leaving-point"><span data-icon="info"></span>
+        <span>Kaastro's own terms, fees and processing times apply to this transaction.</span></div>
+    </div>
+
+    <button class="btn btn-primary btn-block btn-lg" id="btnGo">
+      Continue to Kaastro <span data-icon="external"></span></button>
+    <a class="btn btn-outline btn-block mt3" href="deposit.html">Cancel</a>
+
+    <p class="t-xs c-3 mt4" style="text-align:center">
+      Your acknowledgement of this notice is recorded with its version.
+    </p>
+  </main>
+
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var q = new URLSearchParams(location.search);
+  var dir = q.get('dir') === 'withdrawal' ? 'withdrawal' : 'deposit';
+  document.getElementById('leadText').textContent =
+    'You are about to be redirected to Kaastro to complete your ' + dir + ' securely.';
+  MB.$('.topbar-title').textContent = 'Leaving KonfluenX';
+
+  document.getElementById('btnGo').addEventListener('click', function () {
+    this.disabled = true;
+    this.textContent = 'Redirecting…';
+    /* The consent, its text version, and the destination are all recorded
+       before the redirect — this is the audit trail for the handoff. */
+    MB.api.post('payments/intents/consent', {
+      destination: 'kaastro', direction: dir, consent_text_version: '1.0'
+    }).then(function () {
+      MB.toast('Consent recorded — opening Kaastro');
+    });
+  });
+});
+</script>
+</body>
+</html>

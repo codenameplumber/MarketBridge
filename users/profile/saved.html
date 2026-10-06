@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saved — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Saved" data-sub="Everything you bookmarked" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div class="chips" data-group id="savedTabs">
+      <button class="chip is-active" data-value="signals">Signals <span id="cSignals">0</span></button>
+      <button class="chip" data-value="posts">Posts <span id="cPosts">0</span></button>
+      <button class="chip" data-value="resources">Resources <span id="cResources">0</span></button>
+      <button class="chip" data-value="markets">Markets <span id="cMarkets">0</span></button>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-count"><span id="savedCount">0</span> saved</span>
+      <span class="grow"></span>
+      <button class="btn btn-ghost btn-sm" id="btnClear">
+        <span data-icon="trash"></span> Clear this tab</button>
+    </div>
+
+    <section id="savedList" class="stack g3"></section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+
+  /* Saved holds references only. The record itself is always read from its
+     own collection, so a bookmark can never show a stale copy. */
+  Promise.all([
+    MB.api.get('saved'),
+    MB.api.list('signals'),
+    MB.api.list('posts'),
+    MB.api.list('resources'),
+    MB.api.list('markets')
+  ]).then(function (r) {
+    var refs = r[0].data;
+    var by = function (rows, key, ids) {
+      var want = {};
+      ids.forEach(function (id) { want[id] = true; });
+      return rows.filter(function (row) { return want[row[key]]; });
+    };
+
+    var sets = {
+      signals:   by(r[1], 'id', refs.signals),
+      posts:     by(r[2], 'id', refs.posts),
+      resources: by(r[3], 'id', refs.resources),
+      markets:   by(r[4], 'symbol', refs.markets)
+    };
+
+    var templates = {
+      signals:   MB.card.signal,
+      posts:     MB.card.post,
+      resources: MB.card.resource,
+      markets:   MB.card.mktRow
+    };
+
+    Object.keys(sets).forEach(function (k) {
+      var el = MB.$('#c' + k.charAt(0).toUpperCase() + k.slice(1));
+      if (el) { el.textContent = sets[k].length; }
+    });
+
+    /* One collection over every bookmark, tagged by kind. The tab is just a
+       filter, so a heavy saver gets paging on each tab for free. */
+    var all = [];
+    Object.keys(sets).forEach(function (kind) {
+      sets[kind].forEach(function (row) { all.push({ kind: kind, row: row }); });
+    });
+
+    var current = 'signals';
+    var savedList = MB.collection({
+      data: all, into: '#savedList', perPage: 8, mode: 'more',
+      countInto: '#savedCount', skeleton: false,
+      initial: { kind: 'signals' },
+      filters: { kind: function (x, v) { return x.kind === v; } },
+      template: function (x) { return templates[x.kind](x.row); },
+      emptyIcon: 'bookmark', emptyTitle: 'Nothing saved here yet',
+      emptyText: 'Tap the bookmark on anything to keep it in this list.'
+    });
+
+    MB.$('#savedTabs').addEventListener('mb:change', function (e) {
+      current = e.detail.value;
+      savedList.set('kind', current);
+    });
+
+    MB.$('#btnClear').addEventListener('click', function () {
+      MB.confirm({
+        title: 'Clear saved ' + current + '?',
+        body: 'This removes ' + sets[current].length + ' bookmark' +
+              (sets[current].length === 1 ? '' : 's') +
+              '. The ' + current.replace(/s$/, '') + 's themselves are not deleted.',
+        confirm: 'Clear',
+        danger: true
+      }).then(function (ok) {
+        if (!ok) { return; }
+        all = all.filter(function (x) { return x.kind !== current; });
+        sets[current] = [];
+        var el = MB.$('#c' + current.charAt(0).toUpperCase() + current.slice(1));
+        if (el) { el.textContent = '0'; }
+        savedList.replace(all);
+        MB.toast('Saved ' + current + ' cleared', 'ok');
+      });
+    });
+  });
+});
+</script>
+</body>
+</html>

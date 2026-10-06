@@ -1,0 +1,515 @@
+/* ==========================================================================
+   KonfluenX — ADMIN CONSOLE
+   Deliberately separate from the customer app: desktop-first, dense,
+   sidebar navigation. Scanned and operated, not read.
+   ========================================================================== */
+
+.admin {
+  display: grid;
+  grid-template-columns: var(--mb-admin-rail) minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--mb-bg);
+}
+
+/* ==========================================================================
+   SIDEBAR
+   ========================================================================== */
+.admin-rail {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: var(--mb-surface); border-right: 1px solid var(--mb-border);
+  display: flex; flex-direction: column;
+  padding: var(--mb-s6) var(--mb-s4);
+}
+.admin-brand { display: flex; align-items: center; gap: var(--mb-s2); padding: 0 var(--mb-s2) var(--mb-s5); }
+.admin-brand .tag {
+  font-size: 9px; font-weight: var(--mb-w-black); letter-spacing: .12em;
+  color: var(--mb-text-3); text-transform: uppercase;
+}
+.admin-nav { display: flex; flex-direction: column; gap: 2px; }
+.admin-nav a {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: 10px var(--mb-s3); border-radius: var(--mb-r-sm);
+  font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); color: var(--mb-text-2);
+  transition: background var(--mb-fast) var(--mb-ease), color var(--mb-fast) var(--mb-ease);
+}
+.admin-nav a svg { width: 18px; height: 18px; flex: none; }
+.admin-nav a:hover { background: var(--mb-surface-2); color: var(--mb-text); }
+.admin-nav a.is-active { background: var(--mb-green); color: var(--mb-text-inv); }
+.admin-nav a .count {
+  margin-left: auto; min-width: 20px; height: 18px; padding: 0 5px;
+  border-radius: var(--mb-r-pill); background: var(--mb-sell); color: #fff;
+  font-size: 10px; font-weight: var(--mb-w-bold);
+  display: flex; align-items: center; justify-content: center;
+}
+.admin-nav a.is-active .count { background: rgba(0,0,0,.28); color: #fff; }
+.admin-nav-group {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--mb-text-3); font-weight: var(--mb-w-bold);
+  padding: var(--mb-s4) var(--mb-s3) var(--mb-s2);
+}
+.admin-rail-foot { margin-top: auto; padding-top: var(--mb-s4); border-top: 1px solid var(--mb-border); }
+
+/* ==========================================================================
+   MAIN
+   ========================================================================== */
+.admin-main { display: flex; flex-direction: column; min-width: 0; }
+.admin-topbar {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: var(--mb-s4);
+  padding: var(--mb-s5) var(--mb-s8);
+  background: color-mix(in srgb, var(--mb-bg) 88%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--mb-border);
+}
+.admin-topbar h1 { font-size: var(--mb-t-h2); font-weight: var(--mb-w-bold); letter-spacing: -.02em; }
+.admin-topbar .sub { font-size: var(--mb-t-xs); color: var(--mb-text-3); margin-top: 4px; }
+.admin-search { max-width: 300px; flex: 1; }
+.admin-search .input { height: 38px; font-size: var(--mb-t-sm); }
+.admin-search .input-icon svg { width: 16px; height: 16px; left: var(--mb-s3); }
+.admin-search .input { padding-left: 38px; }
+
+.admin-body {
+  padding: var(--mb-s7) var(--mb-s8) var(--mb-s12);
+  display: flex; flex-direction: column; gap: var(--mb-s6);
+}
+
+/* Burger for narrow screens */
+.admin-burger { display: none; }
+@media (max-width: 1020px) {
+  /* minmax(0,1fr), not 1fr: a plain 1fr track cannot shrink below its
+     content's min-content width, so one wide table forced the entire
+     console wider than the phone and everything clipped at the edge. */
+  .admin { grid-template-columns: minmax(0, 1fr); }
+  .admin-rail {
+    position: fixed; left: 0; top: 0; bottom: 0; z-index: 120;
+    width: var(--mb-admin-rail); transform: translateX(-100%);
+    transition: transform var(--mb-base) var(--mb-ease);
+    box-shadow: var(--mb-shadow-lg);
+  }
+  .admin-rail.is-open { transform: none; }
+  .admin-burger { display: inline-flex; }
+  .admin-body { padding: var(--mb-s5) var(--mb-s5) var(--mb-s10); }
+  .admin-topbar { padding: var(--mb-s4) var(--mb-s5); }
+}
+.admin-scrim {
+  position: fixed; inset: 0; background: var(--mb-overlay); z-index: 110;
+  opacity: 0; pointer-events: none; transition: opacity var(--mb-base) var(--mb-ease);
+}
+.admin-scrim.is-open { opacity: 1; pointer-events: auto; }
+
+/* ==========================================================================
+   KPI TILES
+   ========================================================================== */
+.kpi-grid { display: grid; gap: var(--mb-s3); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 760px)  { .kpi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1180px) { .kpi-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.kpi {
+  padding: var(--mb-s4); border-radius: var(--mb-r-md);
+  background: var(--mb-surface); border: 1px solid var(--mb-border);
+}
+.kpi .k { font-size: var(--mb-t-xs); color: var(--mb-text-3); font-weight: var(--mb-w-semi); text-transform: uppercase; letter-spacing: .06em; }
+.kpi .v { font-size: 26px; font-weight: var(--mb-w-black); letter-spacing: -.03em; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.kpi .d { font-size: var(--mb-t-xs); font-weight: var(--mb-w-bold); margin-top: 4px; display: flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.kpi .d svg { width: 13px; height: 13px; }
+
+/* ==========================================================================
+   PANELS
+   ========================================================================== */
+.panel { background: var(--mb-surface); border: 1px solid var(--mb-border); border-radius: var(--mb-r-md); overflow: hidden; }
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--mb-s3);
+  padding: var(--mb-s4) var(--mb-s5); border-bottom: 1px solid var(--mb-border);
+}
+.panel-head h2, .panel-head h3 { font-size: var(--mb-t-h3); font-weight: var(--mb-w-bold); }
+.panel-body { padding: var(--mb-s5); }
+.panel-body-flush { padding: 0; }
+
+.admin-cols { display: grid; gap: var(--mb-s4); }
+@media (min-width: 1100px) { .admin-cols.c-2 { grid-template-columns: 1.5fr 1fr; } }
+@media (min-width: 900px)  { .admin-cols.c-even { grid-template-columns: 1fr 1fr; } }
+
+/* Filter toolbar above tables */
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--mb-s2); padding: var(--mb-s3) var(--mb-s4); border-bottom: 1px solid var(--mb-border); }
+.toolbar .select, .toolbar .input { height: 36px; font-size: var(--mb-t-sm); width: auto; min-width: 140px; }
+.toolbar .grow { flex: 1; }
+
+/* Row actions */
+.row-actions { display: flex; gap: 4px; justify-content: flex-end; }
+.row-action {
+  width: 30px; height: 30px; border-radius: var(--mb-r-xs);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--mb-text-3); border: 1px solid transparent;
+}
+.row-action:hover { background: var(--mb-surface-3); color: var(--mb-text); }
+.row-action.is-approve:hover { color: var(--mb-green); }
+.row-action.is-reject:hover { color: var(--mb-sell); }
+.row-action svg { width: 15px; height: 15px; }
+
+/* Compact user cell inside tables */
+.cell-user { display: flex; align-items: center; gap: var(--mb-s2); }
+.cell-user .n { font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); }
+.cell-user .h { font-size: var(--mb-t-xs); color: var(--mb-text-3); }
+
+/* Capability registry editor — the admin surface for §02 */
+.cap-row { display: flex; align-items: center; gap: var(--mb-s3); padding: var(--mb-s3) var(--mb-s4); border-bottom: 1px solid var(--mb-border); }
+.cap-row:last-child { border-bottom: 0; }
+.cap-mode {
+  font-size: 10px; font-weight: var(--mb-w-black); letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: var(--mb-r-xs);
+}
+.cap-mode.m-native   { background: var(--mb-green-soft); color: var(--mb-green); }
+.cap-mode.m-partial  { background: var(--mb-warn-soft);  color: var(--mb-warn); }
+.cap-mode.m-analysis { background: var(--mb-sell-soft);  color: var(--mb-sell); }
+.cap-mode.m-deferred { background: var(--mb-surface-2);  color: var(--mb-text-3); }
+.cap-verified { font-size: var(--mb-t-xs); color: var(--mb-text-3); font-variant-numeric: tabular-nums; }
+.cap-verified.is-stale { color: var(--mb-warn); }
+
+/* Simple bar chart for the admin dashboard */
+.bars { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding-top: var(--mb-s3); }
+.bars .bar {
+  flex: 1; min-width: 0; min-height: 4px;
+  background: var(--mb-green-soft); border-radius: 5px 5px 0 0;
+  display: flex; align-items: flex-end;
+  transition: background var(--mb-fast) var(--mb-ease);
+}
+.bars .bar:hover { background: var(--mb-green-line); }
+.bars .bar > i {
+  display: block; width: 100%; height: 100%;
+  background: linear-gradient(180deg, var(--mb-green), color-mix(in srgb, var(--mb-green) 55%, transparent));
+  border-radius: inherit;
+}
+.bars-axis { display: flex; gap: 6px; margin-top: 6px; }
+.bars-axis span { flex: 1; text-align: center; font-size: 10px; color: var(--mb-text-3); }
+
+/* ==========================================================================
+   STAT SLIDER
+   A scrollable band of stat cards with arrow controls — used where there
+   are more numbers than fit, and scanning them matters more than a grid.
+   ========================================================================== */
+.statslider { position: relative; }
+.statslider-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--mb-s3); margin-bottom: var(--mb-s3);
+}
+.statslider-head h2 { font-size: var(--mb-t-h3); font-weight: var(--mb-w-bold); }
+.statslider-nav { display: flex; gap: var(--mb-s2); }
+.statslider-nav button {
+  width: 32px; height: 32px; border-radius: var(--mb-r-sm);
+  border: 1px solid var(--mb-border); background: var(--mb-surface);
+  color: var(--mb-text-2); display: flex; align-items: center; justify-content: center;
+  transition: all var(--mb-fast) var(--mb-ease);
+}
+.statslider-nav button:hover:not([disabled]) { color: var(--mb-text); border-color: var(--mb-border-2); }
+.statslider-nav button[disabled] { opacity: .35; pointer-events: none; }
+.statslider-nav svg { width: 15px; height: 15px; }
+
+.statslider-track {
+  display: flex; gap: var(--mb-s3); overflow-x: auto;
+  scroll-snap-type: x mandatory; scroll-behavior: smooth;
+  scrollbar-width: none; padding-bottom: 2px;
+}
+.statslider-track::-webkit-scrollbar { display: none; }
+.statslider-track > * { scroll-snap-align: start; flex: 0 0 auto; }
+
+.stat-card {
+  width: 210px; padding: var(--mb-s4);
+  border: 1px solid var(--mb-border); border-radius: var(--mb-r-md);
+  background: var(--mb-surface); position: relative; overflow: hidden;
+}
+.stat-card .sc-k {
+  font-size: var(--mb-t-xs); color: var(--mb-text-3); font-weight: var(--mb-w-semi);
+  text-transform: uppercase; letter-spacing: .07em;
+}
+.stat-card .sc-v {
+  font-size: 27px; font-weight: var(--mb-w-black); letter-spacing: -.03em;
+  margin-top: 6px; font-variant-numeric: tabular-nums;
+}
+.stat-card .sc-d {
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-bold); margin-top: 4px;
+  display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums;
+}
+.stat-card .sc-d svg { width: 13px; height: 13px; }
+.stat-card .sc-spark { margin-top: var(--mb-s3); height: 30px; }
+.stat-card.is-accent { border-color: var(--mb-green-line); background: var(--mb-green-soft); }
+.stat-card.is-warn   { border-color: var(--mb-warn); background: var(--mb-warn-soft); }
+.stat-card.is-danger { border-color: var(--mb-sell-line); background: var(--mb-sell-soft); }
+
+/* ==========================================================================
+   DETAIL PAGES
+   ========================================================================== */
+.detail-hero {
+  display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--mb-s5);
+  padding: var(--mb-s7); border: 1px solid var(--mb-border);
+  border-radius: var(--mb-r-md); background: var(--mb-surface);
+}
+.detail-hero .dh-main { flex: 1; min-width: 240px; }
+.detail-hero .dh-name {
+  font-size: clamp(20px, 2.6vw, 26px); font-weight: var(--mb-w-black); letter-spacing: -.03em;
+}
+.detail-hero .dh-sub { font-size: var(--mb-t-sm); color: var(--mb-text-3); margin-top: 2px; }
+.detail-hero .dh-badges { display: flex; flex-wrap: wrap; gap: var(--mb-s2); margin-top: var(--mb-s3); }
+.detail-hero .dh-actions { display: flex; flex-wrap: wrap; gap: var(--mb-s2); }
+
+.detail-cols { display: grid; gap: var(--mb-s4); }
+@media (min-width: 1080px) { .detail-cols { grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); align-items: start; } }
+@media (min-width: 900px)  { .detail-cols.even { grid-template-columns: minmax(0,1fr) minmax(0,1fr); } }
+
+/* key / value list */
+.info-list { display: flex; flex-direction: column; }
+.info-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--mb-s4); padding: var(--mb-s3) 0;
+  border-bottom: 1px solid var(--mb-border); font-size: var(--mb-t-sm);
+}
+.info-row:last-child { border-bottom: 0; }
+.info-row .ir-k { color: var(--mb-text-3); font-weight: var(--mb-w-semi); white-space: nowrap; }
+.info-row .ir-v { color: var(--mb-text); text-align: right; font-weight: var(--mb-w-medium); word-break: break-word; }
+.info-row .ir-v.num { font-variant-numeric: tabular-nums; }
+.info-row .ir-v .sub { display: block; font-size: var(--mb-t-xs); color: var(--mb-text-3); font-weight: var(--mb-w-regular); }
+
+/* mini stat row inside a panel */
+.mini-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 1px; background: var(--mb-border); }
+.mini-stats > div { background: var(--mb-surface); padding: var(--mb-s3); text-align: center; }
+.mini-stats .v { font-size: var(--mb-t-h2); font-weight: var(--mb-w-black); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.mini-stats .k { font-size: 10px; color: var(--mb-text-3); text-transform: uppercase; letter-spacing: .07em; font-weight: var(--mb-w-semi); margin-top: 2px; }
+
+/* session / device rows */
+.session-row {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s3) var(--mb-s4); border-bottom: 1px solid var(--mb-border);
+}
+.session-row:last-child { border-bottom: 0; }
+.session-row .sr-ic {
+  width: 34px; height: 34px; flex: none; border-radius: var(--mb-r-sm);
+  background: var(--mb-surface-2); color: var(--mb-text-2);
+  display: flex; align-items: center; justify-content: center;
+}
+.session-row .sr-ic svg { width: 17px; height: 17px; }
+.session-row .sr-d { font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); }
+.session-row .sr-m { font-size: var(--mb-t-xs); color: var(--mb-text-3); font-variant-numeric: tabular-nums; }
+
+/* admin tab strip */
+.admin-tabs {
+  display: flex; gap: var(--mb-s5); border-bottom: 1px solid var(--mb-border);
+  overflow-x: auto; scrollbar-width: none;
+}
+.admin-tabs::-webkit-scrollbar { display: none; }
+.admin-tabs button {
+  flex: none; padding: var(--mb-s3) 0; font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi);
+  color: var(--mb-text-2); border-bottom: 2px solid transparent; margin-bottom: -1px;
+  white-space: nowrap; transition: color var(--mb-fast) var(--mb-ease);
+}
+.admin-tabs button:hover { color: var(--mb-text); }
+.admin-tabs button.is-active { color: var(--mb-green); border-bottom-color: var(--mb-green); }
+
+/* forms in the admin */
+.form-grid { display: grid; gap: var(--mb-s4); grid-template-columns: 1fr; }
+@media (min-width: 720px) { .form-grid.cols-2 { grid-template-columns: 1fr 1fr; } }
+.form-grid .full { grid-column: 1 / -1; }
+.form-actions {
+  display: flex; flex-wrap: wrap; gap: var(--mb-s2); justify-content: flex-end;
+  padding-top: var(--mb-s4); border-top: 1px solid var(--mb-border); margin-top: var(--mb-s5);
+}
+
+/* file drop for admin uploads */
+.drop-zone {
+  border: 1px dashed var(--mb-border-2); border-radius: var(--mb-r-md);
+  padding: var(--mb-s7) var(--mb-s5); text-align: center;
+  background: var(--mb-bg-2); transition: all var(--mb-fast) var(--mb-ease);
+}
+.drop-zone.is-drop { border-color: var(--mb-green); background: var(--mb-green-soft); }
+.drop-zone svg { width: 26px; height: 26px; color: var(--mb-text-3); margin: 0 auto var(--mb-s2); }
+.drop-zone .dz-t { font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); }
+.drop-zone .dz-s { font-size: var(--mb-t-xs); color: var(--mb-text-3); margin-top: 3px; }
+
+/* curriculum builder */
+.lesson-row {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s3) var(--mb-s4); border-bottom: 1px solid var(--mb-border);
+  background: var(--mb-surface);
+}
+.lesson-row:last-child { border-bottom: 0; }
+.lesson-row .ln-n {
+  width: 26px; height: 26px; flex: none; border-radius: var(--mb-r-xs);
+  background: var(--mb-surface-2); color: var(--mb-text-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-bold); font-variant-numeric: tabular-nums;
+}
+.lesson-row .ln-t { font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); }
+.lesson-row .ln-m { font-size: var(--mb-t-xs); color: var(--mb-text-3); }
+.lesson-row .grip { color: var(--mb-text-3); cursor: grab; }
+
+/* price toggle */
+.price-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: var(--mb-s2); }
+.price-toggle button {
+  padding: var(--mb-s4); border-radius: var(--mb-r-md);
+  border: 1px solid var(--mb-border-2); background: var(--mb-surface-2);
+  text-align: left; transition: all var(--mb-fast) var(--mb-ease);
+}
+.price-toggle button .pt-t { font-size: var(--mb-t-body); font-weight: var(--mb-w-bold); }
+.price-toggle button .pt-d { font-size: var(--mb-t-xs); color: var(--mb-text-2); margin-top: 3px; }
+.price-toggle button.is-active { border-color: var(--mb-green); background: var(--mb-green-soft); }
+.price-toggle button.is-active .pt-t { color: var(--mb-green); }
+
+/* bulk action bar */
+.bulk-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--mb-s2);
+  padding: var(--mb-s3) var(--mb-s4); border-radius: var(--mb-r-md);
+  background: var(--mb-green-soft); border: 1px solid var(--mb-green-line);
+  margin-bottom: var(--mb-s3);
+}
+.bulk-bar .bb-t { font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); }
+
+/* slide-over panel for quick views */
+.slideover-scrim {
+  position: fixed; inset: 0; z-index: 190; background: rgba(3,6,9,.6);
+  opacity: 0; pointer-events: none; transition: opacity var(--mb-base) var(--mb-ease);
+}
+.slideover-scrim.is-open { opacity: 1; pointer-events: auto; }
+.slideover {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 200;
+  width: min(520px, 94vw); background: var(--mb-bg);
+  border-left: 1px solid var(--mb-border); box-shadow: -24px 0 60px -30px rgba(0,0,0,.8);
+  transform: translateX(102%); transition: transform var(--mb-slow) var(--mb-ease);
+  display: flex; flex-direction: column; overflow-y: auto;
+}
+.slideover.is-open { transform: translateX(0); }
+.slideover-head {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--mb-s4);
+  padding: var(--mb-s5); border-bottom: 1px solid var(--mb-border); position: sticky; top: 0;
+  background: var(--mb-bg); z-index: 2;
+}
+.slideover-body { padding: var(--mb-s5); display: flex; flex-direction: column; gap: var(--mb-s5); }
+
+/* a link that looks like a table cell but behaves like a row action */
+.cell-link { color: inherit; }
+.cell-link:hover .n { color: var(--mb-green); }
+
+/* Summary tables inside a half-width dashboard panel need tighter cells than
+   a full-page datatable, and must not force horizontal scroll. */
+table.data.is-compact { min-width: 0; }
+table.data.is-compact th { padding: var(--mb-s3) var(--mb-s4); }
+table.data.is-compact td { padding: var(--mb-s3) var(--mb-s4); }
+
+/* ==========================================================================
+   ROLES — badges, the manifest comparison, and the portal each one owns
+   Tone follows the ladder: moderator informational, admin green (operates),
+   superadmin brand red (owns). Red here means authority, not danger.
+   ========================================================================== */
+.role-tag {
+  display: inline-flex; align-items: center; padding: 3px var(--mb-s2);
+  border-radius: var(--mb-r-pill); font-size: 10px; font-weight: var(--mb-w-bold);
+  letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.role-tag.role-moderator  { background: var(--mb-info-soft);  color: var(--mb-info);  border-color: var(--mb-info-line); }
+.role-tag.role-admin      { background: var(--mb-green-soft); color: var(--mb-green); border-color: var(--mb-green-line); }
+.role-tag.role-superadmin { background: var(--vy-brand-soft); color: var(--vy-brand); border-color: var(--vy-brand-line); }
+
+.admin-brand .role-tag { margin-left: auto; }
+
+.role-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--mb-s3);
+}
+.role-card {
+  padding: var(--mb-s4); border-radius: var(--mb-r-md);
+  border: 1px solid var(--mb-border); background: var(--mb-surface-2);
+}
+.role-card.role-moderator  { border-color: var(--mb-info-line); }
+.role-card.role-admin      { border-color: var(--mb-green-line); }
+.role-card.role-superadmin { border-color: var(--vy-brand-line); }
+.role-pages { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.role-pill {
+  font-size: 10px; padding: 2px 7px; border-radius: var(--mb-r-pill);
+  background: var(--mb-surface-3); color: var(--mb-text-2);
+}
+
+/* A high-severity audit row reads red at the icon */
+.lr-icon.is-danger { color: var(--mb-sell); background: var(--mb-sell-soft); }
+
+/* ==========================================================================
+   RESPONSIVE STAFF SHELL
+
+   The rail already collapses to a drawer at 1020px. Below that the console
+   still wore desktop chrome: full-size page padding, an h2 title, and a
+   header row that squeezed its actions instead of moving them. These rules
+   scale the shell down the rest of the way.
+   ========================================================================== */
+
+/* ---- Tablet and below ------------------------------------------------- */
+@media (max-width: 900px) {
+  .admin-topbar { padding: var(--mb-s4) var(--mb-s5); gap: var(--mb-s3); }
+  .admin-topbar h1 { font-size: var(--mb-t-h3); }
+  .admin-body { padding: var(--mb-s5) var(--mb-s5) var(--mb-s10); gap: var(--mb-s5); }
+  .admin-card, .panel { border-radius: var(--mb-r-sm); }
+  .detail-hero { padding: var(--mb-s5); gap: var(--mb-s4); }
+}
+
+/* ---- Phone ------------------------------------------------------------ */
+@media (max-width: 620px) {
+  /* The title keeps the first row; actions drop to their own row so labels
+     stay readable instead of being crushed. */
+  .admin-topbar {
+    flex-wrap: wrap;
+    padding: var(--mb-s3) var(--mb-s4);
+    gap: var(--mb-s2) var(--mb-s3);
+  }
+  .admin-topbar > .grow { flex: 1 1 100%; order: 1; min-width: 0; }
+  .admin-topbar .admin-burger,
+  .admin-topbar > a.icon-btn { order: 0; }
+  .admin-topbar .theme-toggle,
+  .admin-topbar > .btn { order: 2; }
+  /* Sits on the second row at its natural width, pushed right — a primary
+     action that spans the whole screen reads as the page's subject. */
+  .admin-topbar > .btn { flex: 0 1 auto; margin-left: auto; }
+
+  .admin-topbar h1 {
+    font-size: var(--mb-t-body); font-weight: var(--mb-w-bold);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  /* The subtitle repeats what the nav already said — drop it, don't wrap it. */
+  .admin-topbar .sub { display: none; }
+  .admin-search { display: none; }
+
+  .admin-body { padding: var(--mb-s4) var(--mb-s3) var(--mb-s10); gap: var(--mb-s4); }
+
+  /* Filters and bulk actions stack rather than overflow */
+  .dt-toolbar { padding: var(--mb-s3); gap: var(--mb-s2); }
+  .dt-toolbar .dt-search { flex: 1 1 100%; max-width: none; min-width: 0; }
+  .dt-toolbar .select { flex: 1 1 45%; min-width: 0; }
+  .dt-per { flex: 1 1 100%; justify-content: flex-end; }
+  .dt-per .select { flex: 0 0 auto; width: auto; min-width: 74px; }
+  .dt-foot { padding: var(--mb-s3); }
+
+  .bulk-bar { flex-wrap: wrap; gap: var(--mb-s2); padding: var(--mb-s3); }
+  .bulk-bar .bb-t { flex: 1 1 100%; }
+  .bulk-bar .btn { flex: 1 1 auto; justify-content: center; }
+
+  .detail-hero { padding: var(--mb-s4); }
+  .detail-hero .dh-actions { flex: 1 1 100%; }
+  .detail-hero .dh-actions .btn { flex: 1 1 auto; justify-content: center; }
+
+  .statslider-head h2 { font-size: var(--mb-t-body); }
+  .stat-card { width: 168px; padding: var(--mb-s3); }
+
+  /* The rail drawer should not span a whole phone screen */
+  .admin-rail { width: min(86vw, var(--mb-admin-rail)); }
+}
+
+/* A table is wider than a phone by nature. It scrolls inside its own box —
+   the hint tells the reader that, since a clipped column looks like a bug. */
+@media (max-width: 900px) {
+  .dt-scroll { -webkit-overflow-scrolling: touch; }
+  .dt-scroll::after {
+    content: "Swipe the table sideways for more columns";
+    display: block; padding: var(--mb-s2) var(--mb-s3);
+    font-size: 10px; color: var(--mb-text-3); border-top: 1px dashed var(--mb-border);
+    position: sticky; left: 0;
+  }
+}
+
+/* The visibility switch on the Agents table — the one control that decides
+   whether a payment agent is put in front of users. */
+.agent-toggle { justify-content: center; }

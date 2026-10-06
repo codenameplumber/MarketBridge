@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digits — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="trade" data-root="../../" data-title="Digits" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <section class="card" style="padding:0;overflow:hidden">
+      <div class="between pad">
+        <div class="fam-head fam-digit">
+          <span data-icon="digits"></span>
+          <div>
+            <div class="t-sm w-bold" id="tmName">—</div>
+            <div class="t-h3 w-black num" id="tmPrice">—</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="label">Balance</div>
+          <div class="t-sm w-bold num" id="tmBal">$2,450.80</div>
+        </div>
+      </div>
+      <div class="chart-frame" style="border-radius:0">
+        <span class="tf">1m</span>
+        <div id="tmChart" data-chart="candle" data-h="150"></div>
+      </div>
+    </section>
+
+    <section class="trade-panel">
+      <div class="field" style="margin-bottom:16px">
+        <label for="tmMarket">Market</label>
+        <select class="select" id="tmMarket"></select>
+      </div>
+
+
+      <div class="field" style="margin-bottom:16px">
+        <label>Prediction</label>
+        <div class="chips" data-group id="dMode">
+          <button class="chip is-active" data-value="matches">Matches</button>
+          <button class="chip" data-value="differs">Differs</button>
+          <button class="chip" data-value="even">Even</button>
+          <button class="chip" data-value="odd">Odd</button>
+          <button class="chip" data-value="over">Over</button>
+          <button class="chip" data-value="under">Under</button>
+        </div>
+      </div>
+
+      <div class="field" id="dDigitWrap" style="margin-bottom:16px">
+        <label>Select digit</label>
+        <div class="digit-grid" id="dDigits"></div>
+      </div>
+
+      <div class="trade-grid">
+        <div class="field">
+          <label for="dDuration">Duration</label>
+          <select class="select" id="dDuration">
+            <option value="1" selected>1 tick</option><option value="3">3 ticks</option>
+            <option value="5">5 ticks</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="dStake">Stake (USD)</label>
+          <div class="stepper">
+            <input class="input num" id="dStake" type="number" value="10" min="0.35" step="1">
+            <button type="button" data-step="dStake:-5" aria-label="Decrease">−</button>
+            <button type="button" data-step="dStake:5" aria-label="Increase">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="proposal" id="tmProposal">
+        <div class="proposal-row"><span class="pk">Stake</span><span class="pv" id="pStake">$10.00</span></div>
+        <div class="proposal-row"><span class="pk">Potential payout</span><span class="pv payout" id="pPayout">$18.60</span></div>
+        <div class="proposal-row"><span class="pk">Net profit</span><span class="pv c-up" id="pProfit">+$8.60</span></div>
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg mt4" id="tmBuy">
+        <span data-icon="check"></span> <span id="tmBuyLabel">Buy</span>
+      </button>
+
+      <p class="t-xs c-3 mt3" style="text-align:center">
+        Executes on your connected Deriv account. Prices move — the fill may differ from the quote.
+      </p>
+    </section>
+
+    <a class="btn btn-ghost btn-block" href="open-contracts.html">
+      <span data-icon="layers"></span> View open contracts</a>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var symbol = new URLSearchParams(location.search).get('symbol') || '1HZ75V';
+  var market = null;
+
+  MB.api.list('capabilities').then(function (caps) {
+    var cap = caps.filter(function (c) { return c.contract_family === 'digits'; })[0];
+    var allowed = cap ? cap.markets : [];
+
+    MB.api.list('markets').then(function (rows) {
+      /* Only markets the registry says support this contract are offered. */
+      var usable = rows.filter(function (m) { return allowed.indexOf(m.symbol) > -1; });
+      if (!usable.length) { usable = rows; }
+      if (allowed.indexOf(symbol) === -1 && usable.length) { symbol = usable[0].symbol; }
+
+      var sel = document.getElementById('tmMarket');
+      sel.innerHTML = usable.map(function (m) {
+        return '<option value="' + m.symbol + '"' + (m.symbol === symbol ? ' selected' : '') +
+               '>' + m.name + '</option>';
+      }).join('');
+      sel.addEventListener('change', function () { symbol = this.value; apply(rows); });
+      apply(rows);
+    });
+  });
+
+  function apply(rows) {
+    market = rows.filter(function (m) { return m.symbol === symbol; })[0];
+    document.getElementById('tmName').textContent = market.name;
+    var p = document.getElementById('tmPrice');
+    p.setAttribute('data-tick', market.symbol);
+    p.setAttribute('data-tick-dp', market.decimal_places);
+    p.removeAttribute('data-tick-bound');
+    p.textContent = MB.fmt.price(market.stats.last_price, market.decimal_places);
+    var c = document.getElementById('tmChart');
+    c.removeAttribute('data-chart-done');
+    c.setAttribute('data-seed', market.symbol);
+    c.innerHTML = '';
+    MB.mountCharts(); MB.mountTicks();
+    quote();
+  }
+
+  MB.api.get('me').then(function (r) {
+    document.getElementById('tmBal').textContent = MB.fmt.money(r.data.deriv.balance);
+  });
+
+
+  var mode = 'matches', digit = 3;
+  var grid = document.getElementById('dDigits');
+  grid.innerHTML = [0,1,2,3,4,5,6,7,8,9].map(function (d) {
+    return '<button class="digit-btn' + (d === 3 ? ' is-active' : '') + '" data-d="' + d + '">' + d + '</button>';
+  }).join('');
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('.digit-btn'); if (!b) { return; }
+    MB.$$('.digit-btn', grid).forEach(function (x) { x.classList.remove('is-active'); });
+    b.classList.add('is-active'); digit = Number(b.getAttribute('data-d')); quote();
+  });
+  document.getElementById('dMode').addEventListener('mb:change', function (e) {
+    mode = e.detail.value;
+    /* Even and Odd take no digit — hide the control rather than disable it. */
+    document.getElementById('dDigitWrap').classList.toggle('hide', mode === 'even' || mode === 'odd');
+    quote();
+  });
+  function readParams() {
+    var p = { sub_type: mode, duration: Number(document.getElementById('dDuration').value),
+              duration_unit: 't', stake: Number(document.getElementById('dStake').value) };
+    if (mode !== 'even' && mode !== 'odd') { p.digit = digit; }
+    return p;
+  }
+  function quote() {
+    var p = readParams();
+    var mult = { matches: 9.5, differs: 1.11, even: 1.95, odd: 1.95, over: 1.7, under: 1.7 }[mode];
+    var payout = p.stake * mult;
+    document.getElementById('pStake').textContent = MB.fmt.money(p.stake);
+    document.getElementById('pPayout').textContent = MB.fmt.money(payout);
+    document.getElementById('pProfit').textContent = MB.fmt.signed(payout - p.stake);
+    document.getElementById('tmBuyLabel').textContent = 'Buy ' + MB.fmt.money(p.stake);
+  }
+  ['dDuration','dStake'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', quote);
+    document.getElementById(id).addEventListener('change', quote);
+  });
+
+  document.getElementById('tmBuy').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = 'Placing order…';
+    /* Stage 2: POST /api/v1/trade/purchase — passes TradeGuard server-side,
+       is recorded in contracts + contract_events, and links to a signal
+       when the trade came from one. Never executed browser-direct. */
+    MB.api.post('trade/purchase', { symbol: symbol, params: readParams() })
+      .then(function () {
+        MB.toast('Contract purchased');
+        setTimeout(function () { location.href = 'open-contracts.html'; }, 700);
+      });
+  });
+});
+</script>
+</body>
+</html>

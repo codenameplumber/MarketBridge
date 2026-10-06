@@ -1,0 +1,534 @@
+/* ==========================================================================
+   KonfluenX — USER APP SHELL
+   Mobile-first canvas, sticky top bar, fixed bottom tab bar.
+   On desktop the canvas centres and sits on a subtle backdrop.
+   ========================================================================== */
+
+.app {
+  max-width: var(--mb-app-max);
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--mb-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 900px) {
+  body.has-app { background: var(--mb-bg-2); }
+  .app {
+    box-shadow: 0 0 0 1px var(--mb-border);
+    min-height: 100vh;
+  }
+}
+
+/* ==========================================================================
+   TOP BAR
+   ========================================================================== */
+.topbar {
+  position: sticky; top: 0; z-index: 60;
+  display: flex; align-items: center; gap: var(--mb-s3);
+  height: var(--mb-topbar-h);
+  padding: 0 var(--mb-s5);
+  padding-top: var(--mb-safe-t);
+  background: color-mix(in srgb, var(--mb-bg) 88%, transparent);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--mb-border);
+}
+.topbar-title { font-size: var(--mb-t-h1); font-weight: var(--mb-w-black); letter-spacing: -.03em; }
+.topbar-sub { font-size: var(--mb-t-xs); color: var(--mb-text-2); margin-top: 1px; }
+.topbar-back {
+  width: 34px; height: 34px; margin-left: -6px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--mb-r-pill); color: var(--mb-text);
+}
+.topbar-back:hover { background: var(--mb-surface-2); }
+.topbar-back svg { width: 22px; height: 22px; }
+
+/* Notification bell with unread count */
+.bell { position: relative; }
+.bell .count {
+  position: absolute; top: 3px; right: 3px;
+  min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: var(--mb-r-pill); background: var(--mb-sell); color: #fff;
+  font-size: 10px; font-weight: var(--mb-w-bold);
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--mb-bg);
+}
+
+/* ==========================================================================
+   PAGE BODY
+   ========================================================================== */
+.page {
+  flex: 1;
+  padding: var(--mb-s5);
+  padding-bottom: calc(var(--mb-nav-h) + var(--mb-safe-b) + var(--mb-s10));
+  display: flex; flex-direction: column; gap: var(--mb-s6);
+}
+.page-flush { padding-left: 0; padding-right: 0; }
+.page-flush > .page-section { padding-left: var(--mb-s5); padding-right: var(--mb-s5); }
+.page-section { display: flex; flex-direction: column; gap: var(--mb-s3); }
+
+/* Horizontal scrollers stay inside the page gutter. Nothing sits flush
+   against the screen edge; the row simply clips at the same margin as
+   everything else on the page. */
+.page-bleed { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+
+/* Pages with no bottom nav (auth, legal gates) */
+.page-full { padding-bottom: calc(var(--mb-safe-b) + var(--mb-s6)); }
+
+/* ==========================================================================
+   BOTTOM TAB BAR — five items, fixed, never changes
+   ========================================================================== */
+.tabbar {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: var(--mb-app-max); z-index: 70;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  height: calc(var(--mb-nav-h) + var(--mb-safe-b));
+  padding-bottom: var(--mb-safe-b);
+  background: color-mix(in srgb, var(--mb-bg) 92%, transparent);
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  border-top: 1px solid var(--mb-border);
+}
+.tabbar a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; color: var(--mb-text-3); position: relative;
+  transition: color var(--mb-fast) var(--mb-ease);
+}
+.tabbar a svg { width: 22px; height: 22px; }
+.tabbar a span { font-size: 10px; font-weight: var(--mb-w-semi); }
+.tabbar a:hover { color: var(--mb-text-2); }
+.tabbar a.is-active { color: var(--mb-green); }
+.tabbar a .dot {
+  position: absolute; top: 9px; right: calc(50% - 15px);
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--mb-sell); border: 1.5px solid var(--mb-bg);
+}
+
+/* ==========================================================================
+   AUTH SCREENS
+   ========================================================================== */
+.auth-wrap {
+  min-height: 100vh; min-height: 100dvh;
+  max-width: var(--mb-app-max); margin: 0 auto;
+  display: flex; flex-direction: column;
+  padding: var(--mb-s6) var(--mb-s5) calc(var(--mb-s6) + var(--mb-safe-b));
+  background: var(--mb-bg);
+}
+@media (min-width: 900px) {
+  body.has-auth { background: var(--mb-bg-2); }
+  .auth-wrap { box-shadow: 0 0 0 1px var(--mb-border); }
+}
+.auth-head { margin: var(--mb-s10) 0 var(--mb-s6); }
+.auth-head h1 { font-size: var(--mb-t-display); font-weight: var(--mb-w-black); letter-spacing: -.03em; }
+.auth-head p { font-size: var(--mb-t-sm); color: var(--mb-text-2); margin-top: 6px; }
+.auth-form { display: flex; flex-direction: column; gap: var(--mb-s4); }
+.auth-divider { display: flex; align-items: center; gap: var(--mb-s3); margin: var(--mb-s5) 0; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--mb-border); }
+.auth-divider span { font-size: var(--mb-t-xs); color: var(--mb-text-3); }
+.auth-foot { margin-top: auto; padding-top: var(--mb-s6); text-align: center; font-size: var(--mb-t-sm); color: var(--mb-text-2); }
+
+/* Deriv OAuth button — Deriv red, deliberately not the KonfluenX green */
+.btn-deriv {
+  background: var(--mb-surface); border: 1px solid var(--mb-border-2); color: var(--mb-text);
+}
+.btn-deriv:hover { border-color: #FF444F; }
+.btn-deriv .deriv-mark { width: 20px; height: 20px; color: #FF444F; }
+
+/* Splash */
+.splash {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--mb-s6); padding: var(--mb-s8);
+  max-width: var(--mb-app-max); margin: 0 auto; text-align: center;
+}
+.splash-dots { display: flex; gap: 6px; }
+.splash-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--mb-border-2); }
+.splash-dots i.on { background: var(--mb-green); width: 18px; border-radius: var(--mb-r-pill); }
+
+/* ==========================================================================
+   MARKET DETAIL HEADER
+   ========================================================================== */
+.market-hero { padding: var(--mb-s5); border-bottom: 1px solid var(--mb-border); }
+.market-hero .mh-name { font-size: var(--mb-t-h2); font-weight: var(--mb-w-bold); }
+.market-hero .mh-price { font-size: 30px; font-weight: var(--mb-w-black); letter-spacing: -.03em; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.market-hero .mh-change { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); font-variant-numeric: tabular-nums; }
+
+/* ==========================================================================
+   PROFILE HEADER
+   ========================================================================== */
+.profile-hero { display: flex; flex-direction: column; align-items: center; gap: var(--mb-s3); padding: var(--mb-s5) var(--mb-s4); }
+.profile-hero .ph-name { font-size: var(--mb-t-h1); font-weight: var(--mb-w-black); letter-spacing: -.02em; }
+.profile-hero .ph-handle { font-size: var(--mb-t-sm); color: var(--mb-text-3); }
+.profile-hero .ph-bio { font-size: var(--mb-t-sm); color: var(--mb-text-2); text-align: center; max-width: 34ch; }
+
+/* ==========================================================================
+   DEPOSIT / WITHDRAW — the two-option flow the PRD says to preserve
+   ========================================================================== */
+.pay-option {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s4); border-radius: var(--mb-r-lg);
+  background: var(--mb-surface); border: 1px solid var(--mb-border);
+}
+.pay-option .po-num {
+  width: 26px; height: 26px; flex: none; border-radius: 50%;
+  background: var(--mb-green-soft); color: var(--mb-green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-black);
+}
+.pay-option .po-title { font-size: var(--mb-t-body); font-weight: var(--mb-w-bold); }
+.pay-option .po-desc { font-size: var(--mb-t-xs); color: var(--mb-text-2); margin-top: 3px; }
+.pay-option .po-logo { height: 22px; flex: none; }
+
+/* Full-screen "You are leaving KonfluenX" interstitial */
+.leaving {
+  min-height: 100vh; min-height: 100dvh; max-width: var(--mb-app-max); margin: 0 auto;
+  display: flex; flex-direction: column; padding: var(--mb-s6) var(--mb-s5) calc(var(--mb-s6) + var(--mb-safe-b));
+  text-align: center; background: var(--mb-bg);
+}
+.leaving h1 { font-size: var(--mb-t-h1); font-weight: var(--mb-w-black); margin-top: var(--mb-s10); }
+.leaving h1 .brand-green { color: var(--mb-green); }
+.leaving-hop { display: flex; align-items: center; justify-content: center; gap: var(--mb-s4); margin: var(--mb-s8) 0; }
+.leaving-hop .hop-node {
+  width: 62px; height: 62px; border-radius: var(--mb-r-md);
+  background: var(--mb-surface); border: 1px solid var(--mb-border);
+  display: flex; align-items: center; justify-content: center;
+}
+.leaving-hop .hop-arrow { color: var(--mb-green); }
+.leaving-points { display: flex; flex-direction: column; gap: var(--mb-s4); text-align: left; margin: var(--mb-s6) 0; }
+.leaving-point { display: flex; gap: var(--mb-s3); font-size: var(--mb-t-sm); color: var(--mb-text-2); }
+.leaving-point svg { width: 18px; height: 18px; color: var(--mb-green); flex: none; margin-top: 1px; }
+
+/* ==========================================================================
+   INSTALL PROMPT — the "downloadable web app" affordance
+   ========================================================================== */
+.install-bar {
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--mb-nav-h) + var(--mb-safe-b) + var(--mb-s3));
+  width: calc(100% - var(--mb-s8)); max-width: 420px; z-index: 150;
+  display: none; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s3); border-radius: var(--mb-r-md);
+  background: var(--mb-surface-3); border: 1px solid var(--mb-border-2);
+  box-shadow: var(--mb-shadow-lg);
+}
+.install-bar.is-shown { display: flex; }
+.install-bar .ib-icon { width: 36px; height: 36px; border-radius: var(--mb-r-sm); background: var(--mb-green-soft); color: var(--mb-green); display: flex; align-items: center; justify-content: center; flex: none; }
+.install-bar .ib-title { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); }
+.install-bar .ib-sub { font-size: var(--mb-t-xs); color: var(--mb-text-2); }
+
+/* ==========================================================================
+   PROFILE — identity card, quick actions, performance
+   ========================================================================== */
+.pf-card {
+  display: flex; align-items: center; gap: var(--mb-s4);
+  padding: var(--mb-s4); border-radius: var(--mb-r-lg);
+  border: 1px solid var(--mb-border); background: var(--mb-surface);
+  transition: border-color var(--mb-base) var(--mb-ease);
+}
+.pf-card:hover { border-color: var(--mb-border-2); }
+.pf-av { flex: none; position: relative; }
+.pf-id { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.pf-name {
+  display: flex; align-items: center; gap: var(--mb-s2);
+  font-size: var(--mb-t-h3); font-weight: var(--mb-w-bold); color: var(--mb-text);
+}
+.pf-tick {
+  width: 17px; height: 17px; border-radius: 50%; flex: none;
+  background: var(--mb-green); color: var(--mb-text-inv);
+  display: flex; align-items: center; justify-content: center;
+}
+.pf-handle { font-size: var(--mb-t-sm); color: var(--mb-text-3); }
+.pf-verified {
+  display: inline-flex; align-items: center; gap: 5px; margin-top: 3px;
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-semi); color: var(--mb-green);
+}
+.pf-chev { color: var(--mb-text-3); flex: none; }
+
+.pf-meta { display: flex; gap: var(--mb-s2); margin-top: var(--mb-s3); }
+.pf-chip {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px; padding: var(--mb-s3); border-radius: var(--mb-r-md);
+  border: 1px solid var(--mb-border); background: var(--mb-surface);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-semi); color: var(--mb-text-2);
+}
+.pf-chip svg { width: 13px; height: 13px; color: var(--mb-text-3); }
+.pf-chip .dot-live {
+  width: 7px; height: 7px; border-radius: 50%; flex: none;
+  background: var(--mb-green); box-shadow: 0 0 0 3px var(--mb-green-soft);
+}
+
+/* The balance delta line, and masking it */
+.tb-delta {
+  font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi);
+  font-variant-numeric: tabular-nums; margin-top: 4px;
+}
+.is-masked { filter: blur(9px); user-select: none; }
+
+/* Quick-action tiles keep the colour set on .qa-ic */
+.qa-tile .qa-ic { display: flex; align-items: center; justify-content: center; }
+.qa-tile .qa-ic svg { color: inherit; }
+.qa-tile .qa-t { font-size: 10px; }
+
+/* Performance overview: four figures across */
+.perf-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--mb-s2); }
+.perf-grid > div { text-align: center; }
+.pg-v {
+  font-size: var(--mb-t-h2); font-weight: var(--mb-w-black);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.pg-v.num { font-size: var(--mb-t-h3); }
+.pg-k { font-size: 10px; color: var(--mb-text-3); margin-top: 2px; }
+
+/* Month labels under a chart */
+.axis-x {
+  display: flex; justify-content: space-between; margin-top: var(--mb-s2);
+  font-size: 10px; color: var(--mb-text-3);
+}
+
+/* Compact select for card headers */
+.select-sm {
+  padding: 5px var(--mb-s7) 5px var(--mb-s3);
+  font-size: var(--mb-t-xs); border-radius: var(--mb-r-sm);
+  background-position: right var(--mb-s2) center; background-size: 13px;
+  width: auto;
+}
+
+/* ==========================================================================
+   INLINE FILTER BLOCK — used where filters belong on the page rather than
+   in the slide-in .filter-panel drawer
+   ========================================================================== */
+.stmt-filters {
+  border: 1px solid var(--mb-border); border-radius: var(--mb-r-lg);
+  background: var(--mb-surface); padding: var(--mb-s4);
+  display: flex; flex-direction: column; gap: var(--mb-s3);
+}
+.fp-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--mb-s3); }
+.fp-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.fp-label {
+  font-size: 10px; font-weight: var(--mb-w-bold); letter-spacing: .08em;
+  text-transform: uppercase; color: var(--mb-text-3);
+}
+.fp-field .select, .fp-field .input { width: 100%; }
+@media (max-width: 460px) { .fp-row { grid-template-columns: minmax(0,1fr); } }
+
+/* Account rows stack their name over their subtitle */
+.acct-row .ar-n, .acct-row .ar-s { display: block; }
+
+/* Profile balance card: the period select sits above the sparkline, and the
+   spark clears the head row instead of running under it. */
+.total-balance .tb-head .select-sm { position: relative; z-index: 2; }
+.total-balance.tb-compact .tb-spark { top: 64px; width: 42%; }
+
+/* .tb-stamp is scoped to .total-balance; this is the standalone form */
+.tb-stamp {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: var(--mb-t-xs); color: var(--mb-text-3);
+}
+.tb-stamp svg { width: 12px; height: 12px; }
+
+/* ==========================================================================
+   PARTNER / REWARDS — tiers, progress bars, copy fields, redeem cards
+   ========================================================================== */
+.tier-row { display: flex; align-items: center; gap: var(--mb-s4); }
+.tier-badge {
+  display: inline-flex; align-items: center; padding: 5px var(--mb-s3);
+  border-radius: var(--mb-r-pill); font-size: var(--mb-t-xs);
+  font-weight: var(--mb-w-bold); letter-spacing: .04em; text-transform: uppercase;
+  background: var(--vy-brand-soft); color: var(--vy-brand);
+  border: 1px solid var(--vy-brand-line); flex: none;
+}
+
+/* Progress bar — the user app needs its own; .bar lives in admin.css */
+.bar {
+  height: 6px; border-radius: 3px; background: var(--mb-surface-2);
+  overflow: hidden; display: block;
+}
+.bar > span {
+  display: block; height: 100%; border-radius: 3px;
+  background: var(--mb-green); transition: width var(--mb-slow) var(--mb-ease);
+}
+
+.copy-field { display: flex; gap: var(--mb-s2); align-items: center; }
+.copy-field .input { flex: 1; min-width: 0; font-size: var(--mb-t-xs); }
+.copy-field .btn { flex: none; }
+
+/* A completed earn row reads green at a glance */
+.list-row .lr-icon.is-done { color: var(--mb-green); background: var(--mb-green-soft); }
+
+.reward-card .reward-cost {
+  font-size: var(--mb-t-h3); font-weight: var(--mb-w-black);
+  color: var(--mb-green); flex: none; margin-left: var(--mb-s4);
+}
+.reward-card .reward-cost.is-short { color: var(--mb-text-3); }
+.reward-card .reward-cost small {
+  font-size: 10px; font-weight: var(--mb-w-semi); margin-left: 3px;
+  color: var(--mb-text-3);
+}
+
+/* ==========================================================================
+   PAYMENT AGENTS — the Deriv deposit route
+   ========================================================================== */
+/* "Recommended" sits inside the segment button without breaking its baseline */
+.segment .seg-rec {
+  display: inline-block; margin-left: 6px; padding: 1px 6px;
+  border-radius: var(--mb-r-pill); font-size: 9px; font-weight: var(--mb-w-black);
+  letter-spacing: .04em; text-transform: uppercase;
+  background: var(--mb-green-soft); color: var(--mb-green);
+}
+.segment button.is-active .seg-rec {
+  background: rgba(255, 255, 255, .22); color: inherit;
+}
+
+.agent-row {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s4); border-bottom: 1px solid var(--mb-border);
+  transition: background var(--mb-base) var(--mb-ease);
+}
+.agent-row:last-child { border-bottom: 0; }
+.agent-row:hover { background: var(--mb-surface-2); }
+.agent-row .ar-name { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); }
+.agent-row .ar-meta {
+  display: block; font-size: var(--mb-t-xs); color: var(--mb-text-3); margin-top: 2px;
+}
+.agent-row .ar-rate {
+  display: block; font-size: var(--mb-t-xs); color: var(--mb-text-2);
+  font-weight: var(--mb-w-semi); margin-top: 3px;
+}
+/* WhatsApp green is WhatsApp's, not ours — it has to look like the app it opens */
+.wa-btn {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  padding: 7px var(--mb-s3); border-radius: var(--mb-r-pill);
+  background: #25D366; color: #06251A;
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-bold);
+}
+.wa-btn svg { width: 17px; height: 17px; }
+@media (max-width: 420px) {
+  .wa-btn span:last-child { display: none; }
+  .wa-btn { padding: 8px; }
+}
+
+/* ==========================================================================
+   MODERATION — a moderator is a member with a flag, not a console user
+   ========================================================================== */
+.mod-strip {
+  display: flex; align-items: center; gap: var(--mb-s3); flex-wrap: wrap;
+  padding: var(--mb-s3) var(--mb-s4);
+  background: var(--mb-info-soft); border-top: 1px solid var(--mb-info-line);
+}
+.mod-strip-tag {
+  display: inline-flex; align-items: center; gap: 5px; flex: none;
+  font-size: 10px; font-weight: var(--mb-w-black); letter-spacing: .06em;
+  text-transform: uppercase; color: var(--mb-info);
+}
+.mod-strip .btn { flex: none; }
+@media (max-width: 520px) {
+  .mod-strip .grow { flex: 1 1 100%; }
+  .mod-strip .btn { flex: 1 1 auto; justify-content: center; }
+}
+
+.badge-mod { background: var(--mb-info-soft); color: var(--mb-info); }
+
+/* The flag sits in the message header and stays quiet until hovered */
+.msg-flag {
+  margin-left: auto; flex: none; display: inline-flex; align-items: center;
+  padding: 2px 5px; border-radius: var(--mb-r-sm);
+  color: var(--mb-text-3); opacity: .5;
+  transition: opacity var(--mb-base) var(--mb-ease), color var(--mb-base) var(--mb-ease);
+}
+.msg:hover .msg-flag { opacity: 1; }
+.msg-flag:hover { color: var(--mb-sell); background: var(--mb-sell-soft); opacity: 1; }
+.msg-flag svg { width: 13px; height: 13px; }
+
+.msg.is-flagged .msg-bubble {
+  border: 1px solid var(--mb-warn); background: var(--mb-warn-soft);
+}
+.msg-flagged {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 4px;
+  font-size: 10px; font-weight: var(--mb-w-semi); color: var(--mb-warn);
+}
+.msg-flagged svg { width: 11px; height: 11px; }
+
+.flag-quote {
+  margin-top: var(--mb-s3); padding: var(--mb-s3);
+  border-left: 3px solid var(--mb-border-2); border-radius: var(--mb-r-sm);
+  background: var(--mb-surface-2); font-size: var(--mb-t-sm);
+  color: var(--mb-text-2); max-height: 120px; overflow: auto;
+}
+
+/* Explains a moderator's extra reach where it applies */
+.mod-note {
+  display: flex; gap: var(--mb-s3); align-items: flex-start;
+  padding: var(--mb-s3) var(--mb-s4); border-radius: var(--mb-r-md);
+  background: var(--mb-info-soft); border: 1px solid var(--mb-info-line);
+  font-size: var(--mb-t-xs); color: var(--mb-text-2);
+}
+.mod-note svg { color: var(--mb-info); flex: none; margin-top: 1px; }
+
+/* A compact "Moderator" tag, worn next to the name wherever the user appears */
+.tag-mod {
+  display: inline-flex; align-items: center; gap: 4px; flex: none;
+  padding: 2px 7px; border-radius: var(--mb-r-pill);
+  font-size: 10px; font-weight: var(--mb-w-bold); letter-spacing: .03em;
+  background: var(--mb-info-soft); color: var(--mb-info);
+  border: 1px solid var(--mb-info-line);
+}
+.tag-mod svg { width: 10px; height: 10px; }
+
+/* Agent initials get a defined chip; MB.avatar's colour comes from a user
+   object, and an agent is not one. */
+.agent-row .avatar {
+  background: var(--mb-surface-3); color: var(--mb-text-2);
+  font-weight: var(--mb-w-bold);
+}
+
+/* ==========================================================================
+   FULL-HEIGHT ROOM
+
+   A chat room should sit inside the screen and scroll its own messages, not
+   grow the page: the composer stays reachable and new messages arrive without
+   pushing the whole document down. Applied only while the Chat tab is open —
+   Posts, Signals and Members scroll normally.
+   ========================================================================== */
+.app.is-chatroom { height: 100vh; height: 100dvh; overflow: hidden; }
+
+.app.is-chatroom .page {
+  min-height: 0;                  /* let the flex child actually shrink */
+  overflow: hidden;
+  padding-bottom: calc(var(--mb-nav-h) + var(--mb-safe-b));
+  gap: var(--mb-s4);
+}
+
+/* Everything above the chat keeps its natural height; the chat takes the rest */
+.app.is-chatroom #paneChat {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column; gap: var(--mb-s3);
+}
+.app.is-chatroom .chat {
+  flex: 1; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 2px;             /* room for the scrollbar, not the text */
+  scroll-behavior: smooth;
+}
+.app.is-chatroom .composer { flex: none; margin-top: 0; }
+
+/* In chat mode the header collapses to an identity line. The description,
+   the market links and the chart belong to the room, not to the conversation,
+   and they were leaving roughly 70px for the messages. They are all still
+   there on the other tabs. */
+.app.is-chatroom #rDesc,
+.app.is-chatroom #rLinks,
+.app.is-chatroom #rChartWrap { display: none; }
+
+.app.is-chatroom .mod-strip {
+  padding: var(--mb-s2) var(--mb-s4);
+}
+.app.is-chatroom .mod-strip .grow { display: none; }   /* the explainer */
+
+/* Tighter still when the screen is short */
+@media (max-height: 700px) {
+  .app.is-chatroom .mod-strip { display: none; }
+}

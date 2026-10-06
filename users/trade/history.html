@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trade History — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="trade" data-root="../../" data-title="Trade History" data-sub="Every closed contract" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <div class="chips page-bleed" data-group id="hRange">
+      <button class="chip is-active" data-value="today">Today</button>
+      <button class="chip" data-value="7d">7 Days</button>
+      <button class="chip" data-value="30d">30 Days</button>
+      <button class="chip" data-value="all">All time</button>
+    </div>
+
+    <div class="stat-grid cols-3">
+      <div class="stat-cell"><div class="stat-v num" id="hStake">$950</div><div class="stat-k">Staked</div></div>
+      <div class="stat-cell"><div class="stat-v num c-up" id="hNet">+$99.60</div><div class="stat-k">Net P/L</div></div>
+      <div class="stat-cell"><div class="stat-v num" id="hRate">71%</div><div class="stat-k">Win rate</div></div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-count"><span id="hCount">0</span> closed contracts</span>
+    </div>
+
+    <section class="list" id="histList"></section>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  /* 128 closed contracts is too many for one scroll, and the range chips
+     above were rendered but wired to nothing. Both fixed here. */
+  var DAYS = { today: 1, '7d': 7, '30d': 30, all: null };
+  var hist = MB.collection({
+    from: 'history', into: '#histList', template: MB.card.historyRow,
+    perPage: 12, mode: 'pages', countInto: '#hCount', skeletonCount: 4,
+    initial: { range: 'today' },
+    filters: {
+      range: function (r, v) {
+        var d = DAYS[v];
+        if (!d) { return true; }
+        return (Date.now() - new Date(r.closed_at)) <= d * 86400000;
+      }
+    },
+    sort: function (a, b) { return new Date(b.closed_at) - new Date(a.closed_at); },
+    emptyIcon: 'clock', emptyTitle: 'No trades in this period',
+    emptyText: 'Try a wider range — closed contracts are listed here.',
+    /* The three figures above summarise whatever the filter is showing,
+       not the whole account, so they can never disagree with the list. */
+    done: function (shown, filtered) {
+      var stake = 0, net = 0, wins = 0;
+      filtered.forEach(function (r) {
+        stake += r.stake; net += r.profit;
+        if (r.profit >= 0) { wins++; }
+      });
+      MB.$('#hStake').textContent = MB.fmt.money(stake, null, 0);
+      var n = MB.$('#hNet');
+      n.textContent = MB.fmt.signed(net);
+      n.className = 'stat-v num ' + (net >= 0 ? 'c-up' : 'c-down');
+      MB.$('#hRate').textContent = filtered.length
+        ? Math.round(wins / filtered.length * 100) + '%' : '—';
+    }
+  });
+  hist.bind('#hRange', 'range');
+});
+</script>
+</body>
+</html>

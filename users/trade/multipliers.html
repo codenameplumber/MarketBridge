@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Multipliers — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="trade" data-root="../../" data-title="Multipliers" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <section class="card" style="padding:0;overflow:hidden">
+      <div class="between pad">
+        <div class="fam-head fam-multi">
+          <span data-icon="multipliers"></span>
+          <div>
+            <div class="t-sm w-bold" id="tmName">—</div>
+            <div class="t-h3 w-black num" id="tmPrice">—</div>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div class="label">Balance</div>
+          <div class="t-sm w-bold num" id="tmBal">$2,450.80</div>
+        </div>
+      </div>
+      <div class="chart-frame" style="border-radius:0">
+        <span class="tf">1m</span>
+        <div id="tmChart" data-chart="candle" data-h="150"></div>
+      </div>
+    </section>
+
+    <section class="trade-panel">
+      <div class="field" style="margin-bottom:16px">
+        <label for="tmMarket">Market</label>
+        <select class="select" id="tmMarket"></select>
+      </div>
+
+
+      <div class="field" style="margin-bottom:16px">
+        <label>Direction</label>
+        <div class="dir-pair" id="mDir">
+          <button class="dir-btn d-up is-active" data-dir="up"><span data-icon="up"></span> Up</button>
+          <button class="dir-btn d-down" data-dir="down"><span data-icon="down"></span> Down</button>
+        </div>
+      </div>
+
+      <div class="trade-grid">
+        <div class="field">
+          <label for="xMult">Multiplier</label>
+          <select class="select" id="xMult">
+            <option value="10">x10</option><option value="20">x20</option>
+            <option value="50">x50</option><option value="100" selected>x100</option>
+            <option value="200">x200</option><option value="400">x400</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="xStake">Stake (USD)</label>
+          <div class="stepper">
+            <input class="input num" id="xStake" type="number" value="10" min="1" step="1">
+            <button type="button" data-step="xStake:-5" aria-label="Decrease">−</button>
+            <button type="button" data-step="xStake:5" aria-label="Increase">+</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="xTP">Take profit (USD)</label>
+          <input class="input num" id="xTP" type="number" value="20" min="0" placeholder="Optional">
+        </div>
+        <div class="field">
+          <label for="xSL">Stop loss (USD)</label>
+          <input class="input num" id="xSL" type="number" value="10" min="0" placeholder="Optional">
+        </div>
+      </div>
+
+      <label class="check mt4">
+        <input type="checkbox" id="xCancel">
+        <span class="box"><span data-icon="check"></span></span>
+        <span class="c-2">Deal cancellation (where supported)</span>
+      </label>
+
+      <div class="alert alert-warn mt4">
+        <span data-icon="warning"></span>
+        <div class="t-xs">Leverage magnifies losses as well as gains. At x100 a 1%
+        adverse move can consume your entire stake.</div>
+      </div>
+
+      <div class="proposal" id="tmProposal">
+        <div class="proposal-row"><span class="pk">Stake</span><span class="pv" id="pStake">$10.00</span></div>
+        <div class="proposal-row"><span class="pk">Potential payout</span><span class="pv payout" id="pPayout">$18.60</span></div>
+        <div class="proposal-row"><span class="pk">Net profit</span><span class="pv c-up" id="pProfit">+$8.60</span></div>
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg mt4" id="tmBuy">
+        <span data-icon="check"></span> <span id="tmBuyLabel">Buy</span>
+      </button>
+
+      <p class="t-xs c-3 mt3" style="text-align:center">
+        Executes on your connected Deriv account. Prices move — the fill may differ from the quote.
+      </p>
+    </section>
+
+    <a class="btn btn-ghost btn-block" href="open-contracts.html">
+      <span data-icon="layers"></span> View open contracts</a>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var symbol = new URLSearchParams(location.search).get('symbol') || '1HZ75V';
+  var market = null;
+
+  MB.api.list('capabilities').then(function (caps) {
+    var cap = caps.filter(function (c) { return c.contract_family === 'multipliers'; })[0];
+    var allowed = cap ? cap.markets : [];
+
+    MB.api.list('markets').then(function (rows) {
+      /* Only markets the registry says support this contract are offered. */
+      var usable = rows.filter(function (m) { return allowed.indexOf(m.symbol) > -1; });
+      if (!usable.length) { usable = rows; }
+      if (allowed.indexOf(symbol) === -1 && usable.length) { symbol = usable[0].symbol; }
+
+      var sel = document.getElementById('tmMarket');
+      sel.innerHTML = usable.map(function (m) {
+        return '<option value="' + m.symbol + '"' + (m.symbol === symbol ? ' selected' : '') +
+               '>' + m.name + '</option>';
+      }).join('');
+      sel.addEventListener('change', function () { symbol = this.value; apply(rows); });
+      apply(rows);
+    });
+  });
+
+  function apply(rows) {
+    market = rows.filter(function (m) { return m.symbol === symbol; })[0];
+    document.getElementById('tmName').textContent = market.name;
+    var p = document.getElementById('tmPrice');
+    p.setAttribute('data-tick', market.symbol);
+    p.setAttribute('data-tick-dp', market.decimal_places);
+    p.removeAttribute('data-tick-bound');
+    p.textContent = MB.fmt.price(market.stats.last_price, market.decimal_places);
+    var c = document.getElementById('tmChart');
+    c.removeAttribute('data-chart-done');
+    c.setAttribute('data-seed', market.symbol);
+    c.innerHTML = '';
+    MB.mountCharts(); MB.mountTicks();
+    quote();
+  }
+
+  MB.api.get('me').then(function (r) {
+    document.getElementById('tmBal').textContent = MB.fmt.money(r.data.deriv.balance);
+  });
+
+
+  var dir = 'up';
+  document.getElementById('mDir').addEventListener('click', function (e) {
+    var b = e.target.closest('.dir-btn'); if (!b) { return; }
+    MB.$$('.dir-btn', this).forEach(function (x) { x.classList.remove('is-active'); });
+    b.classList.add('is-active'); dir = b.getAttribute('data-dir'); quote();
+  });
+  function readParams() {
+    return { direction: dir, multiplier: Number(document.getElementById('xMult').value),
+             stake: Number(document.getElementById('xStake').value),
+             take_profit: Number(document.getElementById('xTP').value) || null,
+             stop_loss: Number(document.getElementById('xSL').value) || null,
+             deal_cancellation: document.getElementById('xCancel').checked };
+  }
+  function quote() {
+    var p = readParams();
+    document.getElementById('pStake').textContent = MB.fmt.money(p.stake);
+    document.getElementById('pPayout').textContent =
+      p.take_profit ? MB.fmt.money(p.stake + p.take_profit) : 'Open-ended';
+    document.getElementById('pProfit').textContent =
+      p.take_profit ? MB.fmt.signed(p.take_profit) : 'x' + p.multiplier + ' exposure';
+    var btn = document.getElementById('tmBuy');
+    btn.className = 'btn btn-block btn-lg mt4 ' + (dir === 'up' ? 'btn-primary' : 'btn-sell');
+    document.getElementById('tmBuyLabel').textContent =
+      (dir === 'up' ? 'Buy Up ' : 'Buy Down ') + MB.fmt.money(p.stake);
+  }
+  ['xMult','xStake','xTP','xSL','xCancel'].forEach(function (id) {
+    document.getElementById(id).addEventListener('input', quote);
+    document.getElementById(id).addEventListener('change', quote);
+  });
+
+  document.getElementById('tmBuy').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = 'Placing order…';
+    /* Stage 2: POST /api/v1/trade/purchase — passes TradeGuard server-side,
+       is recorded in contracts + contract_events, and links to a signal
+       when the trade came from one. Never executed browser-direct. */
+    MB.api.post('trade/purchase', { symbol: symbol, params: readParams() })
+      .then(function () {
+        MB.toast('Contract purchased');
+        setTimeout(function () { location.href = 'open-contracts.html'; }, 700);
+      });
+  });
+});
+</script>
+</body>
+</html>

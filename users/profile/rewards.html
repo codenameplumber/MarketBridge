@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rewards — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Rewards" data-sub="Points for what you contribute" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- ================================================================
+         POINTS BALANCE
+         ================================================================ -->
+    <section class="total-balance tb-compact">
+      <div class="tb-head">
+        <span class="tb-label">Reward points</span>
+        <span class="grow"></span>
+        <span class="tier-badge" id="rwTier">&mdash;</span>
+      </div>
+      <div class="tb-amount" id="rwBalance">0<span class="cur">pts</span></div>
+      <div class="tb-delta c-up" id="rwStreak">&mdash;</div>
+      <span class="tb-spark"><span data-spark="up" data-seed="rwpts" data-h="56" data-sw="2"></span></span>
+    </section>
+
+    <div class="pf-meta">
+      <span class="pf-chip"><span data-icon="flame" data-icon-size="13"></span>
+        <span><span id="rwLifetime">&mdash;</span> lifetime</span></span>
+      <span class="pf-chip"><span data-icon="results" data-icon-size="13"></span>
+        <span>Rank #<span id="rwRank">&mdash;</span></span></span>
+    </div>
+
+    <section class="card">
+      <div class="between t-xs c-3">
+        <span>Progress to <b id="rwNext">&mdash;</b></span>
+        <span id="rwProg">&mdash;</span>
+      </div>
+      <div class="bar mt2"><span id="rwBar" style="width:0%"></span></div>
+    </section>
+
+    <!-- ================================================================
+         HOW TO EARN
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>How to earn</h2></div>
+      <div class="list" id="rwEarn"></div>
+    </section>
+
+    <!-- ================================================================
+         REDEEM
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Redeem</h2>
+        <span class="t-xs c-3">Points only &mdash; never cash</span></div>
+      <div class="stack g3" id="rwCatalogue"></div>
+    </section>
+
+    <div class="alert alert-green">
+      <span data-icon="shield"></span>
+      <div class="t-xs"><strong>Points are not money.</strong> They are earned for
+      contributing to the platform and can only be spent on the perks above.
+      They are never withdrawable, never transferable, and have no cash value.</div>
+    </div>
+
+    <!-- ================================================================
+         HISTORY
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Points history</h2></div>
+      <div class="list" id="rwHistory"></div>
+    </section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  MB.api.get('rewards').then(function (r) {
+    var d = r.data;
+    var balance = d.balance;
+
+    MB.$('#rwBalance').innerHTML = MB.fmt.price(balance, 0) + '<span class="cur">pts</span>';
+    MB.$('#rwStreak').textContent = d.streak_days + '-day streak';
+    MB.$('#rwTier').textContent = d.tier;
+    MB.$('#rwLifetime').textContent = MB.fmt.price(d.lifetime, 0);
+    MB.$('#rwRank').textContent = d.rank;
+    MB.$('#rwNext').textContent = d.next_tier;
+    MB.$('#rwProg').textContent = balance + ' / ' + d.tier_at + ' pts';
+    MB.$('#rwBar').style.width = Math.min(100, (balance / d.tier_at) * 100) + '%';
+
+    /* ---- earn list: done rows read green, open rows stay neutral ---- */
+    MB.$('#rwEarn').innerHTML = d.earn.map(function (e) {
+      return '<div class="list-row">' +
+        '<span class="lr-icon' + (e.done ? ' is-done' : '') + '">' +
+          MB.icon(e.done ? 'check' : e.icon, 20) + '</span>' +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="lr-title" style="display:block">' + MB.esc(e.label) + '</span>' +
+          '<span class="lr-sub">' + (e.done ? 'Earned' : 'Not yet earned') + '</span></span>' +
+        '<span class="lr-value num ' + (e.done ? 'c-up' : 'c-3') + '" style="font-weight:700">' +
+          '+' + e.points + '</span></div>';
+    }).join('');
+    MB.mountIcons(MB.$('#rwEarn'));
+
+    /* ---- redeem catalogue ---- */
+    function drawCatalogue() {
+      MB.$('#rwCatalogue').innerHTML = d.catalogue.map(function (c) {
+        var afford = balance >= c.cost;
+        return '<article class="card reward-card">' +
+          '<div class="between">' +
+            '<div style="min-width:0">' +
+              '<div class="t-sm w-bold">' + MB.esc(c.name) + '</div>' +
+              '<div class="t-xs c-2 mt2">' + MB.esc(c.desc) + '</div>' +
+            '</div>' +
+            '<span class="reward-cost num' + (afford ? '' : ' is-short') + '">' +
+              c.cost + '<small>pts</small></span>' +
+          '</div>' +
+          '<button class="btn ' + (afford ? 'btn-brand' : 'btn-ghost') +
+            ' btn-block btn-sm mt3" data-redeem="' + c.id + '"' +
+            (afford ? '' : ' disabled') + '>' +
+            (afford ? 'Redeem' : (c.cost - balance) + ' points short') + '</button>' +
+        '</article>';
+      }).join('');
+
+      MB.$$('[data-redeem]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var item = d.catalogue.filter(function (x) {
+            return x.id === b.getAttribute('data-redeem');
+          })[0];
+          if (!item) { return; }
+          MB.confirm({
+            title: 'Redeem ' + item.name + '?',
+            body: 'This spends ' + item.cost + ' points. You will have ' +
+                  (balance - item.cost) + ' left.',
+            confirm: 'Redeem'
+          }).then(function (ok) {
+            if (!ok) { return; }
+            balance -= item.cost;
+            MB.$('#rwBalance').innerHTML =
+              MB.fmt.price(balance, 0) + '<span class="cur">pts</span>';
+            MB.$('#rwProg').textContent = balance + ' / ' + d.tier_at + ' pts';
+            MB.$('#rwBar').style.width =
+              Math.min(100, (balance / d.tier_at) * 100) + '%';
+            d.history.unshift({
+              id: 'PTnew', label: item.name + ' redeemed',
+              points: -item.cost, at: new Date().toISOString()
+            });
+            drawCatalogue();
+            drawHistory();
+            MB.toast(item.name + ' redeemed', 'ok');
+          });
+        });
+      });
+    }
+
+    /* ---- history: credits green, debits red ---- */
+    function drawHistory() {
+      MB.$('#rwHistory').innerHTML = d.history.slice(0, 12).map(function (h) {
+        var up = h.points >= 0;
+        return '<div class="list-row">' +
+          '<span class="lr-icon">' + MB.icon(up ? 'plus' : 'minus', 20) + '</span>' +
+          '<span class="grow" style="min-width:0">' +
+            '<span class="lr-title" style="display:block">' + MB.esc(h.label) + '</span>' +
+            '<span class="lr-sub">' + MB.fmt.ago(h.at) + '</span></span>' +
+          '<span class="lr-value num ' + (up ? 'c-up' : 'c-down') +
+            '" style="font-weight:700">' + (up ? '+' : '') + h.points + '</span></div>';
+      }).join('');
+      MB.mountIcons(MB.$('#rwHistory'));
+    }
+
+    drawCatalogue();
+    drawHistory();
+    MB.mountIcons(document);
+    MB.mountCharts(document);
+  });
+});
+</script>
+</body>
+</html>

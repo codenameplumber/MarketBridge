@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Account" data-back="accounts.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <section class="card" style="padding:0;overflow:hidden">
+      <div class="pad">
+        <div class="row g3">
+          <span class="acct-badge" id="adBadge" style="width:46px;height:46px">—</span>
+          <div class="grow" style="min-width:0">
+            <div class="t-h3 w-bold" id="adName">—</div>
+            <div class="t-xs c-3" id="adSub">—</div>
+          </div>
+          <span class="badge badge-active none" id="adStatus">Active</span>
+        </div>
+
+        <div class="between mt4">
+          <div>
+            <div class="label">Balance</div>
+            <div class="t-h1 w-black num" id="adBalance">—</div>
+          </div>
+          <div style="text-align:right">
+            <div class="label">P/L</div>
+            <div class="t-h3 w-bold num" id="adPL">—</div>
+          </div>
+        </div>
+
+        <div class="row g2 mt4">
+          <a class="btn btn-primary grow" href="transfer.html">
+            <span data-icon="refresh"></span> Transfer</a>
+          <button class="btn btn-ghost grow"><span data-icon="more"></span> More</button>
+        </div>
+      </div>
+
+      <div class="acct-figures" id="adFigures"></div>
+    </section>
+
+    <div class="tabs" data-group id="adTabs">
+      <button class="tab is-active" data-value="overview">Overview</button>
+      <button class="tab" data-value="positions">Positions</button>
+      <button class="tab" data-value="history">History</button>
+      <button class="tab" data-value="details">Details</button>
+    </div>
+
+    <section id="paneOverview" class="page-section">
+      <div class="card">
+        <div class="label">Balance over time</div>
+        <div data-chart="area" data-seed="acctchart" data-h="160" class="mt3"></div>
+      </div>
+    </section>
+
+    <section id="panePositions" class="stack g3 hide"></section>
+    <section id="paneHistory" class="hide"><div class="list" id="adHistory"></div></section>
+
+    <section id="paneDetails" class="hide">
+      <div class="list" id="adDetails"></div>
+      <div class="alert alert-green mt4">
+        <span data-icon="lock"></span>
+        <div class="t-xs">Account credentials are managed by Deriv. KonfluenX stores an
+        encrypted access token only, never your Deriv password.</div>
+      </div>
+    </section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var id = new URLSearchParams(location.search).get('id');
+
+  MB.api.list('accounts').then(function (rows) {
+    var a = rows.filter(function (x) { return x.id === id; })[0] || rows[0];
+
+    MB.$('.topbar-title').textContent = a.short;
+    var badge = document.getElementById('adBadge');
+    badge.className = 'acct-badge ' + a.badge;
+    badge.textContent = a.badge_text;
+    document.getElementById('adName').textContent = a.name;
+    document.getElementById('adSub').textContent = a.subtitle;
+    document.getElementById('adBalance').textContent = MB.fmt.money(a.balance, a.currency);
+
+    var pl = document.getElementById('adPL');
+    if (a.pl !== undefined) {
+      pl.textContent = MB.fmt.signed(a.pl);
+      pl.className = 't-h3 w-bold num ' + MB.fmt.dirClass(a.pl);
+    } else { pl.textContent = '—'; pl.className = 't-h3 w-bold num c-3'; }
+
+    /* MT5 accounts carry margin figures; a wallet does not. */
+    var figs = a.platform === 'mt5'
+      ? [['Balance', MB.fmt.money(a.balance, a.currency)], ['Free Margin', MB.fmt.money(a.free_margin, a.currency)],
+         ['Margin Used', MB.fmt.money(a.margin_used)]]
+      : [['Balance', MB.fmt.money(a.balance, a.currency)],
+         ['Available', MB.fmt.money(a.available, a.currency)],
+         ['On Hold', MB.fmt.money(a.on_hold, a.currency)]];
+    document.getElementById('adFigures').innerHTML = figs.map(function (f) {
+      return '<div><div class="v">' + f[1] + '</div><div class="k">' + f[0] + '</div></div>';
+    }).join('');
+
+    var rows2 = [
+      ['Account ID', a.login],
+      ['Currency', a.currency],
+      ['Account type', a.is_virtual ? 'Virtual' : (a.account_type || 'Wallet')],
+      ['Platform', a.platform === 'mt5' ? 'Deriv MT5' : 'Deriv']
+    ];
+    if (a.leverage) { rows2.splice(2, 0, ['Leverage', a.leverage]); }
+    if (a.server)   { rows2.push(['Server', a.server]); }
+    rows2.push(['Balance read', MB.fmt.ago(a.balance_recorded_at)]);
+
+    document.getElementById('adDetails').innerHTML = rows2.map(function (x) {
+      return '<div class="list-row"><span class="grow lr-title">' + x[0] + '</span>' +
+        '<span class="lr-value num">' + MB.esc(String(x[1])) + '</span></div>';
+    }).join('');
+
+    MB.mountIcons(); MB.mountCharts();
+  });
+
+  MB.collection({
+    from: 'contracts', into: '#panePositions', template: MB.card.contract,
+    perPage: 6, mode: 'more', skeletonCount: 2,
+    emptyIcon: 'layers', emptyTitle: 'No open positions',
+    emptyText: 'Positions on this account appear here.'
+  });
+  MB.collection({
+    from: 'history', into: '#adHistory', template: MB.card.historyRow,
+    perPage: 10, mode: 'more', countInto: '#adHistCount', skeleton: false,
+    sort: function (a, b) { return new Date(b.closed_at) - new Date(a.closed_at); },
+    emptyIcon: 'clock', emptyTitle: 'No closed trades',
+    emptyText: 'Contracts closed on this account appear here.'
+  });
+
+  document.getElementById('adTabs').addEventListener('mb:change', function (e) {
+    ['overview','positions','history','details'].forEach(function (k) {
+      document.getElementById('pane' + k.charAt(0).toUpperCase() + k.slice(1))
+        .classList.toggle('hide', k !== e.detail.value);
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Institutional Dashboard — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Institutional" data-sub="Manage your portfolio" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- STATUS BANNER -->
+    <section class="card inst-status" id="instStatus">
+      <div class="between">
+        <div>
+          <div class="row g2">
+            <span class="badge badge-verified" id="instTier">&mdash;</span>
+            <span class="badge badge-active" id="instVerified">Verified</span>
+          </div>
+          <div class="t-h3 w-bold mt2" id="instCompany">&mdash;</div>
+          <div class="t-xs c-3 mt1" id="instBio">&mdash;</div>
+        </div>
+      </div>
+      <div class="row g2 mt3">
+        <a class="btn btn-ghost btn-sm" href="portfolio.html">
+          <span data-icon="results"></span> Public Portfolio</a>
+        <a class="btn btn-ghost btn-sm" href="apply.html">
+          <span data-icon="settings"></span> Settings</a>
+      </div>
+    </section>
+
+    <!-- PORTFOLIO SUMMARY -->
+    <section class="total-balance tb-compact">
+      <div class="tb-head">
+        <span class="tb-label">Total Portfolio</span>
+        <span class="grow"></span>
+        <span class="badge badge-active" id="instVisAccts">&mdash;</span>
+      </div>
+      <div class="tb-amount" id="instTotalBal">$0.00<span class="cur">USD</span></div>
+      <div id="instTotalProfit" class="tb-delta">&mdash;</div>
+      <span class="tb-spark"><span data-spark="up" data-seed="instport" data-h="56" data-sw="2"></span></span>
+    </section>
+
+    <div class="stat-grid stat-grid-sm">
+      <div class="stat-cell"><div class="stat-v c-up" id="instProfit">—</div><div class="stat-k">Total Profit</div></div>
+      <div class="stat-cell"><div class="stat-v" id="instWinRate">—</div><div class="stat-k">Avg Win Rate</div></div>
+      <div class="stat-cell"><div class="stat-v" id="instFollowers">—</div><div class="stat-k">Followers</div></div>
+      <div class="stat-cell"><div class="stat-v" id="instViews">—</div><div class="stat-k">Portfolio Views</div></div>
+    </div>
+
+    <!-- LINKED ACCOUNTS -->
+    <section class="page-section">
+      <div class="between mb2">
+        <div class="label">Linked Deriv Accounts</div>
+        <button class="btn btn-sm btn-primary" id="btnLinkAcct">
+          <span data-icon="plus" data-icon-size="14"></span> Link Account</button>
+      </div>
+      <div id="instAccounts" class="stack"></div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="page-section">
+      <div class="between mb2">
+        <div class="label">Team Members</div>
+        <button class="btn btn-sm btn-ghost" id="btnAddTeam">
+          <span data-icon="userplus" data-icon-size="14"></span> Add</button>
+      </div>
+      <div id="instTeam" class="stack"></div>
+    </section>
+
+    <!-- DOCUMENTS -->
+    <section class="page-section">
+      <div class="between mb2">
+        <div class="label">Verification Documents</div>
+      </div>
+      <div id="instDocs" class="stack"></div>
+    </section>
+
+    <!-- LINK ACCOUNT FORM (hidden by default) -->
+    <section class="page-section hide" id="linkAcctForm">
+      <div class="label mb2">Link a Deriv Account</div>
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label" for="linkLogin">MT5 Login ID</label>
+          <input class="input" type="text" id="linkLogin" placeholder="e.g. MTR40012884">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="linkType">Account Type</label>
+          <select class="input" id="linkType">
+            <option value="Standard">Standard</option>
+            <option value="Synthetic">Synthetic</option>
+            <option value="Financial">Financial</option>
+          </select>
+        </div>
+        <div class="t-xs c-3 mb3">We'll verify ownership through the Deriv API. Only MT5 accounts are supported.</div>
+        <div class="row g2">
+          <button class="btn btn-primary" id="btnConfirmLink">
+            <span data-icon="plus" data-icon-size="14"></span> Link Account</button>
+          <button class="btn btn-ghost" id="btnCancelLink">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SWITCH MODE -->
+    <section class="page-section">
+      <div class="card" style="text-align:center">
+        <div class="t-xs c-3 mb2">Switch between your regular trader view and institutional dashboard</div>
+        <a class="btn btn-ghost" href="../index.html">
+          <span data-icon="refresh" data-icon-size="14"></span> Back to Regular Account</a>
+      </div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+(function () {
+  var root = MB.root();
+  var fmt = MB.fmt;
+
+  MB.api.get('institutional').then(function (r) {
+    var d = r.data || {};
+    var stats = d.portfolio_stats || {};
+
+    /* status */
+    MB.$('#instTier').textContent = d.tier || '—';
+    if (d.verified) { MB.$('#instVerified').textContent = 'Verified'; }
+    else { MB.$('#instVerified').className = 'badge'; MB.$('#instVerified').textContent = 'Pending'; }
+    MB.$('#instCompany').textContent = d.company || '—';
+    MB.$('#instBio').textContent = d.bio || '';
+
+    /* portfolio summary */
+    MB.$('#instTotalBal').innerHTML = fmt.money(stats.total_balance) + '<span class="cur">USD</span>';
+    var profitCls = stats.total_profit >= 0 ? 'c-up' : 'c-down';
+    MB.$('#instTotalProfit').className = 'tb-delta ' + profitCls;
+    MB.$('#instTotalProfit').textContent = (stats.total_profit >= 0 ? '+' : '') + fmt.money(stats.total_profit) + ' (' + fmt.pct(stats.total_profit_pct) + ')';
+    MB.$('#instVisAccts').textContent = stats.accounts_visible + '/' + stats.accounts_total + ' visible';
+
+    /* stat grid */
+    MB.$('#instProfit').textContent = fmt.money(stats.total_profit);
+    MB.$('#instProfit').className = 'stat-v ' + profitCls;
+    MB.$('#instWinRate').textContent = fmt.pct(stats.avg_win_rate);
+    MB.$('#instFollowers').textContent = stats.followers || 0;
+    MB.$('#instViews').textContent = stats.portfolio_views || 0;
+
+    /* linked accounts */
+    var accts = d.linked_accounts || [];
+    MB.$('#instAccounts').innerHTML = accts.map(function (a) {
+      return MB.card.instAccount(a);
+    }).join('');
+
+    /* visibility toggles */
+    MB.$$('.inst-vis-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-acct');
+        var acct = accts.find(function (a) { return a.id === id; });
+        if (acct) {
+          acct.visible = !acct.visible;
+          btn.textContent = acct.visible ? 'Visible' : 'Hidden';
+          btn.className = 'badge inst-vis-toggle ' + (acct.visible ? 'badge-active' : '');
+        }
+      });
+    });
+
+    /* team */
+    var team = d.team || [];
+    MB.$('#instTeam').innerHTML = team.length ? team.map(function (t) {
+      return MB.card.instTeamMember(t);
+    }).join('') : '<div class="empty">No team members added</div>';
+
+    /* docs */
+    var docs = d.documents || [];
+    MB.$('#instDocs').innerHTML = docs.map(function (dc) {
+      return MB.card.instDocument(dc);
+    }).join('');
+  });
+
+  /* Link account form toggle */
+  var linkForm = MB.$('#linkAcctForm');
+  MB.$('#btnLinkAcct').addEventListener('click', function () {
+    linkForm.classList.toggle('hide');
+    if (!linkForm.classList.contains('hide')) { linkForm.scrollIntoView({ behavior: 'smooth' }); }
+  });
+  MB.$('#btnCancelLink').addEventListener('click', function () { linkForm.classList.add('hide'); });
+  MB.$('#btnConfirmLink').addEventListener('click', function () {
+    var login = MB.$('#linkLogin').value.trim();
+    if (!login) { MB.toast('Enter an MT5 login ID'); return; }
+    this.disabled = true;
+    this.textContent = 'Linking…';
+    var btn = this;
+    setTimeout(function () {
+      btn.innerHTML = MB.icon('check', 14) + ' Account Linked';
+      btn.style.background = 'var(--mb-green)';
+      MB.toast('Account linked successfully');
+      setTimeout(function () { linkForm.classList.add('hide'); }, 800);
+    }, 1200);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Account Statement — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Account Statement" data-sub="Every entry, with a running balance" data-back="accounts.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- The statement reads from Deriv. KonfluenX keeps no ledger of its own. -->
+    <section class="card">
+      <div class="between">
+        <div>
+          <div class="t-xs c-3">Closing balance</div>
+          <div class="t-h1 w-black num" id="stClose">$0.00</div>
+        </div>
+        <div style="text-align:right">
+          <div class="t-xs c-3">Period movement</div>
+          <div class="t-h3 w-bold num" id="stNet">&mdash;</div>
+        </div>
+      </div>
+      <div class="tb-stamp mt3" id="stStamp"><span data-icon="clock"></span>
+        <span>Read from Deriv</span></div>
+    </section>
+
+    <div class="stmt-filters">
+      <div class="fp-row">
+        <label class="fp-field">
+          <span class="fp-label">Account</span>
+          <select class="select" id="fAccount"><option value="all">All accounts</option></select>
+        </label>
+        <label class="fp-field">
+          <span class="fp-label">Period</span>
+          <select class="select" id="fRange">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="365">Last 12 months</option>
+          </select>
+        </label>
+      </div>
+      <div class="fp-row">
+        <label class="fp-field">
+          <span class="fp-label">Entry type</span>
+          <select class="select" id="fKind">
+            <option value="all">All entries</option>
+            <option value="deposit">Deposits</option>
+            <option value="withdrawal">Withdrawals</option>
+            <option value="transfer">Transfers</option>
+            <option value="trade">Trades</option>
+          </select>
+        </label>
+        <label class="fp-field">
+          <span class="fp-label">Search</span>
+          <span class="input-icon">
+            <span data-icon="search"></span>
+            <input class="input" id="fSearch" type="search" placeholder="Reference or note">
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-count"><span id="stCount">0</span> entries</span>
+      <span class="grow"></span>
+      <button class="btn btn-ghost btn-sm" id="btnExport">
+        <span data-icon="download"></span> Export CSV</button>
+    </div>
+
+    <section class="list" id="stList"></section>
+
+    <div class="alert alert-green mt4">
+      <span data-icon="shield"></span>
+      <div class="t-xs"><strong>Deriv is authoritative for every figure here.</strong>
+      This statement covers your real accounts and is a timestamped read of them
+      &mdash; KonfluenX holds no funds and keeps no balance of its own. Virtual (demo)
+      accounts are excluded.</div>
+    </div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+
+  /* Wording follows the direction of the entry: money in reads "in". */
+  var DESC = {
+    'deposit:in':     ['Deposit via Kaastro', 'Deposit via Deriv', 'Card deposit'],
+    'withdrawal:out': ['Withdrawal via Kaastro', 'Withdrawal to bank', 'Withdrawal via Deriv'],
+    'transfer:in':    ['Transfer in from USD Wallet', 'Transfer in from MT5 Financial'],
+    'transfer:out':   ['Transfer out to MT5 Synthetic', 'Transfer out to USD Wallet'],
+    'trade:in':       ['Rise/Fall contract won', 'Accumulator closed in profit',
+                       'Multiplier closed in profit'],
+    'trade:out':      ['Rise/Fall contract lost', 'Accumulator closed at a loss',
+                       'Digits contract lost']
+  };
+
+  Promise.all([MB.api.get('accounts'), MB.api.get('me')]).then(function (res) {
+    /* Virtual accounts are play money in a different currency — they never
+       belong in a statement whose closing balance is real. The demo account
+       has its own detail page instead. */
+    var accounts = res[0].data.filter(function (a) { return !a.is_virtual; });
+    var closing = res[1].data.deriv.total_balance;
+
+    /* Populate the account filter from the real account list. */
+    var sel = MB.$('#fAccount');
+    accounts.forEach(function (a) {
+      var o = document.createElement('option');
+      o.value = a.id; o.textContent = a.short;
+      sel.appendChild(o);
+    });
+
+    /* The running-balance column is built backwards from the closing figure,
+       so the newest entry always lands exactly on it and no older balance can
+       dip below the floor. Each entry's direction is chosen first, then a kind
+       that makes sense for that direction. */
+    var CREDIT_KINDS = ['deposit', 'transfer', 'trade'];
+    var DEBIT_KINDS  = ['withdrawal', 'transfer', 'trade'];
+    var FLOOR = 250;
+
+    var rows = [];
+    var bal = closing;
+    for (var i = 0; i < 140; i++) {
+      var acct = accounts[i % accounts.length];
+      var big = i % 4 === 0;                       /* funding vs trade sized */
+      var amount = Math.round((big ? 120 + (i * 91) % 780 : 8 + (i * 37) % 190) * 100) / 100;
+      var credit = (i * 7 + i % 3) % 2 === 0;
+
+      /* A credit means the older balance was lower — only allowed while that
+         stays above the floor. Otherwise this entry is a debit. */
+      if (credit && bal - amount < FLOOR) { credit = false; }
+
+      var pool = credit ? CREDIT_KINDS : DEBIT_KINDS;
+      var kind = pool[i % pool.length];
+      var words = DESC[kind + (credit ? ':in' : ':out')];
+
+      rows.push({
+        id: 'ST' + (900000 + i * 37),
+        kind: kind,
+        account_id: acct.id,
+        account: acct.short,
+        desc: words[i % words.length],
+        amount: amount,
+        credit: credit,
+        currency: acct.currency,
+        balance: Math.round(bal * 100) / 100,      /* balance AFTER this entry */
+        at: new Date(Date.now() - (i * 62 + 5) * 3600000).toISOString()
+      });
+
+      bal -= credit ? amount : -amount;            /* step back one entry */
+    }
+
+    function netOf(list) {
+      return list.reduce(function (sum, r) {
+        return sum + (r.credit ? r.amount : -r.amount);
+      }, 0);
+    }
+
+    function inRange(r, days) {
+      return (Date.now() - new Date(r.at)) <= days * 86400000;
+    }
+
+    var c = MB.collection({
+      data: rows, into: '#stList', perPage: 15, mode: 'more',
+      countInto: '#stCount', skeleton: false,
+      initial: { account: 'all', range: '30', kind: 'all', q: '' },
+      filters: {
+        account: function (r, v) { return v === 'all' || r.account_id === v; },
+        range:   function (r, v) { return inRange(r, Number(v)); },
+        kind:    function (r, v) { return v === 'all' || r.kind === v; },
+        q:       function (r, v) {
+          if (!v) { return true; }
+          v = v.toLowerCase();
+          return r.id.toLowerCase().indexOf(v) > -1 || r.desc.toLowerCase().indexOf(v) > -1;
+        }
+      },
+      template: function (r) {
+        var ic = { deposit: 'download', withdrawal: 'upload',
+                   transfer: 'refresh', trade: 'trade' }[r.kind];
+        return '<div class="list-row">' +
+          '<span class="lr-icon">' + MB.icon(ic, 20) + '</span>' +
+          '<span class="grow" style="min-width:0">' +
+            '<span class="lr-title truncate" style="display:block">' + MB.esc(r.desc) + '</span>' +
+            '<span class="lr-sub">' + MB.esc(r.id) + ' &middot; ' + MB.esc(r.account) +
+              ' &middot; ' + MB.fmt.ago(r.at) + '</span></span>' +
+          '<span class="none" style="text-align:right">' +
+            '<span class="lr-value num ' + (r.credit ? 'c-up' : 'c-down') +
+              '" style="display:block;font-weight:700">' +
+              (r.credit ? '+' : '-') + MB.fmt.money(r.amount, r.currency) + '</span>' +
+            '<span class="lr-sub num">bal ' + MB.fmt.money(r.balance, r.currency) + '</span>' +
+          '</span></div>';
+      },
+      emptyIcon: 'file', emptyTitle: 'No entries in this period',
+      emptyText: 'Widen the period or clear a filter to see more.',
+      done: function (shownRows, filtered) {
+        var move = netOf(filtered);
+        MB.$('#stClose').textContent = MB.fmt.money(closing);
+        MB.$('#stNet').textContent = MB.fmt.signed(move);
+        MB.$('#stNet').className = 't-h3 w-bold num ' + (move >= 0 ? 'c-up' : 'c-down');
+        MB.$('#stStamp').lastElementChild.textContent =
+          'Read from Deriv ' + MB.fmt.ago(accounts[0].balance_recorded_at);
+      }
+    });
+
+    c.bindSelect('#fAccount', 'account');
+    c.bindSelect('#fRange', 'range');
+    c.bindSelect('#fKind', 'kind');
+    c.bindInput('#fSearch', 'q');
+
+    MB.$('#btnExport').addEventListener('click', function () {
+      MB.toast('Statement export queued — you will get an email when it is ready.', 'ok');
+    });
+
+    MB.mountIcons(document);
+  });
+});
+</script>
+</body>
+</html>

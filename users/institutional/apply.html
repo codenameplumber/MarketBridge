@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Institutional Application — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Go Institutional" data-sub="Upgrade your trading presence" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- HERO -->
+    <section class="card" style="text-align:center;padding:var(--mb-s5) var(--mb-s4)">
+      <div style="font-size:48px;margin-bottom:var(--mb-s3)">
+        <span data-icon="briefcase" data-icon-size="48"></span>
+      </div>
+      <div class="t-h2 w-black">Become an Institutional Trader</div>
+      <p class="t-sm c-3 mt2" style="max-width:400px;margin-left:auto;margin-right:auto">
+        Showcase your Deriv trading portfolio to the KonfluenX community.
+        Link your accounts, verify your identity, and let your performance speak for itself.
+      </p>
+    </section>
+
+    <!-- BENEFITS -->
+    <section class="page-section">
+      <div class="label mb2">What you get</div>
+      <div class="stack">
+        <div class="card row g3">
+          <span data-icon="results" data-icon-size="22" style="color:var(--mb-green)"></span>
+          <div><div class="w-semi">Public Portfolio</div>
+          <div class="t-xs c-3">Display live account stats — balance, profit, win rate, drawdown — to followers and visitors</div></div>
+        </div>
+        <div class="card row g3">
+          <span data-icon="wallet" data-icon-size="22" style="color:var(--mb-green)"></span>
+          <div><div class="w-semi">Account Linking</div>
+          <div class="t-xs c-3">Connect multiple Deriv MT5 accounts and choose which ones are visible</div></div>
+        </div>
+        <div class="card row g3">
+          <span data-icon="community" data-icon-size="22" style="color:var(--mb-green)"></span>
+          <div><div class="w-semi">Team Access</div>
+          <div class="t-xs c-3">Add analysts and traders to your institutional profile</div></div>
+        </div>
+        <div class="card row g3">
+          <span data-icon="check" data-icon-size="22" style="color:var(--mb-green)"></span>
+          <div><div class="w-semi">Verified Badge</div>
+          <div class="t-xs c-3">Get the institutional verified badge after document review</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPLICATION FORM -->
+    <section class="page-section">
+      <div class="label mb2">Application</div>
+      <div class="card" id="applyForm">
+        <div class="form-group">
+          <label class="form-label" for="applyCompany">Company / Trading name</label>
+          <input class="input" type="text" id="applyCompany" placeholder="e.g. JT Capital">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="applyBio">Trading bio</label>
+          <textarea class="input" id="applyBio" rows="3" placeholder="Describe your trading style, experience, and strategy focus..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="applyWebsite">Website (optional)</label>
+          <input class="input" type="url" id="applyWebsite" placeholder="https://">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deriv MT5 Login</label>
+          <input class="input" type="text" id="applyMT5" placeholder="e.g. MTR40012884">
+          <div class="t-xs c-3 mt1">We'll verify ownership via the Deriv API</div>
+        </div>
+
+        <div class="label mt3 mb2">Identity Verification</div>
+        <div class="stack" id="docUploads">
+          <div class="card card-flat inst-doc-upload" data-doc="government_id">
+            <div class="row g3">
+              <span data-icon="file" data-icon-size="20"></span>
+              <div class="grow">
+                <div class="w-semi t-sm">Government-issued ID</div>
+                <div class="t-xs c-3">Passport, national ID, or driver's licence</div>
+              </div>
+              <label class="btn btn-sm btn-ghost inst-upload-btn">
+                <span data-icon="plus" data-icon-size="14"></span> Upload
+                <input type="file" accept="image/*,.pdf" hidden>
+              </label>
+            </div>
+            <div class="inst-doc-preview hide"></div>
+          </div>
+          <div class="card card-flat inst-doc-upload" data-doc="proof_of_address">
+            <div class="row g3">
+              <span data-icon="file" data-icon-size="20"></span>
+              <div class="grow">
+                <div class="w-semi t-sm">Proof of address</div>
+                <div class="t-xs c-3">Utility bill or bank statement (last 3 months)</div>
+              </div>
+              <label class="btn btn-sm btn-ghost inst-upload-btn">
+                <span data-icon="plus" data-icon-size="14"></span> Upload
+                <input type="file" accept="image/*,.pdf" hidden>
+              </label>
+            </div>
+            <div class="inst-doc-preview hide"></div>
+          </div>
+          <div class="card card-flat inst-doc-upload" data-doc="trading_statement">
+            <div class="row g3">
+              <span data-icon="file" data-icon-size="20"></span>
+              <div class="grow">
+                <div class="w-semi t-sm">Trading statement (6 months)</div>
+                <div class="t-xs c-3">MT5 account statement or broker report</div>
+              </div>
+              <label class="btn btn-sm btn-ghost inst-upload-btn">
+                <span data-icon="plus" data-icon-size="14"></span> Upload
+                <input type="file" accept="image/*,.pdf" hidden>
+              </label>
+            </div>
+            <div class="inst-doc-preview hide"></div>
+          </div>
+        </div>
+
+        <div class="label mt3 mb2">Business Documents (optional)</div>
+        <div class="stack">
+          <div class="card card-flat inst-doc-upload" data-doc="cac_certificate">
+            <div class="row g3">
+              <span data-icon="briefcase" data-icon-size="20"></span>
+              <div class="grow">
+                <div class="w-semi t-sm">CAC Certificate / Business Registration</div>
+                <div class="t-xs c-3">Certificate of incorporation or business name registration</div>
+              </div>
+              <label class="btn btn-sm btn-ghost inst-upload-btn">
+                <span data-icon="plus" data-icon-size="14"></span> Upload
+                <input type="file" accept="image/*,.pdf" hidden>
+              </label>
+            </div>
+            <div class="inst-doc-preview hide"></div>
+          </div>
+          <div class="card card-flat inst-doc-upload" data-doc="tax_id">
+            <div class="row g3">
+              <span data-icon="file" data-icon-size="20"></span>
+              <div class="grow">
+                <div class="w-semi t-sm">Tax Identification Number (TIN)</div>
+                <div class="t-xs c-3">Tax clearance or TIN certificate</div>
+              </div>
+              <label class="btn btn-sm btn-ghost inst-upload-btn">
+                <span data-icon="plus" data-icon-size="14"></span> Upload
+                <input type="file" accept="image/*,.pdf" hidden>
+              </label>
+            </div>
+            <div class="inst-doc-preview hide"></div>
+          </div>
+          <div class="card card-flat inst-doc-upload" data-doc="memorandum">
+            <div class="row g3">
+              <span data-icon="file" data-icon-size="20"></span>
+              <div class="grow">
+                <div class="w-semi t-sm">Memorandum of Association</div>
+                <div class="t-xs c-3">MEMART or articles of association</div>
+              </div>
+              <label class="btn btn-sm btn-ghost inst-upload-btn">
+                <span data-icon="plus" data-icon-size="14"></span> Upload
+                <input type="file" accept="image/*,.pdf" hidden>
+              </label>
+            </div>
+            <div class="inst-doc-preview hide"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg mt4" id="btnApply" style="width:100%">
+          Submit Application</button>
+        <div class="t-xs c-3 mt2" style="text-align:center">
+          Applications are typically reviewed within 2 business days</div>
+      </div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+(function () {
+  /* File upload preview feedback */
+  MB.$$('.inst-doc-upload').forEach(function (card) {
+    var fileInput = card.querySelector('input[type="file"]');
+    var preview = card.querySelector('.inst-doc-preview');
+    var uploadBtn = card.querySelector('.inst-upload-btn');
+    if (!fileInput) { return; }
+
+    fileInput.addEventListener('change', function () {
+      var file = fileInput.files[0];
+      if (!file) { return; }
+      preview.classList.remove('hide');
+      preview.innerHTML =
+        '<div class="row g2 mt2" style="padding:var(--mb-s2);background:var(--mb-surface-2);border-radius:var(--mb-r-sm)">' +
+          '<span data-icon="check" data-icon-size="14" style="color:var(--mb-green)"></span>' +
+          '<span class="t-xs grow">' + MB.esc(file.name) + ' (' + Math.round(file.size / 1024) + ' KB)</span>' +
+          '<button class="btn btn-sm btn-ghost inst-doc-remove" type="button" style="padding:2px">' +
+            MB.icon('close', 12) + '</button>' +
+        '</div>';
+      uploadBtn.innerHTML = '<span data-icon="check" data-icon-size="14"></span> Uploaded';
+      uploadBtn.style.color = 'var(--mb-green)';
+      MB.mountIcons(preview);
+
+      preview.querySelector('.inst-doc-remove').addEventListener('click', function () {
+        fileInput.value = '';
+        preview.classList.add('hide');
+        preview.innerHTML = '';
+        uploadBtn.innerHTML = '<span data-icon="plus" data-icon-size="14"></span> Upload';
+        uploadBtn.style.color = '';
+        MB.mountIcons(uploadBtn);
+      });
+    });
+  });
+
+  /* Submit */
+  var btn = MB.$('#btnApply');
+  if (btn) {
+    btn.addEventListener('click', function () {
+      var company = MB.$('#applyCompany').value.trim();
+      var bio = MB.$('#applyBio').value.trim();
+      var mt5 = MB.$('#applyMT5').value.trim();
+      if (!company) { MB.toast('Enter your company or trading name'); return; }
+      if (!bio) { MB.toast('Enter your trading bio'); return; }
+      if (!mt5) { MB.toast('Enter your Deriv MT5 login'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      setTimeout(function () {
+        btn.innerHTML = MB.icon('check', 16) + ' Application Submitted';
+        btn.className = 'btn btn-lg mt4';
+        btn.style.width = '100%';
+        btn.style.background = 'var(--mb-green)';
+        btn.style.color = '#fff';
+        MB.toast('Application submitted successfully!');
+      }, 1200);
+    });
+  }
+})();
+</script>
+</body>
+</html>

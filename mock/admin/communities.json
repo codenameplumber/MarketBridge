@@ -1,0 +1,3186 @@
+{
+  "data": [
+    {
+      "id": "room_1HZ75V",
+      "name": "V75 (1s) Room",
+      "kind": "market",
+      "slug": "1HZ75V",
+      "market": {
+        "symbol": "1HZ75V",
+        "name": "Volatility 75 (1s) Index",
+        "short_name": "V75 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 400,
+      "online": 4,
+      "posts": 60,
+      "messages_7d": 1190,
+      "new_members_7d": 203,
+      "reports": 2,
+      "status": "blocked",
+      "growth": [
+        31,
+        65,
+        63,
+        55,
+        37,
+        68,
+        39,
+        66,
+        59,
+        94,
+        65,
+        64
+      ],
+      "top_posters": [
+        {
+          "username": "femi_adamu4",
+          "posts": 132
+        },
+        {
+          "username": "amara_okafor",
+          "posts": 131
+        },
+        {
+          "username": "grace_eze4",
+          "posts": 177
+        }
+      ]
+    },
+    {
+      "id": "room_R_75",
+      "name": "V75 Room",
+      "kind": "market",
+      "slug": "R_75",
+      "market": {
+        "symbol": "R_75",
+        "name": "Volatility 75 Index",
+        "short_name": "V75",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 737,
+      "online": 21,
+      "posts": 151,
+      "messages_7d": 2136,
+      "new_members_7d": 54,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        35,
+        59,
+        21,
+        28,
+        33,
+        99,
+        46,
+        97,
+        58,
+        35,
+        34,
+        74
+      ],
+      "top_posters": [
+        {
+          "username": "amara_okafor3",
+          "posts": 66
+        },
+        {
+          "username": "daniel_achebe2",
+          "posts": 61
+        },
+        {
+          "username": "daniel_achebe2",
+          "posts": 116
+        }
+      ]
+    },
+    {
+      "id": "room_1HZ100V",
+      "name": "V100 (1s) Room",
+      "kind": "market",
+      "slug": "1HZ100V",
+      "market": {
+        "symbol": "1HZ100V",
+        "name": "Volatility 100 (1s) Index",
+        "short_name": "V100 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1074,
+      "online": 38,
+      "posts": 242,
+      "messages_7d": 2046,
+      "new_members_7d": 101,
+      "reports": 1,
+      "status": "active",
+      "growth": [
+        63,
+        98,
+        94,
+        50,
+        92,
+        93,
+        47,
+        45,
+        78,
+        60,
+        81,
+        60
+      ],
+      "top_posters": [
+        {
+          "username": "ada_bello3",
+          "posts": 168
+        },
+        {
+          "username": "samuel_mohammed3",
+          "posts": 60
+        },
+        {
+          "username": "fatima_ekene",
+          "posts": 64
+        }
+      ]
+    },
+    {
+      "id": "room_R_100",
+      "name": "V100 Room",
+      "kind": "market",
+      "slug": "R_100",
+      "market": {
+        "symbol": "R_100",
+        "name": "Volatility 100 Index",
+        "short_name": "V100",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1411,
+      "online": 55,
+      "posts": 333,
+      "messages_7d": 1508,
+      "new_members_7d": 139,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        95,
+        60,
+        93,
+        79,
+        29,
+        27,
+        31,
+        48,
+        25,
+        29,
+        96,
+        54
+      ],
+      "top_posters": [
+        {
+          "username": "david_balogun",
+          "posts": 88
+        },
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 142
+        },
+        {
+          "username": "samuel_mohammed3",
+          "posts": 139
+        }
+      ]
+    },
+    {
+      "id": "room_1HZ50V",
+      "name": "V50 (1s) Room",
+      "kind": "market",
+      "slug": "1HZ50V",
+      "market": {
+        "symbol": "1HZ50V",
+        "name": "Volatility 50 (1s) Index",
+        "short_name": "V50 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1748,
+      "online": 72,
+      "posts": 424,
+      "messages_7d": 2140,
+      "new_members_7d": 122,
+      "reports": 2,
+      "status": "active",
+      "growth": [
+        57,
+        65,
+        66,
+        88,
+        51,
+        23,
+        92,
+        24,
+        63,
+        31,
+        73,
+        91
+      ],
+      "top_posters": [
+        {
+          "username": "aisha_ibrahim",
+          "posts": 99
+        },
+        {
+          "username": "chioma_nwosu2",
+          "posts": 42
+        },
+        {
+          "username": "ngozi_obi",
+          "posts": 94
+        }
+      ]
+    },
+    {
+      "id": "room_R_50",
+      "name": "V50 Room",
+      "kind": "market",
+      "slug": "R_50",
+      "market": {
+        "symbol": "R_50",
+        "name": "Volatility 50 Index",
+        "short_name": "V50",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2085,
+      "online": 89,
+      "posts": 515,
+      "messages_7d": 900,
+      "new_members_7d": 73,
+      "reports": 6,
+      "status": "active",
+      "growth": [
+        27,
+        58,
+        54,
+        27,
+        99,
+        55,
+        37,
+        84,
+        59,
+        61,
+        98,
+        57
+      ],
+      "top_posters": [
+        {
+          "username": "peter_suleiman",
+          "posts": 27
+        },
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 52
+        },
+        {
+          "username": "john_david",
+          "posts": 115
+        }
+      ]
+    },
+    {
+      "id": "room_R_25",
+      "name": "V25 Room",
+      "kind": "market",
+      "slug": "R_25",
+      "market": {
+        "symbol": "R_25",
+        "name": "Volatility 25 Index",
+        "short_name": "V25",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2422,
+      "online": 16,
+      "posts": 606,
+      "messages_7d": 2258,
+      "new_members_7d": 66,
+      "reports": 2,
+      "status": "active",
+      "growth": [
+        45,
+        42,
+        50,
+        24,
+        37,
+        100,
+        41,
+        51,
+        99,
+        25,
+        20,
+        72
+      ],
+      "top_posters": [
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 99
+        },
+        {
+          "username": "grace_eze3",
+          "posts": 14
+        },
+        {
+          "username": "david_balogun2",
+          "posts": 110
+        }
+      ]
+    },
+    {
+      "id": "room_R_10",
+      "name": "V10 Room",
+      "kind": "market",
+      "slug": "R_10",
+      "market": {
+        "symbol": "R_10",
+        "name": "Volatility 10 Index",
+        "short_name": "V10",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2759,
+      "online": 33,
+      "posts": 697,
+      "messages_7d": 3208,
+      "new_members_7d": 58,
+      "reports": 5,
+      "status": "active",
+      "growth": [
+        36,
+        56,
+        33,
+        22,
+        57,
+        97,
+        59,
+        75,
+        73,
+        80,
+        81,
+        29
+      ],
+      "top_posters": [
+        {
+          "username": "aisha_ibrahim",
+          "posts": 95
+        },
+        {
+          "username": "grace_eze3",
+          "posts": 143
+        },
+        {
+          "username": "ada_bello",
+          "posts": 69
+        }
+      ]
+    },
+    {
+      "id": "room_stpRNG",
+      "name": "Step Room",
+      "kind": "market",
+      "slug": "stpRNG",
+      "market": {
+        "symbol": "stpRNG",
+        "name": "Step Index",
+        "short_name": "Step",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 496,
+      "online": 50,
+      "posts": 788,
+      "messages_7d": 2064,
+      "new_members_7d": 210,
+      "reports": 7,
+      "status": "active",
+      "growth": [
+        32,
+        69,
+        39,
+        70,
+        82,
+        54,
+        68,
+        26,
+        48,
+        51,
+        90,
+        50
+      ],
+      "top_posters": [
+        {
+          "username": "tunde_adeyemi3",
+          "posts": 135
+        },
+        {
+          "username": "grace_eze3",
+          "posts": 50
+        },
+        {
+          "username": "fatima_ekene2",
+          "posts": 12
+        }
+      ]
+    },
+    {
+      "id": "room_RB100",
+      "name": "RB 100 Room",
+      "kind": "market",
+      "slug": "RB100",
+      "market": {
+        "symbol": "RB100",
+        "name": "Range Break 100 Index",
+        "short_name": "RB 100",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary"
+        ]
+      },
+      "category": "synthetic_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 833,
+      "online": 67,
+      "posts": 879,
+      "messages_7d": 2949,
+      "new_members_7d": 106,
+      "reports": 0,
+      "status": "active",
+      "growth": [
+        43,
+        21,
+        59,
+        62,
+        59,
+        34,
+        89,
+        43,
+        50,
+        96,
+        21,
+        100
+      ],
+      "top_posters": [
+        {
+          "username": "chioma_nwosu",
+          "posts": 95
+        },
+        {
+          "username": "blessing_danjuma",
+          "posts": 147
+        },
+        {
+          "username": "fatima_ekene",
+          "posts": 175
+        }
+      ]
+    },
+    {
+      "id": "room_BOOM1000",
+      "name": "Boom 1000 Room",
+      "kind": "market",
+      "slug": "BOOM1000",
+      "market": {
+        "symbol": "BOOM1000",
+        "name": "Boom 1000 Index",
+        "short_name": "Boom 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1170,
+      "online": 84,
+      "posts": 150,
+      "messages_7d": 398,
+      "new_members_7d": 97,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        65,
+        92,
+        25,
+        71,
+        91,
+        77,
+        72,
+        42,
+        92,
+        69,
+        75,
+        33
+      ],
+      "top_posters": [
+        {
+          "username": "john_david2",
+          "posts": 53
+        },
+        {
+          "username": "tunde_adeyemi2",
+          "posts": 128
+        },
+        {
+          "username": "blessing_danjuma",
+          "posts": 149
+        }
+      ]
+    },
+    {
+      "id": "room_BOOM500",
+      "name": "Boom 500 Room",
+      "kind": "market",
+      "slug": "BOOM500",
+      "market": {
+        "symbol": "BOOM500",
+        "name": "Boom 500 Index",
+        "short_name": "Boom 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1507,
+      "online": 11,
+      "posts": 241,
+      "messages_7d": 914,
+      "new_members_7d": 226,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        61,
+        63,
+        72,
+        41,
+        82,
+        56,
+        75,
+        97,
+        97,
+        42,
+        70,
+        90
+      ],
+      "top_posters": [
+        {
+          "username": "david_balogun3",
+          "posts": 79
+        },
+        {
+          "username": "blessing_danjuma2",
+          "posts": 59
+        },
+        {
+          "username": "peter_suleiman3",
+          "posts": 166
+        }
+      ]
+    },
+    {
+      "id": "room_BOOM300",
+      "name": "Boom 300 Room",
+      "kind": "market",
+      "slug": "BOOM300",
+      "market": {
+        "symbol": "BOOM300",
+        "name": "Boom 300 Index",
+        "short_name": "Boom 300",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1844,
+      "online": 28,
+      "posts": 332,
+      "messages_7d": 1013,
+      "new_members_7d": 182,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        67,
+        52,
+        83,
+        44,
+        46,
+        64,
+        96,
+        56,
+        51,
+        48,
+        53,
+        59
+      ],
+      "top_posters": [
+        {
+          "username": "david_balogun2",
+          "posts": 72
+        },
+        {
+          "username": "ibrahim_mensah2",
+          "posts": 68
+        },
+        {
+          "username": "fatima_ekene2",
+          "posts": 98
+        }
+      ]
+    },
+    {
+      "id": "room_CRASH1000",
+      "name": "Crash 1000 Room",
+      "kind": "market",
+      "slug": "CRASH1000",
+      "market": {
+        "symbol": "CRASH1000",
+        "name": "Crash 1000 Index",
+        "short_name": "Crash 1000",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2181,
+      "online": 45,
+      "posts": 423,
+      "messages_7d": 3140,
+      "new_members_7d": 20,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        32,
+        81,
+        47,
+        59,
+        43,
+        91,
+        32,
+        65,
+        76,
+        82,
+        100,
+        20
+      ],
+      "top_posters": [
+        {
+          "username": "joy_chukwu2",
+          "posts": 38
+        },
+        {
+          "username": "david_balogun2",
+          "posts": 57
+        },
+        {
+          "username": "blessing_danjuma2",
+          "posts": 118
+        }
+      ]
+    },
+    {
+      "id": "room_CRASH500",
+      "name": "Crash 500 Room",
+      "kind": "market",
+      "slug": "CRASH500",
+      "market": {
+        "symbol": "CRASH500",
+        "name": "Crash 500 Index",
+        "short_name": "Crash 500",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2518,
+      "online": 62,
+      "posts": 514,
+      "messages_7d": 3093,
+      "new_members_7d": 93,
+      "reports": 7,
+      "status": "active",
+      "growth": [
+        65,
+        79,
+        100,
+        22,
+        74,
+        72,
+        78,
+        29,
+        57,
+        36,
+        72,
+        36
+      ],
+      "top_posters": [
+        {
+          "username": "peter_suleiman2",
+          "posts": 99
+        },
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 168
+        },
+        {
+          "username": "musa_okoro",
+          "posts": 53
+        }
+      ]
+    },
+    {
+      "id": "room_CRASH300",
+      "name": "Crash 300 Room",
+      "kind": "market",
+      "slug": "CRASH300",
+      "market": {
+        "symbol": "CRASH300",
+        "name": "Crash 300 Index",
+        "short_name": "Crash 300",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2855,
+      "online": 79,
+      "posts": 605,
+      "messages_7d": 575,
+      "new_members_7d": 211,
+      "reports": 8,
+      "status": "flagged",
+      "growth": [
+        40,
+        57,
+        25,
+        29,
+        65,
+        95,
+        26,
+        64,
+        44,
+        24,
+        71,
+        20
+      ],
+      "top_posters": [
+        {
+          "username": "amara_okafor4",
+          "posts": 150
+        },
+        {
+          "username": "femi_adamu4",
+          "posts": 39
+        },
+        {
+          "username": "femi_adamu",
+          "posts": 25
+        }
+      ]
+    },
+    {
+      "id": "room_JD75",
+      "name": "Jump 75 Room",
+      "kind": "market",
+      "slug": "JD75",
+      "market": {
+        "symbol": "JD75",
+        "name": "Jump 75 Index",
+        "short_name": "Jump 75",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 592,
+      "online": 6,
+      "posts": 696,
+      "messages_7d": 1428,
+      "new_members_7d": 46,
+      "reports": 5,
+      "status": "active",
+      "growth": [
+        38,
+        24,
+        30,
+        76,
+        31,
+        52,
+        80,
+        22,
+        93,
+        35,
+        65,
+        37
+      ],
+      "top_posters": [
+        {
+          "username": "kwame_yusuf2",
+          "posts": 130
+        },
+        {
+          "username": "zainab_lawal",
+          "posts": 65
+        },
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 153
+        }
+      ]
+    },
+    {
+      "id": "room_JD100",
+      "name": "Jump 100 Room",
+      "kind": "market",
+      "slug": "JD100",
+      "market": {
+        "symbol": "JD100",
+        "name": "Jump 100 Index",
+        "short_name": "Jump 100",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 929,
+      "online": 23,
+      "posts": 787,
+      "messages_7d": 1729,
+      "new_members_7d": 4,
+      "reports": 8,
+      "status": "flagged",
+      "growth": [
+        26,
+        92,
+        88,
+        84,
+        63,
+        60,
+        95,
+        85,
+        59,
+        22,
+        23,
+        54
+      ],
+      "top_posters": [
+        {
+          "username": "joy_chukwu",
+          "posts": 71
+        },
+        {
+          "username": "tunde_adeyemi",
+          "posts": 172
+        },
+        {
+          "username": "blessing_danjuma",
+          "posts": 33
+        }
+      ]
+    },
+    {
+      "id": "room_JD25",
+      "name": "Jump 25 Room",
+      "kind": "market",
+      "slug": "JD25",
+      "market": {
+        "symbol": "JD25",
+        "name": "Jump 25 Index",
+        "short_name": "Jump 25",
+        "pair": null,
+        "category": "derived",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier"
+        ]
+      },
+      "category": "derived",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1266,
+      "online": 40,
+      "posts": 878,
+      "messages_7d": 1696,
+      "new_members_7d": 131,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        30,
+        20,
+        68,
+        72,
+        60,
+        27,
+        60,
+        81,
+        57,
+        77,
+        29,
+        92
+      ],
+      "top_posters": [
+        {
+          "username": "david_balogun3",
+          "posts": 101
+        },
+        {
+          "username": "zainab_lawal",
+          "posts": 86
+        },
+        {
+          "username": "amara_okafor4",
+          "posts": 136
+        }
+      ]
+    },
+    {
+      "id": "room_frxEURUSD",
+      "name": "EUR/USD Room",
+      "kind": "market",
+      "slug": "frxEURUSD",
+      "market": {
+        "symbol": "frxEURUSD",
+        "name": "EUR/USD",
+        "short_name": "EUR/USD",
+        "pair": "EUR/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1603,
+      "online": 57,
+      "posts": 149,
+      "messages_7d": 3344,
+      "new_members_7d": 10,
+      "reports": 7,
+      "status": "active",
+      "growth": [
+        25,
+        26,
+        74,
+        66,
+        20,
+        23,
+        78,
+        95,
+        40,
+        33,
+        20,
+        75
+      ],
+      "top_posters": [
+        {
+          "username": "ngozi_obi",
+          "posts": 147
+        },
+        {
+          "username": "ngozi_obi",
+          "posts": 158
+        },
+        {
+          "username": "joy_chukwu3",
+          "posts": 150
+        }
+      ]
+    },
+    {
+      "id": "room_frxGBPUSD",
+      "name": "GBP/USD Room",
+      "kind": "market",
+      "slug": "frxGBPUSD",
+      "market": {
+        "symbol": "frxGBPUSD",
+        "name": "GBP/USD",
+        "short_name": "GBP/USD",
+        "pair": "GBP/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1940,
+      "online": 74,
+      "posts": 240,
+      "messages_7d": 3348,
+      "new_members_7d": 195,
+      "reports": 2,
+      "status": "active",
+      "growth": [
+        55,
+        58,
+        48,
+        65,
+        49,
+        60,
+        45,
+        62,
+        24,
+        58,
+        20,
+        98
+      ],
+      "top_posters": [
+        {
+          "username": "ngozi_obi",
+          "posts": 86
+        },
+        {
+          "username": "ibrahim_mensah",
+          "posts": 143
+        },
+        {
+          "username": "musa_okoro",
+          "posts": 179
+        }
+      ]
+    },
+    {
+      "id": "room_frxUSDJPY",
+      "name": "USD/JPY Room",
+      "kind": "market",
+      "slug": "frxUSDJPY",
+      "market": {
+        "symbol": "frxUSDJPY",
+        "name": "USD/JPY",
+        "short_name": "USD/JPY",
+        "pair": "USD/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2277,
+      "online": 91,
+      "posts": 331,
+      "messages_7d": 3164,
+      "new_members_7d": 58,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        20,
+        80,
+        95,
+        21,
+        32,
+        49,
+        68,
+        50,
+        100,
+        54,
+        33,
+        50
+      ],
+      "top_posters": [
+        {
+          "username": "zainab_lawal2",
+          "posts": 86
+        },
+        {
+          "username": "aisha_ibrahim2",
+          "posts": 94
+        },
+        {
+          "username": "fatima_ekene2",
+          "posts": 56
+        }
+      ]
+    },
+    {
+      "id": "room_frxAUDUSD",
+      "name": "AUD/USD Room",
+      "kind": "market",
+      "slug": "frxAUDUSD",
+      "market": {
+        "symbol": "frxAUDUSD",
+        "name": "AUD/USD",
+        "short_name": "AUD/USD",
+        "pair": "AUD/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2614,
+      "online": 18,
+      "posts": 422,
+      "messages_7d": 3174,
+      "new_members_7d": 193,
+      "reports": 6,
+      "status": "active",
+      "growth": [
+        84,
+        88,
+        84,
+        71,
+        99,
+        38,
+        30,
+        95,
+        61,
+        23,
+        100,
+        91
+      ],
+      "top_posters": [
+        {
+          "username": "femi_adamu4",
+          "posts": 67
+        },
+        {
+          "username": "musa_okoro",
+          "posts": 16
+        },
+        {
+          "username": "aisha_ibrahim2",
+          "posts": 103
+        }
+      ]
+    },
+    {
+      "id": "room_frxUSDCAD",
+      "name": "USD/CAD Room",
+      "kind": "market",
+      "slug": "frxUSDCAD",
+      "market": {
+        "symbol": "frxUSDCAD",
+        "name": "USD/CAD",
+        "short_name": "USD/CAD",
+        "pair": "USD/CAD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2951,
+      "online": 35,
+      "posts": 513,
+      "messages_7d": 1285,
+      "new_members_7d": 148,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        39,
+        52,
+        69,
+        90,
+        66,
+        97,
+        95,
+        21,
+        28,
+        25,
+        25,
+        54
+      ],
+      "top_posters": [
+        {
+          "username": "joy_chukwu3",
+          "posts": 143
+        },
+        {
+          "username": "amara_okafor3",
+          "posts": 54
+        },
+        {
+          "username": "grace_eze3",
+          "posts": 17
+        }
+      ]
+    },
+    {
+      "id": "room_frxUSDCHF",
+      "name": "USD/CHF Room",
+      "kind": "market",
+      "slug": "frxUSDCHF",
+      "market": {
+        "symbol": "frxUSDCHF",
+        "name": "USD/CHF",
+        "short_name": "USD/CHF",
+        "pair": "USD/CHF",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 688,
+      "online": 52,
+      "posts": 604,
+      "messages_7d": 836,
+      "new_members_7d": 71,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        24,
+        79,
+        54,
+        77,
+        27,
+        52,
+        63,
+        72,
+        100,
+        97,
+        76,
+        60
+      ],
+      "top_posters": [
+        {
+          "username": "john_david3",
+          "posts": 5
+        },
+        {
+          "username": "david_balogun",
+          "posts": 87
+        },
+        {
+          "username": "musa_okoro2",
+          "posts": 107
+        }
+      ]
+    },
+    {
+      "id": "room_frxNZDUSD",
+      "name": "NZD/USD Room",
+      "kind": "market",
+      "slug": "frxNZDUSD",
+      "market": {
+        "symbol": "frxNZDUSD",
+        "name": "NZD/USD",
+        "short_name": "NZD/USD",
+        "pair": "NZD/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1025,
+      "online": 69,
+      "posts": 695,
+      "messages_7d": 941,
+      "new_members_7d": 205,
+      "reports": 7,
+      "status": "active",
+      "growth": [
+        68,
+        60,
+        30,
+        20,
+        31,
+        36,
+        31,
+        46,
+        98,
+        21,
+        58,
+        97
+      ],
+      "top_posters": [
+        {
+          "username": "femi_adamu3",
+          "posts": 172
+        },
+        {
+          "username": "musa_okoro2",
+          "posts": 71
+        },
+        {
+          "username": "amara_okafor4",
+          "posts": 162
+        }
+      ]
+    },
+    {
+      "id": "room_frxEURGBP",
+      "name": "EUR/GBP Room",
+      "kind": "market",
+      "slug": "frxEURGBP",
+      "market": {
+        "symbol": "frxEURGBP",
+        "name": "EUR/GBP",
+        "short_name": "EUR/GBP",
+        "pair": "EUR/GBP",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1362,
+      "online": 86,
+      "posts": 786,
+      "messages_7d": 2566,
+      "new_members_7d": 71,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        33,
+        64,
+        95,
+        38,
+        21,
+        43,
+        36,
+        30,
+        31,
+        99,
+        29,
+        24
+      ],
+      "top_posters": [
+        {
+          "username": "samuel_mohammed",
+          "posts": 173
+        },
+        {
+          "username": "ngozi_obi2",
+          "posts": 125
+        },
+        {
+          "username": "david_balogun3",
+          "posts": 130
+        }
+      ]
+    },
+    {
+      "id": "room_frxEURJPY",
+      "name": "EUR/JPY Room",
+      "kind": "market",
+      "slug": "frxEURJPY",
+      "market": {
+        "symbol": "frxEURJPY",
+        "name": "EUR/JPY",
+        "short_name": "EUR/JPY",
+        "pair": "EUR/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1699,
+      "online": 13,
+      "posts": 877,
+      "messages_7d": 1602,
+      "new_members_7d": 149,
+      "reports": 7,
+      "status": "active",
+      "growth": [
+        69,
+        87,
+        70,
+        37,
+        75,
+        65,
+        41,
+        29,
+        100,
+        81,
+        51,
+        100
+      ],
+      "top_posters": [
+        {
+          "username": "samuel_mohammed2",
+          "posts": 86
+        },
+        {
+          "username": "kwame_yusuf",
+          "posts": 131
+        },
+        {
+          "username": "peter_suleiman",
+          "posts": 19
+        }
+      ]
+    },
+    {
+      "id": "room_frxGBPJPY",
+      "name": "GBP/JPY Room",
+      "kind": "market",
+      "slug": "frxGBPJPY",
+      "market": {
+        "symbol": "frxGBPJPY",
+        "name": "GBP/JPY",
+        "short_name": "GBP/JPY",
+        "pair": "GBP/JPY",
+        "category": "forex",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "forex",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2036,
+      "online": 30,
+      "posts": 148,
+      "messages_7d": 1723,
+      "new_members_7d": 128,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        98,
+        50,
+        88,
+        27,
+        81,
+        86,
+        47,
+        62,
+        67,
+        24,
+        28,
+        86
+      ],
+      "top_posters": [
+        {
+          "username": "ada_bello3",
+          "posts": 75
+        },
+        {
+          "username": "femi_adamu4",
+          "posts": 39
+        },
+        {
+          "username": "blessing_danjuma2",
+          "posts": 110
+        }
+      ]
+    },
+    {
+      "id": "room_cryBTCUSD",
+      "name": "BTC/USD Room",
+      "kind": "market",
+      "slug": "cryBTCUSD",
+      "market": {
+        "symbol": "cryBTCUSD",
+        "name": "Bitcoin / USD",
+        "short_name": "BTC/USD",
+        "pair": "BTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2373,
+      "online": 47,
+      "posts": 239,
+      "messages_7d": 1107,
+      "new_members_7d": 193,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        74,
+        60,
+        76,
+        52,
+        38,
+        52,
+        36,
+        85,
+        69,
+        63,
+        68,
+        82
+      ],
+      "top_posters": [
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 122
+        },
+        {
+          "username": "zainab_lawal2",
+          "posts": 14
+        },
+        {
+          "username": "joy_chukwu",
+          "posts": 23
+        }
+      ]
+    },
+    {
+      "id": "room_cryETHUSD",
+      "name": "ETH/USD Room",
+      "kind": "market",
+      "slug": "cryETHUSD",
+      "market": {
+        "symbol": "cryETHUSD",
+        "name": "Ethereum / USD",
+        "short_name": "ETH/USD",
+        "pair": "ETH/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2710,
+      "online": 64,
+      "posts": 330,
+      "messages_7d": 711,
+      "new_members_7d": 110,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        45,
+        73,
+        50,
+        78,
+        26,
+        20,
+        82,
+        71,
+        89,
+        39,
+        80,
+        100
+      ],
+      "top_posters": [
+        {
+          "username": "zainab_lawal",
+          "posts": 32
+        },
+        {
+          "username": "john_david2",
+          "posts": 53
+        },
+        {
+          "username": "fatima_ekene3",
+          "posts": 53
+        }
+      ]
+    },
+    {
+      "id": "room_crySOLUSD",
+      "name": "SOL/USD Room",
+      "kind": "market",
+      "slug": "crySOLUSD",
+      "market": {
+        "symbol": "crySOLUSD",
+        "name": "Solana / USD",
+        "short_name": "SOL/USD",
+        "pair": "SOL/USD",
+        "category": "crypto",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 447,
+      "online": 81,
+      "posts": 421,
+      "messages_7d": 1009,
+      "new_members_7d": 221,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        24,
+        71,
+        77,
+        53,
+        26,
+        100,
+        90,
+        75,
+        94,
+        75,
+        80,
+        85
+      ],
+      "top_posters": [
+        {
+          "username": "daniel_achebe3",
+          "posts": 84
+        },
+        {
+          "username": "musa_okoro2",
+          "posts": 46
+        },
+        {
+          "username": "samuel_mohammed2",
+          "posts": 29
+        }
+      ]
+    },
+    {
+      "id": "room_cryXRPUSD",
+      "name": "XRP/USD Room",
+      "kind": "market",
+      "slug": "cryXRPUSD",
+      "market": {
+        "symbol": "cryXRPUSD",
+        "name": "XRP / USD",
+        "short_name": "XRP/USD",
+        "pair": "XRP/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 784,
+      "online": 8,
+      "posts": 512,
+      "messages_7d": 605,
+      "new_members_7d": 109,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        42,
+        67,
+        58,
+        31,
+        64,
+        93,
+        46,
+        57,
+        41,
+        72,
+        50,
+        83
+      ],
+      "top_posters": [
+        {
+          "username": "samuel_mohammed",
+          "posts": 9
+        },
+        {
+          "username": "joy_chukwu",
+          "posts": 33
+        },
+        {
+          "username": "daniel_achebe2",
+          "posts": 42
+        }
+      ]
+    },
+    {
+      "id": "room_cryLTCUSD",
+      "name": "LTC/USD Room",
+      "kind": "market",
+      "slug": "cryLTCUSD",
+      "market": {
+        "symbol": "cryLTCUSD",
+        "name": "Litecoin / USD",
+        "short_name": "LTC/USD",
+        "pair": "LTC/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1121,
+      "online": 25,
+      "posts": 603,
+      "messages_7d": 2349,
+      "new_members_7d": 80,
+      "reports": 1,
+      "status": "active",
+      "growth": [
+        100,
+        75,
+        64,
+        52,
+        42,
+        43,
+        45,
+        74,
+        39,
+        35,
+        40,
+        34
+      ],
+      "top_posters": [
+        {
+          "username": "peter_suleiman3",
+          "posts": 124
+        },
+        {
+          "username": "kwame_yusuf",
+          "posts": 73
+        },
+        {
+          "username": "samuel_mohammed2",
+          "posts": 64
+        }
+      ]
+    },
+    {
+      "id": "room_cryBCHUSD",
+      "name": "BCH/USD Room",
+      "kind": "market",
+      "slug": "cryBCHUSD",
+      "market": {
+        "symbol": "cryBCHUSD",
+        "name": "Bitcoin Cash / USD",
+        "short_name": "BCH/USD",
+        "pair": "BCH/USD",
+        "category": "crypto",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1458,
+      "online": 42,
+      "posts": 694,
+      "messages_7d": 2816,
+      "new_members_7d": 159,
+      "reports": 8,
+      "status": "flagged",
+      "growth": [
+        46,
+        65,
+        68,
+        57,
+        34,
+        41,
+        46,
+        41,
+        43,
+        68,
+        35,
+        40
+      ],
+      "top_posters": [
+        {
+          "username": "kwame_yusuf3",
+          "posts": 146
+        },
+        {
+          "username": "chioma_nwosu",
+          "posts": 64
+        },
+        {
+          "username": "peter_suleiman3",
+          "posts": 92
+        }
+      ]
+    },
+    {
+      "id": "room_cryADAUSD",
+      "name": "ADA/USD Room",
+      "kind": "market",
+      "slug": "cryADAUSD",
+      "market": {
+        "symbol": "cryADAUSD",
+        "name": "Cardano / USD",
+        "short_name": "ADA/USD",
+        "pair": "ADA/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1795,
+      "online": 59,
+      "posts": 785,
+      "messages_7d": 3125,
+      "new_members_7d": 174,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        36,
+        40,
+        84,
+        24,
+        97,
+        50,
+        97,
+        54,
+        97,
+        30,
+        26,
+        99
+      ],
+      "top_posters": [
+        {
+          "username": "blessing_danjuma3",
+          "posts": 102
+        },
+        {
+          "username": "samuel_mohammed3",
+          "posts": 151
+        },
+        {
+          "username": "chioma_nwosu3",
+          "posts": 7
+        }
+      ]
+    },
+    {
+      "id": "room_cryDOGUSD",
+      "name": "DOGE/USD Room",
+      "kind": "market",
+      "slug": "cryDOGUSD",
+      "market": {
+        "symbol": "cryDOGUSD",
+        "name": "Dogecoin / USD",
+        "short_name": "DOGE/USD",
+        "pair": "DOGE/USD",
+        "category": "crypto",
+        "decimal_places": 4,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "crypto",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2132,
+      "online": 76,
+      "posts": 876,
+      "messages_7d": 469,
+      "new_members_7d": 48,
+      "reports": 4,
+      "status": "active",
+      "growth": [
+        79,
+        31,
+        37,
+        79,
+        72,
+        99,
+        54,
+        58,
+        36,
+        51,
+        50,
+        52
+      ],
+      "top_posters": [
+        {
+          "username": "peter_suleiman3",
+          "posts": 29
+        },
+        {
+          "username": "tunde_adeyemi2",
+          "posts": 92
+        },
+        {
+          "username": "fatima_ekene3",
+          "posts": 151
+        }
+      ]
+    },
+    {
+      "id": "room_frxXAUUSD",
+      "name": "XAU/USD Room",
+      "kind": "market",
+      "slug": "frxXAUUSD",
+      "market": {
+        "symbol": "frxXAUUSD",
+        "name": "Gold / USD",
+        "short_name": "XAU/USD",
+        "pair": "XAU/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "commodities",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2469,
+      "online": 93,
+      "posts": 147,
+      "messages_7d": 3093,
+      "new_members_7d": 181,
+      "reports": 6,
+      "status": "active",
+      "growth": [
+        55,
+        20,
+        52,
+        82,
+        99,
+        61,
+        28,
+        97,
+        28,
+        76,
+        39,
+        97
+      ],
+      "top_posters": [
+        {
+          "username": "tunde_adeyemi3",
+          "posts": 132
+        },
+        {
+          "username": "zainab_lawal2",
+          "posts": 23
+        },
+        {
+          "username": "ibrahim_mensah3",
+          "posts": 104
+        }
+      ]
+    },
+    {
+      "id": "room_frxXAGUSD",
+      "name": "XAG/USD Room",
+      "kind": "market",
+      "slug": "frxXAGUSD",
+      "market": {
+        "symbol": "frxXAGUSD",
+        "name": "Silver / USD",
+        "short_name": "XAG/USD",
+        "pair": "XAG/USD",
+        "category": "commodities",
+        "decimal_places": 3,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "commodities",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2806,
+      "online": 20,
+      "posts": 238,
+      "messages_7d": 484,
+      "new_members_7d": 221,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        71,
+        87,
+        23,
+        56,
+        35,
+        77,
+        78,
+        56,
+        75,
+        24,
+        98,
+        30
+      ],
+      "top_posters": [
+        {
+          "username": "samuel_mohammed2",
+          "posts": 29
+        },
+        {
+          "username": "peter_suleiman",
+          "posts": 37
+        },
+        {
+          "username": "blessing_danjuma3",
+          "posts": 164
+        }
+      ]
+    },
+    {
+      "id": "room_frxXPTUSD",
+      "name": "XPT/USD Room",
+      "kind": "market",
+      "slug": "frxXPTUSD",
+      "market": {
+        "symbol": "frxXPTUSD",
+        "name": "Platinum / USD",
+        "short_name": "XPT/USD",
+        "pair": "XPT/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "commodities",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 543,
+      "online": 37,
+      "posts": 329,
+      "messages_7d": 2734,
+      "new_members_7d": 219,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        52,
+        89,
+        58,
+        48,
+        89,
+        100,
+        65,
+        54,
+        36,
+        26,
+        63,
+        89
+      ],
+      "top_posters": [
+        {
+          "username": "musa_okoro",
+          "posts": 132
+        },
+        {
+          "username": "grace_eze3",
+          "posts": 118
+        },
+        {
+          "username": "amara_okafor",
+          "posts": 83
+        }
+      ]
+    },
+    {
+      "id": "room_frxXPDUSD",
+      "name": "XPD/USD Room",
+      "kind": "market",
+      "slug": "frxXPDUSD",
+      "market": {
+        "symbol": "frxXPDUSD",
+        "name": "Palladium / USD",
+        "short_name": "XPD/USD",
+        "pair": "XPD/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "commodities",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 880,
+      "online": 54,
+      "posts": 420,
+      "messages_7d": 107,
+      "new_members_7d": 102,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        22,
+        51,
+        66,
+        80,
+        66,
+        32,
+        97,
+        64,
+        38,
+        38,
+        94,
+        31
+      ],
+      "top_posters": [
+        {
+          "username": "david_balogun3",
+          "posts": 8
+        },
+        {
+          "username": "blessing_danjuma3",
+          "posts": 167
+        },
+        {
+          "username": "ngozi_obi2",
+          "posts": 72
+        }
+      ]
+    },
+    {
+      "id": "room_WTIUSD",
+      "name": "WTI/USD Room",
+      "kind": "market",
+      "slug": "WTIUSD",
+      "market": {
+        "symbol": "WTIUSD",
+        "name": "Crude Oil / USD",
+        "short_name": "WTI/USD",
+        "pair": "WTI/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "commodities",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1217,
+      "online": 71,
+      "posts": 511,
+      "messages_7d": 2332,
+      "new_members_7d": 7,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        88,
+        86,
+        50,
+        87,
+        58,
+        94,
+        24,
+        90,
+        84,
+        81,
+        46,
+        59
+      ],
+      "top_posters": [
+        {
+          "username": "david_balogun2",
+          "posts": 128
+        },
+        {
+          "username": "femi_adamu",
+          "posts": 6
+        },
+        {
+          "username": "femi_adamu",
+          "posts": 117
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_SPC",
+      "name": "US 500 Room",
+      "kind": "market",
+      "slug": "OTC_SPC",
+      "market": {
+        "symbol": "OTC_SPC",
+        "name": "US 500",
+        "short_name": "US 500",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1554,
+      "online": 88,
+      "posts": 602,
+      "messages_7d": 2807,
+      "new_members_7d": 122,
+      "reports": 0,
+      "status": "active",
+      "growth": [
+        75,
+        47,
+        46,
+        21,
+        20,
+        92,
+        69,
+        69,
+        37,
+        21,
+        85,
+        96
+      ],
+      "top_posters": [
+        {
+          "username": "aisha_ibrahim3",
+          "posts": 9
+        },
+        {
+          "username": "femi_adamu",
+          "posts": 155
+        },
+        {
+          "username": "fatima_ekene",
+          "posts": 165
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_NDX",
+      "name": "US 100 Room",
+      "kind": "market",
+      "slug": "OTC_NDX",
+      "market": {
+        "symbol": "OTC_NDX",
+        "name": "US Tech 100",
+        "short_name": "US 100",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 1891,
+      "online": 15,
+      "posts": 693,
+      "messages_7d": 2185,
+      "new_members_7d": 129,
+      "reports": 9,
+      "status": "flagged",
+      "growth": [
+        42,
+        89,
+        56,
+        66,
+        67,
+        77,
+        75,
+        33,
+        83,
+        77,
+        79,
+        53
+      ],
+      "top_posters": [
+        {
+          "username": "john_david2",
+          "posts": 97
+        },
+        {
+          "username": "chioma_nwosu3",
+          "posts": 156
+        },
+        {
+          "username": "fatima_ekene",
+          "posts": 59
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_DJI",
+      "name": "US 30 Room",
+      "kind": "market",
+      "slug": "OTC_DJI",
+      "market": {
+        "symbol": "OTC_DJI",
+        "name": "Wall Street 30",
+        "short_name": "US 30",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "multiplier",
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2228,
+      "online": 32,
+      "posts": 784,
+      "messages_7d": 1588,
+      "new_members_7d": 155,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        44,
+        55,
+        22,
+        37,
+        84,
+        23,
+        95,
+        86,
+        72,
+        90,
+        46,
+        44
+      ],
+      "top_posters": [
+        {
+          "username": "ada_bello",
+          "posts": 146
+        },
+        {
+          "username": "fatima_ekene",
+          "posts": 158
+        },
+        {
+          "username": "joy_chukwu",
+          "posts": 40
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_FTSE",
+      "name": "UK 100 Room",
+      "kind": "market",
+      "slug": "OTC_FTSE",
+      "market": {
+        "symbol": "OTC_FTSE",
+        "name": "UK 100",
+        "short_name": "UK 100",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2565,
+      "online": 49,
+      "posts": 875,
+      "messages_7d": 265,
+      "new_members_7d": 145,
+      "reports": 5,
+      "status": "active",
+      "growth": [
+        46,
+        98,
+        58,
+        24,
+        58,
+        84,
+        84,
+        68,
+        64,
+        97,
+        94,
+        69
+      ],
+      "top_posters": [
+        {
+          "username": "ada_bello3",
+          "posts": 105
+        },
+        {
+          "username": "tunde_adeyemi2",
+          "posts": 108
+        },
+        {
+          "username": "zainab_lawal3",
+          "posts": 122
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_GDAXI",
+      "name": "GER 40 Room",
+      "kind": "market",
+      "slug": "OTC_GDAXI",
+      "market": {
+        "symbol": "OTC_GDAXI",
+        "name": "Germany 40",
+        "short_name": "GER 40",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 2902,
+      "online": 66,
+      "posts": 146,
+      "messages_7d": 2422,
+      "new_members_7d": 216,
+      "reports": 0,
+      "status": "active",
+      "growth": [
+        35,
+        32,
+        57,
+        55,
+        52,
+        43,
+        54,
+        98,
+        83,
+        56,
+        32,
+        90
+      ],
+      "top_posters": [
+        {
+          "username": "fatima_ekene2",
+          "posts": 74
+        },
+        {
+          "username": "chioma_nwosu2",
+          "posts": 28
+        },
+        {
+          "username": "ngozi_obi3",
+          "posts": 123
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_N225",
+      "name": "JP 225 Room",
+      "kind": "market",
+      "slug": "OTC_N225",
+      "market": {
+        "symbol": "OTC_N225",
+        "name": "Japan 225",
+        "short_name": "JP 225",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 639,
+      "online": 83,
+      "posts": 237,
+      "messages_7d": 862,
+      "new_members_7d": 108,
+      "reports": 2,
+      "status": "active",
+      "growth": [
+        67,
+        55,
+        84,
+        76,
+        95,
+        55,
+        97,
+        83,
+        33,
+        60,
+        20,
+        65
+      ],
+      "top_posters": [
+        {
+          "username": "ibrahim_mensah3",
+          "posts": 40
+        },
+        {
+          "username": "david_balogun3",
+          "posts": 62
+        },
+        {
+          "username": "fatima_ekene2",
+          "posts": 131
+        }
+      ]
+    },
+    {
+      "id": "room_OTC_AS51",
+      "name": "AUS 200 Room",
+      "kind": "market",
+      "slug": "OTC_AS51",
+      "market": {
+        "symbol": "OTC_AS51",
+        "name": "Australia 200",
+        "short_name": "AUS 200",
+        "pair": null,
+        "category": "stock_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "cfd_mt5"
+        ]
+      },
+      "category": "stock_indices",
+      "owner": "KonfluenX",
+      "owner_name": "System",
+      "created_by": "system",
+      "created_at": "2025-07-29T04:47:20.378Z",
+      "visibility": "public",
+      "members": 976,
+      "online": 10,
+      "posts": 328,
+      "messages_7d": 1730,
+      "new_members_7d": 83,
+      "reports": 8,
+      "status": "flagged",
+      "growth": [
+        63,
+        74,
+        99,
+        64,
+        82,
+        65,
+        71,
+        57,
+        39,
+        41,
+        77,
+        20
+      ],
+      "top_posters": [
+        {
+          "username": "samuel_mohammed3",
+          "posts": 72
+        },
+        {
+          "username": "ibrahim_mensah",
+          "posts": 176
+        },
+        {
+          "username": "amara_okafor",
+          "posts": 30
+        }
+      ]
+    },
+    {
+      "id": "room_u_FX_ProTrader",
+      "name": "FX_ProTrader's Room",
+      "kind": "trader",
+      "slug": "fx_protrader",
+      "market": null,
+      "category": null,
+      "owner": "FX_ProTrader",
+      "owner_name": "FX_ProTrader",
+      "created_by": "FX_ProTrader",
+      "created_at": "2026-04-27T04:47:20.378Z",
+      "visibility": "public",
+      "members": 453,
+      "online": 33,
+      "posts": 137,
+      "messages_7d": 1645,
+      "new_members_7d": 125,
+      "reports": 5,
+      "status": "active",
+      "growth": [
+        68,
+        65,
+        66,
+        92,
+        88,
+        77,
+        21,
+        59,
+        24,
+        93,
+        86,
+        60
+      ],
+      "top_posters": [
+        {
+          "username": "femi_adamu2",
+          "posts": 58
+        },
+        {
+          "username": "zainab_lawal",
+          "posts": 83
+        },
+        {
+          "username": "grace_eze3",
+          "posts": 161
+        }
+      ]
+    },
+    {
+      "id": "room_u_QueenTrader",
+      "name": "QueenTrader's Room",
+      "kind": "trader",
+      "slug": "queentrader",
+      "market": null,
+      "category": null,
+      "owner": "QueenTrader",
+      "owner_name": "QueenTrader",
+      "created_by": "QueenTrader",
+      "created_at": "2025-11-06T04:47:20.378Z",
+      "visibility": "followers",
+      "members": 493,
+      "online": 9,
+      "posts": 255,
+      "messages_7d": 2386,
+      "new_members_7d": 57,
+      "reports": 8,
+      "status": "flagged",
+      "growth": [
+        26,
+        66,
+        76,
+        22,
+        33,
+        68,
+        21,
+        36,
+        100,
+        92,
+        60,
+        69
+      ],
+      "top_posters": [
+        {
+          "username": "john_david3",
+          "posts": 20
+        },
+        {
+          "username": "john_david",
+          "posts": 156
+        },
+        {
+          "username": "joy_chukwu",
+          "posts": 154
+        }
+      ]
+    },
+    {
+      "id": "room_u_AlphaKing",
+      "name": "AlphaKing's Room",
+      "kind": "trader",
+      "slug": "alphaking",
+      "market": null,
+      "category": null,
+      "owner": "AlphaKing",
+      "owner_name": "AlphaKing",
+      "created_by": "AlphaKing",
+      "created_at": "2026-07-15T04:47:20.378Z",
+      "visibility": "followers",
+      "members": 328,
+      "online": 57,
+      "posts": 322,
+      "messages_7d": 1692,
+      "new_members_7d": 67,
+      "reports": 7,
+      "status": "blocked",
+      "growth": [
+        38,
+        23,
+        31,
+        57,
+        43,
+        23,
+        88,
+        26,
+        30,
+        35,
+        80,
+        78
+      ],
+      "top_posters": [
+        {
+          "username": "aisha_ibrahim2",
+          "posts": 157
+        },
+        {
+          "username": "fatima_ekene2",
+          "posts": 153
+        },
+        {
+          "username": "kwame_yusuf2",
+          "posts": 76
+        }
+      ]
+    },
+    {
+      "id": "room_u_JamesFX",
+      "name": "JamesFX's Room",
+      "kind": "trader",
+      "slug": "jamesfx",
+      "market": null,
+      "category": null,
+      "owner": "JamesFX",
+      "owner_name": "JamesFX",
+      "created_by": "JamesFX",
+      "created_at": "2026-04-05T04:47:20.378Z",
+      "visibility": "public",
+      "members": 546,
+      "online": 36,
+      "posts": 44,
+      "messages_7d": 2727,
+      "new_members_7d": 40,
+      "reports": 7,
+      "status": "active",
+      "growth": [
+        80,
+        82,
+        56,
+        42,
+        90,
+        83,
+        27,
+        22,
+        74,
+        24,
+        21,
+        68
+      ],
+      "top_posters": [
+        {
+          "username": "daniel_achebe2",
+          "posts": 147
+        },
+        {
+          "username": "grace_eze2",
+          "posts": 22
+        },
+        {
+          "username": "musa_okoro2",
+          "posts": 169
+        }
+      ]
+    },
+    {
+      "id": "room_u_Mr_Market",
+      "name": "Mr_Market's Room",
+      "kind": "trader",
+      "slug": "mr_market",
+      "market": null,
+      "category": null,
+      "owner": "Mr_Market",
+      "owner_name": "Mr_Market",
+      "created_by": "Mr_Market",
+      "created_at": "2026-03-27T04:47:20.378Z",
+      "visibility": "followers",
+      "members": 319,
+      "online": 3,
+      "posts": 193,
+      "messages_7d": 1593,
+      "new_members_7d": 157,
+      "reports": 2,
+      "status": "active",
+      "growth": [
+        36,
+        87,
+        37,
+        100,
+        27,
+        84,
+        48,
+        46,
+        94,
+        42,
+        48,
+        77
+      ],
+      "top_posters": [
+        {
+          "username": "daniel_achebe3",
+          "posts": 17
+        },
+        {
+          "username": "femi_adamu4",
+          "posts": 130
+        },
+        {
+          "username": "ada_bello",
+          "posts": 179
+        }
+      ]
+    },
+    {
+      "id": "room_u_SwingMaster",
+      "name": "SwingMaster's Room",
+      "kind": "trader",
+      "slug": "swingmaster",
+      "market": null,
+      "category": null,
+      "owner": "SwingMaster",
+      "owner_name": "SwingMaster",
+      "created_by": "SwingMaster",
+      "created_at": "2025-12-13T04:47:20.378Z",
+      "visibility": "followers",
+      "members": 87,
+      "online": 4,
+      "posts": 86,
+      "messages_7d": 1493,
+      "new_members_7d": 155,
+      "reports": 3,
+      "status": "active",
+      "growth": [
+        23,
+        88,
+        80,
+        94,
+        70,
+        63,
+        60,
+        81,
+        20,
+        84,
+        67,
+        84
+      ],
+      "top_posters": [
+        {
+          "username": "ngozi_obi3",
+          "posts": 87
+        },
+        {
+          "username": "samuel_mohammed3",
+          "posts": 59
+        },
+        {
+          "username": "peter_suleiman3",
+          "posts": 26
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "total": 55,
+    "market_rooms": 49,
+    "trader_rooms": 6,
+    "blocked": 2,
+    "flagged": 13,
+    "total_members": 82738,
+    "total_posts": 24893,
+    "messages_7d": 100704
+  }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contracts — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="trade" data-root="../../" data-title="Contracts" data-sub="Open positions and settled history" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div class="stat-grid cols-3">
+      <div class="stat-cell"><div class="stat-v" id="ocCount">0</div><div class="stat-k">Open</div></div>
+      <div class="stat-cell"><div class="stat-v num" id="ocValue">$0</div><div class="stat-k">Staked</div></div>
+      <div class="stat-cell"><div class="stat-v num" id="ocPL">$0</div><div class="stat-k">Running P/L</div></div>
+    </div>
+
+    <div class="tabs" data-group id="ocTabs">
+      <button class="tab is-active" data-value="open">Open</button>
+      <button class="tab" data-value="closed">Closed</button>
+    </div>
+
+    <!-- OPEN -->
+    <section id="paneOpen">
+      <div class="filter-bar" style="margin-bottom:16px">
+        <div class="filter-row">
+          <select class="select grow" id="oCat" aria-label="Filter open by category">
+            <option value="all">All categories</option>
+          </select>
+          <span class="filter-count"><span id="oCount">0</span> open</span>
+        </div>
+      </div>
+      <div class="stack g3" id="ocOpen"></div>
+    </section>
+
+    <!-- CLOSED -->
+    <section id="paneClosed" class="hide">
+      <div class="filter-bar" style="margin-bottom:16px">
+        <div class="chips" data-group id="hRange">
+          <button class="chip" data-value="today">Today</button>
+          <button class="chip is-active" data-value="7d">7 Days</button>
+          <button class="chip" data-value="30d">30 Days</button>
+          <button class="chip" data-value="90d">90 Days</button>
+          <button class="chip" data-value="all">All time</button>
+        </div>
+        <div class="filter-row">
+          <select class="select grow" id="hResult" aria-label="Filter by result">
+            <option value="all">All results</option>
+            <option value="won">Won only</option>
+            <option value="lost">Lost only</option>
+          </select>
+          <select class="select grow" id="hCat" aria-label="Filter closed by category">
+            <option value="all">All categories</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stat-grid cols-3" style="margin-bottom:16px">
+        <div class="stat-cell"><div class="stat-v num" id="hStake">$0</div><div class="stat-k">Staked</div></div>
+        <div class="stat-cell"><div class="stat-v num" id="hNet">$0</div><div class="stat-k">Net P/L</div></div>
+        <div class="stat-cell"><div class="stat-v num" id="hRate">0%</div><div class="stat-k">Win rate</div></div>
+      </div>
+
+      <div class="list" id="histList"></div>
+    </section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var CATS = [
+    ['all','All categories'], ['synthetic_indices','Synthetics'], ['derived','Derived'],
+    ['forex','Forex'], ['crypto','Crypto'], ['commodities','Commodities'], ['stock_indices','Indices']
+  ];
+  ['oCat','hCat'].forEach(function (id) {
+    document.getElementById(id).innerHTML = CATS.map(function (c) {
+      return '<option value="' + c[0] + '">' + c[1] + '</option>';
+    }).join('');
+  });
+
+  /* ---- OPEN ---------------------------------------------------------- */
+  var openCol = MB.collection({
+    from: 'contracts', into: '#ocOpen', template: MB.card.contract,
+    perPage: 5, mode: 'more', countInto: '#oCount', skeletonCount: 3,
+    initial: { category: 'all' },
+    filters: { category: function (c, v) { return v === 'all' || c.market.category === v; } },
+    emptyIcon: 'layers', emptyTitle: 'No open positions',
+    emptyText: 'Contracts you buy will appear here while they run.',
+    done: function (rows, view) {
+      document.getElementById('ocCount').textContent = view.length;
+      var stake = view.reduce(function (a, c) { return a + c.buy_price; }, 0);
+      var pl = view.reduce(function (a, c) { return a + c.profit; }, 0);
+      document.getElementById('ocValue').textContent = MB.fmt.money(stake, null, 0);
+      var e = document.getElementById('ocPL');
+      e.textContent = MB.fmt.signed(pl);
+      e.className = 'stat-v num ' + MB.fmt.dirClass(pl);
+    }
+  });
+  openCol.bindSelect('#oCat', 'category');
+
+  /* ---- CLOSED -------------------------------------------------------- */
+  var DAY = 86400000;
+  var WINDOWS = { today: 1, '7d': 7, '30d': 30, '90d': 90 };
+
+  var histCol = MB.collection({
+    from: 'history', into: '#histList', template: MB.card.historyRow,
+    perPage: 15, mode: 'pages', skeleton: false,
+    initial: { range: '7d', result: 'all', category: 'all' },
+    filters: {
+      /* Real date maths, not a label — each window returns a different set. */
+      range: function (h, v) {
+        if (v === 'all') { return true; }
+        var days = WINDOWS[v] || 7;
+        return (Date.now() - new Date(h.closed_at).getTime()) <= days * DAY;
+      },
+      result: function (h, v) { return v === 'all' || h.status === v; },
+      category: function (h, v) { return v === 'all' || h.market.category === v; }
+    },
+    emptyIcon: 'clock', emptyTitle: 'Nothing in this range',
+    emptyText: 'Try a longer window or clear the filters.',
+    done: function (rows, view) {
+      var stake = view.reduce(function (a, h) { return a + h.stake; }, 0);
+      var net = view.reduce(function (a, h) { return a + h.profit; }, 0);
+      var wins = view.filter(function (h) { return h.status === 'won'; }).length;
+      document.getElementById('hStake').textContent = MB.fmt.money(stake, null, 0);
+      var n = document.getElementById('hNet');
+      n.textContent = MB.fmt.signed(net);
+      n.className = 'stat-v num ' + MB.fmt.dirClass(net);
+      document.getElementById('hRate').textContent =
+        view.length ? Math.round(wins / view.length * 100) + '%' : '—';
+    }
+  });
+  histCol.bind('#hRange', 'range').bindSelect('#hResult', 'result').bindSelect('#hCat', 'category');
+
+  document.getElementById('ocTabs').addEventListener('mb:change', function (e) {
+    var open = e.detail.value === 'open';
+    document.getElementById('paneOpen').classList.toggle('hide', !open);
+    document.getElementById('paneClosed').classList.toggle('hide', open);
+  });
+
+  /* Never trust local state across a socket gap. */
+  MB.ws.on('reopen', function () { openCol.refresh(); });
+});
+</script>
+</body>
+</html>

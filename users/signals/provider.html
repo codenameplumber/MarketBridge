@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Provider — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="signals" data-root="../../" data-title="Provider" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+
+  <main class="page">
+
+    <section class="profile-hero">
+      <div id="pAvatar"></div>
+      <div style="text-align:center">
+        <div class="row g2 center"><span class="ph-name" id="pName">—</span>
+          <span id="pVerified"></span></div>
+        <div class="ph-handle" id="pHandle">—</div>
+      </div>
+      <p class="ph-bio" id="pBio">—</p>
+      <div class="row g2">
+        <button class="btn btn-primary" id="btnFollow" style="min-width:150px">
+          <span data-icon="userplus"></span> Follow</button>
+        <button class="btn btn-ghost" id="btnShare" aria-label="Share profile">
+          <span data-icon="link"></span></button>
+        <button class="btn btn-ghost none" aria-label="Message"><span data-icon="chat"></span></button>
+      </div>
+    </section>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="pAchievements" class="row g2 wrap mb3" style="justify-content:center"></div>
+
+    <div class="stat-grid">
+      <div class="stat-cell"><div class="stat-v" id="pSignals">—</div><div class="stat-k">Signals</div></div>
+      <div class="stat-cell"><div class="stat-v c-up" id="pWin">—</div><div class="stat-k">Win rate</div></div>
+      <div class="stat-cell"><div class="stat-v" id="pWins">—</div><div class="stat-k">Wins</div></div>
+      <div class="stat-cell"><div class="stat-v" id="pLosses">—</div><div class="stat-k">Losses</div></div>
+    </div>
+
+    <div id="pSampleWarn"></div>
+
+    <div class="tabs" data-group id="pTabs">
+      <button class="tab is-active" data-value="overview">Overview</button>
+      <button class="tab" data-value="signals">Signals</button>
+      <button class="tab" data-value="results">Results</button>
+    </div>
+
+    <section id="panePOverview" class="page-section">
+      <div class="card">
+        <div class="label">Performance (all time)</div>
+        <div data-chart="area" data-seed="provider" data-h="140" class="mt3"></div>
+        <div class="stat-grid cols-3 mt4">
+          <div class="stat-cell"><div class="stat-v c-up num" id="pPL">—</div><div class="stat-k">Total P/L</div></div>
+          <div class="stat-cell"><div class="stat-v num" id="pRR">—</div><div class="stat-k">Avg R/R</div></div>
+          <div class="stat-cell"><div class="stat-v c-up num" id="pBest">—</div><div class="stat-k">Best</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="label">Markets traded</div>
+        <div class="post-tags mt3" id="pMarkets"></div>
+      </div>
+    </section>
+
+    <section id="panePSignals" class="page-section hide">
+      <div class="stack g4" id="pSignalList"></div>
+    </section>
+
+    <section id="panePResults" class="page-section hide">
+      <div class="alert alert-green">
+        <span data-icon="shield"></span>
+        <div class="t-xs">Results here are resolved from real contract outcomes and
+        price data, not from the provider's own claims. Retracted signals still count.</div>
+      </div>
+      <div class="list" id="pResults"></div>
+    </section>
+  </main>
+
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/achievements.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  var uname = new URLSearchParams(location.search).get('u');
+  MB.api.list('providers').then(function (rows) {
+    var u = rows.filter(function (x) { return !uname || x.username === uname; })[0] || rows[0];
+    var s = u.stats;
+    MB.$('.topbar-title').textContent = u.username;
+    document.getElementById('pAvatar').innerHTML = MB.avatar(u, 'avatar-xl');
+    document.getElementById('pName').textContent = u.username;
+    document.getElementById('pHandle').textContent = '@' + u.username.toLowerCase();
+    document.getElementById('pBio').textContent = u.bio;
+    if (u.is_verified) {
+      document.getElementById('pVerified').innerHTML =
+        '<span class="badge badge-verified">' + MB.icon('check', 11) + 'Verified</span>';
+    }
+    document.getElementById('pSignals').textContent = s.total_signals;
+    document.getElementById('pWin').textContent = s.win_rate + '%';
+    document.getElementById('pWins').textContent = s.wins;
+    document.getElementById('pLosses').textContent = s.losses;
+    document.getElementById('pPL').textContent = MB.fmt.signed(s.total_pl);
+    document.getElementById('pRR').textContent = '1:' + s.avg_risk_reward;
+    document.getElementById('pBest').textContent = MB.fmt.signed(s.best_signal_pl);
+    document.getElementById('pMarkets').innerHTML = (u.markets_traded || []).map(function (m) {
+      return '<a class="chip-market" href="../markets/detail.html?symbol=' + m + '">' + m + '</a>';
+    }).join('');
+
+    /* A small sample is stated, never quietly presented as a rank. */
+    if (!s.is_ranked) {
+      document.getElementById('pSampleWarn').innerHTML =
+        '<div class="alert alert-warn">' + MB.icon('info', 18) +
+        '<div class="t-xs">This provider has published ' + s.sample_size +
+        ' signals — below the minimum needed to appear on leaderboards. ' +
+        'Treat the win rate as provisional.</div></div>';
+      MB.mountIcons(document.getElementById('pSampleWarn'));
+    }
+    MB.mountIcons(); MB.mountCharts();
+  });
+
+  MB.collection({
+    from: 'signals', into: '#pSignalList', template: MB.card.signal,
+    perPage: 5, mode: 'more', countInto: '#pSigCount', skeletonCount: 3,
+    emptyIcon: 'signals', emptyTitle: 'No signals yet',
+    emptyText: 'This provider has not published anything.'
+  });
+  MB.collection({ into: '#pResults', from: 'signals', skeleton: false,
+    perPage: 10, mode: 'more', countInto: '#pResCount',
+    prepare: function (rows) { return rows.filter(function (s) { return s.result; }); },
+    template: function (s) {
+      var won = s.result.outcome === 'won';
+      return '<div class="list-row"><span class="none" style="color:var(--mb-' +
+        (won ? 'green' : 'sell') + ')">' + MB.icon(won ? 'trendup' : 'trenddown', 20) + '</span>' +
+        '<span class="grow"><span class="lr-title" style="display:block">' +
+        s.market.short_name + ' · ' + s.direction.toUpperCase() + '</span>' +
+        '<span class="lr-sub">Resolved ' + s.result.resolved_by.replace(/_/g, ' ') + '</span></span>' +
+        '<span class="badge ' + (won ? 'badge-won' : 'badge-lost') + ' none">' +
+        (won ? 'Won' : 'Lost') + '</span></div>';
+    },
+    emptyIcon: 'results', emptyTitle: 'No resolved signals yet',
+    emptyText: 'Results appear once published signals settle.' });
+
+  /* Share profile link */
+  document.getElementById('btnShare').addEventListener('click', function () {
+    var url = location.href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { MB.toast('Profile link copied'); });
+    } else {
+      MB.toast('Profile link copied');
+    }
+  });
+
+  /* Load achievements for this provider */
+  MB.api.get('achievements').then(function (r) {
+    var d = r.data || {};
+    var badges = (d.badges || []).filter(function (b) { return b.earned; });
+    if (badges.length && MB.card.achievementBadges) {
+      document.getElementById('pAchievements').innerHTML = MB.card.achievementBadges(d.badges || []);
+    }
+  });
+
+  document.getElementById('btnFollow').addEventListener('click', function () {
+    var on = this.classList.toggle('btn-green-soft');
+    this.classList.toggle('btn-primary', !on);
+    this.innerHTML = on ? MB.icon('check', 18) + ' Following' : MB.icon('userplus', 18) + ' Follow';
+    MB.toast(on ? 'Following' : 'Unfollowed');
+  });
+
+  document.getElementById('pTabs').addEventListener('mb:change', function (e) {
+    ['overview','signals','results'].forEach(function (k) {
+      document.getElementById('paneP' + k.charAt(0).toUpperCase() + k.slice(1))
+        .classList.toggle('hide', k !== e.detail.value);
+    });
+  });
+});
+</script>
+</body>
+</html>

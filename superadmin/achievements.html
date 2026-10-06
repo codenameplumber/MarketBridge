@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Achievement Badges — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="superadmin" data-nav="achievements" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <div class="grow">
+        <h1>Achievement Badges</h1>
+        <div class="sub">Define badge criteria and thresholds</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      <button class="btn btn-primary btn-sm none" id="btnAddBadge" data-can="badge.create"><span data-icon="plus"></span> New badge</button>
+    </header>
+
+    <main class="admin-body">
+
+      <div class="alert alert-info">
+        <span data-icon="info"></span>
+        <div class="t-sm"><strong>Criteria are never shown to users.</strong> Only the badge name
+        and public description are visible. This prevents users from gaming
+        the system to earn badges.</div>
+      </div>
+
+      <div id="stats"></div>
+      <div id="badgeTable"></div>
+      <div id="recentAwards"></div>
+
+    </main>
+  </div>
+</div>
+
+<div class="slideover-scrim" id="soScrim"></div>
+<aside class="slideover" id="slideover" role="dialog" aria-modal="true" aria-label="Badge details">
+  <div class="slideover-head">
+    <h2 class="t-h3" id="soTitle">Badge Details</h2>
+    <button class="drawer-close" id="soClose" aria-label="Close"><span data-icon="close"></span></button>
+  </div>
+  <div class="slideover-body" id="soBody"></div>
+</aside>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/uploads.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+  /* ---- helpers --------------------------------------------------------- */
+
+  function tierBadge(tier) {
+    var map = {
+      bronze:    'badge-neutral',
+      silver:    'badge-info',
+      gold:      'badge-warn',
+      legendary: 'badge-active'
+    };
+    return '<span class="badge ' + (map[tier] || 'badge-neutral') + '">' +
+      tier + '</span>';
+  }
+
+  function criteriaLabel(type) {
+    var labels = {
+      account_created_before:      'Account created before',
+      win_rate:                    'Win rate >=',
+      min_signals:                 'Min signals >=',
+      consecutive_weeks_active:    'Consecutive weeks active >=',
+      messages_posted:             'Messages posted >=',
+      reactions_received:          'Reactions received >=',
+      signals_in_one_market:       'Signals in one market >=',
+      followers_with_win_rate_above: 'Followers with win rate above',
+      follower_win_rate:           'Follower win rate >=',
+      win_rate_improvement_30d:    'Win rate improvement (30d) >=',
+      manual_approval:             'Manual approval',
+      analysis_signals:            'Analysis signals >=',
+      avg_bookmarks:               'Avg bookmarks per signal >=',
+      consecutive_days_active:     'Consecutive days active >='
+    };
+    return labels[type] || type.replace(/_/g, ' ');
+  }
+
+  function formatThreshold(type, val) {
+    if (val === null || val === undefined) return 'N/A';
+    if (type === 'account_created_before') return val;
+    if (type === 'win_rate' || type === 'follower_win_rate' || type === 'win_rate_improvement_30d') {
+      return val + '%';
+    }
+    return String(val);
+  }
+
+  function criteriaTypeOptions(selected) {
+    var opts = [
+      'number_of_trades', 'win_rate', 'streak_days', 'signals_posted',
+      'community_messages', 'followers_count', 'bookmarks_received',
+      'referrals', 'account_created_before', 'consecutive_weeks_active',
+      'messages_posted', 'signals_in_one_market',
+      'followers_with_win_rate_above', 'win_rate_improvement_30d',
+      'manual_approval', 'analysis_signals', 'consecutive_days_active'
+    ];
+    return opts.map(function (o) {
+      return '<option value="' + o + '"' + (o === selected ? ' selected' : '') + '>' +
+        o.replace(/_/g, ' ') + '</option>';
+    }).join('');
+  }
+
+  /* slide-over */
+  function openSO(title, html) {
+    document.getElementById('soTitle').textContent = title;
+    document.getElementById('soBody').innerHTML = html;
+    document.getElementById('slideover').classList.add('is-open');
+    document.getElementById('soScrim').classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    MB.mountIcons(document.getElementById('soBody'));
+  }
+  function closeSO() {
+    document.getElementById('slideover').classList.remove('is-open');
+    document.getElementById('soScrim').classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  MB.ready(function () {
+    var c = document.getElementById('soClose'), s = document.getElementById('soScrim');
+    if (c) { c.addEventListener('click', closeSO); }
+    if (s) { s.addEventListener('click', closeSO); }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeSO(); } });
+  });
+
+  /* ---- main ------------------------------------------------------------ */
+
+  MB.ready(function () {
+    MB.api.get('admin/achievements').then(function (res) {
+      var badges = res.data;
+      var meta   = res.meta;
+      var awards = res.recent_awards || [];
+
+      /* ---- stat slider ------------------------------------------------- */
+
+      MB.statSlider('#stats', 'Badges', [
+        { k: 'Total Badges',    v: meta.total,         d: 5.2 },
+        { k: 'Active',          v: meta.active,        tone: 'accent', spark: false },
+        { k: 'Holders (total)', v: MB.fmt.compact(meta.total_holders), d: 12.8 }
+      ]);
+
+      /* ---- badge configuration table ----------------------------------- */
+
+      var html = '<section class="panel">' +
+        '<div class="panel-head between">' +
+          '<h2>Badge Configuration</h2>' +
+          '<span class="badge badge-neutral">' + badges.length + ' badges</span>' +
+        '</div>' +
+        '<div class="panel-body panel-body-flush">' +
+          '<table class="tbl tbl-admin" style="width:100%">' +
+            '<thead><tr>' +
+              '<th class="t-xs">Badge</th>' +
+              '<th class="t-xs">Public description</th>' +
+              '<th class="t-xs">Criteria (hidden)</th>' +
+              '<th class="t-xs">Threshold</th>' +
+              '<th class="t-xs">Secondary</th>' +
+              '<th class="t-xs" style="text-align:right">Holders</th>' +
+              '<th class="t-xs" style="text-align:center">Active</th>' +
+              '<th class="t-xs" style="text-align:right">Actions</th>' +
+            '</tr></thead><tbody>';
+
+      badges.forEach(function (b) {
+        var secHtml = '—';
+        if (b.criteria.secondary) {
+          secHtml = '<div class="t-xs c-3">' + criteriaLabel(b.criteria.secondary.type) + '</div>' +
+            '<div class="t-sm w-semi">' + formatThreshold(b.criteria.secondary.type, b.criteria.secondary.threshold) + '</div>';
+        }
+        var checked = b.status === 'active' ? ' checked' : '';
+
+        html += '<tr data-badge="' + b.id + '">' +
+          '<td>' +
+            '<div class="row g2" style="align-items:center">' +
+              '<span class="badge-icon" data-icon="' + b.icon + '"></span>' +
+              '<div>' +
+                '<div class="t-sm w-semi">' + MB.esc(b.name) + '</div>' +
+                '<div>' + tierBadge(b.tier) + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td><div class="t-xs c-2" style="max-width:200px">' + MB.esc(b.description) + '</div></td>' +
+          '<td>' +
+            '<select class="input input-sm" style="min-width:160px" data-field="criteria-type" data-can="badge.edit">' +
+              criteriaTypeOptions(b.criteria.type) +
+            '</select>' +
+          '</td>' +
+          '<td>' +
+            (b.criteria.type === 'manual_approval'
+              ? '<span class="c-3 t-sm">N/A</span>'
+              : '<input class="input input-sm num" type="text" value="' +
+                  (b.criteria.threshold || '') + '" style="width:90px" data-field="threshold" data-can="badge.edit">') +
+          '</td>' +
+          '<td>' + secHtml + '</td>' +
+          '<td style="text-align:right"><span class="w-bold">' + MB.fmt.compact(b.holders) + '</span></td>' +
+          '<td style="text-align:center">' +
+            '<label class="switch"><input type="checkbox"' + checked + ' data-field="status" data-can="badge.edit">' +
+            '<span class="track"></span></label>' +
+          '</td>' +
+          '<td style="text-align:right">' +
+            '<div class="row-actions">' +
+              '<button class="row-action" data-edit="' + b.id + '" aria-label="Edit badge">' +
+                MB.icon('edit', 15) +
+              '</button>' +
+              '<button class="row-action" aria-label="More">' + MB.icon('more', 15) + '</button>' +
+            '</div>' +
+          '</td>' +
+        '</tr>';
+      });
+
+      html += '</tbody></table></div></section>';
+      document.getElementById('badgeTable').innerHTML = html;
+      MB.mountIcons(document.getElementById('badgeTable'));
+
+      /* ---- edit buttons -> slide-over ---------------------------------- */
+
+      MB.$$('[data-edit]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-edit');
+          var b = badges.filter(function (x) { return x.id === id; })[0];
+          if (!b) return;
+
+          var body =
+            '<div class="stack g4">' +
+              '<div class="info-row"><span class="ir-k">Badge ID</span><span class="ir-v">' + MB.esc(b.id) + '</span></div>' +
+              '<div class="info-row"><span class="ir-k">Tier</span><span class="ir-v">' + tierBadge(b.tier) + '</span></div>' +
+              '<div class="field"><label class="form-label">Name (public)</label>' +
+                '<input class="input" type="text" value="' + MB.esc(b.name) + '"></div>' +
+              '<div class="field"><label class="form-label">Description (public)</label>' +
+                '<textarea class="input" rows="2">' + MB.esc(b.description) + '</textarea></div>' +
+              '<hr>' +
+              '<h3 class="t-sm w-bold" style="color:var(--mb-warn)">Hidden criteria (superadmin only)</h3>' +
+              '<div class="field"><label class="form-label">Criteria type</label>' +
+                '<select class="input">' + criteriaTypeOptions(b.criteria.type) + '</select></div>' +
+              '<div class="field"><label class="form-label">Threshold</label>' +
+                '<input class="input" type="text" value="' + (b.criteria.threshold || '') + '"></div>' +
+              (b.criteria.secondary
+                ? '<div class="field"><label class="form-label">Secondary type</label>' +
+                    '<select class="input">' + criteriaTypeOptions(b.criteria.secondary.type) + '</select></div>' +
+                  '<div class="field"><label class="form-label">Secondary threshold</label>' +
+                    '<input class="input" type="text" value="' + b.criteria.secondary.threshold + '"></div>'
+                : '<p class="t-xs c-3">No secondary condition set.</p>') +
+              '<hr>' +
+              '<div class="info-row"><span class="ir-k">Holders</span><span class="ir-v">' + b.holders + '</span></div>' +
+              '<div class="info-row"><span class="ir-k">Created</span><span class="ir-v">' + MB.fmt.date(b.created_at) + '</span></div>' +
+              '<div class="info-row"><span class="ir-k">Last updated</span><span class="ir-v">' + MB.fmt.date(b.updated_at) + '</span></div>' +
+              '<div class="row g2" style="margin-top:var(--mb-s3)">' +
+                '<button class="btn btn-primary grow">Save changes</button>' +
+                '<button class="btn btn-ghost">Cancel</button>' +
+              '</div>' +
+            '</div>';
+
+          openSO(b.name, body);
+        });
+      });
+
+      /* ---- recent awards ----------------------------------------------- */
+
+      var aw = '<section class="panel">' +
+        '<div class="panel-head between">' +
+          '<h2>Recent Awards</h2>' +
+          '<span class="t-xs c-3">' + awards.length + ' latest</span>' +
+        '</div>' +
+        '<div class="panel-body panel-body-flush">';
+
+      awards.forEach(function (a) {
+        var col = MB.avatarColor ? MB.avatarColor(a.user.username) : 'var(--mb-accent)';
+        aw += '<div class="list-row">' +
+          '<div class="row g2" style="align-items:center;flex:1;min-width:0">' +
+            '<span class="avatar avatar-sm" style="background:' + col + '">' +
+              a.user.display_name.charAt(0).toUpperCase() + '</span>' +
+            '<div style="min-width:0">' +
+              '<div class="lr-title">' + MB.esc(a.user.display_name) +
+                '<span class="c-3 t-xs">@' + MB.esc(a.user.username) + '</span></div>' +
+              '<div class="lr-sub">' + MB.esc(a.badge) + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<span class="t-xs c-3" style="white-space:nowrap">' + MB.fmt.ago(a.awarded_at) + '</span>' +
+        '</div>';
+      });
+
+      aw += '</div></section>';
+      document.getElementById('recentAwards').innerHTML = aw;
+      MB.mountIcons(document.getElementById('recentAwards'));
+    });
+  });
+</script>
+</body>
+</html>

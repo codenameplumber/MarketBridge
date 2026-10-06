@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Overview — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="admin" data-nav="dashboard" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <div class="grow">
+        <h1>Dashboard Overview</h1>
+        <div class="sub">Platform statistics and operational overview</div>
+      </div>
+      <div class="admin-search none">
+        <div class="input-icon"><span data-icon="search"></span>
+          <input class="input" type="search" placeholder="Search…" aria-label="Search"></div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      <select class="select none" style="width:auto;height:38px;font-size:13px">
+        <option>Aug 1 – Aug 31, 2026</option><option>Last 7 days</option><option>Last 90 days</option></select>
+    </header>
+
+    <main class="admin-body">
+
+      <div class="kpi-grid" id="kpis"></div>
+
+      <div class="admin-cols c-2">
+        <section class="panel">
+          <div class="panel-head"><h2>User Growth</h2>
+            <span class="badge badge-active">Last 12 months</span></div>
+          <div class="panel-body">
+            <div class="bars" id="growthBars"></div>
+            <div class="bars-axis" id="growthAxis"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Top Signal Providers</h2>
+            <a class="t-sm c-up w-semi" href="signals.html">View all</a></div>
+          <div class="panel-body panel-body-flush"><div id="topSignals"></div></div>
+        </section>
+      </div>
+
+      <div class="admin-cols c-even">
+        <section class="panel">
+          <div class="panel-head"><h2>Recent Reports</h2>
+            <a class="t-sm c-up w-semi" href="reports.html">Open queue</a></div>
+          <div class="panel-body panel-body-flush">
+            <div class="table-wrap" style="border:0">
+              <table class="data is-compact"><thead><tr>
+                <th>Report</th><th>Status</th><th class="ta-r">When</th>
+              </tr></thead><tbody id="recentReports"></tbody></table>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Needs Attention</h2></div>
+          <div class="panel-body">
+            <div class="stack g3" id="attention"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+  function statusBadge(s) {
+    var map = {
+      active: 'badge-active', approved: 'badge-active', completed: 'badge-active',
+      published: 'badge-active', resolved: 'badge-active', verified: 'badge-active',
+      pending: 'badge-warn', under_review: 'badge-warn', scheduled: 'badge-warn',
+      redirected: 'badge-warn', draft: 'badge-neutral', inactive: 'badge-neutral',
+      expired: 'badge-neutral', abandoned: 'badge-neutral',
+      banned: 'badge-lost', rejected: 'badge-lost', failed: 'badge-lost'
+    };
+    return '<span class="badge ' + (map[s] || 'badge-neutral') + '">' +
+      String(s).replace(/_/g, ' ') + '</span>';
+  }
+  function rowActions(extra) {
+    return '<div class="row-actions">' +
+      '<button class="row-action" aria-label="View">' + MB.icon('eye', 15) + '</button>' +
+      (extra || '') +
+      '<button class="row-action" aria-label="More">' + MB.icon('more', 15) + '</button></div>';
+  }
+  function userCell(name, handle) {
+    return '<div class="cell-user">' +
+      MB.avatar({ username: name }, 'avatar-sm') +
+      '<div><div class="n">' + MB.esc(name) + '</div>' +
+      (handle ? '<div class="h">' + MB.esc(handle) + '</div>' : '') + '</div></div>';
+  }
+
+MB.ready(function () {
+  MB.api.get('admin/stats').then(function (r) {
+    var d = r.data, t = d.totals;
+    var tiles = [
+      { k: 'Total Users', v: MB.fmt.compact(t.users), d: t.users_delta },
+      { k: 'Active Users', v: MB.fmt.compact(t.active_users), d: t.active_delta },
+      { k: 'Total Signals', v: MB.fmt.compact(t.signals), d: t.signals_delta },
+      { k: 'Total Trades', v: MB.fmt.compact(t.trades), d: t.trades_delta },
+      { k: 'Partner Revenue', v: MB.fmt.money(t.revenue, null, 0), d: t.revenue_delta }
+    ];
+    document.getElementById('kpis').innerHTML = tiles.map(function (x) {
+      var up = x.d >= 0;
+      return '<div class="kpi"><div class="k">' + x.k + '</div><div class="v">' + x.v + '</div>' +
+        '<div class="d ' + (up ? 'c-up' : 'c-down') + '">' + MB.icon(up ? 'trendup' : 'trenddown', 13) +
+        MB.fmt.pct(x.d) + '</div></div>';
+    }).join('');
+
+    var max = Math.max.apply(null, d.growth);
+    document.getElementById('growthBars').innerHTML = d.growth.map(function (v, i) {
+      /* the height belongs to the bar itself — a child cannot be a percentage
+         of a parent that has collapsed */
+      return '<div class="bar" style="height:' + Math.max(4, Math.round(v / max * 100)) +
+        '%" title="' + d.growth_labels[i] + ': ' + MB.fmt.compact(v) + '"><i></i></div>';
+    }).join('');
+    document.getElementById('growthAxis').innerHTML =
+      d.growth_labels.map(function (l) { return '<span>' + l + '</span>'; }).join('');
+
+    document.getElementById('topSignals').innerHTML = d.top_signals.map(function (s) {
+      return '<div class="lb-row"><span class="lb-rank' + (s.rank <= 3 ? ' r' + s.rank : '') + '">' +
+        s.rank + '</span>' + MB.avatar(s.user, 'avatar-sm') +
+        '<span class="grow lb-name">' + s.user.username + '</span>' +
+        '<span class="lb-metric c-up">' + s.win_rate + '%</span></div>';
+    }).join('');
+
+    document.getElementById('attention').innerHTML = [
+      { icon: 'flag', label: 'Reports awaiting review', n: d.pending.reports, href: 'reports.html', tone: 'sell' },
+      { icon: 'signals', label: 'Signals pending review', n: d.pending.signals_review, href: 'signals.html', tone: 'warn' },
+      { icon: 'book', label: 'Resources in draft', n: d.pending.resources_draft, href: 'resources.html', tone: 'info' }
+    ].map(function (x) {
+      return '<a class="list-row" style="border-radius:10px;border:1px solid var(--mb-border)" href="' + x.href + '">' +
+        '<span class="lr-icon" style="color:var(--mb-' + x.tone + ')">' + MB.icon(x.icon, 20) + '</span>' +
+        '<span class="grow lr-title">' + x.label + '</span>' +
+        '<span class="badge badge-' + (x.tone === 'sell' ? 'lost' : x.tone === 'warn' ? 'warn' : 'info') + '">' +
+        x.n + '</span></a>';
+    }).join('');
+    MB.mountIcons();
+  });
+
+  MB.api.list('admin/reports').then(function (rows) {
+    document.getElementById('recentReports').innerHTML = rows.slice(0, 6).map(function (r) {
+      var tone = { high:'c-down', medium:'c-warn', low:'c-3' }[r.priority] || 'c-3';
+      return '<tr>' +
+        '<td><div class="truncate" style="max-width:280px">' + MB.esc(r.excerpt) + '</div>' +
+          '<div class="h c-3"><span class="' + tone + '">' +
+          MB.esc(r.reason.replace(/_/g, ' ')) + '</span> · ' + MB.esc(r.target_type) +
+          ' · @' + MB.esc(r.reported_by) + '</div></td>' +
+        '<td>' + statusBadge(r.status) + '</td>' +
+        '<td class="c-3 ta-r" style="white-space:nowrap">' + MB.fmt.ago(r.created_at) + '</td></tr>';
+    }).join('');
+  });
+});
+</script>
+</body>
+</html>

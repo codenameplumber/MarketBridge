@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 88" role="img" aria-label="VYBE">
-  <defs><linearGradient id="vy" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0%" stop-color="#E4222F"/><stop offset="100%" stop-color="#E4222F"/>
-  </linearGradient></defs>
-  <path d="M50,44 C40,19 13,21 13,44 C13,67 40,69 50,44 C60,19 87,21 87,44 C87,67 60,69 50,44" fill="none" stroke="url(#vy)" stroke-width="13.5"
-        stroke-linecap="round" stroke-linejoin="round"/>
-</svg>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>All Balances — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="All Balances" data-sub="Every connected Deriv account" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <section class="list" id="acctList"></section>
+
+    <div class="alert alert-green">
+      <span data-icon="shield"></span>
+      <div class="t-xs"><strong>KonfluenX holds none of this.</strong> Every figure is a
+      timestamped read of your Deriv account. Deriv remains authoritative — if the
+      two ever disagree, Deriv is right.</div>
+    </div>
+
+    <div class="stack g2">
+      <a class="btn btn-primary btn-block" href="deposit.html">
+        <span data-icon="download"></span> Deposit</a>
+      <a class="btn btn-ghost btn-block" href="transfer.html">
+        <span data-icon="refresh"></span> Transfer between accounts</a>
+      <a class="btn btn-ghost btn-block" href="history.html">
+        <span data-icon="clock"></span> Transaction history</a>
+    </div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+
+MB.ready(function () {
+  MB.api.get('accounts').then(function (r) {
+    var host = document.getElementById('acctList');
+    host.innerHTML = r.data.map(function (a) {
+      return '<a class="acct-row" href="account-detail.html?id=' + a.id + '">' +
+        '<span class="acct-badge ' + a.badge + '">' + MB.esc(a.badge_text) + '</span>' +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="row g2"><span class="ar-n">' + MB.esc(a.name) + '</span>' +
+            (a.is_primary ? '<span class="badge-primary">Primary</span>' : '') + '</span>' +
+          '<span class="ar-s">' + MB.esc(a.subtitle) + '</span>' +
+        '</span>' +
+        '<span class="none" style="text-align:right">' +
+          '<span class="ar-v" style="display:block">' + MB.fmt.money(a.balance, a.currency) + '</span>' +
+          (a.is_virtual ? '<span class="ar-s">virtual</span>' : '') +
+        '</span>' +
+        '<span class="ar-chev">' + MB.icon('chevright', 17) + '</span></a>';
+    }).join('') +
+    '<div class="acct-total"><span>Total Balance <span class="c-3">(real accounts)</span></span>' +
+      '<span class="v">' + MB.fmt.money(r.meta.total_balance, r.meta.currency) + '</span></div>';
+    MB.mountIcons(host);
+  });
+});
+</script>
+</body>
+</html>

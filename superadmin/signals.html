@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signals — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="superadmin" data-nav="signals" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      
+      <div class="grow">
+        <h1 id="pageTitle">Signals</h1>
+        <div class="sub" id="pageSub">Review signals, providers, markets and reported content</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+      
+    </header>
+    <main class="admin-body">
+      <div class="alert alert-warn">
+        <span data-icon="lock"></span>
+        <div class="t-sm"><strong>Published signals are immutable.</strong> You can hide,
+        boost or retract one, but entry, direction and levels cannot be edited — and a
+        retraction stays in the provider's win-rate denominator.</div>
+      </div>
+      <div id="stats"></div>
+      <div id="table"></div>
+    </main>
+  </div>
+</div>
+
+<div class="slideover-scrim" id="soScrim"></div>
+<aside class="slideover" id="slideover" role="dialog" aria-modal="true" aria-label="Details">
+  <div class="slideover-head">
+    <h2 class="t-h3" id="soTitle">Details</h2>
+    <button class="drawer-close" id="soClose" aria-label="Close"><span data-icon="close"></span></button>
+  </div>
+  <div class="slideover-body" id="soBody"></div>
+</aside>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/uploads.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+  function statusBadge(s) {
+    var map = {
+      active:'badge-active', approved:'badge-active', completed:'badge-active',
+      published:'badge-active', resolved:'badge-active', verified:'badge-active', free:'badge-active',
+      pending:'badge-warn', pending_approval:'badge-warn', under_review:'badge-warn',
+      scheduled:'badge-warn', redirected:'badge-warn', flagged:'badge-warn', paid:'badge-info',
+      draft:'badge-neutral', inactive:'badge-neutral', expired:'badge-neutral', abandoned:'badge-neutral',
+      banned:'badge-lost', rejected:'badge-lost', failed:'badge-lost', blocked:'badge-lost', hidden:'badge-lost'
+    };
+    return '<span class="badge ' + (map[s] || 'badge-neutral') + '">' +
+      String(s).replace(/_/g, ' ') + '</span>';
+  }
+  function userCell(name, handle, href) {
+    var inner = '<div class="cell-user">' + MB.avatar({ username: name }, 'avatar-sm') +
+      '<div><div class="n">' + MB.esc(name) + '</div>' +
+      (handle ? '<div class="h">' + MB.esc(handle) + '</div>' : '') + '</div></div>';
+    return href ? '<a class="cell-link" href="' + href + '">' + inner + '</a>' : inner;
+  }
+  function acts(extra) {
+    return '<div class="row-actions">' + (extra || '') +
+      '<button class="row-action" aria-label="More">' + MB.icon('more', 15) + '</button></div>';
+  }
+  function row(k, v, sub) {
+    return '<div class="info-row"><span class="ir-k">' + MB.esc(k) + '</span>' +
+      '<span class="ir-v">' + v + (sub ? '<span class="sub">' + MB.esc(sub) + '</span>' : '') + '</span></div>';
+  }
+  function openSO(title, html) {
+    document.getElementById('soTitle').textContent = title;
+    document.getElementById('soBody').innerHTML = html;
+    document.getElementById('slideover').classList.add('is-open');
+    document.getElementById('soScrim').classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    MB.mountIcons(document.getElementById('soBody'));
+    MB.mountCharts(document.getElementById('soBody'));
+  }
+  function closeSO() {
+    document.getElementById('slideover').classList.remove('is-open');
+    document.getElementById('soScrim').classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  MB.ready(function () {
+    var c = document.getElementById('soClose'), s = document.getElementById('soScrim');
+    if (c) { c.addEventListener('click', closeSO); }
+    if (s) { s.addEventListener('click', closeSO); }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeSO(); } });
+  });
+
+MB.ready(function () {
+  MB.api.list('signals').then(function (rows) {
+    var exec = rows.filter(function (s) { return s.kind === 'executable'; }).length;
+    var active = rows.filter(function (s) { return s.status === 'active'; }).length;
+    var won = rows.filter(function (s) { return s.status === 'won'; }).length;
+    var lost = rows.filter(function (s) { return s.status === 'lost'; }).length;
+    var boosted = rows.filter(function (s) { return s.boost && s.boost.is_boosted; }).length;
+
+    MB.statSlider('#stats', 'Signals', [
+      { k:'Total signals', v: rows.length, d: 15.7 },
+      { k:'Executable', v: exec, d: 9.2 },
+      { k:'Analysis', v: rows.length - exec, d: 6.8 },
+      { k:'Active now', v: active, tone:'accent', spark:false },
+      { k:'Resolved won', v: won, d: 4.1 },
+      { k:'Resolved lost', v: lost, d: -2.6 },
+      { k:'Win rate', v: (won + lost) ? Math.round(won / (won + lost) * 100) + '%' : '—', d: 1.8 },
+      { k:'Boosted', v: boosted, tone:'warn', spark:false }
+    ]);
+
+    MB.datatable({
+      data: rows, into: '#table', perPage: 15, selectable: true,
+      sortKey: 'published_at', sortDir: 'desc',
+      searchPlaceholder: 'Search by provider, market or body…',
+      search: ['author.username','market.name','market.symbol','body'],
+      columns: [
+        { key:'id', label:'Signal', sortable:true,
+          render: function (s) {
+            return '<a class="cell-link" href="signal-detail.html?id=' + s.id + '">' +
+              '<div><div class="n">' + MB.esc((s.direction||'').toUpperCase() + ' ' + s.market.short_name) +
+              '</div><div class="h c-3 truncate" style="max-width:230px">' + MB.esc(s.body) + '</div></div></a>'; } },
+        { key:'kind', label:'Type', sortable:true, filter:['executable','analysis'],
+          render: function (s) { return '<span class="signal-kind ' +
+            (s.kind === 'executable' ? 'k-exec' : 'k-anal') + '">' +
+            (s.kind === 'executable' ? 'EXEC' : 'ANALYSIS') + '</span>'; } },
+        { key:'author.username', label:'Provider', sortable:true,
+          render: function (s) { return userCell(s.author.username, null, 'user-detail.html?u=' + s.author.username); } },
+        { key:'market.category', label:'Category', sortable:true,
+          filter:['synthetic_indices','derived','forex','crypto','commodities','stock_indices'],
+          render: function (s) { return '<span class="c-2">' + MB.catLabel(s.market.category) + '</span>'; } },
+        { key:'market.short_name', label:'Market', sortable:true },
+        { key:'engagement.views', label:'Views', sortable:true, numeric:true,
+          sortValue: function (s) { return s.engagement.views; },
+          render: function (s) { return MB.fmt.compact(s.engagement.views); } },
+        { key:'status', label:'Status', sortable:true, filter:['active','won','lost','expired'],
+          render: function (s) { return statusBadge(s.status); } },
+        { key:'published_at', label:'Posted', sortable:true,
+          sortValue: function (s) { return new Date(s.published_at).getTime(); },
+          render: function (s) { return '<span class="c-3">' + MB.fmt.ago(s.published_at) + '</span>'; } },
+        { key:'', label:'Actions', align:'right',
+          render: function (s) { return acts(
+            '<a class="row-action" href="signal-detail.html?id=' + s.id + '" aria-label="Open">' +
+              MB.icon('eye', 15) + '</a>' +
+            '<button class="row-action is-approve" data-can="boost.create" aria-label="Boost">' +
+              MB.icon('megaphone', 15) + '</button>'); } }
+      ]
+    });
+  });
+});
+</script>
+</body>
+</html>
