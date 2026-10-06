@@ -15,12 +15,21 @@
    SIDEBAR
    ========================================================================== */
 .admin-rail {
-  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  position: sticky; top: 0; height: 100vh; height: 100dvh;
+  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
   background: var(--mb-surface); border-right: 1px solid var(--mb-border);
   display: flex; flex-direction: column;
   padding: var(--mb-s6) var(--mb-s4);
 }
-.admin-brand { display: flex; align-items: center; gap: var(--mb-s2); padding: 0 var(--mb-s2) var(--mb-s5); }
+/* Brand on the first line, role badge under it — side by side they did
+   not fit the 236px rail and pushed a horizontal scrollbar into the drawer. */
+.admin-brand {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--mb-s2);
+  padding: 0 var(--mb-s2) var(--mb-s4); min-width: 0;
+}
+.admin-brand-row { display: flex; align-items: center; gap: var(--mb-s2); width: 100%; min-width: 0; }
+.admin-brand-row .brand { min-width: 0; }
+.admin-rail-close { display: none; margin-left: auto; }
 .admin-brand .tag {
   font-size: 9px; font-weight: var(--mb-w-black); letter-spacing: .12em;
   color: var(--mb-text-3); text-transform: uppercase;
@@ -83,12 +92,14 @@
   .admin { grid-template-columns: minmax(0, 1fr); }
   .admin-rail {
     position: fixed; left: 0; top: 0; bottom: 0; z-index: 120;
-    width: var(--mb-admin-rail); transform: translateX(-100%);
+    width: min(86vw, 280px); transform: translateX(-100%);
     transition: transform var(--mb-base) var(--mb-ease);
     box-shadow: var(--mb-shadow-lg);
   }
   .admin-rail.is-open { transform: none; }
-  .admin-burger { display: inline-flex; }
+  .admin-burger { display: inline-flex; flex: none; }
+  .admin-rail-close { display: inline-flex; }
+  html.admin-nav-open, html.admin-nav-open body { overflow: hidden; }
   .admin-body { padding: var(--mb-s5) var(--mb-s5) var(--mb-s10); }
   .admin-topbar { padding: var(--mb-s4) var(--mb-s5); }
 }
@@ -407,7 +418,7 @@ table.data.is-compact td { padding: var(--mb-s3) var(--mb-s4); }
 .role-tag.role-admin      { background: var(--mb-green-soft); color: var(--mb-green); border-color: var(--mb-green-line); }
 .role-tag.role-superadmin { background: var(--vy-brand-soft); color: var(--vy-brand); border-color: var(--vy-brand-line); }
 
-.admin-brand .role-tag { margin-left: auto; }
+[data-theme="light"] table.data th { color: var(--mb-text-2); }
 
 .role-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -449,21 +460,20 @@ table.data.is-compact td { padding: var(--mb-s3) var(--mb-s4); }
 
 /* ---- Phone ------------------------------------------------------------ */
 @media (max-width: 620px) {
-  /* The title keeps the first row; actions drop to their own row so labels
-     stay readable instead of being crushed. */
+  /* One row: menu · title · theme. A page action joins that row when it
+     fits and wraps to a second row, right-aligned, when it does not. */
   .admin-topbar {
     flex-wrap: wrap;
-    padding: var(--mb-s3) var(--mb-s4);
-    gap: var(--mb-s2) var(--mb-s3);
+    padding: var(--mb-s2) var(--mb-s4);
+    gap: var(--mb-s2);
+    min-height: 56px;
   }
-  .admin-topbar > .grow { flex: 1 1 100%; order: 1; min-width: 0; }
   .admin-topbar .admin-burger,
-  .admin-topbar > a.icon-btn { order: 0; }
-  .admin-topbar .theme-toggle,
-  .admin-topbar > .btn { order: 2; }
-  /* Sits on the second row at its natural width, pushed right — a primary
-     action that spans the whole screen reads as the page's subject. */
-  .admin-topbar > .btn { flex: 0 1 auto; margin-left: auto; }
+  .admin-topbar > a.icon-btn { order: 0; flex: none; }
+  .admin-topbar > .grow { flex: 1 1 140px; order: 1; min-width: 0; }
+  .admin-topbar .theme-toggle { order: 2; }
+  .admin-topbar > .btn,
+  .admin-topbar > .select { order: 3; flex: 0 0 auto; margin-left: auto; }
 
   .admin-topbar h1 {
     font-size: var(--mb-t-body); font-weight: var(--mb-w-bold);
@@ -493,9 +503,6 @@ table.data.is-compact td { padding: var(--mb-s3) var(--mb-s4); }
 
   .statslider-head h2 { font-size: var(--mb-t-body); }
   .stat-card { width: 168px; padding: var(--mb-s3); }
-
-  /* The rail drawer should not span a whole phone screen */
-  .admin-rail { width: min(86vw, var(--mb-admin-rail)); }
 }
 
 /* A table is wider than a phone by nature. It scrolls inside its own box —

@@ -105,7 +105,12 @@
     briefcase: '<rect ' + P + ' x="3" y="7" width="18" height="13" rx="2"/><path ' + P + ' d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7"/>',
     megaphone: '<path ' + P + ' d="M4 10v4a2 2 0 0 0 2 2h2l8 4V4L8 8H6a2 2 0 0 0-2 2Z"/><path ' + P + ' d="M19 9a3.5 3.5 0 0 1 0 6"/>',
     key:       '<circle ' + P + ' cx="8" cy="15" r="4"/><path ' + P + ' d="m11 12 8-8M17 6l2 2M15 8l2 2"/>',
-    scale:     '<path ' + P + ' d="M12 3v18M7 21h10M5 8h14M5 8 2.5 14h5L5 8ZM19 8l-2.5 6h5L19 8Z"/>'
+    scale:     '<path ' + P + ' d="M12 3v18M7 21h10M5 8h14M5 8 2.5 14h5L5 8ZM19 8l-2.5 6h5L19 8Z"/>',
+    reply:     '<path ' + P + ' d="M10 8 5 12l5 4"/><path ' + P + ' d="M5 12h9a5 5 0 0 1 5 5v1"/>',
+    xsocial:   '<path ' + P + ' d="M4 4l16 16M20 4l-6.6 7.2M10.6 12.8 4 20"/>',
+    telegram:  '<path ' + P + ' d="M21 4 3 11l6 2.2M21 4l-3 16-8.9-6.8M21 4 9.1 13.2V19l3-3.5"/>',
+    instagram: '<rect ' + P + ' x="3.5" y="3.5" width="17" height="17" rx="5"/><circle ' + P + ' cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1" fill="currentColor"/>',
+    youtube:   '<rect ' + P + ' x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor"/>'
   };
 
   function icon(name, size) {

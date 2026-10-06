@@ -30,7 +30,7 @@
       '" viewBox="0 0 60 72" aria-hidden="true">' +
       '<path d="M6,0 L18,0 L18,72 L6,72Z" fill="var(--vy-brand,#E4222F)"/>' +
       '<path d="M18,33 L50,0 L40,0 L18,25Z" fill="var(--mb-green,#00C853)"/>' +
-      '<path d="M18,39 L40,72 L50,72 L18,47Z" fill="var(--mb-green,#00C853)"/>' +
+      '<path d="M18,39 L50,72 L40,72 L18,47Z" fill="var(--mb-green,#00C853)"/>' +
       '</svg>';
   };
 
@@ -44,7 +44,10 @@
     var sub = o.tagline === false ? '' :
       '<span class="kx-sub">CONNECT &middot; DISCOVER &middot; CONVERGE</span>';
 
-    var inner =
+    var markSize = o.large ? 32 : o.small ? 18 : 24;
+    var mark = o.noMark ? '' : MB.brandMark(markSize);
+
+    var inner = mark +
       '<span class="kx-lockup">' +
         '<span class="kx-word" aria-label="KonfluenX">' +
           '<span class="kx-main">KONFLUEN</span><span class="kx-x">X</span>' +
@@ -264,7 +267,11 @@
     host.outerHTML =
       '<aside class="admin-rail" id="adminRail">' +
         '<div class="admin-brand">' +
-          MB.brand({ href: r + 'index.html', small: true }) +
+          '<div class="admin-brand-row">' +
+            MB.brand({ href: r + 'index.html', small: true, tagline: false }) +
+            '<button class="icon-btn admin-rail-close" id="adminRailClose" type="button" aria-label="Close menu">' +
+              MB.icon('close', 18) + '</button>' +
+          '</div>' +
           '<span class="role-tag role-' + roleId + '">' +
             (role ? MB.esc(role.label) : 'Staff') + '</span>' +
         '</div>' +
@@ -528,14 +535,28 @@
 
     /* Admin burger */
     var ab = document.getElementById('adminBurger');
-    if (ab) {
-      var rail = document.getElementById('adminRail');
+    var rail = document.getElementById('adminRail');
+    if (ab && rail) {
       var scrim = document.getElementById('adminScrim');
-      var close = function () { rail.classList.remove('is-open'); scrim.classList.remove('is-open'); };
-      ab.addEventListener('click', function () {
-        rail.classList.toggle('is-open'); scrim.classList.toggle('is-open');
+      var setOpen = function (open) {
+        rail.classList.toggle('is-open', open);
+        if (scrim) { scrim.classList.toggle('is-open', open); }
+        document.documentElement.classList.toggle('admin-nav-open', open);
+        ab.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) { var cur = rail.querySelector('[aria-current="page"]') || rail.querySelector('a'); if (cur) { cur.focus({ preventScroll: true }); } }
+      };
+      ab.setAttribute('aria-controls', 'adminRail');
+      ab.setAttribute('aria-expanded', 'false');
+      ab.addEventListener('click', function () { setOpen(!rail.classList.contains('is-open')); });
+      if (scrim) { scrim.addEventListener('click', function () { setOpen(false); }); }
+      var rc = document.getElementById('adminRailClose');
+      if (rc) { rc.addEventListener('click', function () { setOpen(false); ab.focus(); }); }
+      rail.addEventListener('click', function (e) { if (e.target.closest('a[href]')) { setOpen(false); } });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && rail.classList.contains('is-open')) { setOpen(false); ab.focus(); }
       });
-      if (scrim) { scrim.addEventListener('click', close); }
+      /* Rotating a tablet past the breakpoint must not leave the page locked. */
+      window.matchMedia('(min-width: 1021px)').addEventListener('change', function (m) { if (m.matches) { setOpen(false); } });
     }
 
     /* Theme toggles, anywhere on the page */

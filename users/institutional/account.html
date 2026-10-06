@@ -25,9 +25,9 @@
 
     <!-- ACCOUNT HEADER -->
     <section class="card" id="acctHeader">
-      <div class="between">
-        <div>
-          <div class="row g2">
+      <div class="between" style="align-items:flex-start;gap:var(--mb-s2)">
+        <div style="min-width:0">
+          <div class="row g2 wrap">
             <span class="t-h3 w-bold" id="adLogin">&mdash;</span>
             <span class="badge badge-active" id="adPlatform">MT5</span>
             <span class="badge" id="adType">&mdash;</span>
@@ -35,13 +35,13 @@
           <div class="t-xs c-3 mt1" id="adLinkedDate">Linked &mdash;</div>
           <div class="t-xs c-3" id="adManagedFor">&mdash;</div>
         </div>
-        <button class="badge inst-vis-toggle" id="adVisToggle">Hidden</button>
+        <button class="badge inst-vis-toggle none" id="adVisToggle">Hidden</button>
       </div>
       <div class="mt3">
         <div class="label">Balance</div>
         <div class="row g2 mt1">
-          <div class="t-h2 w-black" id="adBalance">&mdash;</div>
-          <span class="t-sm c-3" id="adCurrency">USD</span>
+          <div class="t-h3 w-bold" id="adBalance">&mdash;</div>
+          <span class="t-xs c-3" id="adCurrency">USD</span>
         </div>
       </div>
     </section>
@@ -53,7 +53,7 @@
     </section>
 
     <!-- STAT GRID -->
-    <div class="stat-grid mt3">
+    <div class="stat-grid cols-2 mt3">
       <div class="stat-cell"><div class="stat-v" id="stBalance">&mdash;</div><div class="stat-k">Balance</div></div>
       <div class="stat-cell"><div class="stat-v c-up" id="stProfit">&mdash;</div><div class="stat-k">Total Profit</div></div>
       <div class="stat-cell"><div class="stat-v" id="stReturn">&mdash;</div><div class="stat-k">Return %</div></div>
@@ -73,9 +73,20 @@
         <button class="acct-filter-tab" data-filter="top">Top Trades</button>
         <button class="acct-filter-tab" data-filter="worst">Worst Trades</button>
       </div>
+      <div class="row g2 mb3">
+        <div class="form-group" style="flex:1 1 0;min-width:0;margin:0">
+          <label class="form-label t-xs" for="dateFrom">From</label>
+          <input class="input" type="date" id="dateFrom" value="2026-07-01" style="min-width:0;width:100%;padding-inline:var(--mb-s2)">
+        </div>
+        <div class="form-group" style="flex:1 1 0;min-width:0;margin:0">
+          <label class="form-label t-xs" for="dateTo">To</label>
+          <input class="input" type="date" id="dateTo" value="2026-10-05" style="min-width:0;width:100%;padding-inline:var(--mb-s2)">
+        </div>
+      </div>
       <div class="card" style="padding:0;overflow:hidden">
         <div id="tradeList"></div>
       </div>
+      <div class="row center mt3 g2" id="tradePagination"></div>
     </section>
 
     <!-- MONTHLY PERFORMANCE -->
@@ -144,7 +155,7 @@
   function renderTrade(t) {
     var plCls = t.pl >= 0 ? 'c-up' : 'c-down';
     var dirColor = t.dir === 'BUY' ? 'var(--mb-green)' : 'var(--mb-sell)';
-    var dirIcon = t.dir === 'BUY' ? 'arrow-up' : 'arrow-down';
+    var dirIcon = t.dir === 'BUY' ? 'up' : 'down';
     var plSign = t.pl >= 0 ? '+' : '-';
 
     return '<div class="acct-trade-row">' +
@@ -164,36 +175,98 @@
     '</div>';
   }
 
-  function renderTradeList(trades) {
-    MB.$('#tradeList').innerHTML = trades.length ? trades.map(renderTrade).join('') :
-      '<div style="padding:var(--mb-s4);text-align:center" class="t-sm c-3">No trades</div>';
-    MB.mountIcons(MB.$('#tradeList'));
+  var PAGE_SIZE = 5;
+  var currentPage = 0;
+  var currentFilter = 'recent';
+
+  function getFilteredTrades() {
+    var from = MB.$('#dateFrom').value;
+    var to = MB.$('#dateTo').value;
+    var filtered = ALL_TRADES;
+
+    if (from) {
+      var fromDate = new Date(from);
+      filtered = filtered.filter(function (t) { return new Date(t.date) >= fromDate; });
+    }
+    if (to) {
+      var toDate = new Date(to + 'T23:59:59Z');
+      filtered = filtered.filter(function (t) { return new Date(t.date) <= toDate; });
+    }
+
+    if (currentFilter === 'top') {
+      filtered = filtered.slice().sort(function (a, b) { return b.pl - a.pl; });
+    } else if (currentFilter === 'worst') {
+      filtered = filtered.slice().sort(function (a, b) { return a.pl - b.pl; });
+    }
+    return filtered;
   }
 
-  /* filter tabs */
+  function renderTradeList(trades) {
+    var total = trades.length;
+    var pages = Math.ceil(total / PAGE_SIZE);
+    if (currentPage >= pages) currentPage = Math.max(0, pages - 1);
+    var start = currentPage * PAGE_SIZE;
+    var pageItems = trades.slice(start, start + PAGE_SIZE);
+
+    MB.$('#tradeList').innerHTML = pageItems.length ? pageItems.map(renderTrade).join('') :
+      '<div style="padding:var(--mb-s4);text-align:center" class="t-sm c-3">No trades in this range</div>';
+    MB.mountIcons(MB.$('#tradeList'));
+    MB.$('#tradeCount').textContent = total + ' trades';
+
+    var pagEl = MB.$('#tradePagination');
+    if (pages <= 1) { pagEl.innerHTML = ''; return; }
+    var btns = '';
+    for (var i = 0; i < pages; i++) {
+      btns += '<button class="acct-filter-tab' + (i === currentPage ? ' is-active' : '') +
+        '" data-page="' + i + '">' + (i + 1) + '</button>';
+    }
+    pagEl.innerHTML = btns;
+    pagEl.querySelectorAll('[data-page]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        currentPage = parseInt(b.getAttribute('data-page'));
+        applyFilters();
+      });
+    });
+  }
+
+  function applyFilters() {
+    var trades = getFilteredTrades();
+    renderTradeList(trades);
+  }
+
   MB.$('#tradeTabs').addEventListener('click', function (e) {
     var btn = e.target.closest('.acct-filter-tab');
-    if (!btn) return;
-    MB.$$('.acct-filter-tab').forEach(function (b) { b.classList.remove('is-active'); });
+    if (!btn || btn.hasAttribute('data-page')) return;
+    MB.$$('#tradeTabs .acct-filter-tab').forEach(function (b) { b.classList.remove('is-active'); });
     btn.classList.add('is-active');
-    var filter = btn.getAttribute('data-filter');
-    var sorted;
-    if (filter === 'top') {
-      sorted = ALL_TRADES.slice().sort(function (a, b) { return b.pl - a.pl; }).slice(0, 10);
-    } else if (filter === 'worst') {
-      sorted = ALL_TRADES.slice().sort(function (a, b) { return a.pl - b.pl; }).slice(0, 10);
-    } else {
-      sorted = ALL_TRADES.slice(0, 10);
-    }
-    MB.$('#tradeCount').textContent = sorted.length + ' of ' + ALL_TRADES.length;
-    renderTradeList(sorted);
+    currentFilter = btn.getAttribute('data-filter');
+    currentPage = 0;
+    applyFilters();
   });
+
+  MB.$('#dateFrom').addEventListener('change', function () { currentPage = 0; applyFilters(); });
+  MB.$('#dateTo').addEventListener('change', function () { currentPage = 0; applyFilters(); });
 
   MB.api.get('institutional').then(function (r) {
     var d = r.data || {};
     var accts = d.linked_accounts || [];
     var a = accts.filter(function (x) { return x.id === id; })[0] || accts[0];
     if (!a) return;
+
+    /* Opened from the portfolio = an investor's view: the showcase rules apply. */
+    var SC = MB.instShowcase, sc = SC.load(d);
+    var params = new URLSearchParams(location.search);
+    var investor = params.get('via') === 'portfolio';
+    if (investor) {
+      var access = SC.access(sc, params);
+      var back = MB.$('.topbar-back');
+      if (back) { back.href = 'portfolio.html' + (params.get('t') ? '?t=' + encodeURIComponent(params.get('t')) : access.mode === 'owner' ? '?preview=1' : ''); }
+      if (access.mode === 'private' || access.mode === 'expired' || !SC.isVisible(sc, a)) {
+        MB.$('main.page').innerHTML = '<div class="empty" style="padding:64px 20px">' + MB.icon('lock', 44) +
+          '<h3>This account is not shared</h3><p>The owner has not made this trading account available to investors.</p></div>';
+        return;
+      }
+    }
 
     /* header */
     MB.$('#adLogin').textContent = a.login;
@@ -215,11 +288,17 @@
     /* visibility toggle */
     var visBtn = MB.$('#adVisToggle');
     visBtn.textContent = a.visible ? 'Visible' : 'Hidden';
-    visBtn.className = 'badge inst-vis-toggle ' + (a.visible ? 'badge-active' : '');
+    visBtn.className = 'badge inst-vis-toggle none ' + (a.visible ? 'badge-active' : '');
+    a.visible = SC.isVisible(sc, a);
+    visBtn.textContent = a.visible ? 'Visible' : 'Hidden';
+    visBtn.className = 'badge inst-vis-toggle none ' + (a.visible ? 'badge-active' : '');
     visBtn.addEventListener('click', function () {
       a.visible = !a.visible;
+      sc.visible[a.id] = a.visible;
+      SC.save(sc);
       visBtn.textContent = a.visible ? 'Visible' : 'Hidden';
-      visBtn.className = 'badge inst-vis-toggle ' + (a.visible ? 'badge-active' : '');
+      visBtn.className = 'badge inst-vis-toggle none ' + (a.visible ? 'badge-active' : '');
+      MB.toast(a.visible ? 'Investors can now see this account' : 'Account hidden from investors');
     });
 
     /* stat grid */
@@ -229,18 +308,16 @@
     MB.$('#stProfit').className = 'stat-v ' + profitCls;
     MB.$('#stReturn').textContent = fmt.pct(a.profit_pct);
     MB.$('#stReturn').className = 'stat-v ' + profitCls;
-    MB.$('#stWinRate').textContent = fmt.pct(a.win_rate);
+    MB.$('#stWinRate').textContent = Number(a.win_rate || 0).toFixed(1) + '%';
     MB.$('#stTrades').textContent = a.trades_total || 0;
-    MB.$('#stDrawdown').textContent = fmt.pct(a.drawdown_max);
+    MB.$('#stDrawdown').textContent = '-' + Math.abs(Number(a.drawdown_max || 0)).toFixed(1) + '%';
 
     /* topbar title */
     var topTitle = MB.$('.topbar-title');
     if (topTitle) topTitle.textContent = a.login;
 
-    /* initial trade list (recent) */
-    var recent = ALL_TRADES.slice(0, 10);
-    MB.$('#tradeCount').textContent = recent.length + ' of ' + ALL_TRADES.length;
-    renderTradeList(recent);
+    /* initial trade list */
+    applyFilters();
 
     /* monthly performance with expandable trades */
     var months = [
@@ -259,10 +336,10 @@
         '<div class="acct-month-row between" data-month="' + idx + '" style="padding:var(--mb-s3)">' +
           '<div>' +
             '<div class="w-bold">' + MB.esc(m.month) + '</div>' +
-            '<div class="t-xs c-3 mt1">' + m.trades + ' trades &middot; ' + fmt.pct(m.winRate) + ' win rate</div>' +
+            '<div class="t-xs c-3 mt1">' + m.trades + ' trades &middot; ' + Number(m.winRate).toFixed(1) + '% win rate</div>' +
           '</div>' +
           '<div style="text-align:right" class="row g3">' +
-            '<span class="' + mCls + ' w-bold">' + mSign + '$' + Math.abs(m.pl).toFixed(2) + '</span>' +
+            '<span class="' + mCls + ' w-bold num">' + mSign + fmt.money(Math.abs(m.pl)) + '</span>' +
             '<span data-icon="chevdown" data-icon-size="14" class="c-3" style="transition:transform .2s"></span>' +
           '</div>' +
         '</div>' +
@@ -285,6 +362,21 @@
         }
       });
     });
+
+    /* Investor view: strip what the owner has not chosen to share. */
+    if (investor) {
+      MB.$('#adVisToggle').remove();
+      if (!sc.show_balances) {
+        MB.$('#adBalance').closest('.mt3').remove();
+        ['#stBalance', '#stProfit'].forEach(function (s) { MB.$(s).closest('.stat-cell').remove(); });
+      }
+      if (!sc.show_history) {
+        MB.$('#monthlyPerf').closest('section').remove();
+        MB.$('#tradeList').closest('section').outerHTML =
+          '<div class="card mt3 t-sm c-2 row g2">' + MB.icon('lock', 16) +
+          '<span>The owner keeps individual trades and the monthly breakdown private.</span></div>';
+      }
+    }
 
     MB.mountIcons();
     MB.mountCharts();

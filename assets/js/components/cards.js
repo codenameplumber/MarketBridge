@@ -133,8 +133,8 @@
           ? '<div class="post-tags">' + s.tags.map(function (t) {
               return '<span class="chip-tag">' + MB.esc(t) + '</span>'; }).join('') + '</div>' : '') +
         '<div class="signal-chart"><div data-chart="candle" data-seed="' + s.id +
-          '" data-h="120" data-direction="' + (isSell ? 'down' : 'up') + '"></div></div>' +
-        '<a class="btn btn-primary btn-block mt3" href="' +
+          '" data-h="80" data-direction="' + (isSell ? 'down' : 'up') + '"></div></div>' +
+        '<a class="btn btn-primary btn-block mt2" href="' +
           (x.trade_route ? R() + 'users/' + x.trade_route.replace('../', '') : R() + 'users/trade/index.html') +
           '">' + MB.icon('trade', 18) + ' Trade This Signal</a>' +
       '</div>' +
@@ -178,10 +178,9 @@
           ? '<div class="post-tags">' + s.tags.map(function (t) {
               return '<span class="chip-tag">' + MB.esc(t) + '</span>'; }).join('') + '</div>' : '') +
         '<div class="signal-chart"><div data-chart="candle" data-seed="' + s.id +
-          '" data-h="120" data-direction="' + (isSell ? 'down' : 'up') +
+          '" data-h="80" data-direction="' + (isSell ? 'down' : 'up') +
           '" data-levels=\'{"entry":1,"sl":1' + (tps[0] ? ',"tp1":1' : '') + (tps[1] ? ',"tp2":1' : '') + '}\'></div></div>' +
-        /* Analysis can never produce a trade button — different route, different colour. */
-        '<a class="btn btn-analysis btn-block mt3" href="' + R() + 'users/markets/detail.html?symbol=' +
+        '<a class="btn btn-analysis btn-block mt2" href="' + R() + 'users/markets/detail.html?symbol=' +
           s.market.symbol + '">' + MB.icon('markets', 18) + ' View Market</a>' +
       '</div>' +
       '<div class="signal-disclaimer">Analysis only &mdash; not executable from KonfluenX.</div>' +
@@ -589,8 +588,8 @@
   C.message = function (msg) {
     var att = (msg.attachments || []).map(function (a) {
       if (a.type === 'image') {
-        return '<div class="attach"><img class="attach-img" src="' + a.url +
-               '" alt="' + MB.esc(a.name || 'Attached image') + '" loading="lazy"></div>';
+        return '<img class="attach-img" src="' + a.url +
+               '" alt="' + MB.esc(a.name || 'Attached image') + '" loading="lazy">';
       }
       return '<div class="attach"><div class="attach-file">' +
         '<span class="af-ic">' + MB.icon('file', 17) + '</span>' +
@@ -601,17 +600,60 @@
       '</div></div>';
     }).join('');
 
-    /* A moderator gets a flag on every message but their own. It raises a
-       report for the admins — it never removes anything, which is the whole
-       point of the role. data-can lets the permission pass strip it for
-       everyone else without this template knowing who is looking. */
     var flag = msg.is_own ? '' :
       '<button class="msg-flag" data-can="message.flag" data-flag-msg="' +
         MB.esc(msg.id || '') + '" aria-label="Flag this message for review">' +
         MB.icon('flag', 13) + '</button>';
 
+    var replyBtn = '<button class="msg-reply-btn" data-reply-msg="' +
+      MB.esc(msg.id || '') + '" aria-label="Reply">' + MB.icon('reply', 13) + '</button>';
+
+    var replyQuote = '';
+    if (msg.reply_to) {
+      replyQuote = '<div class="msg-reply-quote" data-scroll-to="' + MB.esc(msg.reply_to.id || '') + '">' +
+        '<div class="msg-reply-author">' + MB.esc(msg.reply_to.author) + '</div>' +
+        '<div class="msg-reply-text">' + MB.esc(msg.reply_to.body) + '</div>' +
+      '</div>';
+    }
+
+    var signalCard = '';
+    if (msg.signal) {
+      var s = msg.signal;
+      var buy = s.direction === 'BUY';
+      var st = s.status || s.result || 'active';
+      var px = function (v) { return isFinite(Number(v)) ? MB.fmt.price(Number(v), s.dp) : MB.esc(String(v)); };
+      var STATUS = {
+        pending: '<span class="badge">Waiting for entry</span>',
+        active:  '<span class="badge badge-active">Running</span>',
+        won:     '<span class="badge badge-won">Won' + (s.points ? ' · +' + s.points + ' pts' : '') + '</span>',
+        lost:    '<span class="badge badge-lost">Lost</span>',
+        expired: '<span class="badge">Expired</span>'
+      };
+
+      signalCard = '<div class="signal-form-card sig-' + st + ' mt2" data-signal-id="' + MB.esc(s.id || '') + '">' +
+        '<div class="between">' +
+          '<div class="row g2">' +
+            '<span style="color:var(--mb-' + (buy ? 'green' : 'sell') + ')">' + MB.icon(buy ? 'up' : 'down', 16) + '</span>' +
+            '<span class="w-bold t-sm">' + MB.esc(s.pair) + ' ' + (buy ? 'BUY' : 'SELL') + '</span>' +
+          '</div>' +
+          (STATUS[st] || STATUS.active) +
+        '</div>' +
+        '<div class="signal-form-row mt2">' +
+          '<div><div class="t-xs c-3">Entry</div><div class="t-sm w-semi num">' + px(s.entry) + '</div></div>' +
+          '<div><div class="t-xs c-3">Take profit</div><div class="t-sm w-semi num c-up">' + px(s.tp) + '</div></div>' +
+        '</div>' +
+        '<div class="signal-form-row mt1">' +
+          '<div><div class="t-xs c-3">Stop loss</div><div class="t-sm w-semi num c-down">' + px(s.sl) + '</div></div>' +
+          '<div><div class="t-xs c-3">Posted</div><div class="t-sm">' + MB.fmt.ago(msg.created_at) + '</div></div>' +
+        '</div>' +
+        (st === 'won' || st === 'lost'
+          ? '<div class="t-xs c-3 mt2">Closed at ' + px(s.exit) + ' · resolved from the live price</div>'
+          : '') +
+      '</div>';
+    }
+
     return '<div class="msg' + (msg.is_own ? ' msg-own' : '') +
-        (msg.is_flagged ? ' is-flagged' : '') + '">' +
+        (msg.is_flagged ? ' is-flagged' : '') + '" data-msg-id="' + MB.esc(msg.id || '') + '">' +
       MB.avatar(msg.author, 'avatar-sm') +
       '<div class="msg-body">' +
         '<div class="msg-head">' +
@@ -620,11 +662,14 @@
           (msg.author.role === 'moderator'
             ? '<span class="badge badge-mod">Mod</span>' : '') +
           '<span class="msg-time">' + MB.fmt.ago(msg.created_at) + '</span>' +
+          replyBtn +
           flag +
         '</div>' +
         '<div class="msg-bubble">' +
+          replyQuote +
           (msg.body ? '<div class="msg-text">' + MB.esc(msg.body) + '</div>' : '') +
           att +
+          signalCard +
         '</div>' +
         (msg.is_flagged
           ? '<div class="msg-flagged">' + MB.icon('flag', 11) +

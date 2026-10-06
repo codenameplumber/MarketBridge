@@ -7,7 +7,6 @@
         "icon": "star",
         "tier": "legendary",
         "description": "Joined KonfluenX during the founding phase",
-        "criteria": "Account created before platform public launch",
         "earned": true,
         "earned_at": "2026-03-15T09:00:00Z",
         "holders": 142
@@ -18,7 +17,6 @@
         "icon": "signals",
         "tier": "gold",
         "description": "Consistently delivers high-quality signals",
-        "criteria": "Maintain 65%+ win rate over 50 resolved signals",
         "earned": true,
         "earned_at": "2026-08-22T14:30:00Z",
         "holders": 38
@@ -29,7 +27,6 @@
         "icon": "trade",
         "tier": "silver",
         "description": "Maintains a steady trading rhythm",
-        "criteria": "Execute at least 1 trade per week for 12 consecutive weeks",
         "earned": true,
         "earned_at": "2026-07-10T11:00:00Z",
         "holders": 210
@@ -40,7 +37,6 @@
         "icon": "community",
         "tier": "silver",
         "description": "Actively enriches the community",
-        "criteria": "Post 50 messages and receive 100 reactions in market rooms",
         "earned": false,
         "earned_at": null,
         "progress": 68,
@@ -52,7 +48,6 @@
         "icon": "markets",
         "tier": "gold",
         "description": "Deep expertise in a specific market category",
-        "criteria": "Post 30 signals in one market with 70%+ win rate",
         "earned": true,
         "earned_at": "2026-09-05T16:45:00Z",
         "holders": 52
@@ -63,7 +58,6 @@
         "icon": "userplus",
         "tier": "gold",
         "description": "Helps other traders improve their skills",
-        "criteria": "Have 10 followers who each achieve 55%+ win rate",
         "earned": false,
         "earned_at": null,
         "progress": 40,
@@ -75,7 +69,6 @@
         "icon": "flame",
         "tier": "bronze",
         "description": "Showing rapid improvement in trading performance",
-        "criteria": "Improve win rate by 15% over a 30-day rolling window",
         "earned": true,
         "earned_at": "2026-06-18T08:20:00Z",
         "holders": 320
@@ -86,7 +79,6 @@
         "icon": "briefcase",
         "tier": "legendary",
         "description": "Official IB / affiliate partner",
-        "criteria": "Accepted into the KonfluenX Partner programme",
         "earned": false,
         "earned_at": null,
         "progress": 0,
@@ -98,7 +90,6 @@
         "icon": "results",
         "tier": "gold",
         "description": "Produces outstanding market analysis",
-        "criteria": "Publish 20 analysis signals with an average of 10+ bookmarks each",
         "earned": false,
         "earned_at": null,
         "progress": 55,
@@ -110,7 +101,6 @@
         "icon": "flame",
         "tier": "silver",
         "description": "Legendary consistency on the platform",
-        "criteria": "Maintain a 30-day unbroken activity streak",
         "earned": true,
         "earned_at": "2026-09-28T12:00:00Z",
         "holders": 89

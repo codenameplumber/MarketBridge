@@ -154,7 +154,7 @@
    ========================================================================== */
 .market-hero { padding: var(--mb-s5); border-bottom: 1px solid var(--mb-border); }
 .market-hero .mh-name { font-size: var(--mb-t-h2); font-weight: var(--mb-w-bold); }
-.market-hero .mh-price { font-size: 30px; font-weight: var(--mb-w-black); letter-spacing: -.03em; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.market-hero .mh-price { font-size: 22px; font-weight: var(--mb-w-black); letter-spacing: -.03em; font-variant-numeric: tabular-nums; margin-top: 2px; }
 .market-hero .mh-change { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); font-variant-numeric: tabular-nums; }
 
 /* ==========================================================================
@@ -531,4 +531,93 @@
 /* Tighter still when the screen is short */
 @media (max-height: 700px) {
   .app.is-chatroom .mod-strip { display: none; }
+}
+
+/* ==========================================================================
+   CHAT — WhatsApp-like message bubbles
+   ========================================================================== */
+.signal-form-card.sig-lost { border-color: var(--mb-sell-line); background: var(--mb-sell-soft); }
+.signal-form-card.sig-pending,
+.signal-form-card.sig-expired { border-color: var(--mb-border-2); background: var(--mb-surface-2); }
+.sig-live {
+  display: flex; align-items: center; gap: var(--mb-s2);
+  padding: var(--mb-s2) var(--mb-s3); border-radius: var(--mb-r-sm); background: var(--mb-surface-2);
+}
+.sig-live .btn { margin-left: auto; }
+.sig-rules { line-height: 1.5; }
+
+.msg-reply-quote {
+  padding: var(--mb-s2) var(--mb-s3);
+  border-left: 3px solid var(--mb-green);
+  border-radius: var(--mb-r-sm);
+  background: var(--mb-surface-2);
+  margin-bottom: var(--mb-s2);
+  font-size: var(--mb-t-xs);
+  cursor: pointer;
+}
+.msg-reply-quote .msg-reply-author {
+  font-weight: var(--mb-w-bold);
+  color: var(--mb-green);
+  font-size: 11px;
+}
+.msg-reply-quote .msg-reply-text {
+  color: var(--mb-text-2);
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.msg-reply-btn {
+  display: none;
+  padding: 2px 6px;
+  border-radius: var(--mb-r-sm);
+  color: var(--mb-text-3);
+  cursor: pointer;
+  margin-left: auto;
+  flex: none;
+}
+.msg:hover .msg-reply-btn { display: inline-flex; align-items: center; }
+.msg-reply-btn:hover { color: var(--mb-green); }
+.msg-reply-btn svg { width: 13px; height: 13px; }
+
+.composer-reply-bar {
+  display: flex; align-items: center; gap: var(--mb-s2);
+  padding: var(--mb-s2) var(--mb-s3);
+  border-bottom: 1px solid var(--mb-border);
+  background: var(--mb-surface-2);
+  font-size: var(--mb-t-xs);
+}
+.composer-reply-bar .grow { min-width: 0; }
+.composer-reply-bar .cr-author { font-weight: var(--mb-w-bold); color: var(--mb-green); }
+.composer-reply-bar .cr-text { color: var(--mb-text-2); }
+.composer-reply-close {
+  width: 24px; height: 24px; border-radius: 50%; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--mb-text-3); cursor: pointer;
+}
+.composer-reply-close:hover { background: var(--mb-surface-3); }
+
+/* Signal form in room */
+.signal-form-card {
+  border: 1px solid var(--mb-green-line);
+  background: var(--mb-green-soft);
+  border-radius: var(--mb-r-md);
+  padding: var(--mb-s3);
+}
+.signal-form-card .form-group { margin-bottom: var(--mb-s2); }
+.signal-form-card .form-label { font-size: 11px; font-weight: var(--mb-w-bold); color: var(--mb-text-2); margin-bottom: 4px; }
+.signal-form-card .signal-pair-lock {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: var(--mb-r-pill);
+  background: var(--mb-surface-2); border: 1px solid var(--mb-border);
+  font-size: 11px; font-weight: var(--mb-w-bold); color: var(--mb-text);
+}
+.signal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--mb-s2); }
+
+/* Inline image in chat — clickable lightbox-ready */
+.attach-img {
+  display: block; max-width: 280px; max-height: 260px;
+  border-radius: var(--mb-r-sm); cursor: pointer;
+  object-fit: cover; width: auto;
 }

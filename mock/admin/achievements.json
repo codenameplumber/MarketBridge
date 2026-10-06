@@ -190,7 +190,10 @@
       "win_rate_improvement_30d",
       "manual_approval",
       "analysis_signals",
-      "consecutive_days_active"
+      "consecutive_days_active",
+      "room_signals_won",
+      "room_signal_points",
+      "room_signal_win_rate"
     ]
   },
   "recent_awards": [

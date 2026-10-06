@@ -34,10 +34,11 @@
         <div class="ph-handle" id="portCompany">—</div>
       </div>
       <p class="ph-bio" id="portBio">—</p>
+      <div class="row g2 wrap" id="portSocials" style="justify-content:center"></div>
       <div class="row g2">
         <button class="btn btn-primary" id="btnFollow" style="min-width:150px">
           <span data-icon="userplus"></span> Follow</button>
-        <button class="btn btn-ghost" aria-label="Share"><span data-icon="link"></span></button>
+        <button class="btn btn-ghost" aria-label="Share" id="btnSharePort"><span data-icon="link"></span></button>
       </div>
     </section>
 
@@ -99,6 +100,46 @@
   MB.api.get('institutional').then(function (r) {
     var d = r.data || {};
     var stats = d.portfolio_stats || {};
+    var SC = MB.instShowcase;
+    var sc = SC.load(d);
+    var params = new URLSearchParams(location.search);
+    var access = SC.access(sc, params);
+
+    if (access.mode === 'private' || access.mode === 'expired') {
+      var expired = access.mode === 'expired';
+      MB.$('main.page').innerHTML =
+        '<div class="empty" style="padding:64px 20px">' + MB.icon(expired ? 'clock' : 'lock', 44) +
+          '<h3>' + (expired ? 'This link is no longer active' : 'This portfolio is private') + '</h3>' +
+          '<p>' + (expired
+            ? 'Private investor links stop working after their expiry date, or when the owner revokes them. Ask the trader for a new link.'
+            : (MB.esc(d.company || 'This trader') + ' has not made their portfolio public. They can share it with you through a private link.')) +
+          '</p></div>';
+      return;
+    }
+
+    var banner = '';
+    if (access.mode === 'owner') {
+      banner = '<div class="alert alert-info port-banner">' + MB.icon('eye', 16) +
+        '<div class="t-xs"><b>Preview</b> — this is what investors see. Your portfolio is <b>' +
+        (sc.public ? 'public' : 'private') + '</b>' + (sc.public ? '' : '; only people with a private link can open it') +
+        '. <a class="link" href="index.html#showcaseCard">Change</a></div></div>';
+    } else if (access.mode === 'link') {
+      banner = '<div class="alert alert-info port-banner">' + MB.icon('lock', 16) +
+        '<div class="t-xs">Shared privately with you · link expires ' + fmt.date(new Date(access.link.expires_at)) + '</div></div>';
+    }
+    if (banner) { MB.$('main.page').insertAdjacentHTML('afterbegin', banner); }
+    var q = '&via=portfolio' + (access.mode === 'link' ? '&t=' + encodeURIComponent(params.get('t')) : '') +
+            (access.mode === 'owner' ? '&preview=1' : '');
+
+    /* Totals come from the shared accounts only — a hidden account must not leak through the sum. */
+    var shared = (d.linked_accounts || []).filter(function (a) { return SC.isVisible(sc, a); });
+    var sum = function (k) { return shared.reduce(function (n, a) { return n + (Number(a[k]) || 0); }, 0); };
+    stats = {
+      total_balance: sum('balance'), total_profit: sum('profit_total'),
+      avg_win_rate: shared.length ? sum('win_rate') / shared.length : 0,
+      total_profit_pct: sum('balance') ? sum('profit_total') / (sum('balance') - sum('profit_total')) * 100 : 0,
+      followers: stats.followers
+    };
 
     /* hero */
     MB.$('#portName').textContent = 'John Trader';
@@ -106,19 +147,32 @@
     MB.$('#portCompany').textContent = d.company || '';
     MB.$('#portBio').textContent = d.bio || '';
 
+    /* social links */
+    MB.$('#portSocials').innerHTML = MB.instSocials.chips(MB.instSocials.load(d.socials));
+
     /* stats */
-    MB.$('#portBalance').textContent = fmt.money(stats.total_balance);
+    var short = function (n) { return (n < 0 ? '-' : '') + '$' + fmt.compact(Math.abs(n || 0)); };
+    MB.$('#portBalance').textContent = short(stats.total_balance);
+    MB.$('#portBalance').title = fmt.money(stats.total_balance);
     var profCls = stats.total_profit >= 0 ? 'c-up' : 'c-down';
     MB.$('#portProfit').className = 'stat-v ' + profCls;
-    MB.$('#portProfit').textContent = (stats.total_profit >= 0 ? '+' : '') + fmt.money(stats.total_profit);
-    MB.$('#portWinRate').textContent = fmt.pct(stats.avg_win_rate);
+    MB.$('#portProfit').textContent = (stats.total_profit >= 0 ? '+' : '') + short(stats.total_profit);
+    MB.$('#portProfit').title = fmt.signed(stats.total_profit);
+    MB.$('#portWinRate').textContent = Number(stats.avg_win_rate || 0).toFixed(1) + '%';
     MB.$('#portFollowers').textContent = stats.followers || 0;
+    if (!sc.show_balances) {
+      MB.$('#portBalance').textContent = fmt.pct(stats.total_profit_pct, 1);
+      MB.$('#portBalance').className = 'stat-v ' + profCls;
+      MB.$('#portBalance').removeAttribute('title');
+      MB.$('#portBalance').nextElementSibling.textContent = 'Total Return';
+      MB.$('#portProfit').closest('.stat-cell').remove();
+      MB.$('#portBalance').closest('.stat-grid').classList.add('cols-3');
+    }
 
-    /* visible accounts only */
-    var accts = (d.linked_accounts || []).filter(function (a) { return a.visible; });
-    MB.$('#portAccounts').innerHTML = accts.length ? accts.map(function (a) {
-      return MB.card.instAccountPublic(a);
-    }).join('') : '<div class="empty">No accounts shared publicly</div>';
+    /* shared accounts only */
+    MB.$('#portAccounts').innerHTML = shared.length ? shared.map(function (a) {
+      return MB.card.instAccountPublic(a, { query: q, hideBalances: !sc.show_balances });
+    }).join('') : '<div class="empty">No trading accounts shared yet</div>';
 
     /* team */
     var team = d.team || [];
@@ -146,6 +200,28 @@
     } else {
       MB.$('#portAchvSection').style.display = 'none';
     }
+  });
+
+  /* Share portfolio link */
+  MB.$('#btnSharePort').addEventListener('click', function () {
+    var p = new URLSearchParams(location.search);
+    if (p.get('t')) { MB.toast('This link was shared privately with you'); return; }
+    var st = MB.instShowcase.load(null);
+    if (!st.public) { MB.toast('Your portfolio is private — create an investor link on your dashboard'); return; }
+    var url = new URL('portfolio.html', location.href).href;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () { MB.toast('Portfolio link copied'); });
+    } else {
+      MB.toast('Portfolio link copied');
+    }
+  });
+
+  /* Follow button */
+  MB.$('#btnFollow').addEventListener('click', function () {
+    var on = this.classList.toggle('btn-green-soft');
+    this.classList.toggle('btn-primary', !on);
+    this.innerHTML = on ? MB.icon('check', 18) + ' Following' : MB.icon('userplus', 18) + ' Follow';
+    MB.toast(on ? 'Following' : 'Unfollowed');
   });
 })();
 </script>

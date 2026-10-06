@@ -13,7 +13,7 @@
    carrying an Authorization header. Stale money is worse than no money.
    ========================================================================== */
 
-const VERSION = 'kx-v3.0.0';
+const VERSION = 'kx-v3.2.1';
 const SHELL_CACHE = VERSION + '-shell';
 const DATA_CACHE  = VERSION + '-data';
 const ASSET_CACHE = VERSION + '-asset';

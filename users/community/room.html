@@ -44,8 +44,6 @@
         <div class="row g2 mt3" id="rLinks"></div>
       </div>
 
-      <!-- Moderator strip. Removed entirely for everyone else by the
-           permission pass, so a normal member never sees these controls. -->
       <div class="mod-strip" data-can="room.monitor">
         <span class="mod-strip-tag">
           <span data-icon="shield" data-icon-size="13"></span> Moderator</span>
@@ -71,23 +69,72 @@
       <div class="chat" id="chatList"></div>
 
       <div class="composer mt4" id="chatComposer">
+        <div id="composerReply" style="display:none"></div>
         <div class="composer-previews" id="chatPreviews"></div>
         <div class="composer-row">
           <button class="composer-btn" type="button" data-pick="chatFile" aria-label="Attach image">
             <span data-icon="image"></span></button>
-          <button class="composer-btn" type="button" data-pick="chatFile" aria-label="Attach file">
-            <span data-icon="file"></span></button>
+          <button class="composer-btn" type="button" id="btnSignal" aria-label="Add signal" style="display:none">
+            <span data-icon="signals"></span></button>
           <textarea class="composer-input" id="chatInput" rows="1"
                     placeholder="Message the room…" aria-label="Message"></textarea>
           <button class="composer-btn is-send" id="chatSend" aria-label="Send">
             <span data-icon="send"></span></button>
         </div>
         <div class="composer-hint">
-          Images and files up to 12&nbsp;MB &middot; drag, paste or browse &middot; 6 per message
+          Images show inline &middot; drag, paste or browse &middot; 12&nbsp;MB max
         </div>
       </div>
       <input type="file" id="chatFile" multiple hidden
              accept="image/*,.pdf,.csv,.txt,.md,.xlsx,.xls,.docx,.doc,.zip">
+
+      <!-- Signal form (market rooms only) -->
+      <div class="card mt3 hide" id="signalFormWrap">
+        <div class="between mb2">
+          <div class="row g2">
+            <span data-icon="signals" data-icon-size="16" style="color:var(--mb-green)"></span>
+            <span class="w-bold t-sm">Add Signal</span>
+          </div>
+          <button class="btn btn-ghost btn-xs" id="btnSignalClose">Cancel</button>
+        </div>
+        <div class="row g2 mb2">
+          <span class="signal-pair-lock" id="sigPairLock">—</span>
+          <span class="t-xs c-3">Only this pair is allowed in this room</span>
+        </div>
+        <div class="sig-live mb3">
+          <span class="t-xs c-3">Live price</span>
+          <span class="w-bold num" id="sigLive">—</span>
+          <button class="btn btn-ghost btn-xs" type="button" id="sigUseLive">Use as entry</button>
+        </div>
+        <div class="form-group">
+          <label class="form-label t-xs">Direction</label>
+          <div class="row g2">
+            <button class="btn btn-sm btn-green-soft" id="sigBuy" style="flex:1">BUY</button>
+            <button class="btn btn-sm btn-outline" id="sigSell" style="flex:1;color:var(--mb-sell);border-color:var(--mb-sell-line)">SELL</button>
+          </div>
+        </div>
+        <div class="signal-form-row">
+          <div class="form-group">
+            <label class="form-label t-xs" for="sigEntry">Entry Price</label>
+            <input class="input" type="number" id="sigEntry" placeholder="0.00" step="any">
+          </div>
+          <div class="form-group">
+            <label class="form-label t-xs" for="sigTP">Take Profit</label>
+            <input class="input" type="number" id="sigTP" placeholder="0.00" step="any">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label t-xs" for="sigSL">Stop Loss</label>
+          <input class="input" type="number" id="sigSL" placeholder="0.00" step="any">
+        </div>
+        <div class="sig-rules t-xs c-3 mb3">
+          Signals lock when posted and are resolved from the live price. Reach TP first and you earn
+          points; hit SL first and it counts as a loss. Entries not reached within 24 hours expire.
+        </div>
+        <button class="btn btn-primary btn-sm" id="btnPostSignal" style="width:100%">
+          <span data-icon="send" data-icon-size="14"></span> Post Signal</button>
+        <div class="sig-record mt3" id="sigRecord"></div>
+      </div>
     </section>
 
     <!-- POSTS -->
@@ -119,6 +166,7 @@
 <script src="../../assets/js/core/uploads.js"></script>
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/core/signal-tracker.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
@@ -126,10 +174,13 @@
 <script>
 
 MB.ready(function () {
-  var roomId = new URLSearchParams(location.search).get('room');
-  var symbol = new URLSearchParams(location.search).get('symbol');
+  var params = new URLSearchParams(location.search);
+  var roomId = params.get('room') || params.get('id');
+  var symbol = params.get('symbol');
   var room = null;
   var CHAT_KEY = '#chatComposer';
+  var replyTo = null;
+  var sigDirection = 'BUY';
 
   /* ---------------------------------------------------------------- room */
   MB.api.list('rooms').then(function (rooms) {
@@ -138,6 +189,7 @@ MB.ready(function () {
     })[0] || rooms[0];
 
     var isTrader = room.kind === 'trader';
+    var isMarket = !!room.market;
     MB.$('.topbar-title').textContent = room.name;
     document.getElementById('rName').textContent = room.name;
     document.getElementById('rDesc').textContent = room.description;
@@ -150,8 +202,6 @@ MB.ready(function () {
       : '<span class="rc-ic" style="width:48px;height:48px;font-size:12px">' +
         MB.esc((room.market ? room.market.short_name : room.name).slice(0, 4)) + '</span>';
 
-    /* A moderator can read any room without joining it, and can raise the
-       room itself. Both controls are stripped for everyone else. */
     var flagRoom = document.getElementById('btnFlagRoom');
     if (flagRoom) {
       flagRoom.addEventListener('click', function () {
@@ -183,7 +233,7 @@ MB.ready(function () {
       MB.toast(room.is_member ? 'Joined ' + room.name : 'Left ' + room.name);
     });
 
-    if (room.market) {
+    if (isMarket) {
       document.getElementById('rChartWrap').classList.remove('hide');
       document.getElementById('rChart').setAttribute('data-seed', room.market.symbol);
       document.getElementById('rLinks').innerHTML =
@@ -191,6 +241,16 @@ MB.ready(function () {
           MB.esc(room.market.name) + '</a>' +
         '<a class="chip-tag" href="../signals/index.html">Signals</a>';
       MB.mountCharts();
+
+      /* Show signal button for market rooms (not trader rooms) */
+      MB.$('#btnSignal').style.display = '';
+      MB.$('#sigPairLock').textContent = room.market.short_name;
+      MB.ws.seed(room.market.symbol, room.market.last_price, room.market.decimal_places);
+      MB.ws.on('tick:' + room.market.symbol, function (t) {
+        MB.$('#sigLive').textContent = MB.fmt.price(t.price, room.market.decimal_places);
+      });
+      MB.ws.subscribe(room.market.symbol);
+      paintRecord();
     } else if (isTrader) {
       document.getElementById('rLinks').innerHTML =
         '<a class="chip-market" href="../signals/provider.html?u=' + room.owner.username + '">' +
@@ -201,10 +261,6 @@ MB.ready(function () {
     renderMembers();
     MB.mountIcons();
 
-    /* Posts and signals scoped to this room's market */
-    /* A market room scopes to its pair; a trader room scopes to its owner.
-       Either way the lists page rather than dumping everything at once. */
-    var isMarket = !!room.market;
     var postFilter = isMarket
       ? function (p) { return p.market && p.market.symbol === room.market.symbol; }
       : function (p) { return p.author.username === room.owner.username; };
@@ -237,41 +293,90 @@ MB.ready(function () {
       { username:'FX_ProTrader', is_pro:true }, { username:'QueenTrader', is_pro:true },
       { username:'AlphaKing', is_pro:false }, { username:'JamesFX', is_pro:true }
     ];
-    var lines = [
-      'Market looks bullish on the 1H. Watching for the retest.',
-      'Anyone else seeing that liquidity pocket below?',
-      'Took partials here, stop at break even now.',
-      'Careful around the session open, spread widens.',
-      'Chart attached — this is the level I am watching.',
-      'Agreed. Structure is clean.',
-      'Let us see how London opens.'
-    ];
-    messages = lines.map(function (t, i) {
-      return {
-        id: 'm' + i, author: who[i % who.length], body: t,
-        attachments: i === 4 ? [{ type:'file', name:'v75-4h-structure.pdf', size:'482 KB' }] : [],
-        created_at: new Date(Date.now() - (lines.length - i) * 7 * 60000).toISOString(),
-        is_own: false
-      };
+    messages = [
+      {
+        id: 'm0', author: who[0], body: 'Market looks bullish on the 1H. Watching for the retest.',
+        attachments: [], created_at: new Date(Date.now() - 49 * 60000).toISOString(), is_own: false
+      },
+      {
+        id: 'm1', author: who[1], body: 'Anyone else seeing that liquidity pocket below?',
+        attachments: [], created_at: new Date(Date.now() - 42 * 60000).toISOString(), is_own: false
+      },
+      {
+        id: 'm2', author: who[2], body: 'Took partials here, stop at break even now.',
+        attachments: [], created_at: new Date(Date.now() - 35 * 60000).toISOString(), is_own: false,
+        reply_to: { id: 'm0', author: 'FX_ProTrader', body: 'Market looks bullish on the 1H. Watching for the retest.' }
+      },
+      {
+        id: 'm3', author: who[3], body: 'Careful around the session open, spread widens.',
+        attachments: [], created_at: new Date(Date.now() - 28 * 60000).toISOString(), is_own: false
+      },
+      {
+        id: 'm4', author: who[0], body: 'Chart screenshot showing the level I am watching 👀',
+        attachments: [{ type:'image', name:'chart-structure.svg', url:'../../mock/media/chart-structure.svg' }],
+        created_at: new Date(Date.now() - 21 * 60000).toISOString(), is_own: false
+      },
+      sampleSignal(who[1]),
+      {
+        id: 'm6', author: who[2], body: 'Agreed. Structure is clean.',
+        attachments: [], created_at: new Date(Date.now() - 7 * 60000).toISOString(), is_own: false,
+        reply_to: { id: 'm4', author: 'FX_ProTrader', body: 'Chart screenshot showing the level I am watching 👀' }
+      },
+      {
+        id: 'm7', author: ME, body: 'Let us see how London opens. I am watching the same zone.',
+        attachments: [], created_at: new Date(Date.now() - 2 * 60000).toISOString(), is_own: true
+      }
+    ].filter(Boolean);
+    mySignals().forEach(function (m) { messages.push(m); });
+    messages.sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); });
+  }
+
+  /* The sample signal is always this room's own pair — a pair room never shows another pair. */
+  function sampleSignal(author) {
+    if (!room || !room.market) { return null; }
+    var m = room.market, p = Number(m.last_price) || 100, step = p * 0.0012;
+    return {
+      id: 'm5', author: author, body: '', attachments: [], is_own: false,
+      created_at: new Date(Date.now() - 14 * 60000).toISOString(),
+      signal: { pair: m.short_name, direction: 'BUY', dp: m.decimal_places,
+                entry: p - step, tp: p + step * 0.8, sl: p - step * 2, exit: p + step * 0.8,
+                status: 'won', points: MB.signalTracker.POINTS_WIN }
+    };
+  }
+
+  function signalView(s) {
+    return { id: s.id, pair: s.pair, direction: s.direction, dp: s.dp, entry: s.entry, tp: s.tp,
+             sl: s.sl, status: s.status, points: s.points, exit: s.exit };
+  }
+
+  function mySignals() {
+    if (!room) { return []; }
+    return MB.signalTracker.list(function (s) { return s.room_id === room.id; }).map(function (s) {
+      return { id: s.msg_id, author: ME, body: '', attachments: [], is_own: true,
+               created_at: s.posted_at, signal: signalView(s) };
     });
   }
+
+  MB.signalTracker.on(function (s) {
+    var hit = false;
+    messages.forEach(function (m) {
+      if (m.signal && m.signal.id === s.id) { m.signal = signalView(s); hit = true; }
+    });
+    if (hit) { renderChat(); }
+    paintRecord();
+  });
 
   function renderChat() {
     if (!messages.length) { seedChat(); }
     var host = document.getElementById('chatList');
     host.innerHTML = messages.map(MB.card.message).join('');
     MB.mountIcons(host);
-    /* Strips the flag buttons again for anyone who is not a moderator —
-       the chat re-renders on every new message. */
     if (MB.applyPermissions) { MB.applyPermissions(host); }
     wireMessageFlags(host);
-
-    /* Follow the conversation, but only if the reader is already at the
-       bottom — yanking them down mid-scroll would be worse than not. */
+    wireReplyButtons(host);
     if (atEnd) { scrollChatToEnd(); }
   }
 
-  /* Sampled before the re-render, since innerHTML resets scrollTop. */
   var atEnd = true;
   MB.ready(function () {
     var list = document.getElementById('chatList');
@@ -281,7 +386,53 @@ MB.ready(function () {
     });
   });
 
-  /* ---- moderator: raise a message ------------------------------------- */
+  /* ---- reply system -------------------------------------------------- */
+  function wireReplyButtons(host) {
+    MB.$$('[data-reply-msg]', host).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-reply-msg');
+        var msg = messages.filter(function (m) { return m.id === id; })[0];
+        if (!msg) return;
+        setReplyTo(msg);
+      });
+    });
+    MB.$$('.msg-reply-quote[data-scroll-to]', host).forEach(function (q) {
+      q.addEventListener('click', function () {
+        var target = document.querySelector('[data-msg-id="' + q.getAttribute('data-scroll-to') + '"]');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.style.background = 'var(--mb-green-soft)';
+          setTimeout(function () { target.style.background = ''; }, 1500);
+        }
+      });
+    });
+  }
+
+  function setReplyTo(msg) {
+    replyTo = msg;
+    var bar = document.getElementById('composerReply');
+    bar.style.display = '';
+    bar.className = 'composer-reply-bar';
+    bar.innerHTML =
+      '<span data-icon="reply" data-icon-size="14" style="color:var(--mb-green);flex:none"></span>' +
+      '<div class="grow">' +
+        '<div class="cr-author">' + MB.esc(msg.author.username) + '</div>' +
+        '<div class="cr-text truncate">' + MB.esc(msg.body || '(attachment)') + '</div>' +
+      '</div>' +
+      '<button class="composer-reply-close" id="btnCancelReply">' + MB.icon('close', 12) + '</button>';
+    MB.mountIcons(bar);
+    document.getElementById('btnCancelReply').addEventListener('click', clearReply);
+    document.getElementById('chatInput').focus();
+  }
+
+  function clearReply() {
+    replyTo = null;
+    var bar = document.getElementById('composerReply');
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+  }
+
+  /* ---- moderator: raise a message ------------------------------------ */
   function wireMessageFlags(host) {
     MB.$$('[data-flag-msg]', host).forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -309,7 +460,6 @@ MB.ready(function () {
     });
   }
 
-  /* One sheet for both kinds of flag — a message and a whole room. */
   function flagSheet(o) {
     var REASONS = [
       ['spam', 'Spam or advertising'],
@@ -363,6 +513,7 @@ MB.ready(function () {
     requestAnimationFrame(function () { wrap.classList.add('is-open'); });
   }
 
+  /* ---- uploads ------------------------------------------------------- */
   MB.uploads.attach({ drop: CHAT_KEY, input: '#chatFile', previews: '#chatPreviews', accept: 'any' });
 
   var input = document.getElementById('chatInput');
@@ -380,19 +531,115 @@ MB.ready(function () {
     var files = MB.uploads.list(CHAT_KEY);
     if (!text && !files.length) { return; }
 
-    messages.push({
+    var msg = {
       id: 'm' + Date.now(), author: ME, body: text,
       attachments: files, created_at: new Date().toISOString(), is_own: true
-    });
+    };
+    if (replyTo) {
+      msg.reply_to = { id: replyTo.id, author: replyTo.author.username, body: replyTo.body || '(attachment)' };
+    }
+    messages.push(msg);
     input.value = '';
     input.style.height = 'auto';
     MB.uploads.clear(CHAT_KEY);
+    clearReply();
     renderChat();
     document.getElementById('chatList').lastElementChild.scrollIntoView({ behavior:'smooth', block:'nearest' });
 
-    /* Stage 2: multipart POST to /rooms/{id}/messages, storage keys returned */
     MB.api.post('rooms/messages', { room: room && room.id, body: text, attachments: files.length });
   }
+
+  /* ---- signal form (market rooms) ------------------------------------ */
+  var sigForm = document.getElementById('signalFormWrap');
+
+  function livePrice() {
+    var t = room && room.market ? MB.ws.last(room.market.symbol) : null;
+    return t ? t.price : null;
+  }
+  function roundDp(v) {
+    var dp = room && room.market ? room.market.decimal_places : 2;
+    return Number(v).toFixed(dp);
+  }
+
+  function paintRecord() {
+    var host = document.getElementById('sigRecord');
+    if (!host || !room) { return; }
+    var here = MB.signalTracker.stats(function (s) { return s.room_id === room.id; });
+    var me = MB.signalTracker.stats();
+    host.innerHTML =
+      '<div class="label mb2">Your signal record</div>' +
+      '<div class="stat-grid stat-grid-sm">' +
+        '<div class="stat-cell"><div class="stat-v c-up">' + me.won + '</div><div class="stat-k">Won</div></div>' +
+        '<div class="stat-cell"><div class="stat-v c-down">' + me.lost + '</div><div class="stat-k">Lost</div></div>' +
+        '<div class="stat-cell"><div class="stat-v">' + me.open + '</div><div class="stat-k">Open</div></div>' +
+        '<div class="stat-cell"><div class="stat-v">' + me.points + '</div><div class="stat-k">Points</div></div>' +
+      '</div>' +
+      '<div class="t-xs c-3 mt2">In this room: ' + here.won + ' won · ' + here.lost + ' lost' +
+        (here.win_rate !== null ? ' · ' + here.win_rate + '% win rate' : '') + '</div>';
+  }
+
+  document.getElementById('btnSignal').addEventListener('click', function () {
+    sigForm.classList.toggle('hide');
+    if (!sigForm.classList.contains('hide')) {
+      if (!MB.$('#sigEntry').value && livePrice()) { MB.$('#sigEntry').value = roundDp(livePrice()); }
+      paintRecord();
+      sigForm.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+  document.getElementById('sigUseLive').addEventListener('click', function () {
+    if (livePrice()) { MB.$('#sigEntry').value = roundDp(livePrice()); }
+  });
+  document.getElementById('btnSignalClose').addEventListener('click', function () {
+    sigForm.classList.add('hide');
+  });
+
+  document.getElementById('sigBuy').addEventListener('click', function () {
+    sigDirection = 'BUY';
+    this.className = 'btn btn-sm btn-green-soft';
+    MB.$('#sigSell').className = 'btn btn-sm btn-outline';
+    MB.$('#sigSell').style.color = 'var(--mb-sell)';
+    MB.$('#sigSell').style.borderColor = 'var(--mb-sell-line)';
+  });
+  document.getElementById('sigSell').addEventListener('click', function () {
+    sigDirection = 'SELL';
+    this.className = 'btn btn-sm btn-sell';
+    this.style.color = '';
+    this.style.borderColor = '';
+    MB.$('#sigBuy').className = 'btn btn-sm btn-outline';
+  });
+
+  document.getElementById('btnPostSignal').addEventListener('click', function () {
+    if (!room || !room.market) { return; }
+    var m = room.market;
+    var draft = {
+      direction: sigDirection, dp: m.decimal_places,
+      entry: MB.$('#sigEntry').value, tp: MB.$('#sigTP').value, sl: MB.$('#sigSL').value
+    };
+    var err = MB.signalTracker.validate(draft, livePrice());
+    if (err) { MB.toast(err); return; }
+
+    var pair = m.short_name;
+    var msgId = 'm' + Date.now();
+    var tracked = MB.signalTracker.add({
+      msg_id: msgId, room_id: room.id, room_name: room.name,
+      symbol: m.symbol, pair: pair, dp: m.decimal_places, seed_price: m.last_price,
+      direction: sigDirection, entry: draft.entry, tp: draft.tp, sl: draft.sl
+    });
+    messages.push({
+      id: msgId, author: ME, body: '', attachments: [],
+      created_at: tracked.posted_at, is_own: true, signal: signalView(tracked)
+    });
+    paintRecord();
+    MB.$('#sigEntry').value = '';
+    MB.$('#sigTP').value = '';
+    MB.$('#sigSL').value = '';
+    sigForm.classList.add('hide');
+    renderChat();
+    document.getElementById('chatList').lastElementChild.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    MB.toast(tracked.status === 'active'
+      ? pair + ' signal is live — tracking TP and SL'
+      : pair + ' signal posted — waiting for price to reach your entry');
+  });
 
   /* ------------------------------------------------------------- members */
   var memberQuery = '';
@@ -445,8 +692,6 @@ MB.ready(function () {
   document.getElementById('btnMembers').addEventListener('click', function () { showTab('members'); });
 
   /* ---------------------------------------------------------------- tabs */
-  /* Only the Chat tab locks the room to the viewport — the other tabs are
-     ordinary scrolling lists. */
   function setChatLayout(on) {
     var app = document.querySelector('.app');
     if (app) { app.classList.toggle('is-chatroom', !!on); }
@@ -469,8 +714,6 @@ MB.ready(function () {
     setChatLayout(v === 'chat');
   }
   document.getElementById('rTabs').addEventListener('mb:change', function (e) { showTab(e.detail.value); });
-
-  /* Chat is the tab the room opens on. */
   setChatLayout(true);
 });
 </script>

@@ -115,8 +115,7 @@
 <script src="../assets/js/core/pwa.js"></script>
 <script>
 MB.ready(function () {
-  document.getElementById('brandSlot').outerHTML =
-    '<img class="brand-img" src="' + MB.url('assets/icons/logo.png') + '" alt="KonfluenX">';
+  document.getElementById('brandSlot').outerHTML = MB.brand({ large: true });
   MB.mountIcons();
 
   /* Password strength — advisory, and never blocking. */

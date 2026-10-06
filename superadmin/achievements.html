@@ -30,7 +30,7 @@
         <div class="sub">Define badge criteria and thresholds</div>
       </div>
       <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
-      <button class="btn btn-primary btn-sm none" id="btnAddBadge" data-can="badge.create"><span data-icon="plus"></span> New badge</button>
+      <button class="btn btn-primary btn-sm none" id="btnAddBadge" data-can="achievement.manage"><span data-icon="plus"></span> New badge</button>
     </header>
 
     <main class="admin-body">
@@ -121,7 +121,8 @@
       'referrals', 'account_created_before', 'consecutive_weeks_active',
       'messages_posted', 'signals_in_one_market',
       'followers_with_win_rate_above', 'win_rate_improvement_30d',
-      'manual_approval', 'analysis_signals', 'consecutive_days_active'
+      'manual_approval', 'analysis_signals', 'consecutive_days_active',
+      'room_signals_won', 'room_signal_points', 'room_signal_win_rate'
     ];
     return opts.map(function (o) {
       return '<option value="' + o + '"' + (o === selected ? ' selected' : '') + '>' +
@@ -206,7 +207,7 @@
           '</td>' +
           '<td><div class="t-xs c-2" style="max-width:200px">' + MB.esc(b.description) + '</div></td>' +
           '<td>' +
-            '<select class="input input-sm" style="min-width:160px" data-field="criteria-type" data-can="badge.edit">' +
+            '<select class="input input-sm" style="min-width:160px" data-field="criteria-type" data-can="achievement.edit_criteria">' +
               criteriaTypeOptions(b.criteria.type) +
             '</select>' +
           '</td>' +
@@ -214,12 +215,12 @@
             (b.criteria.type === 'manual_approval'
               ? '<span class="c-3 t-sm">N/A</span>'
               : '<input class="input input-sm num" type="text" value="' +
-                  (b.criteria.threshold || '') + '" style="width:90px" data-field="threshold" data-can="badge.edit">') +
+                  (b.criteria.threshold || '') + '" style="width:90px" data-field="threshold" data-can="achievement.edit_criteria">') +
           '</td>' +
           '<td>' + secHtml + '</td>' +
           '<td style="text-align:right"><span class="w-bold">' + MB.fmt.compact(b.holders) + '</span></td>' +
           '<td style="text-align:center">' +
-            '<label class="switch"><input type="checkbox"' + checked + ' data-field="status" data-can="badge.edit">' +
+            '<label class="switch"><input type="checkbox"' + checked + ' data-field="status" data-can="achievement.edit_criteria">' +
             '<span class="track"></span></label>' +
           '</td>' +
           '<td style="text-align:right">' +

@@ -7,6 +7,12 @@
     "company": "JT Capital",
     "bio": "Systematic volatility trader specialising in Deriv synthetics. 4+ years of consistent returns across Volatility and Crash/Boom indices.",
     "website": "",
+    "showcase": { "public": false, "show_balances": true, "show_history": true },
+    "socials": [
+      { "platform": "x", "url": "https://x.com/jtcapital" },
+      { "platform": "telegram", "url": "https://t.me/jtcapital" },
+      { "platform": "website", "url": "https://jtcapital.com" }
+    ],
     "linked_accounts": [
       {
         "id": "acct_01",

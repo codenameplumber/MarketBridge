@@ -31,7 +31,10 @@
 .brand-sm .kx-word { font-size: 20px; }
 .brand-sm .kx-sub  { font-size: 7px; letter-spacing: .18em; margin-top: 3px; }
 
-.brand-mark { width: 30px; height: auto; flex: none; color: var(--vy-brand); }
+.brand { display: inline-flex; align-items: center; gap: var(--mb-s2); text-decoration: none; }
+.brand-mark { width: 24px; height: auto; flex: none; }
+.brand-lg .brand-mark { width: 32px; }
+.brand-sm .brand-mark { width: 18px; }
 
 /* The supplied logo.png is 1967x800. Sizing it by HEIGHT keeps that ratio
    and stops it filling whatever container it lands in — base.css gives every
@@ -39,6 +42,15 @@
 .brand-img { height: 30px; width: auto; max-width: 60%; display: block; }
 .brand-lg .brand-img, .brand-img.brand-lg { height: 42px; }
 .brand-sm .brand-img, .brand-img.brand-sm { height: 22px; }
+
+/* Theme toggle — shared by the public site and the staff consoles */
+.theme-toggle {
+  width: 38px; height: 38px; flex: none; border-radius: var(--mb-r-sm);
+  border: 1px solid var(--mb-border); background: var(--mb-surface);
+  display: inline-flex; align-items: center; justify-content: center; color: var(--mb-text-2);
+}
+.theme-toggle:hover { color: var(--mb-text); border-color: var(--mb-border-2); }
+.theme-toggle svg { width: 18px; height: 18px; }
 
 /* ==========================================================================
    BUTTONS
@@ -446,8 +458,8 @@ a.chip-market:hover { border-color: var(--mb-green-line); color: var(--mb-green)
 .signal-card.is-boosted    { box-shadow: 0 0 0 1px color-mix(in srgb, var(--mb-boost) 22%, transparent); }
 
 .signal-head {
-  display: flex; align-items: center; gap: var(--mb-s3);
-  padding: var(--mb-s4) var(--mb-s4) var(--mb-s3);
+  display: flex; align-items: center; gap: var(--mb-s2);
+  padding: var(--mb-s3) var(--mb-s3) var(--mb-s2);
 }
 .signal-author { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); }
 .signal-meta { font-size: var(--mb-t-xs); color: var(--mb-text-3); }
@@ -459,9 +471,9 @@ a.chip-market:hover { border-color: var(--mb-green-line); color: var(--mb-green)
 .signal-kind.k-exec { background: var(--mb-green-soft); color: var(--mb-green); }
 .signal-kind.k-anal { background: var(--mb-analysis-soft); color: var(--mb-analysis); }
 
-.signal-body { padding: 0 var(--mb-s4) var(--mb-s4); }
+.signal-body { padding: 0 var(--mb-s3) var(--mb-s3); }
 
-.signal-dir { display: flex; align-items: center; gap: 6px; font-size: 20px; font-weight: var(--mb-w-black); letter-spacing: -.02em; }
+.signal-dir { display: flex; align-items: center; gap: 5px; font-size: 16px; font-weight: var(--mb-w-black); letter-spacing: -.02em; }
 .signal-dir.d-buy  { color: var(--mb-green); }
 .signal-dir.d-sell { color: var(--mb-sell); }
 .signal-dir svg { width: 17px; height: 17px; }
@@ -498,8 +510,8 @@ a.chip-market:hover { border-color: var(--mb-green-line); color: var(--mb-green)
   background: var(--mb-bg-2); border: 1px solid var(--mb-border); position: relative;
 }
 .signal-foot {
-  display: flex; align-items: center; gap: var(--mb-s4);
-  padding: var(--mb-s3) var(--mb-s4);
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s2) var(--mb-s3);
   border-top: 1px solid var(--mb-border);
   font-size: var(--mb-t-xs); color: var(--mb-text-3);
 }
@@ -511,7 +523,7 @@ a.chip-market:hover { border-color: var(--mb-green-line); color: var(--mb-green)
 /* The disclaimer line the mockups place under every Trade This Signal */
 .signal-disclaimer {
   font-size: 10px; color: var(--mb-text-3); text-align: center;
-  padding: var(--mb-s2) var(--mb-s4) var(--mb-s3);
+  padding: var(--mb-s1) var(--mb-s3) var(--mb-s2);
 }
 
 /* ==========================================================================
@@ -530,8 +542,14 @@ a.chip-market:hover { border-color: var(--mb-green-line); color: var(--mb-green)
 .stat-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--mb-border); border-radius: var(--mb-r-md); overflow: hidden; }
 .stat-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .stat-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.stat-cell { background: var(--mb-surface); padding: var(--mb-s3); text-align: center; }
-.stat-cell .stat-v { font-size: var(--mb-t-h2); font-weight: var(--mb-w-black); letter-spacing: -.02em; }
+@media (max-width: 360px) {
+  .stat-grid.cols-3, .stat-grid.stat-grid-sm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.stat-cell { background: var(--mb-surface); padding: var(--mb-s3) var(--mb-s2); text-align: center; min-width: 0; }
+.stat-cell .stat-v {
+  font-size: clamp(14px, 4.4vw, var(--mb-t-h2)); font-weight: var(--mb-w-black); letter-spacing: -.02em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .stat-cell .stat-k { font-size: 10px; color: var(--mb-text-3); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; font-weight: var(--mb-w-semi); }
 
 /* Free-standing stat tile */
@@ -1136,8 +1154,9 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 .total-balance .tb-all:hover { color: var(--mb-text); border-color: var(--mb-border-2); }
 .total-balance .tb-all svg { width: 13px; height: 13px; }
 .total-balance .tb-amount {
-  font-size: 34px; font-weight: var(--mb-w-black); letter-spacing: -.035em;
+  font-size: clamp(28px, 8.2vw, 34px); font-weight: var(--mb-w-black); letter-spacing: -.035em;
   font-variant-numeric: tabular-nums; line-height: 1.1; margin-top: var(--mb-s2);
+  position: relative; z-index: 1;
 }
 .total-balance .tb-amount .cur {
   font-size: var(--mb-t-h3); font-weight: var(--mb-w-bold);
@@ -1150,6 +1169,7 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 .total-balance .tb-stamp svg { width: 12px; height: 12px; }
 .total-balance .tb-stamp.is-stale { color: var(--mb-warn); }
 .total-balance .tb-spark { position: absolute; right: 0; top: 44px; width: 46%; opacity: .9; pointer-events: none; }
+@media (max-width: 420px) { .total-balance .tb-spark { width: 36%; top: 52px; opacity: .55; } }
 
 /* Deposit · Withdraw · Transfer */
 .tb-actions { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--mb-s2); margin-top: var(--mb-s5); }
@@ -1601,6 +1621,42 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 .stat-grid-sm .stat-v { font-size: var(--mb-t-sm); }
 .stat-grid-sm .stat-k { font-size: 10px; }
 .inst-doc-row { margin-bottom: var(--mb-s3); }
+
+.port-banner { margin-bottom: var(--mb-s3); }
+.port-banner .link { font-weight: var(--mb-w-bold); }
+
+/* Showcase to investors */
+.showcase-card { padding: 0; overflow: hidden; }
+.showcase-card .sc-row { display: flex; align-items: center; gap: var(--mb-s3); padding: var(--mb-s4); }
+.sc-ic {
+  width: 38px; height: 38px; flex: none; border-radius: var(--mb-r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-surface-2); color: var(--mb-text-2);
+}
+.showcase-card.is-public .sc-ic { background: var(--mb-green-soft); color: var(--mb-green); }
+.sc-opts, .sc-links { padding: var(--mb-s4); border-top: 1px solid var(--mb-border); }
+.sc-opt { display: flex; align-items: center; gap: var(--mb-s3); padding: var(--mb-s2) 0; cursor: pointer; }
+.sc-opt .t-xs { display: block; margin-top: 2px; }
+.sc-link-add { display: grid; grid-template-columns: minmax(0, 1fr) 104px; gap: var(--mb-s2); }
+.sc-link-add .btn { grid-column: 1 / -1; }
+.sc-link {
+  display: flex; align-items: center; gap: var(--mb-s2);
+  padding: var(--mb-s3); border-radius: var(--mb-r-sm); background: var(--mb-surface-2);
+}
+
+.social-row { display: flex; align-items: center; gap: var(--mb-s3); padding: var(--mb-s2) 0; border-bottom: 1px solid var(--mb-border); }
+.social-row:last-child { border-bottom: 0; }
+.social-ic {
+  width: 34px; height: 34px; flex: none; border-radius: var(--mb-r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-surface-2); color: var(--mb-text);
+}
+.social-add { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; gap: var(--mb-s2); align-items: center; }
+@media (max-width: 380px) {
+  .social-add { grid-template-columns: 1fr auto; }
+  .social-add select { grid-column: 1 / -1; }
+}
+.social-chip { gap: 6px; }
 .inst-doc-upload { padding: var(--mb-s3); }
 .inst-doc-preview { margin-top: var(--mb-s2); }
 .inst-doc-remove { opacity: .6; }
@@ -1611,8 +1667,73 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 .acct-trade-row:last-child { border-bottom: 0; }
 .acct-filter-tabs { display: flex; gap: var(--mb-s2); margin-bottom: var(--mb-s3); }
 .acct-filter-tab { padding: var(--mb-s1) var(--mb-s3); border-radius: var(--mb-r-pill); background: var(--mb-surface-2); color: var(--mb-text-2); border: none; cursor: pointer; font-size: var(--mb-t-xs); font-weight: 600; transition: all var(--mb-fast) var(--mb-ease); }
-.acct-filter-tab.is-active { background: var(--vy-brand); color: #fff; }
+.acct-filter-tab.is-active { background: var(--mb-green); color: var(--mb-text-inv); }
 .acct-month-row { cursor: pointer; transition: background var(--mb-fast) var(--mb-ease); border-radius: var(--mb-r-sm); }
 .acct-month-row:hover { background: var(--mb-surface-2); }
 .acct-month-trades { max-height: 0; overflow: hidden; transition: max-height .3s var(--mb-ease); }
 .acct-month-trades.is-open { max-height: 2000px; }
+
+/* ==========================================================================
+   LIGHT MODE — controls
+   On white, the dark theme's tinted fills (surface-2) read as disabled grey.
+   Light mode instead gives every secondary control a white face, a defined
+   border, full-strength text and a hairline shadow. Coloured buttons keep
+   their colour; selected states stay green.
+   ========================================================================== */
+[data-theme="light"] .btn { border-color: var(--mb-border-2); }
+[data-theme="light"] .btn-primary,
+[data-theme="light"] .btn-trade,
+[data-theme="light"] .btn-brand,
+[data-theme="light"] .btn-sell,
+[data-theme="light"] .btn-analysis,
+[data-theme="light"] .btn-info { border-color: transparent; box-shadow: var(--mb-shadow-sm); }
+
+[data-theme="light"] .btn-ghost,
+[data-theme="light"] .btn-outline,
+[data-theme="light"] .chip:not(.is-active),
+[data-theme="light"] .chip-market,
+[data-theme="light"] .total-balance .tb-all,
+[data-theme="light"] .stepper button,
+[data-theme="light"] .pg-num:not(.is-active),
+[data-theme="light"] .pg-nav,
+[data-theme="light"] .composer-btn:not(.is-send),
+[data-theme="light"] .acct-filter-tab:not(.is-active),
+[data-theme="light"] .theme-toggle {
+  background: var(--mb-surface);
+  border: 1px solid var(--mb-border-2);
+  color: var(--mb-text);
+  box-shadow: var(--mb-shadow-sm);
+}
+[data-theme="light"] .btn-ghost:hover,
+[data-theme="light"] .btn-outline:hover,
+[data-theme="light"] .chip:not(.is-active):hover,
+[data-theme="light"] .chip-market:hover,
+[data-theme="light"] .total-balance .tb-all:hover,
+[data-theme="light"] .stepper button:hover,
+[data-theme="light"] .pg-num:not(.is-active):hover,
+[data-theme="light"] .pg-nav:hover:not([disabled]),
+[data-theme="light"] .composer-btn:not(.is-send):hover,
+[data-theme="light"] .acct-filter-tab:not(.is-active):hover,
+[data-theme="light"] .theme-toggle:hover {
+  background: var(--mb-bg-2);
+  border-color: var(--mb-text-3);
+}
+[data-theme="light"] .acct-filter-tab.is-active { box-shadow: var(--mb-shadow-sm); }
+[data-theme="light"] .composer-btn.is-send { background: var(--mb-green); border-color: var(--mb-green); color: var(--mb-text-inv); }
+[data-theme="light"] .btn-green-soft { border-color: var(--mb-green-line); }
+[data-theme="light"] .btn-brand-soft { border-color: var(--vy-brand-line); }
+
+[data-theme="light"] .input,
+[data-theme="light"] .select,
+[data-theme="light"] .composer-input { background-color: var(--mb-surface); border-color: var(--mb-border-2); }
+[data-theme="light"] .composer { border-color: var(--mb-border-2); }
+
+[data-theme="light"] .card { border-color: var(--mb-border); box-shadow: var(--mb-shadow-sm); }
+[data-theme="light"] .card-flat { box-shadow: none; }
+[data-theme="light"] .badge { border-color: var(--mb-border); }
+[data-theme="light"] .msg-bubble { border-color: var(--mb-border); background: var(--mb-surface-2); }
+[data-theme="light"] .msg-own .msg-bubble { background: var(--mb-green-soft); border-color: var(--mb-green-line); }
+[data-theme="light"] .tab { color: var(--mb-text-2); }
+[data-theme="light"] .tab.is-active { color: var(--mb-text); }
+[data-theme="light"] .stat-grid,
+[data-theme="light"] .stat-cell { border-color: var(--mb-border); }

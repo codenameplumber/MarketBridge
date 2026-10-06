@@ -43,6 +43,7 @@
 <script src="../assets/js/core/collection.js"></script>
 <script src="../assets/js/core/charts.js"></script>
 <script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/core/signal-tracker.js"></script>
 <script src="../assets/js/components/cards.js"></script>
 <script src="../assets/js/core/roles.js"></script>
 <script src="../assets/js/core/shell.js"></script>
@@ -67,7 +68,15 @@ MB.ready(function () {
     host.innerHTML = rows.map(MB.card.notification).join('');
     MB.mountIcons(host);
   }
-  MB.api.list('notifications').then(function (rows) { all = rows; paint(); });
+  MB.api.list('notifications').then(function (rows) {
+    all = MB.signalTracker.notifications().concat(rows);
+    paint();
+  });
+  MB.signalTracker.on(function (s) {
+    if (s.status !== 'won' && s.status !== 'lost') { return; }
+    all = MB.signalTracker.notifications().concat(all.filter(function (n) { return String(n.id).indexOf('loc_') !== 0; }));
+    paint();
+  });
   document.getElementById('nTabs').addEventListener('mb:change', function (e) { tab = e.detail.value; paint(); });
   document.getElementById('markAll').addEventListener('click', function () {
     all = all.map(function (n) { n.read_at = new Date().toISOString(); return n; });

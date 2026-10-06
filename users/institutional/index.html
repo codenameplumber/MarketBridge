@@ -36,10 +36,54 @@
         </div>
       </div>
       <div class="row g2 mt3">
-        <a class="btn btn-ghost btn-sm" href="portfolio.html">
-          <span data-icon="results"></span> Public Portfolio</a>
+        <a class="btn btn-ghost btn-sm" href="portfolio.html?preview=1">
+          <span data-icon="eye"></span> Preview Portfolio</a>
         <a class="btn btn-ghost btn-sm" href="apply.html">
           <span data-icon="settings"></span> Settings</a>
+      </div>
+    </section>
+
+    <!-- SHOWCASE TO INVESTORS -->
+    <section class="card showcase-card" id="showcaseCard">
+      <div class="sc-row">
+        <span class="sc-ic" id="scIcon"></span>
+        <div class="grow" style="min-width:0">
+          <div class="w-bold">Showcase to investors</div>
+          <div class="t-xs c-3" id="scStatus">&mdash;</div>
+        </div>
+        <label class="switch" aria-label="Make portfolio public">
+          <input type="checkbox" id="scPublic"><span class="track"></span></label>
+      </div>
+
+      <div class="sc-opts">
+        <div class="label mb2">What investors can see</div>
+        <label class="sc-opt">
+          <span class="grow"><span class="t-sm w-semi">Account balances</span>
+            <span class="t-xs c-3">Off hides balances and total profit in dollars; returns and win rate stay</span></span>
+          <span class="switch"><input type="checkbox" id="scBalances"><span class="track"></span></span>
+        </label>
+        <label class="sc-opt">
+          <span class="grow"><span class="t-sm w-semi">Trade history and monthly breakdown</span>
+            <span class="t-xs c-3">Individual trades, dates, top and worst trades</span></span>
+          <span class="switch"><input type="checkbox" id="scHistory"><span class="track"></span></span>
+        </label>
+        <div class="t-xs c-3 mt2">Choose which trading accounts appear with the Visible / Hidden badge on each account below.</div>
+      </div>
+
+      <div class="sc-links">
+        <div class="label">Private investor link</div>
+        <div class="t-xs c-3 mt1">Share with one investor without making your portfolio public. The link stops working when it expires or you revoke it.</div>
+        <div class="sc-link-add mt3">
+          <input class="input" id="scLinkLabel" maxlength="40" placeholder="Investor name (optional)" aria-label="Investor name">
+          <select class="input" id="scLinkDur" aria-label="Link duration">
+            <option value="24">24 hours</option>
+            <option value="168" selected>7 days</option>
+            <option value="720">30 days</option>
+          </select>
+          <button class="btn btn-primary btn-sm" type="button" id="scCreateLink">
+            <span data-icon="link" data-icon-size="14"></span> Create link</button>
+        </div>
+        <div id="scLinks" class="stack mt3"></div>
       </div>
     </section>
 
@@ -70,6 +114,23 @@
           <span data-icon="plus" data-icon-size="14"></span> Link Account</button>
       </div>
       <div id="instAccounts" class="stack"></div>
+    </section>
+
+    <!-- SOCIAL LINKS -->
+    <section class="page-section">
+      <div class="between mb2">
+        <div class="label">Social Links</div>
+        <span class="t-xs c-3">Shown on your public portfolio</span>
+      </div>
+      <div class="card">
+        <div id="socialList" class="stack"></div>
+        <div class="social-add mt3">
+          <select class="input" id="socialPlatform" aria-label="Platform"></select>
+          <input class="input" type="url" id="socialUrl" placeholder="https://" aria-label="Profile link">
+          <button class="btn btn-primary btn-sm" id="btnAddSocial" type="button">
+            <span data-icon="plus" data-icon-size="14"></span> Add</button>
+        </div>
+      </div>
     </section>
 
     <!-- TEAM -->
@@ -163,9 +224,10 @@
     MB.$('#instVisAccts').textContent = stats.accounts_visible + '/' + stats.accounts_total + ' visible';
 
     /* stat grid */
-    MB.$('#instProfit').textContent = fmt.money(stats.total_profit);
+    MB.$('#instProfit').textContent = (stats.total_profit >= 0 ? '+' : '-') + '$' + fmt.compact(Math.abs(stats.total_profit || 0));
+    MB.$('#instProfit').title = fmt.signed(stats.total_profit);
     MB.$('#instProfit').className = 'stat-v ' + profitCls;
-    MB.$('#instWinRate').textContent = fmt.pct(stats.avg_win_rate);
+    MB.$('#instWinRate').textContent = Number(stats.avg_win_rate || 0).toFixed(1) + '%';
     MB.$('#instFollowers').textContent = stats.followers || 0;
     MB.$('#instViews').textContent = stats.portfolio_views || 0;
 
@@ -175,16 +237,84 @@
       return MB.card.instAccount(a);
     }).join('');
 
-    /* visibility toggles */
+    /* showcase */
+    var SC = MB.instShowcase;
+    var sc = SC.load(d);
+    accts.forEach(function (a) { a.visible = SC.isVisible(sc, a); });
+    MB.$('#instAccounts').innerHTML = accts.map(function (a) { return MB.card.instAccount(a); }).join('');
+
+    function countVisible() {
+      var n = accts.filter(function (a) { return sc.visible[a.id]; }).length;
+      MB.$('#instVisAccts').textContent = n + '/' + accts.length + ' visible';
+    }
+    function paintShowcase() {
+      MB.$('#scPublic').checked = sc.public;
+      MB.$('#scBalances').checked = sc.show_balances;
+      MB.$('#scHistory').checked = sc.show_history;
+      MB.$('#showcaseCard').classList.toggle('is-public', sc.public);
+      MB.$('#scIcon').innerHTML = MB.icon(sc.public ? 'eye' : 'lock', 18);
+      var n = SC.activeLinks(sc).length;
+      MB.$('#scStatus').textContent = sc.public
+        ? 'Public — anyone with your portfolio link can view it'
+        : 'Private — ' + (n ? n + ' investor link' + (n > 1 ? 's' : '') + ' active' : 'nobody can view it right now');
+      MB.$('#scLinks').innerHTML = SC.activeLinks(sc).map(function (l) {
+        return '<div class="sc-link">' +
+          '<span class="c-2 none">' + MB.icon('link', 16) + '</span>' +
+          '<div class="grow" style="min-width:0">' +
+            '<div class="t-sm w-semi truncate">' + MB.esc(l.label) + '</div>' +
+            '<div class="t-xs c-3">Expires ' + MB.fmt.date(new Date(l.expires_at)) + '</div>' +
+          '</div>' +
+          '<button class="btn btn-ghost btn-xs" type="button" data-copy-link="' + l.token + '">' + MB.icon('copy', 14) + ' Copy</button>' +
+          '<button class="icon-btn" type="button" data-revoke-link="' + l.token + '" aria-label="Revoke link for ' + MB.esc(l.label) + '">' +
+            MB.icon('trash', 16) + '</button>' +
+        '</div>';
+      }).join('');
+      countVisible();
+    }
+    function persist() { SC.save(sc); paintShowcase(); }
+    paintShowcase();
+
+    MB.$('#scPublic').addEventListener('change', function () {
+      sc.public = this.checked; persist();
+      MB.toast(sc.public ? 'Portfolio is now public' : 'Portfolio is now private');
+    });
+    MB.$('#scBalances').addEventListener('change', function () { sc.show_balances = this.checked; persist(); });
+    MB.$('#scHistory').addEventListener('change', function () { sc.show_history = this.checked; persist(); });
+
+    function copy(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) { return navigator.clipboard.writeText(text); }
+      return Promise.reject();
+    }
+    MB.$('#scCreateLink').addEventListener('click', function () {
+      var link = SC.createLink(sc, MB.$('#scLinkLabel').value, Number(MB.$('#scLinkDur').value));
+      MB.$('#scLinkLabel').value = '';
+      persist();
+      copy(SC.linkUrl(link)).then(function () { MB.toast('Link created and copied'); },
+                                  function () { MB.toast('Link created'); });
+    });
+    MB.$('#scLinks').addEventListener('click', function (e) {
+      var c = e.target.closest('[data-copy-link]'), r = e.target.closest('[data-revoke-link]');
+      if (c) {
+        var l = sc.links.filter(function (x) { return x.token === c.getAttribute('data-copy-link'); })[0];
+        if (l) { copy(SC.linkUrl(l)).then(function () { MB.toast('Link copied'); }, function () { MB.toast(SC.linkUrl(l)); }); }
+      }
+      if (r) {
+        sc.links = sc.links.filter(function (x) { return x.token !== r.getAttribute('data-revoke-link'); });
+        persist(); MB.toast('Link revoked — it no longer works');
+      }
+    });
+
+    /* visibility toggles — saved, so the public portfolio honours them */
     MB.$$('.inst-vis-toggle').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var id = btn.getAttribute('data-acct');
-        var acct = accts.find(function (a) { return a.id === id; });
-        if (acct) {
-          acct.visible = !acct.visible;
-          btn.textContent = acct.visible ? 'Visible' : 'Hidden';
-          btn.className = 'badge inst-vis-toggle ' + (acct.visible ? 'badge-active' : '');
-        }
+        var acct = accts.filter(function (a) { return a.id === id; })[0];
+        if (!acct) { return; }
+        acct.visible = !acct.visible;
+        sc.visible[id] = acct.visible;
+        btn.textContent = acct.visible ? 'Visible' : 'Hidden';
+        btn.className = 'badge inst-vis-toggle ' + (acct.visible ? 'badge-active' : '');
+        persist();
       });
     });
 
@@ -199,6 +329,43 @@
     MB.$('#instDocs').innerHTML = docs.map(function (dc) {
       return MB.card.instDocument(dc);
     }).join('');
+
+    /* social links */
+    var S = MB.instSocials;
+    var socials = S.load(d.socials);
+    MB.$('#socialPlatform').innerHTML = Object.keys(S.PLATFORMS).map(function (k) {
+      return '<option value="' + k + '">' + S.PLATFORMS[k].label + '</option>';
+    }).join('');
+    function drawSocials() {
+      MB.$('#socialList').innerHTML = socials.length ? socials.map(function (s, i) {
+        var p = S.PLATFORMS[s.platform] || S.PLATFORMS.website;
+        return '<div class="social-row">' +
+          '<span class="social-ic">' + MB.icon(p.icon, 16) + '</span>' +
+          '<div class="grow" style="min-width:0">' +
+            '<div class="t-sm w-semi">' + MB.esc(p.label) + '</div>' +
+            '<div class="t-xs c-3 truncate">' + MB.esc(s.url) + '</div>' +
+          '</div>' +
+          '<button class="icon-btn" type="button" data-rm-social="' + i + '" aria-label="Remove ' + MB.esc(p.label) + '">' +
+            MB.icon('close', 16) + '</button>' +
+        '</div>';
+      }).join('') : '<div class="t-sm c-3">No social links yet. Add one below.</div>';
+    }
+    drawSocials();
+    MB.$('#socialList').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-rm-social]');
+      if (!b) { return; }
+      socials.splice(+b.getAttribute('data-rm-social'), 1);
+      S.save(socials); drawSocials(); MB.toast('Link removed');
+    });
+    MB.$('#btnAddSocial').addEventListener('click', function () {
+      var url = S.safeUrl(MB.$('#socialUrl').value);
+      if (!url) { MB.toast('Enter a valid link, e.g. https://x.com/you'); return; }
+      if (socials.length >= 8) { MB.toast('Up to 8 links'); return; }
+      socials.push({ platform: MB.$('#socialPlatform').value, url: url });
+      S.save(socials); drawSocials();
+      MB.$('#socialUrl').value = '';
+      MB.toast('Link added to your portfolio');
+    });
   });
 
   /* Link account form toggle */
