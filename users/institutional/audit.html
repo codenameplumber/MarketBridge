@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Audit Log — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/institution.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Institution Audit Log" data-sub="Every team and account action, newest first" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div id="actingAs"></div>
+
+    <div id="denied" class="hide">
+      <div class="empty">
+        <span data-icon="lock"></span>
+        <h3>Owners and Administrators only</h3>
+        <p>The audit log shows who did what across the institution. Ask an Owner or Administrator if you need an entry.</p>
+      </div>
+    </div>
+
+    <div id="logWrap" class="stack g3">
+      <div class="filter-bar">
+        <div class="chips" data-group id="typeChips"></div>
+        <div class="filter-row">
+          <select class="select grow" id="memberSel" aria-label="Filter by member">
+            <option value="all">All members</option>
+          </select>
+          <span class="filter-count"><span id="logCount">0</span> entries</span>
+        </div>
+      </div>
+      <section class="card" style="padding-top:0;padding-bottom:0" id="logList"></section>
+      <p class="t-xs c-3">Entries are written when the action happens and cannot be edited or deleted.
+        Signal content changes keep their own correction history on the signal.</p>
+    </div>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var T = MB.instTeam, A = MB.instAudit;
+  var ICON = { signal: 'signals', team: 'users', account: 'link', settings: 'settings', room: 'community' };
+  var rows = [], type = 'all', member = 'all';
+
+  MB.$('#typeChips').innerHTML = '<button class="chip is-active" data-value="all">All</button>' +
+    Object.keys(A.TYPES).map(function (k) { return '<button class="chip" data-value="' + k + '">' + A.TYPES[k] + '</button>'; }).join('');
+
+  function paint() {
+    var allowed = T.can(T.actingAs(), 'audit.view');
+    MB.$('#denied').classList.toggle('hide', allowed);
+    MB.$('#logWrap').classList.toggle('hide', !allowed);
+    if (!allowed) { MB.mountIcons(MB.$('#denied')); return; }
+    var view = rows.filter(function (e) {
+      return (type === 'all' || e.type === type) && (member === 'all' || e.actor === member);
+    });
+    MB.$('#logCount').textContent = view.length;
+    MB.$('#logList').innerHTML = view.length ? view.map(function (e) {
+      return '<div class="audit-row t-' + MB.esc(e.type) + '">' +
+        '<span class="au-ic">' + MB.icon(ICON[e.type] || 'activity', 15) + '</span>' +
+        '<div style="min-width:0"><div class="au-t">' + MB.esc(e.text) + '</div>' +
+          '<div class="au-s">' + MB.esc(MB.fmt.date(e.at)) + ' · ' + MB.esc(MB.fmt.ago(e.at)) + ' · ' +
+            MB.esc(A.TYPES[e.type] || e.type) + '</div></div>' +
+      '</div>';
+    }).join('') : '<div class="empty" style="padding:32px 12px"><p>No entries match.</p></div>';
+  }
+
+  MB.$('#typeChips').addEventListener('mb:change', function (e) { type = e.detail.value; paint(); });
+  MB.$('#memberSel').addEventListener('change', function () { member = this.value; paint(); });
+  T.switcher(MB.$('#actingAs'), paint);
+
+  MB.api.get('institutional').then(function (r) {
+    var d = r.data || {};
+    rows = A.load(d);
+    var names = [];
+    rows.forEach(function (e) { if (names.indexOf(e.actor) < 0) { names.push(e.actor); } });
+    T.load(d).forEach(function (t) { if (names.indexOf(t.name) < 0) { names.push(t.name); } });
+    MB.$('#memberSel').insertAdjacentHTML('beforeend', names.map(function (n) {
+      return '<option value="' + MB.esc(n) + '">' + MB.esc(n) + '</option>';
+    }).join(''));
+    paint();
+  });
+});
+</script>
+</body>
+</html>

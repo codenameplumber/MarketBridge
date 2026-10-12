@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Withdrawal Status — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Withdrawal" data-sub="Creator earnings to KaastroPay" data-back="earnings.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page" id="wdRoot">
+    <div class="card"><div class="skeleton sk-line w40"></div><div class="skeleton sk-line w80"></div></div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+/* Processing → Completed. Stage 1 completes on a timer inside MB.kx;
+   Stage 2: status comes from the KaastroPay payout webhook, and this page
+   polls GET /api/v1/creator/withdrawals/{id}. */
+MB.ready(function () {
+  var id = new URLSearchParams(location.search).get('id');
+  var root = MB.$('#wdRoot');
+  var timer = null, last = null;
+
+  function when(iso) {
+    var d = new Date(iso);
+    return MB.fmt.date(iso) + ', ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+  function step(state, t, s) {
+    return '<li class="kx-step ' + state + '"><span class="kx-dot">' + (state === 'is-done' ? MB.icon('check', 13) : '') + '</span>' +
+      '<div><div class="kx-step-t">' + MB.esc(t) + '</div>' + (s ? '<div class="kx-step-s">' + MB.esc(s) + '</div>' : '') + '</div></li>';
+  }
+
+  function render(w) {
+    if (!w) {
+      root.innerHTML = '<div class="empty">' + MB.icon('receipt', 46) + '<h3>Withdrawal not found</h3>' +
+        '<p>Open it again from your earnings history.</p><a class="btn btn-outline mt4" href="earnings.html">View Earnings</a></div>';
+      MB.mountIcons(root); return;
+    }
+    last = w.status;
+    var done = w.status === 'completed';
+    var head = done
+      ? '<div class="kx-state"><div class="kx-state-ic">' + MB.icon('check', 38) + '</div><h2>Withdrawal Successful!</h2>' +
+        '<p><b class="num">' + MB.fmt.money(w.amount) + '</b> has been sent to your KaastroPay account.</p></div>'
+      : '<div class="kx-state"><div class="kx-state-ic is-wait">' + MB.icon('refresh', 38) + '</div><h2>Withdrawal in progress</h2>' +
+        '<p>Your request for <b class="num">' + MB.fmt.money(w.amount) + '</b> has been submitted to KaastroPay.</p></div>';
+
+    var steps = '<section class="card"><ol class="kx-steps">' +
+      step('is-done', 'Request submitted', when(w.created_at)) +
+      step(done ? 'is-done' : 'is-active', 'Processing payment', done ? 'Commission already deducted · no payout fee' : 'Please wait…') +
+      step(done ? 'is-done' : 'is-todo', 'Credit to KaastroPay', done ? when(w.completed_at) : 'Estimated 1–5 minutes') +
+      '</ol></section>';
+
+    var rc = MB.kx.ui.receipt({
+      title: 'Creator payout to KaastroPay',
+      amount: '− ' + MB.fmt.money(w.amount),
+      status: done ? 'completed' : 'pending',
+      status_label: done ? 'Completed' : 'Processing',
+      hero_note: done ? 'Funds delivered to your KaastroPay wallet.' : 'We are still confirming this transaction.',
+      summary: [
+        { k: 'Amount withdrawn', v: MB.fmt.money(w.amount) },
+        { k: 'Fees', v: MB.fmt.money(w.fee || 0) }
+      ],
+      charges: MB.fmt.money(w.fee || 0),
+      net: { k: 'Amount received', v: MB.fmt.money(w.received != null ? w.received : w.amount) },
+      info: [
+        { k: 'Transaction ID', v: w.id },
+        { k: 'Date & Time', v: when(w.created_at) },
+        { k: 'Transaction type', v: 'Creator earnings payout' }
+      ],
+      details: [
+        { k: 'Beneficiary', v: w.destination || 'KaastroPay account' },
+        { k: 'KaastroPay account', v: w.destination_email || '—' },
+        { k: 'Outcome', v: done ? 'Completed' : 'Processing' }
+      ],
+      notice_text: 'Payouts usually arrive within minutes. If you did not request this withdrawal, contact support immediately.'
+    });
+
+    root.innerHTML = head + steps +
+      '<div class="sec-head" style="margin-bottom:0"><h2>Receipt</h2></div>' + rc +
+      '<a class="btn btn-trade btn-block btn-lg" href="earnings.html">View Earnings</a>';
+    MB.mountIcons(root);
+  }
+
+  MB.kx.creator.load().then(function () {
+    render(MB.kx.creator.withdrawal(id));
+    timer = setInterval(function () {
+      var w = MB.kx.creator.withdrawal(id);
+      if (w && w.status !== last) {
+        render(w);
+        if (w.status === 'completed') { MB.toast('Withdrawal completed', 'ok'); clearInterval(timer); }
+      }
+    }, 1200);
+  });
+});
+</script>
+</body>
+</html>

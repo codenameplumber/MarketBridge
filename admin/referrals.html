@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Referral & Partnerships — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/referrals.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="admin" data-nav="referrals" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <div class="grow">
+        <h1 id="pageTitle">Referral & Partnerships</h1>
+        <div class="sub" id="pageSub">Who brought the business, what it earned, and what is owed</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+    </header>
+
+    <main class="admin-body">
+      <div class="rf-slot" id="programBanner"></div>
+
+      <div class="admin-tabs" id="tabs" role="tablist" aria-label="Programme">
+        <button role="tab" class="is-active" aria-selected="true" data-t="overview">Overview</button>
+        <button role="tab" aria-selected="false" data-t="affiliate">Deriv Affiliate</button>
+        <button role="tab" aria-selected="false" data-t="ib">KonfluenX IB</button>
+        <button role="tab" aria-selected="false" data-t="referral">KonfluenX Referral</button>
+      </div>
+
+      <div class="rf-bar">
+        <div class="chips" id="range" role="group" aria-label="Date range"></div>
+        <form class="rf-custom" id="custom" hidden>
+          <input class="input" type="date" id="cStart" aria-label="From date" required>
+          <span>to</span>
+          <input class="input" type="date" id="cEnd" aria-label="To date" required>
+          <button class="btn btn-ghost btn-sm" type="submit">Apply</button>
+        </form>
+        <span class="rf-range-text" id="rangeText"></span>
+        <span class="grow"></span>
+        <button class="btn btn-ghost btn-sm" id="exportBtn" data-can="referral.export">
+          <span data-icon="download"></span> Export CSV</button>
+      </div>
+
+      <!-- ============================== OVERVIEW ============================== -->
+      <section class="stack g4" data-pane="overview" role="tabpanel" aria-label="Overview">
+        <div class="rf-cards" id="cards"></div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Referral Revenue vs Referral Payouts</h2>
+            <span class="badge badge-neutral" id="chartBucket"></span></div>
+          <div class="panel-body" id="chart"></div>
+          <div class="rf-fin" id="fin"></div>
+          <div class="rf-fin-foot" id="finFoot"></div>
+        </section>
+
+        <div class="admin-cols c-even">
+          <section class="panel">
+            <div class="panel-head"><h2>Top Referrers</h2>
+              <label class="rf-rank-by">Rank by
+                <select class="select" id="rankBy">
+                  <option value="revenue">Revenue generated</option>
+                  <option value="earnings">Referral earnings</option>
+                  <option value="paying">Paying users</option>
+                  <option value="referrals">Total referrals</option>
+                  <option value="conversion">Conversion rate</option>
+                </select></label></div>
+            <div class="panel-body-flush" id="leaderboard"></div>
+            <div class="rf-fin-foot">Revenue is the platform fee KonfluenX collected from the referrer's users.
+              Ties break on revenue, so sign-ups alone never top the board. Conversion needs at least 3 referrals.</div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head"><h2>Fraud &amp; Controls</h2>
+              <span class="badge badge-lost" id="flagOpen"></span></div>
+            <div class="rf-flag-counts" id="flagCounts"></div>
+            <div id="flags"></div>
+          </section>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>Programme Rules</h2>
+            <span id="programState"></span></div>
+          <div class="panel-body"><div class="info-list" id="rules"></div></div>
+          <div class="rf-rules-acts">
+            <button class="btn btn-ghost btn-sm" id="btnRules" data-can="referral.configure">
+              <span data-icon="percent"></span> Edit referral rules</button>
+            <button class="btn btn-ghost btn-sm" id="btnSettlement" data-can="referral.settlement">
+              <span data-icon="clock"></span> Settlement rules</button>
+            <button class="btn btn-ghost btn-sm" id="btnSuspendProgram" data-can="referral.suspend_program">
+              <span data-icon="ban"></span> <span id="suspendLabel">Suspend programme</span></button>
+            <span class="grow"></span>
+            <span class="rf-note">Admins view, investigate, verify statuses and export. Rules, settlement and
+              money adjustments are Super Admin only, and every change needs a reason.</span>
+          </div>
+          <div class="panel-head" style="border-top:1px solid var(--mb-border)"><h3>Programme audit trail</h3></div>
+          <div id="programAudit"></div>
+        </section>
+      </section>
+
+      <!-- =========================== DERIV AFFILIATE ========================== -->
+      <section class="stack g4" data-pane="affiliate" role="tabpanel" aria-label="Deriv Affiliate" hidden>
+        <div class="alert alert-info">
+          <span data-icon="info"></span>
+          <div class="t-sm"><strong>Deriv pays affiliate commissions directly to the affiliate.</strong>
+          That money belongs to the affiliate — it is not KonfluenX revenue, so no commission estimate
+          appears here. KonfluenX tracks the onboarding pipeline and whatever performance data the
+          affiliate chooses to share.</div>
+        </div>
+        <section class="panel">
+          <div class="panel-head"><h2>Affiliate pipeline</h2><span class="rf-note" id="affNote"></span></div>
+          <div class="rf-pipe" id="affPipe"></div>
+        </section>
+        <div id="affTable"></div>
+      </section>
+
+      <!-- ============================ KONFLUENX IB ============================ -->
+      <section class="stack g4" data-pane="ib" role="tabpanel" aria-label="KonfluenX IB" hidden>
+        <div class="alert alert-info">
+          <span data-icon="handshake"></span>
+          <div class="t-sm"><strong>Users ask Deriv to link their account to the KonfluenX IB.</strong>
+          Once the link shows in the Deriv partner dashboard, an admin verifies it here: the user gets a
+          Partner Badge and earns KX Points on qualifying trading activity. KX Points are rewards, not cash.</div>
+        </div>
+        <div class="rf-cards" id="ibCards"></div>
+        <section class="panel">
+          <div class="panel-head"><h2>Link status</h2><span class="rf-note" id="ibNote"></span></div>
+          <div class="rf-pipe" id="ibPipe"></div>
+        </section>
+        <div id="ibTable"></div>
+      </section>
+
+      <!-- ========================== KONFLUENX REFERRAL ======================== -->
+      <section class="stack g4" data-pane="referral" role="tabpanel" aria-label="KonfluenX Referral" hidden>
+        <div class="alert alert-green">
+          <span data-icon="percent"></span>
+          <div class="t-sm" id="refRule"></div>
+        </div>
+        <div class="rf-cards" id="refCards"></div>
+        <div id="refTable"></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/components/referrals.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+MB.ready(function () {
+  var R = MB.referrals;
+  var S, range, tab = 'overview', rankBy = 'revenue', rangeId = '30d', custom = null;
+  var refDt = null;
+  var esc = MB.esc;
+
+  function card(k, v, s, cls) {
+    return '<div class="rf-card ' + (cls || '') + '"><div class="k">' + esc(k) + '</div>' +
+      '<div class="v">' + v + '</div>' + (s ? '<div class="s">' + s + '</div>' : '') + '</div>';
+  }
+  function who(name, username, href) {
+    var inner = '<div class="cell-user">' + MB.avatar({ username: username, display_name: name }, 'avatar-sm') +
+      '<div><div class="n">' + esc(name) + '</div><div class="h">@' + esc(username) + '</div></div></div>';
+    return href ? '<a class="cell-link" href="' + esc(href) + '">' + inner + '</a>' : inner;
+  }
+  function refHref(username) {
+    var r = S.referrers.filter(function (x) { return x.username === username; })[0];
+    return r ? 'referral-detail.html?id=' + encodeURIComponent(r.id) : null;
+  }
+  function ago(iso) { return '<span class="c-3">' + esc(MB.fmt.ago(iso)) + '</span>'; }
+  function money(cn) { return '<span class="num">' + R.money(cn) + '</span>'; }
+
+  /* -------------------------------------------------------------- range */
+  MB.$('#range').innerHTML = R.RANGES.map(function (x) {
+    return '<button type="button" class="chip' + (x.id === rangeId ? ' is-active' : '') + '" data-range="' + x.id +
+      '" aria-pressed="' + (x.id === rangeId) + '">' + x.label + '</button>';
+  }).join('');
+  MB.$('#range').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-range]');
+    if (!b) { return; }
+    MB.$$('[data-range]', this).forEach(function (x) {
+      x.classList.toggle('is-active', x === b); x.setAttribute('aria-pressed', String(x === b));
+    });
+    var id = b.getAttribute('data-range');
+    MB.$('#custom').hidden = id !== 'custom';
+    if (id === 'custom') { MB.$('#cStart').focus(); return; }
+    rangeId = id; render();
+  });
+  MB.$('#custom').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var a = MB.$('#cStart').value, b = MB.$('#cEnd').value;
+    if (!a || !b || a > b) { MB.toast('Pick a start date on or before the end date', 'err'); return; }
+    custom = { start: a, end: b }; rangeId = 'custom'; render();
+  });
+
+  /* --------------------------------------------------------------- tabs */
+  function setTab(id) {
+    tab = id;
+    MB.$$('#tabs [data-t]').forEach(function (b) {
+      var on = b.getAttribute('data-t') === id;
+      b.classList.toggle('is-active', on); b.setAttribute('aria-selected', String(on));
+    });
+    MB.$$('[data-pane]').forEach(function (p) { p.hidden = p.getAttribute('data-pane') !== id; });
+    try { history.replaceState(null, '', location.pathname + location.search + '#' + id); } catch (e) {}
+  }
+  MB.$('#tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-t]');
+    if (b) { setTab(b.getAttribute('data-t')); }
+  });
+
+  /* ============================================================ OVERVIEW */
+  function renderOverview(rows) {
+    var s = R.summary(range);
+    var rec = R.reconcile();
+    MB.$('#cards').innerHTML = [
+      card('Total referred users', MB.fmt.compact(s.referred), 'signed up with a referral code'),
+      card('Active referrers', s.activeReferrers, 'with a sign-up or a qualifying payment'),
+      card('Referral-generated revenue', R.money(s.feesC), 'platform fees from ' + s.txCount + ' payments', 'is-key'),
+      card('Referral rewards', R.money(s.sharesC), S.program.referral_pct + ' % of those fees, owed or credited' +
+        (s.adjCount ? ' · ' + (s.adjC >= 0 ? '+' : '') + R.money(s.adjC) + ' adjustments' : '')),
+      card('Net referral revenue', R.money(s.netC), 'revenue − rewards on that revenue', 'is-key'),
+      card('Conversion rate', s.conversion.toFixed(1) + '%', s.converted + ' of ' + s.referred + ' referred users paid')
+    ].join('');
+
+    var bk = R.series(range);
+    var ch = MB.$('#chart');
+    ch.innerHTML = R.chartHTML(bk, range);
+    R.wireChart(ch, bk);
+    MB.$('#chartBucket').textContent = 'By ' + range.bucket;
+
+    MB.$('#fin').innerHTML = [
+      ['Gross platform fees from referred users', R.money(s.feesC), 'from ' + R.money(s.grossPaidC) + ' paid by users'],
+      ['Referral earnings generated', R.money(s.sharesC), S.program.referral_pct + ' % of platform fees'],
+      ['Referral earnings paid', R.money(s.paidC), 'of the earnings generated'],
+      ['Pending referral earnings', R.money(s.unpaidC), R.money(s.pendingC) + ' in hold · ' + R.money(s.availableC) + ' available' +
+        (s.heldC ? ' · ' + R.money(s.heldC) + ' held' : '')],
+      ['Net platform revenue from referral users', R.money(s.netC), 'fees − referral earnings']
+    ].map(function (x) {
+      return '<div><div class="k">' + esc(x[0]) + '</div><div class="v">' + x[1] + '</div><div class="s">' + esc(x[2]) + '</div></div>';
+    }).join('');
+
+    MB.$('#finFoot').innerHTML =
+      '<span>Payouts sent in period <b>' + R.money(s.payoutsInWindowC) + '</b></span>' +
+      '<span>Reversed (excluded) <b>' + s.reversedCount + ' · ' + R.money(s.reversedFeesC) + ' fees / ' + R.money(s.reversedSharesC) + ' share</b></span>' +
+      '<span>Manual adjustments (outside the % rule) <b>' + R.money(s.adjC) + '</b></span>' +
+      '<span class="grow"></span>' +
+      (rec.ok
+        ? '<span class="rf-ok">' + MB.icon('check', 14) + 'Ledger reconciles · ' + rec.checked + ' commissions</span>'
+        : '<span class="rf-bad" title="' + esc(rec.problems.join('\n')) + '">' + MB.icon('warning', 14) + rec.problems.length + ' ledger mismatches</span>');
+
+    renderLeaderboard(rows);
+    renderFlags();
+    renderRules();
+  }
+
+  function renderLeaderboard(rows) {
+    MB.$('#leaderboard').innerHTML = R.leaderboardHTML(R.rank(rows, rankBy), { limit: 8 });
+  }
+  MB.$('#rankBy').addEventListener('change', function () {
+    rankBy = this.value; renderLeaderboard(R.perReferrer(range));
+  });
+
+  var FLAG_TYPES = [
+    ['self_referral', 'Self-referrals', 'userplus'], ['duplicate_accounts', 'Duplicate accounts', 'copy'],
+    ['referral_spike', 'Referral spikes', 'trendup'], ['refund_reversal', 'Reversed / refunded', 'refresh'],
+    ['abnormal_conversion', 'Abnormal conversion', 'activity'], ['blocked_accounts', 'Blocked accounts', 'ban']
+  ];
+  function renderFlags() {
+    var flags = S.fraud_flags.filter(function (f) { return f.status !== 'resolved' || R.inRange(f.raised_at, range); });
+    var blockedUsers = S.referred_users.filter(function (u) { return u.status === 'blocked'; });
+    var counts = {
+      self_referral: flags.filter(function (f) { return f.type === 'self_referral'; }).length,
+      duplicate_accounts: blockedUsers.filter(function (u) { return /duplicate/i.test(u.block_reason || ''); }).length,
+      referral_spike: flags.filter(function (f) { return f.type === 'referral_spike'; }).length,
+      refund_reversal: S.transactions.filter(function (x) { return x.kind === 'commission' && x.status === 'reversed' && R.inRange(x.created_at, range); }).length,
+      abnormal_conversion: flags.filter(function (f) { return f.type === 'abnormal_conversion'; }).length,
+      blocked_accounts: blockedUsers.length + S.referrers.filter(function (r) { return r.account_status === 'blocked'; }).length
+    };
+    MB.$('#flagCounts').innerHTML = FLAG_TYPES.map(function (x) {
+      return '<div><div class="v">' + counts[x[0]] + '</div><div class="k">' + esc(x[1]) + '</div></div>';
+    }).join('');
+    var open = S.fraud_flags.filter(function (f) { return f.status !== 'resolved'; }).length;
+    MB.$('#flagOpen').textContent = open + ' unresolved';
+    var icon = {}; FLAG_TYPES.forEach(function (x) { icon[x[0]] = x[2]; });
+    var order = { open: 0, investigating: 1, resolved: 2 };
+    MB.$('#flags').innerHTML = flags.length ? flags.slice().sort(function (a, b) {
+      return (order[a.status] - order[b.status]) || (Date.parse(b.raised_at) - Date.parse(a.raised_at));
+    }).map(function (f) {
+      var ref = S.byId[f.referrer_id] || {};
+      return '<div class="rf-flag"><span class="rf-flag-ic sev-' + esc(f.severity) + '">' + MB.icon(icon[f.type] || 'flag', 17) + '</span>' +
+        '<div class="rf-flag-main"><div class="rf-flag-t">' + esc(f.title) + ' ' + R.statusBadge(f.status) +
+          ' <span class="c-3 t-xs">' + esc(f.id) + ' · ' + esc(f.severity) + ' · ' + esc(MB.fmt.ago(f.raised_at)) + '</span></div>' +
+        '<div class="rf-flag-d">' + esc(f.detail) + '</div>' +
+        (f.action_taken ? '<div class="rf-flag-a">Action: ' + esc(f.action_taken) + '</div>' : '') +
+        '<div class="rf-flag-acts">' +
+          '<a class="btn btn-ghost btn-xs" href="referral-detail.html?id=' + encodeURIComponent(f.referrer_id) + '">' +
+            MB.icon('eye', 14) + ' @' + esc(ref.username || f.referrer_id) + '</a>' +
+          (f.status === 'open' ? '<button class="btn btn-ghost btn-xs" data-can="referral.investigate" data-flag="' + esc(f.id) + '" data-to="investigating">' +
+            MB.icon('search', 14) + ' Investigate</button>' : '') +
+          (f.status === 'investigating' ? '<button class="btn btn-ghost btn-xs" data-can="referral.investigate" data-flag="' + esc(f.id) + '" data-to="resolved">' +
+            MB.icon('check', 14) + ' Mark resolved</button>' : '') +
+        '</div></div></div>';
+    }).join('') : '<div class="empty rf-empty">' + MB.icon('shield', 40) + '<h3>Nothing flagged in this period</h3></div>';
+    MB.applyPermissions(MB.$('#flags'));
+  }
+  MB.$('#flags').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-flag]');
+    if (!b) { return; }
+    var id = b.getAttribute('data-flag'), to = b.getAttribute('data-to');
+    R.actionModal({
+      title: (to === 'resolved' ? 'Resolve ' : 'Investigate ') + id,
+      sub: to === 'resolved' ? 'Closes the flag. The evidence and this note stay in the audit trail.' : 'Marks the flag as under investigation.',
+      confirm: to === 'resolved' ? 'Mark resolved' : 'Start investigation', kind: 'brand',
+      onConfirm: function (_, reason) { R.setFlag(id, to, reason); MB.toast(id + ' marked ' + R.label(to)); render(); }
+    });
+  });
+
+  /* ---- programme rules --------------------------------------------- */
+  function renderRules() {
+    var p = S.program, st = p.settlement;
+    var suspended = p.status === 'suspended';
+    MB.$('#programState').innerHTML = R.statusBadge(suspended ? 'suspended' : 'active');
+    var row = function (k, v) { return '<div class="info-row"><span class="ir-k">' + esc(k) + '</span><span class="ir-v">' + v + '</span></div>'; };
+    MB.$('#rules').innerHTML =
+      row('Referral share', '<strong>' + p.referral_pct + ' %</strong> of the platform fee on each payment by a referred user' +
+        '<span class="sub">Never of the whole payment. Each record keeps the rate it was calculated at.</span>') +
+      row('Duration', 'Lifetime of the referred account') +
+      row('Eligible payments', 'Pro room subscriptions and renewals, premium resources, mentorship sessions') +
+      row('Not eligible', 'KX credit top-ups — they carry no platform fee') +
+      row('Self-referral', p.self_referral_allowed ? 'Allowed' : 'Not allowed — earnings suspended on detection') +
+      row('Settlement', st.hold_days + '-day hold → available → paid every ' + esc(st.run_day) + ' ' + esc(st.run_time_utc) +
+        ' UTC via ' + esc(st.rail) + '<span class="sub">Minimum payout ' + R.money(R.cents(st.min_payout)) +
+        '. A refund inside the hold reverses the commission with a new entry.</span>') +
+      row('Programme status', suspended ? 'Suspended — new payments accrue no referral share' : 'Active') +
+      row('Last changed', esc(MB.fmt.date(p.updated_at)));
+    var lbl = MB.$('#suspendLabel');
+    if (lbl) { lbl.textContent = suspended ? 'Resume programme' : 'Suspend programme'; }
+    MB.$('#programBanner').innerHTML = suspended
+      ? '<div class="alert alert-warn"><span data-icon="warning"></span><div class="t-sm"><strong>The referral programme is suspended.</strong> ' +
+        'New payments accrue no referral share. Commissions already earned keep settling.</div></div>'
+      : '';
+    MB.mountIcons(MB.$('#programBanner'));
+    MB.$('#programAudit').innerHTML = R.auditHTML(S.audit.filter(function (e) { return e.target_type === 'program'; }));
+  }
+
+  MB.on('#btnRules', 'click', function () {
+    R.actionModal({
+      title: 'Edit referral rules', sub: 'Applies to payments made after the change. Past records keep their stored rate.',
+      body: '<div class="field"><label for="fPct">Referral share of the platform fee (%)</label>' +
+        '<input class="input" id="fPct" type="number" min="1" max="50" step="1" value="' + S.program.referral_pct + '">' +
+        '<div class="field-hint">Between 1 and 50. The base is always the platform fee, never the payment.</div></div>' +
+        '<label class="row g2 mt4 t-sm"><input type="checkbox" id="fSelf"' + (S.program.self_referral_allowed ? ' checked' : '') + '> Allow self-referral</label>',
+      confirm: 'Save rules', kind: 'brand',
+      collect: function (root) {
+        var v = Number(root.querySelector('#fPct').value);
+        if (!(v >= 1 && v <= 50) || Math.round(v) !== v) { return { error: 'Enter a whole percentage between 1 and 50.' }; }
+        return { pct: v, self: root.querySelector('#fSelf').checked };
+      },
+      onConfirm: function (v, reason) {
+        R.setProgram({ referral_pct: v.pct, self_referral_allowed: v.self }, 'program.configure',
+          'Referral share set to ' + v.pct + ' % of platform fees; self-referral ' + (v.self ? 'allowed' : 'not allowed') + '.', reason);
+        MB.toast('Referral rules saved'); render();
+      }
+    });
+  });
+  MB.on('#btnSettlement', 'click', function () {
+    var st = S.program.settlement;
+    R.actionModal({
+      title: 'Settlement rules', sub: 'When an earned commission becomes available and is paid.',
+      body: '<div class="form-grid cols-2">' +
+        '<div class="field"><label for="fHold">Hold period (days)</label><input class="input" id="fHold" type="number" min="0" max="90" value="' + st.hold_days + '"></div>' +
+        '<div class="field"><label for="fMin">Minimum payout (USD)</label><input class="input" id="fMin" type="number" min="0" step="1" value="' + st.min_payout + '"></div>' +
+        '<div class="field full"><label for="fDay">Payout run day</label><select class="select" id="fDay">' +
+          ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(function (d) {
+            return '<option' + (d === st.run_day ? ' selected' : '') + '>' + d + '</option>'; }).join('') +
+        '</select></div></div>',
+      confirm: 'Save settlement rules', kind: 'brand',
+      collect: function (root) {
+        var h = Number(root.querySelector('#fHold').value), mn = Number(root.querySelector('#fMin').value);
+        if (!(h >= 0 && h <= 90)) { return { error: 'The hold must be between 0 and 90 days.' }; }
+        if (!(mn >= 0)) { return { error: 'The minimum payout cannot be negative.' }; }
+        return { hold_days: Math.round(h), min_payout: mn, run_day: root.querySelector('#fDay').value };
+      },
+      onConfirm: function (v, reason) {
+        R.setProgram({ settlement: v }, 'program.settlement', 'Settlement: ' + v.hold_days + '-day hold, weekly on ' + v.run_day +
+          ', minimum ' + R.money(R.cents(v.min_payout)) + '.', reason);
+        MB.toast('Settlement rules saved'); render();
+      }
+    });
+  });
+  MB.on('#btnSuspendProgram', 'click', function () {
+    var suspended = S.program.status === 'suspended';
+    R.actionModal({
+      title: suspended ? 'Resume the referral programme' : 'Suspend the whole referral programme',
+      sub: suspended ? 'New payments start accruing referral shares again.'
+        : 'New payments stop accruing referral shares for every referrer. Earned commissions keep settling. No account is banned.',
+      confirm: suspended ? 'Resume programme' : 'Suspend programme', kind: suspended ? 'trade' : 'sell',
+      onConfirm: function (_, reason) {
+        R.setProgram({ status: suspended ? 'active' : 'suspended' }, suspended ? 'program.resume' : 'program.suspend',
+          suspended ? 'Referral programme resumed.' : 'Referral programme suspended.', reason);
+        MB.toast(suspended ? 'Programme resumed' : 'Programme suspended'); render();
+      }
+    });
+  });
+
+  /* ======================================================= DERIV AFFILIATE */
+  var affRows = [];
+  function renderAffiliate() {
+    affRows = S.affiliates.filter(function (a) { return R.inRange(a.applied_at, range) || R.inRange(a.last_activity_at, range); });
+    MB.$('#affNote').textContent = affRows.length + ' of ' + S.affiliates.length + ' applications active in this period';
+    MB.$('#affPipe').innerHTML = R.AFF_STAGES.map(function (st, i) {
+      var n = affRows.filter(function (a) { return a.stage === st; }).length;
+      return '<div class="rf-stage' + (i === 4 ? ' is-final' : '') + '"><div class="n">' + n + '</div>' +
+        '<div class="k">' + esc(R.AFF_LABELS[st]) + '</div>' +
+        '<div class="s">' + ['applied in KonfluenX', 'guided set-up', 'awaiting Deriv', 'link issued by Deriv', 'referring clients'][i] + '</div></div>';
+    }).join('');
+    MB.datatable({
+      data: affRows, into: '#affTable', perPage: 10, sortKey: 'applied_at', sortDir: 'desc', exportable: false,
+      searchPlaceholder: 'Search affiliates…', search: ['name', 'username', 'deriv_affiliate_id'],
+      columns: [
+        { key: 'name', label: 'Affiliate', sortable: true, render: function (a) { return who(a.name, a.username, refHref(a.username)); } },
+        { key: 'applied_at', label: 'Applied', sortable: true, sortValue: function (a) { return Date.parse(a.applied_at); },
+          render: function (a) { return '<span style="white-space:nowrap">' + esc(MB.fmt.date(a.applied_at)) + '</span>'; } },
+        { key: 'stage', label: 'Stage', sortable: true, filter: R.AFF_STAGES.map(function (s) { return { value: s, label: R.AFF_LABELS[s] }; }),
+          sortValue: function (a) { return R.AFF_STAGES.indexOf(a.stage); },
+          render: function (a) {
+            var i = R.AFF_STAGES.indexOf(a.stage);
+            return '<div class="t-sm w-semi">' + esc(R.AFF_LABELS[a.stage]) + '</div><div class="rf-stepper" aria-hidden="true">' +
+              R.AFF_STAGES.map(function (_, k) { return '<i' + (k <= i ? ' class="on"' : '') + '></i>'; }).join('') + '</div>'; } },
+        { key: 'deriv_status', label: 'Deriv affiliate status', render: function (a) {
+            return '<div class="t-sm">' + esc(a.deriv_status) + '</div>' +
+              (a.deriv_affiliate_id ? '<div class="h c-3 t-xs">' + esc(a.deriv_affiliate_id) + '</div>' : ''); } },
+        { key: 'clients_reported', label: 'Data available to KonfluenX', render: function (a) {
+            if (a.perf_source === 'not_shared') { return '<span class="c-3">Not shared</span>'; }
+            return '<div class="t-sm"><span class="num">' + a.clients_reported + '</span> clients referred</div>' +
+              '<div class="t-xs c-3">self-reported · ' + esc(MB.fmt.ago(a.perf_updated_at)) + '</div>'; } },
+        { key: 'last_activity_at', label: 'Last activity', sortable: true, sortValue: function (a) { return Date.parse(a.last_activity_at); },
+          render: function (a) { return ago(a.last_activity_at); } },
+        { key: '', label: 'Action', align: 'right', render: function (a) {
+            if (a.stage === 'active') { return '<span class="c-3 t-xs">—</span>'; }
+            var next = R.AFF_STAGES[R.AFF_STAGES.indexOf(a.stage) + 1];
+            return '<button class="btn btn-ghost btn-xs" data-can="referral.verify_status" data-aff="' + esc(a.id) + '">Record: ' +
+              esc(R.AFF_LABELS[next]) + '</button>'; } }
+      ]
+    });
+  }
+  MB.$('#affTable').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-aff]');
+    if (!b) { return; }
+    var a = S.affiliates.filter(function (x) { return x.id === b.getAttribute('data-aff'); })[0];
+    var next = R.AFF_STAGES[R.AFF_STAGES.indexOf(a.stage) + 1];
+    R.actionModal({
+      title: 'Move ' + a.name + ' to ' + R.AFF_LABELS[next],
+      sub: next === 'approved' || next === 'active' ? 'Record what Deriv shows — the decision is Deriv\'s, not ours.' : 'Records the next onboarding step.',
+      confirm: 'Record ' + R.AFF_LABELS[next], kind: 'brand',
+      placeholder: 'e.g. Deriv approval email received, tracking link issued',
+      onConfirm: function (_, reason) { R.advanceAffiliate(a.id, reason); MB.toast(a.name + ' → ' + R.AFF_LABELS[next]); renderAffiliate(); }
+    });
+  });
+
+  /* ========================================================== KONFLUENX IB */
+  var IB_STAGES = ['not_linked', 'instructions_viewed', 'user_submitted', 'verification_pending', 'verified'];
+  var IB_LABELS = { not_linked: 'Not linked', instructions_viewed: 'Instructions viewed', user_submitted: 'User submitted',
+                    verification_pending: 'Verification pending', verified: 'Verified' };
+  var ibRows = [];
+  function renderIb() {
+    ibRows = S.ib_links.filter(function (l) { return R.inRange(l.updated_at, range) || l.status === 'verified' || l.status === 'verification_pending'; });
+    var verified = S.ib_links.filter(function (l) { return l.status === 'verified'; });
+    var pending = S.ib_links.filter(function (l) { return l.status === 'verification_pending'; });
+    var linkedInRange = verified.filter(function (l) { return R.inRange(l.linked_at, range); }).length;
+    var points = verified.reduce(function (a, l) { return a + (l.kx_points || 0); }, 0);
+    var vol = verified.reduce(function (a, l) { return a + (l.volume_30d_usd || 0); }, 0);
+    MB.$('#ibCards').innerHTML = [
+      card('Verified IB-linked users', verified.length, linkedInRange + ' verified in this period', 'is-key'),
+      card('Awaiting verification', pending.length, 'submitted to Deriv, check the partner dashboard', pending.length ? 'is-warn' : ''),
+      card('KX Points issued', MB.fmt.compact(points) + ' pts', 'rewards, not cash'),
+      card('Partner badges', verified.filter(function (l) { return l.partner_badge; }).length, 'one per verified link'),
+      card('Trading volume visible (30D)', R.money(R.cents(vol), 0), 'read from Deriv with user consent'),
+      card('Not yet linked', S.ib_links.filter(function (l) { return l.status === 'not_linked'; }).length, 'opened the IB page')
+    ].join('');
+    MB.$('#ibNote').textContent = 'Verified and pending links always shown; others by last update';
+    MB.$('#ibPipe').innerHTML = IB_STAGES.map(function (st, i) {
+      var n = ibRows.filter(function (l) { return l.status === st; }).length;
+      return '<div class="rf-stage' + (i === 4 ? ' is-final' : '') + '"><div class="n">' + n + '</div><div class="k">' + IB_LABELS[st] + '</div></div>';
+    }).join('');
+    MB.datatable({
+      data: ibRows, into: '#ibTable', perPage: 10, sortKey: 'status', exportable: false,
+      searchPlaceholder: 'Search partners or Deriv accounts…', search: ['partner_name', 'username', 'deriv_account'],
+      columns: [
+        { key: 'partner_name', label: 'Partner name', sortable: true, render: function (l) { return who(l.partner_name, l.username, refHref(l.username)); } },
+        { key: 'deriv_account', label: 'Deriv account', render: function (l) { return l.deriv_account ? '<span class="rf-code">' + esc(l.deriv_account) + '</span>' : '<span class="c-3">—</span>'; } },
+        { key: 'linked_at', label: 'Date linked', sortable: true, sortValue: function (l) { return l.linked_at ? Date.parse(l.linked_at) : 0; },
+          render: function (l) { return l.linked_at ? esc(MB.fmt.date(l.linked_at)) : '<span class="c-3">—</span>'; } },
+        { key: 'volume_30d_usd', label: 'Trading activity available', render: function (l) {
+            if (l.status !== 'verified') { return '<span class="c-3">After verification</span>'; }
+            if (l.volume_30d_usd == null) { return '<span class="c-3">' + esc(l.activity_source) + '</span>'; }
+            return '<div class="t-sm"><span class="num">' + R.money(R.cents(l.volume_30d_usd), 0) + '</span> · ' + l.contracts_30d + ' contracts (30D)</div>' +
+              '<div class="t-xs c-3">' + esc(l.activity_source) + '</div>'; } },
+        { key: 'kx_points', label: 'KX Points earned', sortable: true, align: 'right',
+          render: function (l) { return l.kx_points ? '<span class="num">' + MB.fmt.compact(l.kx_points) + ' pts</span>' : '<span class="c-3">0</span>'; } },
+        { key: 'partner_badge', label: 'Partner badge', render: function (l) {
+            return l.partner_badge ? '<span class="rf-partner">' + MB.icon('verified', 14) + 'Partner</span>' : '<span class="c-3">—</span>'; } },
+        { key: 'status', label: 'Status', sortable: true, filter: IB_STAGES.map(function (s) { return { value: s, label: IB_LABELS[s] }; }),
+          sortValue: function (l) { return { verification_pending: 0, user_submitted: 1, verified: 2, instructions_viewed: 3, not_linked: 4 }[l.status]; },
+          render: function (l) { return R.statusBadge(l.status) + '<div class="t-xs c-3 mt2">' + esc(MB.fmt.ago(l.updated_at)) + '</div>'; } },
+        { key: '', label: 'Actions', align: 'right', render: function (l) {
+            if (l.status !== 'verification_pending') { return ''; }
+            return '<div class="row-actions">' +
+              '<button class="btn btn-green-soft btn-xs" data-can="referral.verify_status" data-ib="' + esc(l.id) + '" data-to="verified">' + MB.icon('check', 14) + ' Verify</button>' +
+              '<button class="row-action is-reject" data-can="referral.verify_status" data-ib="' + esc(l.id) + '" data-to="user_submitted" aria-label="Return to user">' + MB.icon('close', 15) + '</button></div>'; } }
+      ]
+    });
+  }
+  MB.$('#ibTable').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-ib]');
+    if (!b) { return; }
+    var l = S.ib_links.filter(function (x) { return x.id === b.getAttribute('data-ib'); })[0];
+    var ok = b.getAttribute('data-to') === 'verified';
+    R.actionModal({
+      title: ok ? 'Verify IB link for @' + l.username : 'Return @' + l.username + ' to the user',
+      sub: ok ? 'Only verify once ' + (l.deriv_account || 'the account') + ' appears under the KonfluenX IB in the Deriv partner dashboard. Issues the Partner Badge.'
+              : 'The link was not found at Deriv. The user is asked to re-check the request.',
+      confirm: ok ? 'Verify link' : 'Return to user', kind: ok ? 'trade' : 'brand',
+      placeholder: ok ? 'e.g. Seen in Deriv partner dashboard, client list, 12 Oct' : 'e.g. Account not under our IB in the Deriv dashboard',
+      onConfirm: function (_, reason) {
+        var now = new Date(R.now()).toISOString().replace(/\.\d{3}Z$/, 'Z');
+        R.setIb(l.id, ok
+          ? { status: 'verified', linked_at: now, updated_at: now, partner_badge: true, activity_source: 'Not yet available — first sync pending' }
+          : { status: 'user_submitted', updated_at: now }, reason);
+        MB.toast(ok ? 'IB link verified — Partner Badge issued' : 'Returned to the user');
+        renderIb();
+      }
+    });
+  });
+
+  /* ==================================================== KONFLUENX REFERRAL */
+  function renderReferral(rows) {
+    var p = S.program.referral_pct;
+    MB.$('#refRule').innerHTML = '<strong>Referrers earn ' + p + ' % of the platform fees KonfluenX collects from their referred users, for life.</strong> ' +
+      'Never a share of the whole payment: a $50.00 payment with a $10.00 platform fee earns the referrer $2.00 and KonfluenX keeps $8.00. ' +
+      'Click any row for the full referral tree and per-transaction calculation.';
+    var s = R.summary(range);
+    var lifeC = rows.reduce(function (a, r) { return a + r.lifetimeC; }, 0);
+    MB.$('#refCards').innerHTML = [
+      card('Platform fees generated', R.money(s.feesC), 'in this period', 'is-key'),
+      card(p + ' % referral earnings', R.money(s.sharesC), 'in this period'),
+      card('Paid', R.money(s.paidC), 'of those earnings'),
+      card('Pending', R.money(s.unpaidC), 'hold + available'),
+      card('Lifetime earnings', R.money(lifeC), 'all referrers, all time, incl. adjustments'),
+      card('Referrers', rows.length, rows.filter(function (r) { return r.status !== 'active'; }).length + ' suspended or blocked')
+    ].join('');
+    refDt = MB.datatable({
+      data: rows, into: '#refTable', perPage: 25, sortKey: 'feesC', sortDir: 'desc', exportable: false,
+      searchPlaceholder: 'Search referrer or code…', search: ['name', 'username', 'code'],
+      columns: [
+        { key: 'name', label: 'Referrer', sortable: true, render: function (r) { return who(r.name, r.username, 'referral-detail.html?id=' + encodeURIComponent(r.id)); } },
+        { key: 'code', label: 'Referral code', sortable: true, render: function (r) { return '<span class="rf-code">' + esc(r.code) + '</span>'; } },
+        { key: 'referrals', label: 'Total referrals', sortable: true, align: 'right', render: function (r) { return '<span class="num">' + r.referrals + '</span>'; } },
+        { key: 'paying', label: 'Paying referrals', sortable: true, align: 'right', render: function (r) { return '<span class="num">' + r.paying + '</span>'; } },
+        { key: 'feesC', label: 'Platform fees generated', sortable: true, align: 'right', render: function (r) { return money(r.feesC); } },
+        { key: 'sharesC', label: p + ' % referral earnings', sortable: true, align: 'right', render: function (r) { return money(r.sharesC); } },
+        { key: 'paidC', label: 'Paid', sortable: true, align: 'right', render: function (r) { return money(r.paidC); } },
+        { key: 'pendingC', label: 'Pending', sortable: true, align: 'right', render: function (r) { return money(r.pendingC); } },
+        { key: 'lifetimeC', label: 'Lifetime earnings', sortable: true, align: 'right', render: function (r) { return '<strong>' + money(r.lifetimeC) + '</strong>'; } },
+        { key: 'status', label: 'Status', sortable: true, filter: ['active', 'suspended', 'blocked'], render: function (r) { return R.statusBadge(r.status); } }
+      ],
+      done: function (view, host) { host.querySelector('table').classList.add('rf-click'); }
+    });
+  }
+  MB.$('#refTable').addEventListener('click', function (e) {
+    if (e.target.closest('a, button, input, select, label')) { return; }
+    var tr = e.target.closest('tr[data-dt-row]');
+    if (tr) { location.href = 'referral-detail.html?id=' + encodeURIComponent(tr.getAttribute('data-dt-row')); }
+  });
+
+  /* ============================================================== export */
+  MB.on('#exportBtn', 'click', function () {
+    var stamp = R.state().as_of.slice(0, 10), rows = R.perReferrer(range);
+    var name = 'konfluenx-' + tab + '-' + range.id + '-' + stamp + '.csv';
+    var d = function (cn) { return (cn / 100).toFixed(2); };
+    if (tab === 'affiliate') {
+      R.csv(name, ['Affiliate', 'Username', 'Applied', 'Stage', 'Deriv affiliate status', 'Deriv affiliate ID', 'Clients referred (self-reported)', 'Last activity'],
+        affRows.map(function (a) { return [a.name, a.username, a.applied_at, R.AFF_LABELS[a.stage], a.deriv_status, a.deriv_affiliate_id || '',
+          a.perf_source === 'not_shared' ? 'not shared' : a.clients_reported, a.last_activity_at]; }));
+    } else if (tab === 'ib') {
+      R.csv(name, ['Partner', 'Username', 'Deriv account', 'Date linked', 'Volume 30D (USD)', 'Contracts 30D', 'KX Points', 'Partner badge', 'Status'],
+        ibRows.map(function (l) { return [l.partner_name, l.username, l.deriv_account || '', l.linked_at || '', l.volume_30d_usd == null ? '' : l.volume_30d_usd,
+          l.contracts_30d == null ? '' : l.contracts_30d, l.kx_points, l.partner_badge ? 'yes' : 'no', IB_LABELS[l.status]]; }));
+    } else {
+      var list = tab === 'referral' && refDt ? refDt.rows() : R.rank(rows, rankBy).concat(rows.filter(function (r) { return !R.rank(rows, rankBy).some(function (x) { return x.id === r.id; }); }));
+      R.csv(name, ['Referrer', 'Username', 'Referral code', 'Period', 'Total referrals', 'Paying referrals', 'Conversion %', 'Platform fees generated',
+        S.program.referral_pct + '% referral earnings', 'Adjustments', 'Paid', 'Pending', 'Lifetime earnings', 'Status'],
+        list.map(function (r) { return [r.name, r.username, r.code, range.text, r.referrals, r.paying, r.conversion.toFixed(1), d(r.feesC), d(r.sharesC), d(r.adjC),
+          d(r.paidC), d(r.pendingC), d(r.lifetimeC), r.status]; }));
+    }
+  });
+
+  /* ============================================================== render */
+  function render() {
+    range = R.range(rangeId, custom);
+    MB.$('#rangeText').textContent = range.text + ' · data as of ' + MB.fmt.date(S.as_of);
+    var rows = R.perReferrer(range);
+    renderOverview(rows);
+    renderAffiliate();
+    renderIb();
+    renderReferral(rows);
+    MB.mountIcons(document.querySelector('.admin-body'));
+    MB.applyPermissions(document.querySelector('.admin-body'));
+  }
+
+  R.wireCalc(document);
+  R.load().then(function (data) {
+    S = data;
+    var h = (location.hash || '').slice(1);
+    if (['overview', 'affiliate', 'ib', 'referral'].indexOf(h) > -1) { setTab(h); }
+    var end = S.as_of.slice(0, 10);
+    MB.$('#cStart').value = new Date(Date.parse(S.as_of) - 30 * 86400000).toISOString().slice(0, 10);
+    MB.$('#cEnd').value = end;
+    MB.$('#cEnd').max = end; MB.$('#cStart').max = end;
+    render();
+  }).catch(function (err) {
+    MB.$('[data-pane="overview"]').innerHTML = '<div class="empty">' + MB.icon('warning', 46) +
+      '<h3>Could not load referral data</h3><p>Serve this folder over HTTP so the data can load.</p></div>';
+    if (window.console) { console.warn('[referrals]', err); }
+  });
+});
+</script>
+</body>
+</html>

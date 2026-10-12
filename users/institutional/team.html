@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Team &amp; Roles — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/institution.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Team &amp; Roles" data-sub="Who can do what in your institution" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div id="actingAs"></div>
+
+    <section class="card">
+      <div class="between" style="gap:var(--mb-s2);flex-wrap:wrap">
+        <div style="min-width:0">
+          <div class="t-h3 w-bold truncate" id="instName">&mdash;</div>
+          <div class="t-xs c-3 mt1" id="teamSummary">&mdash;</div>
+        </div>
+        <span id="ptype"></span>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="page-section">
+      <div class="between">
+        <div class="label">Team members</div>
+        <button class="btn btn-brand btn-sm" type="button" id="btnInvite" data-inst-can="team.manage">
+          <span data-icon="userplus" data-icon-size="14"></span> Invite</button>
+      </div>
+      <div class="card" style="padding-top:0;padding-bottom:0" id="teamList"></div>
+      <p class="t-xs c-3" id="teamNote"></p>
+    </section>
+
+    <!-- PUBLISHING RULE -->
+    <section class="page-section">
+      <div class="label">Analyst signals</div>
+      <div id="publishRule"></div>
+    </section>
+
+    <!-- APPROVAL QUEUE -->
+    <section class="page-section">
+      <div class="between">
+        <div class="label">Draft approval queue</div>
+        <button class="btn btn-ghost btn-sm" type="button" id="btnNewDraft" data-inst-can="signals.draft">
+          <span data-icon="plus" data-icon-size="14"></span> New draft</button>
+      </div>
+      <div id="draftQueue"></div>
+    </section>
+
+    <!-- MATRIX -->
+    <section class="page-section">
+      <div class="between">
+        <div class="label">Roles &amp; permissions</div>
+        <a class="t-xs w-semi c-up" href="audit.html" data-inst-can="audit.view">Audit log</a>
+      </div>
+      <div class="perm-wrap" id="permMatrix"></div>
+      <div class="stack g2" id="roleList"></div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var T = MB.instTeam, A = MB.instAudit;
+  var d = {}, team = [], settings = {}, drafts = [];
+  var acting = T.actingAs();
+
+  function me() { return T.actor(team, acting); }
+  function audit(type, action, text) { A.log({ actor: me().name, role: acting, type: type, action: action, text: text }); }
+
+  /* ---- team list ------------------------------------------------------- */
+  function paintTeam() {
+    var canManage = T.can(acting, 'team.manage');
+    var owners = T.owners(team);
+    MB.$('#teamSummary').textContent = team.length + ' members · ' + owners + ' owner' + (owners === 1 ? '' : 's') +
+      ' · you are acting as ' + T.label(acting);
+    MB.$('#teamList').innerHTML = team.map(function (t) {
+      var lockOwner = t.role === 'owner' && acting !== 'owner';
+      var controls = '';
+      if (canManage && !lockOwner) {
+        controls = '<select class="select select-sm" data-role-of="' + MB.esc(t.id) + '" aria-label="Role for ' + MB.esc(t.name) + '">' +
+          T.ROLES.filter(function (r) { return r.id !== 'owner' || acting === 'owner'; }).map(function (r) {
+            return '<option value="' + r.id + '"' + (r.id === t.role ? ' selected' : '') + '>' + MB.esc(r.label) + '</option>';
+          }).join('') + '</select>' +
+          (t.role === 'owner' ? '' :
+            '<button class="icon-btn" type="button" data-remove="' + MB.esc(t.id) + '" aria-label="Remove ' + MB.esc(t.name) + '">' +
+              MB.icon('trash', 16) + '</button>');
+      }
+      return '<div class="team-row">' +
+        '<span class="avatar avatar-sm" style="background:' + MB.avatarColor(t.name) + '">' + MB.esc(MB.fmt.initials(t.name)) + '</span>' +
+        '<div class="tm-main">' +
+          '<div class="tm-n">' + MB.esc(t.name) + (t.is_you ? ' <span class="t-xs c-3">(you)</span>' : '') + '</div>' +
+          '<div class="tm-s">' + MB.esc(t.title ? t.title + ' · ' + t.email : t.email) + '</div>' +
+        '</div>' +
+        '<div class="tm-acts">' + (controls || '<span class="role-chip role-' + MB.esc(t.role) + '">' + MB.esc(T.label(t.role)) + '</span>') + '</div>' +
+      '</div>';
+    }).join('');
+    MB.$('#teamNote').textContent = !canManage
+      ? 'Only an Owner or Administrator can invite, change roles or remove members.'
+      : acting === 'owner'
+        ? 'An Owner cannot be removed, and there is always at least one. Demote an Owner first if they are leaving.'
+        : 'Only an Owner can change another Owner.';
+  }
+
+  MB.$('#teamList').addEventListener('change', function (e) {
+    var sel = e.target.closest('[data-role-of]');
+    if (!sel) { return; }
+    var t = team.filter(function (x) { return x.id === sel.getAttribute('data-role-of'); })[0];
+    var next = sel.value;
+    if (!t || next === t.role) { return; }
+    if (t.role === 'owner' && T.owners(team) <= 1) {
+      sel.value = t.role;
+      MB.toast('There must always be at least one Owner', 'err');
+      return;
+    }
+    var from = t.role;
+    t.role = next;
+    T.save(team);
+    audit('team', 'member.role_changed', t.name + ' changed from ' + T.label(from) + ' to ' + T.label(next) + ' ' + A.by(me()));
+    MB.toast(t.name + ' is now ' + T.label(next));
+    paintAll();
+  });
+
+  MB.$('#teamList').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-remove]');
+    if (!b) { return; }
+    var t = team.filter(function (x) { return x.id === b.getAttribute('data-remove'); })[0];
+    if (!t || t.role === 'owner') { return; }
+    MB.confirm({ title: 'Remove ' + t.name + '?', body: 'They lose access to the institution straight away. Their past signals stay on record.',
+                 confirm: 'Remove', danger: true }).then(function (yes) {
+      if (!yes) { return; }
+      team = team.filter(function (x) { return x.id !== t.id; });
+      T.save(team);
+      audit('team', 'member.removed', t.name + ' (' + T.label(t.role) + ') removed ' + A.by(me()));
+      MB.toast(t.name + ' removed');
+      paintAll();
+    });
+  });
+
+  MB.$('#btnInvite').addEventListener('click', function () {
+    if (!T.can(acting, 'team.manage')) { return; }
+    var roles = T.ROLES.filter(function (r) { return r.id !== 'owner' || acting === 'owner'; });
+    MB.modal({
+      title: 'Invite a team member',
+      sub: 'They get an email link to join ' + (d.company || 'the institution'),
+      body: '<div class="stack g3">' +
+        '<div class="field"><label for="invName">Full name</label><input class="input" id="invName" maxlength="60" autocomplete="off"></div>' +
+        '<div class="field"><label for="invEmail">Work email</label><input class="input" id="invEmail" type="email" maxlength="80" autocomplete="off"></div>' +
+        '<div class="field"><label for="invRole">Role</label><select class="select" id="invRole">' +
+          roles.map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'analyst' ? ' selected' : '') + '>' + MB.esc(r.label) + '</option>'; }).join('') +
+        '</select><span class="field-hint" id="invHint"></span></div></div>',
+      actions: [
+        { label: 'Cancel', kind: 'ghost', close: true },
+        { label: 'Send invite', kind: 'brand', onClick: function (m) {
+            var name = m.$('#invName').value.trim(), email = m.$('#invEmail').value.trim(), role = m.$('#invRole').value;
+            if (name.length < 2) { MB.toast('Enter their name', 'err'); return; }
+            if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { MB.toast('Enter a valid email', 'err'); return; }
+            if (team.some(function (t) { return t.email.toLowerCase() === email.toLowerCase(); })) { MB.toast('Already on the team', 'err'); return; }
+            team.push({ id: 'tm_' + Date.now().toString(36), name: name, email: email, role: role, title: 'Invited', added_at: new Date().toISOString() });
+            T.save(team);
+            /* Stage 2: POST /institutional/team/invites — emails a one-time link. */
+            MB.api.post('institutional/team/invites', { email: email, role: role });
+            audit('team', 'member.invited', name + ' invited as ' + T.label(role) + ' ' + A.by(me()));
+            m.close();
+            MB.toast('Invite sent to ' + email);
+            paintAll();
+          } }
+      ],
+      onOpen: function (root) {
+        var sel = root.querySelector('#invRole'), hint = root.querySelector('#invHint');
+        function h() { var r = T.ROLES.filter(function (x) { return x.id === sel.value; })[0]; hint.textContent = r ? r.blurb : ''; }
+        sel.addEventListener('change', h); h();
+      }
+    });
+  });
+
+  /* ---- publishing rule ------------------------------------------------- */
+  function paintRule() {
+    var can = T.can(acting, 'settings.manage');
+    var opts = [
+      ['direct', 'Analysts publish directly', 'Their signals go live as soon as they post them.'],
+      ['approval', 'Analysts need approval', 'Their signals wait as drafts until an Owner or Administrator approves them.']
+    ];
+    MB.$('#publishRule').innerHTML = opts.map(function (o) {
+      var on = settings.analyst_publish === o[0];
+      return '<label class="opt-row' + (on ? ' is-active' : '') + (can ? '' : ' is-locked') + '">' +
+        '<input type="radio" name="pubRule" value="' + o[0] + '"' + (on ? ' checked' : '') + (can ? '' : ' disabled') + '>' +
+        '<span><span class="or-t">' + o[1] + '</span><span class="or-d" style="display:block">' + o[2] + '</span></span></label>';
+    }).join('') + (can ? '' : '<p class="t-xs c-3 mt2">Only an Owner or Administrator can change this.</p>');
+  }
+  MB.$('#publishRule').addEventListener('change', function (e) {
+    if (!e.target.matches('input[name="pubRule"]') || !T.can(acting, 'settings.manage')) { return; }
+    settings.analyst_publish = e.target.value;
+    T.saveSettings(settings);
+    audit('settings', 'settings.changed', 'Analyst signals set to "' +
+      (settings.analyst_publish === 'direct' ? 'Publish directly' : 'Require approval') + '" ' + A.by(me()));
+    MB.toast('Saved');
+    paintAll();
+  });
+
+  /* ---- drafts ----------------------------------------------------------- */
+  function px(v) { return MB.fmt.price(v, Math.abs(v) >= 1000 ? 2 : 4); }
+  function paintDrafts() {
+    var pending = drafts.filter(function (x) { return x.status === 'pending'; });
+    var canApprove = T.can(acting, 'signals.approve');
+    MB.$('#draftQueue').innerHTML = pending.length ? pending.map(function (x) {
+      var buy = x.direction === 'BUY';
+      return '<div class="draft-row">' +
+        '<div class="between" style="gap:var(--mb-s2)">' +
+          '<div style="min-width:0"><div class="w-bold t-sm truncate">' + MB.esc(x.market) + ' ' +
+            '<span class="badge ' + (buy ? 'badge-buy' : 'badge-sell') + '">' + (buy ? 'BUY' : 'SELL') + '</span></div>' +
+            '<div class="t-xs c-3 truncate">' + MB.esc(x.author) + ' — ' + MB.esc(T.label(x.role)) + ' · ' + MB.fmt.ago(x.created_at) + '</div></div>' +
+          '<span class="badge badge-warn none">Waiting</span>' +
+        '</div>' +
+        '<div class="draft-levels">' +
+          '<div><div class="k">Entry</div><div class="v">' + px(x.entry) + '</div></div>' +
+          '<div><div class="k">Stop</div><div class="v c-down">' + px(x.sl) + '</div></div>' +
+          '<div><div class="k">TP1</div><div class="v c-up">' + px(x.tp1) + '</div></div>' +
+        '</div>' +
+        (x.note ? '<p class="t-xs c-2 mt2">' + MB.esc(x.note) + '</p>' : '') +
+        (canApprove ? '<div class="row g2 mt3" style="justify-content:flex-end">' +
+          '<button class="btn btn-ghost btn-sm" type="button" data-reject="' + x.id + '">Reject</button>' +
+          '<button class="btn btn-trade btn-sm" type="button" data-approve="' + x.id + '">Approve &amp; publish</button></div>' : '') +
+      '</div>';
+    }).join('') : '<div class="card t-sm c-3">No drafts waiting. ' +
+      (settings.analyst_publish === 'direct' ? 'Analysts currently publish directly.' : '') + '</div>';
+  }
+
+  MB.$('#draftQueue').addEventListener('click', function (e) {
+    var ap = e.target.closest('[data-approve]'), rj = e.target.closest('[data-reject]');
+    if ((!ap && !rj) || !T.can(acting, 'signals.approve')) { return; }
+    var x = drafts.filter(function (k) { return k.id === (ap || rj).getAttribute(ap ? 'data-approve' : 'data-reject'); })[0];
+    if (!x) { return; }
+    x.status = ap ? 'published' : 'rejected';
+    T.saveDrafts(drafts);
+    /* Stage 2: approving hands the draft to the signal pipeline (validation,
+       lock on publish, automated verification) as the institution's signal. */
+    audit('signal', ap ? 'signal.published' : 'draft.rejected', ap
+      ? 'Signal published (' + x.market + ' ' + x.direction + ') by ' + x.author + ' — ' + T.label(x.role) + ', approved ' + A.by(me())
+      : 'Signal draft (' + x.market + ' ' + x.direction + ') by ' + x.author + ' rejected ' + A.by(me()));
+    MB.toast(ap ? 'Published' : 'Draft rejected');
+    paintDrafts();
+  });
+
+  MB.$('#btnNewDraft').addEventListener('click', function () {
+    if (!T.can(acting, 'signals.draft')) { return; }
+    var who = me();
+    var direct = T.can(acting, 'signals.publish', settings);
+    var x = { id: 'dr_' + Date.now().toString(36), author: who.name, role: acting, market: 'EUR/USD', direction: 'BUY',
+              entry: 1.0842, sl: 1.0811, tp1: 1.0898, timeframe: '1H', note: 'Demo draft from the team page.',
+              created_at: new Date().toISOString(), status: direct ? 'published' : 'pending' };
+    drafts.unshift(x);
+    T.saveDrafts(drafts);
+    audit('signal', direct ? 'signal.published' : 'draft.submitted', direct
+      ? 'Signal published (EUR/USD BUY) ' + A.by(who)
+      : 'Signal draft (EUR/USD BUY) submitted for approval ' + A.by(who));
+    MB.toast(direct ? 'Published directly' : 'Draft sent for approval');
+    paintDrafts();
+  });
+
+  /* ---- matrix ----------------------------------------------------------- */
+  function paintMatrix() {
+    var head = '<thead><tr><th>Permission</th>' + T.ROLES.map(function (r) {
+      return '<th class="' + (r.id === acting ? 'is-acting' : '') + '">' + MB.esc(r.label.replace('Community Manager', 'Comm. Mgr').replace('Administrator', 'Admin')) + '</th>';
+    }).join('') + '</tr></thead>';
+    var body = '<tbody>' + T.ACTIONS.map(function (a) {
+      return '<tr><td><b>' + MB.esc(a.label) + '</b><span class="pm-h">' + MB.esc(a.hint) + '</span></td>' + T.ROLES.map(function (r) {
+        var cond = a.id === 'signals.publish' && r.id === 'analyst';
+        var yes = T.can(r.id, a.id, settings);
+        return '<td class="' + (r.id === acting ? 'is-acting ' : '') + (cond ? 'pm-c' : yes ? 'pm-y' : 'pm-n') + '"' +
+          (cond ? ' title="Depends on the institution setting"' : '') + '>' +
+          (cond ? (yes ? MB.icon('check', 14) : '') + ' If allowed' : yes ? MB.icon('check', 14) : '—') + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody>';
+    MB.$('#permMatrix').innerHTML = '<table class="perm">' + head + body + '</table>';
+    MB.$('#roleList').innerHTML = T.ROLES.map(function (r) {
+      return '<div class="row g2" style="align-items:flex-start"><span class="role-chip role-' + r.id + '">' + MB.esc(r.label) + '</span>' +
+        '<span class="t-xs c-2">' + MB.esc(r.blurb) + '</span></div>';
+    }).join('');
+  }
+
+  function paintAll() {
+    paintTeam(); paintRule(); paintDrafts(); paintMatrix();
+    T.apply(document, acting);
+    MB.mountIcons();
+  }
+
+  T.switcher(MB.$('#actingAs'), function (role) { acting = role; paintAll(); });
+
+  MB.api.get('institutional').then(function (r) {
+    d = r.data || {};
+    team = T.load(d); settings = T.settings(d); drafts = T.drafts(d);
+    MB.$('#instName').textContent = d.company || '—';
+    MB.$('#ptype').innerHTML = MB.instProfile.badge(d);
+    paintAll();
+  });
+});
+</script>
+</body>
+</html>

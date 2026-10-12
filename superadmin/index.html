@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../assets/css/base.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/referrals.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="admin" data-role="superadmin" data-nav="dashboard" data-root="../">
@@ -79,6 +80,13 @@
           </div>
         </section>
       </div>
+
+      <section class="panel rf-widget" id="topReferrersCard">
+        <div class="panel-head"><h2>Top Referrers</h2>
+          <span class="rf-note grow" style="text-align:right">by platform fees from referred users · last 30 days</span>
+          <a class="t-sm c-up w-semi" href="referrals.html">View all</a></div>
+        <div class="panel-body-flush" id="topReferrers"></div>
+      </section>
     </main>
   </div>
 </div>
@@ -91,6 +99,7 @@
 <script src="../assets/js/core/ws.js"></script>
 <script src="../assets/js/components/cards.js"></script>
 <script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/components/referrals.js"></script>
 <script src="../assets/js/core/roles.js"></script>
 <script src="../assets/js/core/shell.js"></script>
 <script>
@@ -167,6 +176,18 @@ MB.ready(function () {
     }).join('');
     MB.mountIcons();
   });
+
+  /* Top Referrers — ranked by the platform fees their referred users generated,
+     so a referrer with many sign-ups and no paying users does not top it. */
+  if (MB.referrals) {
+    MB.referrals.load().then(function () {
+      var R = MB.referrals, r = R.range('30d');
+      document.getElementById('topReferrers').innerHTML =
+        R.leaderboardHTML(R.rank(R.perReferrer(r), 'revenue'), { limit: 5, compact: true });
+    }).catch(function () {
+      document.getElementById('topReferrers').innerHTML = '<div class="empty rf-empty"><h3>Could not load referrers</h3></div>';
+    });
+  }
 
   MB.api.list('admin/reports').then(function (rows) {
     document.getElementById('recentReports').innerHTML = rows.slice(0, 6).map(function (r) {

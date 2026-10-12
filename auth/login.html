@@ -92,7 +92,8 @@
 <script src="../assets/js/core/pwa.js"></script>
 <script>
 MB.ready(function () {
-  document.getElementById('brandSlot').outerHTML = MB.brand({ large: true });
+  var slot = document.getElementById('brandSlot');
+  (slot.closest('a.brand') || slot).outerHTML = MB.brand({ href: '../index.html' });
   MB.mountIcons();
 
   document.getElementById('loginForm').addEventListener('submit', function (e) {

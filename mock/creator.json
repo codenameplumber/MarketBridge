@@ -1,0 +1,40 @@
+{
+  "data": {
+    "profile": {
+      "display_name": "FX_ProTrader",
+      "username": "fx_protrader",
+      "pro": true,
+      "verified": true,
+      "room_members": 438,
+      "signals": 156,
+      "win_rate": 78
+    },
+    "currency": "USD",
+    "summary": {
+      "available": 280.40,
+      "pending": 40.00,
+      "lifetime": 1245.60,
+      "withdrawn": 925.20
+    },
+    "kaastropay": {
+      "linked": true,
+      "verified": true,
+      "account_name": "John Trader",
+      "email": "john@example.com",
+      "linked_at": "2026-06-02T10:15:00Z"
+    },
+    "earnings": [
+      { "id": "ER5521", "source": "pro_room", "title": "V75 Elite Room — new subscriptions", "units": "15 members × 2 KX", "gross": 30.00, "commission": 6.00, "net": 24.00, "status": "pending", "at": "2026-10-09T09:00:00Z", "available_at": "2026-10-16T09:00:00Z" },
+      { "id": "ER5517", "source": "course", "title": "Synthetic Indices Masterclass", "units": "1 sale × 20 KX", "gross": 20.00, "commission": 4.00, "net": 16.00, "status": "pending", "at": "2026-10-07T14:30:00Z", "available_at": "2026-10-14T14:30:00Z" },
+      { "id": "ER5490", "source": "pro_room", "title": "V75 Elite Room — September", "units": "438 members × 2 KX", "gross": 876.00, "commission": 175.20, "net": 700.80, "status": "available", "at": "2026-09-30T23:59:00Z", "available_at": "2026-10-07T23:59:00Z" },
+      { "id": "ER5466", "source": "course", "title": "Synthetic Indices Masterclass", "units": "15 sales × 20 KX", "gross": 300.00, "commission": 60.00, "net": 240.00, "status": "available", "at": "2026-09-18T12:00:00Z", "available_at": "2026-09-25T12:00:00Z" },
+      { "id": "ER5431", "source": "webinar", "title": "Boom & Crash live session", "units": "30 seats × 4 KX", "gross": 120.00, "commission": 24.00, "net": 96.00, "status": "available", "at": "2026-09-06T18:00:00Z", "available_at": "2026-09-13T18:00:00Z" },
+      { "id": "ER5402", "source": "pro_room", "title": "V75 Elite Room — August", "units": "211 members × 1 KX", "gross": 211.00, "commission": 42.20, "net": 168.80, "status": "available", "at": "2026-08-31T23:59:00Z", "available_at": "2026-09-07T23:59:00Z" }
+    ],
+    "withdrawals": [
+      { "id": "WD8923471", "amount": 100.00, "fee": 0, "received": 100.00, "currency": "USD", "destination": "John Trader — KaastroPay", "destination_email": "john@example.com", "status": "completed", "created_at": "2026-10-01T09:44:00Z", "completed_at": "2026-10-01T09:45:00Z" },
+      { "id": "WD8923318", "amount": 325.20, "fee": 0, "received": 325.20, "currency": "USD", "destination": "John Trader — KaastroPay", "destination_email": "john@example.com", "status": "completed", "created_at": "2026-09-14T08:02:00Z", "completed_at": "2026-09-14T08:06:00Z" },
+      { "id": "WD8923104", "amount": 500.00, "fee": 0, "received": 500.00, "currency": "USD", "destination": "John Trader — KaastroPay", "destination_email": "john@example.com", "status": "completed", "created_at": "2026-08-12T17:20:00Z", "completed_at": "2026-08-12T17:23:00Z" }
+    ]
+  }
+}

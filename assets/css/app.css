@@ -39,6 +39,19 @@
 }
 .topbar-title { font-size: var(--mb-t-h1); font-weight: var(--mb-w-black); letter-spacing: -.03em; }
 .topbar-sub { font-size: var(--mb-t-xs); color: var(--mb-text-2); margin-top: 1px; }
+.topbar-title.is-inner { font-size: var(--mb-t-h2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-title.is-inner.is-long { font-size: var(--mb-t-h3); }
+.topbar-sub.is-inner { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Small phones: the Home bar's wordmark and three controls must share 320px.
+   The theme switch steps out below 340px — it stays in Settings. */
+@media (max-width: 360px) {
+  .topbar { gap: var(--mb-s2); padding-left: var(--mb-s4); padding-right: var(--mb-s4); }
+  .topbar .kx-word { font-size: 19px; }
+  .topbar .kx-sub { font-size: 6.5px; letter-spacing: .16em; }
+}
+@media (max-width: 340px) {
+  .topbar [data-theme-toggle] { display: none; }
+}
 .topbar-back {
   width: 34px; height: 34px; margin-left: -6px; flex: none;
   display: flex; align-items: center; justify-content: center;
@@ -621,3 +634,251 @@
   border-radius: var(--mb-r-sm); cursor: pointer;
   object-fit: cover; width: auto;
 }
+
+/* ==========================================================================
+   INSTITUTIONAL TRADING BANNER — Home, between Popular Markets and Trade Now
+   Stays a dark, "trading floor" panel in both themes: in light mode the
+   ground takes the ink token and the ink takes the ground token, so no
+   colour literal is needed and the banner still re-themes with tokens.
+   ========================================================================== */
+.inst-banner {
+  --ib-ground: var(--mb-bg);
+  --ib-ink: var(--mb-text);
+  position: relative; overflow: hidden; isolation: isolate;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--mb-s4);
+  padding: var(--mb-s5) var(--mb-s4);
+  border-radius: var(--mb-r-lg);
+  border: 1px solid var(--mb-green-line);
+  background:
+    radial-gradient(90% 110% at 100% 0%, var(--mb-green-glow) 0%, transparent 62%),
+    linear-gradient(160deg, var(--ib-ground) 38%, color-mix(in srgb, var(--mb-green) 14%, var(--ib-ground)) 100%);
+  color: var(--ib-ink);
+}
+[data-theme="light"] .inst-banner {
+  --ib-ground: var(--mb-text);
+  --ib-ink: var(--mb-bg);
+  border-color: transparent;
+  box-shadow: var(--mb-shadow-md);
+}
+
+.ib-art {
+  position: absolute; z-index: -1; right: 0; bottom: 0;
+  width: 72%; height: 100%; opacity: .42; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, var(--mb-green) 55%);
+          mask-image: linear-gradient(to right, transparent 0%, var(--mb-green) 55%);
+}
+.ib-grid path { fill: none; stroke: color-mix(in srgb, var(--ib-ink) 8%, transparent); stroke-width: 1; }
+.ib-candles path { fill: none; stroke-width: 1.5; }
+.ib-candles .up { stroke: var(--mb-green); fill: var(--mb-green); }
+.ib-candles .dn { stroke: var(--mb-sell); fill: var(--mb-sell); }
+.ib-bldg path {
+  fill: color-mix(in srgb, var(--mb-green) 16%, var(--ib-ground));
+  stroke: color-mix(in srgb, var(--mb-green) 45%, transparent); stroke-width: 1;
+}
+.ib-win path {
+  fill: none; stroke: color-mix(in srgb, var(--mb-green) 55%, transparent);
+  stroke-width: 2; stroke-dasharray: 2 3;
+}
+.ib-line {
+  fill: none; stroke: var(--mb-green); stroke-width: 2.5;
+  stroke-linejoin: round; stroke-linecap: round;
+  filter: drop-shadow(0 0 4px var(--mb-green-glow));
+}
+.ib-dot { fill: var(--mb-green); }
+
+.ib-copy { position: relative; min-width: 0; }
+.ib-title {
+  margin-top: var(--mb-s2);
+  font-size: clamp(20px, 6.2vw, 26px); font-weight: var(--mb-w-black);
+  line-height: 1.15; letter-spacing: -.02em; color: var(--ib-ink);
+}
+.ib-title span { color: var(--mb-green); }
+.ib-text {
+  margin-top: var(--mb-s2); max-width: 38ch;
+  font-size: var(--mb-t-sm); line-height: var(--mb-lh-sm);
+  color: color-mix(in srgb, var(--ib-ink) 80%, transparent);
+}
+.ib-cta { margin-top: var(--mb-s4); }
+.ib-cta svg { width: 16px; height: 16px; }
+
+.ib-feats { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mb-s2); }
+.ib-feats li {
+  display: flex; align-items: center; gap: var(--mb-s2); min-width: 0;
+  padding: var(--mb-s2) 10px; border-radius: var(--mb-r-sm);
+  background: color-mix(in srgb, var(--ib-ground) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ib-ink) 14%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-semi); line-height: 1.25;
+  color: var(--ib-ink);
+}
+.ib-feats li > span { flex: none; display: flex; color: var(--mb-green); }
+
+@media (min-width: 470px) {
+  .inst-banner { grid-template-columns: minmax(0, 1fr) 172px; align-items: center; }
+  .ib-feats { grid-template-columns: minmax(0, 1fr); }
+  .ib-art { width: 66%; opacity: .78; }
+}
+
+/* ==========================================================================
+   MY PROFILE — type badge, KX chips, progression, achievements strip,
+   the two performance records and the single Deriv connection
+   ========================================================================== */
+.pf-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.pf-type, .pf-partner {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: var(--mb-r-pill);
+  font-size: 10px; font-weight: var(--mb-w-bold); white-space: nowrap;
+}
+.pf-type { background: var(--mb-info-soft); color: var(--mb-info); }
+.pf-partner { background: var(--mb-green-soft); color: var(--mb-green); border: 1px solid var(--mb-green-line); }
+.pf-type svg, .pf-partner svg { width: 12px; height: 12px; }
+
+.pf-kx { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mb-s2); margin-top: var(--mb-s2); }
+.pf-kx[hidden] { display: none; }
+.pf-kx-chip {
+  display: flex; align-items: center; gap: var(--mb-s2); min-width: 0;
+  padding: var(--mb-s3); border-radius: var(--mb-r-md);
+  border: 1px solid var(--mb-border); background: var(--mb-surface);
+}
+.pf-kx-chip:hover { border-color: var(--mb-border-2); }
+.pf-kx-ic {
+  width: 30px; height: 30px; flex: none; border-radius: var(--mb-r-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: var(--mb-w-black);
+}
+.pf-kx-ic.is-credit { background: var(--mb-green-soft); color: var(--mb-green); }
+.pf-kx-ic.is-points { background: var(--mb-warn-soft); color: var(--mb-warn); }
+.pf-kx-k { display: block; font-size: 10px; color: var(--mb-text-3); font-weight: var(--mb-w-semi); }
+.pf-kx-v { display: block; font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Progression ladder — scrolls sideways on a phone, current rung centred */
+.prog-strip {
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  margin: 0 calc(var(--mb-s2) * -1); padding: 2px var(--mb-s2) 4px;
+  scroll-behavior: smooth;
+}
+.prog-strip::-webkit-scrollbar { display: none; }
+.prog-step {
+  position: relative; flex: 1 0 74px; min-width: 74px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+}
+.prog-step::before {
+  content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 2px;
+  background: var(--mb-border-2);
+}
+.prog-step:first-child::before { display: none; }
+.prog-step.is-done::before, .prog-step.is-current::before { background: var(--mb-green); }
+.prog-dot {
+  position: relative; width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mb-surface-2); border: 2px solid var(--mb-border-2);
+  font-size: 10px; font-weight: var(--mb-w-bold); color: var(--mb-text-3);
+}
+.prog-dot svg { width: 12px; height: 12px; }
+.prog-step.is-done .prog-dot { background: var(--mb-green); border-color: var(--mb-green); color: var(--mb-text-inv); }
+.prog-step.is-current .prog-dot {
+  background: var(--mb-green-soft); border-color: var(--mb-green); color: var(--mb-green);
+  box-shadow: 0 0 0 4px var(--mb-green-soft);
+}
+.prog-l { font-size: 10px; font-weight: var(--mb-w-semi); color: var(--mb-text-3); line-height: 1.2; }
+.prog-step.is-done .prog-l { color: var(--mb-text-2); }
+.prog-step.is-current .prog-l { color: var(--mb-text); font-weight: var(--mb-w-bold); }
+[data-theme="light"] .prog-dot { background: var(--mb-surface); }
+
+/* Achievements strip — badge names only, never how they are earned */
+.achv-strip { gap: var(--mb-s2); }
+.achv-chip {
+  width: 92px; display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: var(--mb-s3) var(--mb-s2); border-radius: var(--mb-r-md); text-align: center;
+  border: 1px solid var(--mb-border); background: var(--mb-surface);
+}
+.achv-chip:hover { border-color: var(--mb-border-2); }
+.achv-chip-ic {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Earned chips take their tier colours (.achv-tier-*); locked ones stay grey. */
+.achv-chip.is-locked .achv-chip-ic { background: var(--mb-surface-2); color: var(--mb-text-3); }
+.achv-chip-n { font-size: 10px; font-weight: var(--mb-w-bold); line-height: 1.25; color: var(--mb-text); }
+.achv-chip-s { font-size: 9px; color: var(--mb-green); font-weight: var(--mb-w-semi); }
+.achv-chip.is-locked { opacity: .62; }
+.achv-chip.is-locked .achv-chip-s { color: var(--mb-text-3); }
+[data-theme="light"] .achv-chip { box-shadow: var(--mb-shadow-sm); }
+
+/* The two performance records */
+.perf-card { display: flex; flex-direction: column; }
+.perf-head { display: flex; align-items: flex-start; gap: var(--mb-s3); }
+.perf-ic {
+  width: 34px; height: 34px; flex: none; border-radius: var(--mb-r-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+.perf-ic.is-signal { background: var(--mb-pro-soft); color: var(--mb-pro); }
+.perf-ic.is-deriv  { background: var(--mb-green-soft); color: var(--mb-green); }
+.perf-src { font-size: 10px; color: var(--mb-text-3); margin-top: 2px; line-height: 1.35; }
+/* Four money-sized figures only fit side by side at the full app width. */
+@media (max-width: 460px) {
+  .perf-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--mb-s3); }
+}
+@media (max-width: 380px) {
+  .perf-head { flex-wrap: wrap; }
+  .perf-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pf-kx-chip > [data-icon] { display: none; }
+}
+
+/* One connected Deriv login, its sub-accounts beneath */
+.drv-login {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s4); border-bottom: 1px solid var(--mb-border);
+}
+.drv-mark {
+  width: 40px; height: 40px; flex: none; border-radius: var(--mb-r-sm);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--vy-brand-soft); color: var(--vy-brand);
+  font-size: var(--mb-t-h3); font-weight: var(--mb-w-black); font-style: italic;
+}
+.drv-id { display: block; font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); }
+.drv-sub { display: block; font-size: var(--mb-t-xs); color: var(--mb-text-3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.drv-total {
+  display: flex; align-items: center; gap: var(--mb-s2);
+  padding: var(--mb-s3) var(--mb-s4); border-bottom: 1px solid var(--mb-border);
+  background: var(--mb-bg-2);
+}
+.drv-total-v { margin-left: auto; font-size: var(--mb-t-h3); font-weight: var(--mb-w-black); }
+#acctList .acct-row { padding-left: calc(var(--mb-s4) + var(--mb-s3)); }
+/* Badges in the identity card are toggled with [hidden]; their display rules must not win. */
+.pf-card [hidden] { display: none !important; }
+
+/* ==========================================================================
+   PROFILE — identity block, action row, tabs, stat tiles
+   ========================================================================== */
+.prof-hero { padding: var(--mb-s4); }
+.prof-top { display: flex; align-items: center; gap: var(--mb-s4); }
+.prof-av { position: relative; flex: none; }
+.prof-tick {
+  position: absolute; right: -1px; bottom: 1px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--mb-green); color: var(--mb-text-inv); border: 2px solid var(--mb-surface);
+  display: flex; align-items: center; justify-content: center;
+}
+.prof-tick svg { width: 12px; height: 12px; }
+.prof-id { min-width: 0; flex: 1; }
+.prof-name { display: flex; align-items: center; gap: 8px; font-size: var(--mb-t-h2); font-weight: var(--mb-w-black); letter-spacing: -.02em; line-height: 1.15; min-width: 0; }
+.prof-name > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.prof-handle { font-size: var(--mb-t-sm); color: var(--mb-text-3); margin-top: 2px; }
+.prof-title { font-size: var(--mb-t-sm); color: var(--mb-text-2); margin-top: 2px; }
+.prof-chipline { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+.prof-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: var(--mb-s3); font-size: var(--mb-t-xs); color: var(--mb-text-2); }
+.prof-meta > span { display: inline-flex; align-items: center; gap: 5px; }
+.prof-meta svg { width: 13px; height: 13px; color: var(--mb-text-3); }
+.prof-actions { display: flex; gap: var(--mb-s2); margin-top: var(--mb-s4); }
+.prof-actions .btn-ico { width: 46px; padding: 0; flex: none; }
+.prof-tabs { margin-top: var(--mb-s4); }
+.prof-stats .stat-v { font-size: var(--mb-t-h3); }
+.prof-pane[hidden] { display: none; }
+.prof-empty { text-align: center; padding: var(--mb-s7) var(--mb-s4); }
+.prof-empty svg { color: var(--mb-text-3); }
+.res-row { display: flex; align-items: center; gap: var(--mb-s3); padding: var(--mb-s3) 0; border-bottom: 1px solid var(--mb-border); }
+.res-row:last-child { border-bottom: 0; }
+.res-dir { width: 34px; height: 34px; border-radius: var(--mb-r-sm); flex: none; display: inline-flex; align-items: center; justify-content: center; }
+.res-dir.is-buy  { background: var(--mb-green-soft); color: var(--mb-green); }
+.res-dir.is-sell { background: var(--mb-sell-soft);  color: var(--mb-sell); }
+.res-pts { font-weight: var(--mb-w-bold); font-variant-numeric: tabular-nums; white-space: nowrap; }

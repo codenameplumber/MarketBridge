@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/rooms.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="community" data-root="../../" data-title="Rooms" data-sub="One per market, plus personal trader rooms" data-back="index.html" data-unread="3">
@@ -35,6 +36,12 @@
         <button class="chip" data-value="mine">Joined</button>
         <button class="chip" data-value="owner">I own</button>
         <button class="chip" data-value="unjoined" data-can="room.view_all">Not joined</button>
+      </div>
+      <div class="chips" data-group id="tierChips" aria-label="Trader room tier">
+        <button class="chip is-active" data-value="all">Any tier</button>
+        <button class="chip" data-value="trader">Trader</button>
+        <button class="chip" data-value="premium">Premium</button>
+        <button class="chip" data-value="pro">Pro</button>
       </div>
       <div class="chips" data-group id="catChips"></div>
       <div class="filter-row"><span class="filter-count"><span id="roomCount">0</span> rooms</span></div>
@@ -58,6 +65,8 @@
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/rooms.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
@@ -87,17 +96,19 @@
 MB.ready(function () {
   document.getElementById('catChips').innerHTML = catChips();
   var c = MB.collection({
-    from: 'rooms', into: '#roomList', template: MB.card.roomRow,
+    from: 'rooms', into: '#roomList',
+    template: function (r) { return r.kind === 'trader' ? MB.card.roomTier(r) : MB.card.roomRow(r); },
     perPage: 10, mode: 'more', countInto: '#roomCount', skeleton: false,
     /* A follower-only room is normally invisible unless you are in it.
        room.view_all is what lets a moderator see the whole board. */
     prepare: function (rows) {
+      rows = MB.rooms.merge(rows);
       if (MB.roles && MB.roles.can('room.view_all')) { return rows; }
       return rows.filter(function (r) {
         return r.visibility === 'public' || r.is_member;
       });
     },
-    initial: { tab:'all', category:'all', q:'' },
+    initial: { tab:'all', category:'all', tier:'all', q:'' },
     filters: {
       tab: function (r, v) {
         if (v === 'all') { return true; }
@@ -107,11 +118,13 @@ MB.ready(function () {
         return r.kind === v;
       },
       category: function (r, v) { return v === 'all' || (r.market && r.market.category === v); },
+      tier: function (r, v) { return v === 'all' || MB.rooms.tier(r) === v; },
       q: function (r, v) { return r.name.toLowerCase().indexOf(v) > -1; }
     },
     emptyIcon: 'community', emptyTitle: 'No rooms match', emptyText: 'Try another filter.'
   });
-  c.bind('#roomTabs', 'tab').bind('#catChips', 'category').bindInput('#roomSearch', 'q');
+  c.bind('#roomTabs', 'tab').bind('#catChips', 'category').bind('#tierChips', 'tier').bindInput('#roomSearch', 'q');
+  MB.rooms.wireList(MB.$('#roomList'), function () { return c.all(); }, function () { c.refresh(); });
 
   /* The session lands after the first render, so redo it once the role is
      known — otherwise a moderator would see the ordinary user's board. */

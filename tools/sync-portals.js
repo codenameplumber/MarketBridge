@@ -44,7 +44,9 @@ const PORTALS = {
     'boosted.html',
     'community.html', 'community-detail.html',
     'resources.html', 'resource-edit.html',
-    'reports.html', 'markets.html', 'transactions.html'
+    'reports.html', 'markets.html', 'transactions.html',
+    'disputes.html', 'dispute-detail.html',
+    'referrals.html', 'referral-detail.html'
   ]
 };
 

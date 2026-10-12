@@ -1,0 +1,346 @@
+/* ==========================================================================
+   KonfluenX — KX ECONOMY
+   Wallet & Credits, KaastroPay checkout, receipts, KX Points, creator
+   earnings. Tokens only — no colour values in this file.
+   ========================================================================== */
+
+/* ---------- KX balance hero -------------------------------------------- */
+.kx-hero {
+  position: relative; overflow: hidden;
+  padding: var(--mb-s5); border-radius: var(--mb-r-xl);
+  background: linear-gradient(150deg, var(--mb-green-soft), var(--mb-surface) 62%);
+  border: 1px solid var(--mb-green-line);
+}
+.kx-hero-top { display: flex; align-items: center; gap: var(--mb-s3); }
+.kx-mark {
+  width: 46px; height: 46px; flex: none; border-radius: var(--mb-r-md);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-green); color: var(--mb-text-inv);
+  font-weight: var(--mb-w-black); font-size: 22px; letter-spacing: -.04em;
+}
+.kx-mark.is-sm { width: 34px; height: 34px; font-size: 16px; border-radius: var(--mb-r-sm); }
+.kx-hero .kx-label { font-size: var(--mb-t-sm); color: var(--mb-text-2); font-weight: var(--mb-w-semi); }
+.kx-hero .kx-amount {
+  font-size: var(--mb-t-display); font-weight: var(--mb-w-black); letter-spacing: -.03em;
+  line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.kx-hero .kx-amount small { font-size: var(--mb-t-h3); color: var(--mb-text-2); margin-left: 4px; font-weight: var(--mb-w-bold); }
+.kx-hero .kx-hero-sub { font-size: var(--mb-t-xs); color: var(--mb-text-3); margin-top: 2px; }
+.kx-hero-actions { display: grid; grid-template-columns: 1fr; gap: var(--mb-s2); margin-top: var(--mb-s4); }
+
+/* ---------- "What KX is for" tiles -------------------------------------- */
+.kx-uses { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mb-s3); }
+.kx-use {
+  display: flex; flex-direction: column; gap: 6px; min-width: 0;
+  padding: var(--mb-s4); border-radius: var(--mb-r-lg);
+  background: var(--mb-surface); border: 1px solid var(--mb-border);
+  color: var(--mb-text); transition: border-color var(--mb-fast) var(--mb-ease);
+}
+a.kx-use:hover { border-color: var(--mb-border-2); }
+.kx-use .kx-use-ic {
+  width: 36px; height: 36px; border-radius: var(--mb-r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-green-soft); color: var(--mb-green);
+}
+.kx-use .kx-use-ic svg { width: 20px; height: 20px; }
+.kx-use.is-points .kx-use-ic { background: var(--mb-boost-soft); color: var(--mb-boost); }
+.kx-use b { font-size: var(--mb-t-sm); }
+.kx-use span { font-size: var(--mb-t-xs); color: var(--mb-text-3); line-height: 1.35; }
+
+/* ---------- Amount picker ---------------------------------------------- */
+.kx-amounts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--mb-s2); }
+.kx-amt {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; min-width: 0; padding: var(--mb-s3) var(--mb-s1);
+  border-radius: var(--mb-r-md); cursor: pointer;
+  background: var(--mb-surface-2); border: 1px solid var(--mb-border-2); color: var(--mb-text);
+  transition: border-color var(--mb-fast) var(--mb-ease), background var(--mb-fast) var(--mb-ease);
+}
+.kx-amt b { font-size: var(--mb-t-h3); font-weight: var(--mb-w-black); white-space: nowrap; }
+.kx-amt span { font-size: var(--mb-t-xs); color: var(--mb-text-3); }
+.kx-amt.is-active { border-color: var(--mb-green); background: var(--mb-green-soft); }
+.kx-amt.is-active span { color: var(--mb-green); }
+
+.kx-custom { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--mb-s2); align-items: center; }
+.kx-custom .kx-eq { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); color: var(--mb-text-2); white-space: nowrap; }
+.kx-prefix { position: relative; }
+.kx-prefix > span {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--mb-text-3); font-weight: var(--mb-w-bold); pointer-events: none;
+}
+.kx-prefix .input { padding-left: 30px; }
+
+/* ---------- Payment method --------------------------------------------- */
+.kx-method {
+  display: flex; align-items: center; gap: var(--mb-s3);
+  padding: var(--mb-s3) var(--mb-s4); border-radius: var(--mb-r-md);
+  border: 1px solid var(--mb-green-line); background: var(--mb-green-soft);
+}
+.kx-coin {
+  width: 36px; height: 36px; flex: none; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-green); color: var(--mb-text-inv);
+  font-weight: var(--mb-w-black); font-size: 16px;
+}
+.kx-method .kx-tick { color: var(--mb-green); flex: none; }
+.kx-method .kx-tick svg { width: 20px; height: 20px; }
+.kx-points-list { display: flex; flex-direction: column; gap: var(--mb-s2); }
+.kx-point { display: flex; gap: var(--mb-s2); align-items: flex-start; font-size: var(--mb-t-xs); color: var(--mb-text-2); }
+.kx-point svg { width: 15px; height: 15px; flex: none; color: var(--mb-green); margin-top: 1px; }
+
+/* ---------- Checkout --------------------------------------------------- */
+.kx-pay-head .kx-pay-amt { font-size: var(--mb-t-h1); font-weight: var(--mb-w-black); letter-spacing: -.02em; }
+.kx-timer {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px var(--mb-s3); border-radius: var(--mb-r-pill);
+  background: var(--mb-green-soft); color: var(--mb-green);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-bold);
+}
+.kx-timer svg { width: 14px; height: 14px; }
+.kx-timer.is-low { background: var(--mb-warn-soft); color: var(--mb-warn); }
+.kx-qr-wrap { display: flex; flex-direction: column; align-items: center; gap: var(--mb-s2); }
+.kx-qr {
+  position: relative; width: 196px; max-width: 100%; aspect-ratio: 1 / 1;
+  padding: 12px; border-radius: var(--mb-r-md);
+  background: var(--mb-text-on-red);              /* always white behind a QR */
+  color: var(--mb-text-inv);                      /* modules: near-black      */
+}
+[data-theme="light"] .kx-qr { color: var(--mb-text); box-shadow: var(--mb-shadow-sm); border: 1px solid var(--mb-border-2); }
+.kx-qr svg { width: 100%; height: 100%; display: block; }
+.kx-qr .kx-qr-logo {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mb-green); color: var(--mb-text-inv);
+  font-weight: var(--mb-w-black); font-size: 18px;
+  border: 3px solid var(--mb-text-on-red);
+}
+.kx-demo-tag {
+  font-size: 10px; font-weight: var(--mb-w-bold); text-transform: uppercase; letter-spacing: .06em;
+  padding: 2px 8px; border-radius: var(--mb-r-pill);
+  background: var(--mb-warn-soft); color: var(--mb-warn);
+}
+.kx-addr {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--mb-s2); align-items: center;
+}
+.kx-addr code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: var(--mb-t-xs); color: var(--mb-text); word-break: break-all; line-height: 1.5;
+}
+.kx-kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mb-s3); }
+.kx-kv .k { font-size: var(--mb-t-xs); color: var(--mb-text-3); }
+.kx-kv .v { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); margin-top: 2px; overflow-wrap: anywhere; }
+
+/* ---------- Progress steps (confirmation, payouts) ---------------------- */
+.kx-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.kx-step { position: relative; display: flex; gap: var(--mb-s3); padding-bottom: var(--mb-s4); }
+.kx-step:last-child { padding-bottom: 0; }
+.kx-step::before {
+  content: ""; position: absolute; left: 11px; top: 26px; bottom: 2px; width: 2px;
+  background: var(--mb-border-2);
+}
+.kx-step:last-child::before { display: none; }
+.kx-step.is-done::before { background: var(--mb-green); }
+.kx-dot {
+  width: 24px; height: 24px; flex: none; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid var(--mb-border-2); background: var(--mb-surface); color: var(--mb-text-3);
+}
+.kx-dot svg { width: 13px; height: 13px; }
+.kx-step.is-done .kx-dot { background: var(--mb-green); border-color: var(--mb-green); color: var(--mb-text-inv); }
+.kx-step.is-active .kx-dot { border-color: var(--mb-green); color: var(--mb-green); }
+.kx-step.is-active .kx-dot::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--mb-green);
+  animation: kx-pulse 1.1s var(--mb-ease) infinite alternate;
+}
+.kx-step.is-fail .kx-dot { border-color: var(--mb-warn); color: var(--mb-warn); }
+.kx-step .kx-step-t { font-size: var(--mb-t-sm); font-weight: var(--mb-w-semi); }
+.kx-step .kx-step-s { font-size: var(--mb-t-xs); color: var(--mb-text-3); margin-top: 1px; }
+.kx-step.is-todo .kx-step-t { color: var(--mb-text-3); }
+@keyframes kx-pulse { from { opacity: .35; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .kx-step.is-active .kx-dot::after { animation: none; } }
+
+/* ---------- Success / state hero --------------------------------------- */
+.kx-state { text-align: center; padding: var(--mb-s4) 0 var(--mb-s2); }
+.kx-state-ic {
+  width: 76px; height: 76px; margin: 0 auto var(--mb-s3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--mb-green); color: var(--mb-text-inv);
+  box-shadow: 0 0 0 10px var(--mb-green-soft);
+}
+.kx-state-ic svg { width: 38px; height: 38px; }
+.kx-state-ic.is-wait { background: var(--mb-warn-soft); color: var(--mb-warn); box-shadow: none; }
+.kx-state-ic.is-bad { background: var(--mb-warn-soft); color: var(--mb-warn); box-shadow: none; }
+.kx-state h2 { font-size: var(--mb-t-h1); font-weight: var(--mb-w-black); letter-spacing: -.02em; }
+.kx-state p { font-size: var(--mb-t-sm); color: var(--mb-text-2); margin-top: var(--mb-s2); }
+.kx-state p b { color: var(--mb-green); }
+
+/* ---------- Transaction rows ------------------------------------------- */
+.kx-row-ic {
+  width: 36px; height: 36px; flex: none; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-surface-2); color: var(--mb-text-2);
+}
+.kx-row-ic svg { width: 18px; height: 18px; }
+.kx-row-ic.is-topup { background: var(--mb-green-soft); color: var(--mb-green); }
+.kx-row-ic.is-subscription { background: var(--mb-boost-soft); color: var(--mb-boost); }
+.kx-row-ic.is-purchase { background: var(--mb-pro-soft); color: var(--mb-pro); }
+.kx-amt-val { font-size: var(--mb-t-sm); font-weight: var(--mb-w-black); white-space: nowrap; }
+a.list-row { color: inherit; }
+.list-row.is-tight { gap: var(--mb-s3); }
+
+/* ---------- Receipt — KaastroPay style ---------------------------------- */
+.rc { display: flex; flex-direction: column; gap: var(--mb-s3); }
+.rc-hero {
+  position: relative; overflow: hidden;
+  padding: var(--mb-s5); border-radius: var(--mb-r-xl);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--mb-green-press) 72%, var(--mb-bg)), color-mix(in srgb, var(--mb-green-press) 88%, var(--mb-bg)));
+  color: var(--mb-text-on-red);
+}
+[data-theme="light"] .rc-hero {
+  background: linear-gradient(135deg, var(--mb-green-press), color-mix(in srgb, var(--mb-green-press) 82%, var(--mb-text)));
+}
+.rc-hero::after {
+  content: ""; position: absolute; right: -60px; top: -40px; width: 200px; height: 200px; border-radius: 50%;
+  background: color-mix(in srgb, var(--mb-text-on-red) 9%, transparent); pointer-events: none;
+}
+.rc-brand { display: inline-flex; align-items: center; gap: 6px; font-size: var(--mb-t-xs); font-weight: var(--mb-w-black); letter-spacing: .06em; text-transform: uppercase; }
+.rc-brand svg { width: 16px; height: 16px; }
+.rc-title { font-size: var(--mb-t-h3); font-weight: var(--mb-w-bold); margin-top: var(--mb-s3); }
+.rc-amount {
+  font-size: 34px; font-weight: var(--mb-w-black); letter-spacing: -.03em; line-height: 1.15;
+  margin-top: 2px; overflow-wrap: anywhere;
+}
+.rc-pill {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: var(--mb-s3);
+  padding: 6px var(--mb-s3); border-radius: var(--mb-r-pill);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-black);
+}
+.rc-pill svg { width: 14px; height: 14px; }
+.rc-pill.is-ok { background: var(--mb-text-on-red); color: var(--mb-green-press); }
+.rc-pill.is-wait { background: var(--mb-warn); color: var(--mb-text-inv); }
+.rc-pill.is-bad { background: var(--mb-sell); color: var(--mb-text-on-red); }
+.rc-note { font-size: var(--mb-t-sm); margin-top: var(--mb-s3); opacity: .92; }
+.rc-tag { font-size: 10px; letter-spacing: .08em; margin-top: var(--mb-s4); opacity: .75; text-transform: uppercase; font-weight: var(--mb-w-bold); }
+.rc-card {
+  padding: var(--mb-s4); border-radius: var(--mb-r-lg);
+  background: var(--mb-surface); border: 1px solid var(--mb-border);
+}
+[data-theme="light"] .rc-card { box-shadow: var(--mb-shadow-sm); }
+.rc-h {
+  display: flex; align-items: center; gap: var(--mb-s2); margin-bottom: var(--mb-s2);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-black); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--mb-green);
+}
+.rc-h svg { width: 16px; height: 16px; }
+.rc-row {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: var(--mb-s3);
+  padding: 10px 0; border-bottom: 1px solid var(--mb-border); font-size: var(--mb-t-sm);
+}
+.rc-row:last-child { border-bottom: 0; }
+.rc-k { color: var(--mb-text-2); flex: none; max-width: 48%; }
+.rc-v { color: var(--mb-text); font-weight: var(--mb-w-bold); text-align: right; min-width: 0; overflow-wrap: anywhere; }
+.rc-v code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: var(--mb-t-xs); font-weight: var(--mb-w-semi); }
+.rc-charges, .rc-net {
+  display: flex; justify-content: space-between; gap: var(--mb-s3); align-items: center;
+  padding: var(--mb-s3); border-radius: var(--mb-r-md); margin-top: var(--mb-s2); font-weight: var(--mb-w-black);
+}
+.rc-charges { background: var(--mb-green-soft); color: var(--mb-green); font-size: var(--mb-t-sm); }
+.rc-net { background: var(--mb-green-press); color: var(--mb-text-on-red); font-size: var(--mb-t-h3); }
+.rc-net .num { font-size: var(--mb-t-h2); white-space: nowrap; }
+.rc-status {
+  display: inline-block; padding: 3px 12px; border-radius: var(--mb-r-pill);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-black);
+}
+.rc-status.is-ok { background: var(--mb-green-soft); color: var(--mb-green); }
+.rc-status.is-wait { background: var(--mb-warn-soft); color: var(--mb-warn); }
+.rc-status.is-bad { background: var(--mb-sell-soft); color: var(--mb-sell); }
+.rc-notice {
+  display: flex; gap: var(--mb-s3); align-items: flex-start;
+  padding: var(--mb-s4); border-radius: var(--mb-r-lg);
+  background: var(--mb-warn-soft); color: var(--mb-text);
+}
+.rc-notice svg { width: 26px; height: 26px; flex: none; color: var(--mb-warn); }
+.rc-notice strong { display: block; color: var(--mb-warn); font-size: var(--mb-t-sm); }
+.rc-notice p { font-size: var(--mb-t-xs); color: var(--mb-text-2); margin-top: 2px; }
+.rc-foot { text-align: center; font-size: var(--mb-t-xs); color: var(--mb-text-2); padding: var(--mb-s2) 0; }
+.rc-foot span { display: block; color: var(--mb-text-3); margin-top: 2px; }
+
+/* ---------- Creator earnings ------------------------------------------- */
+.ce-hero {
+  padding: var(--mb-s5); border-radius: var(--mb-r-xl);
+  background: var(--mb-surface); border: 1px solid var(--mb-border);
+}
+[data-theme="light"] .ce-hero { box-shadow: var(--mb-shadow-sm); }
+.ce-hero .ce-big { font-size: var(--mb-t-display); font-weight: var(--mb-w-black); letter-spacing: -.03em; line-height: 1.1; white-space: nowrap; }
+.ce-split { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: var(--mb-s4); border-radius: var(--mb-r-md); overflow: hidden; background: var(--mb-border); }
+.ce-split > div { background: var(--mb-surface); padding: var(--mb-s3) var(--mb-s2); min-width: 0; text-align: center; }
+.ce-split .k { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--mb-text-3); font-weight: var(--mb-w-semi); }
+.ce-split .v { font-size: var(--mb-t-h3); font-weight: var(--mb-w-black); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ce-split .v.is-avail { color: var(--mb-green); }
+.ce-split .v.is-pend { color: var(--mb-warn); }
+.ce-sep {
+  display: flex; gap: var(--mb-s3); align-items: center;
+  padding: var(--mb-s3) var(--mb-s4); border-radius: var(--mb-r-md);
+  border: 1px dashed var(--mb-border-2); font-size: var(--mb-t-xs); color: var(--mb-text-2);
+}
+.ce-sep svg { width: 18px; height: 18px; flex: none; color: var(--mb-text-3); }
+.ce-calc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--mb-s2); margin-top: var(--mb-s2); }
+.ce-calc > div { min-width: 0; }
+.ce-calc .k { font-size: 10px; color: var(--mb-text-3); text-transform: uppercase; letter-spacing: .05em; }
+.ce-calc .v { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); white-space: nowrap; }
+.ce-earn { padding: var(--mb-s4); border-bottom: 1px solid var(--mb-border); }
+.ce-earn:last-child { border-bottom: 0; }
+.ce-acct {
+  display: flex; gap: var(--mb-s3); align-items: center;
+  padding: var(--mb-s3) var(--mb-s4); border-radius: var(--mb-r-md);
+  background: var(--mb-surface); border: 1px solid var(--mb-border-2);
+}
+[data-theme="light"] .ce-acct { box-shadow: var(--mb-shadow-sm); }
+
+/* ---------- KX Points -------------------------------------------------- */
+.kp-hero {
+  padding: var(--mb-s5); border-radius: var(--mb-r-xl);
+  background: linear-gradient(150deg, var(--mb-boost-soft), var(--mb-surface) 64%);
+  border: 1px solid var(--mb-border);
+}
+.kp-hero .kp-big { font-size: var(--mb-t-display); font-weight: var(--mb-w-black); letter-spacing: -.03em; line-height: 1.1; white-space: nowrap; }
+.kp-hero .kp-big small { font-size: var(--mb-t-h3); color: var(--mb-text-2); margin-left: 4px; }
+.kp-ic {
+  width: 34px; height: 34px; flex: none; border-radius: var(--mb-r-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-green-soft); color: var(--mb-green);
+}
+.kp-ic svg { width: 18px; height: 18px; }
+.kp-ic.is-spend { background: var(--mb-boost-soft); color: var(--mb-boost); }
+.kp-rule { display: flex; gap: var(--mb-s2); align-items: flex-start; font-size: var(--mb-t-xs); color: var(--mb-text-2); padding: 6px 0; }
+.kp-rule svg { width: 15px; height: 15px; flex: none; color: var(--mb-warn); margin-top: 1px; }
+.kp-cap { font-size: 10px; color: var(--mb-text-3); white-space: nowrap; }
+
+/* ---------- Achievements → privileges ---------------------------------- */
+.achv-unlocks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--mb-s2); }
+.achv-unlock {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: var(--mb-r-pill);
+  font-size: 10px; font-weight: var(--mb-w-bold);
+  background: var(--mb-surface-2); color: var(--mb-text-2);
+}
+[data-theme="light"] .achv-unlock { background: var(--mb-surface); border: 1px solid var(--mb-border-2); }
+.achv-unlock svg { width: 11px; height: 11px; }
+.achv-unlock.is-signal { background: var(--mb-green-soft); color: var(--mb-green); border-color: var(--mb-green-line); }
+.achv-unlock.is-points { background: var(--mb-boost-soft); color: var(--mb-boost); border-color: transparent; }
+.achv-unlock.is-award { background: var(--mb-pro-soft); color: var(--mb-pro); border-color: transparent; }
+.priv-card { border-color: var(--mb-green-line); }
+.priv-card.is-locked { border-color: var(--mb-border-2); }
+
+/* Light mode: secondary surfaces are white with a border and a small shadow. */
+[data-theme="light"] .kx-amt { background: var(--mb-surface); box-shadow: var(--mb-shadow-sm); }
+[data-theme="light"] .kx-amt.is-active { background: var(--mb-green-soft); }
+[data-theme="light"] .kx-use { box-shadow: var(--mb-shadow-sm); border-color: var(--mb-border-2); }
+[data-theme="light"] .kx-row-ic:not(.is-topup):not(.is-subscription):not(.is-purchase) { background: var(--mb-surface); border: 1px solid var(--mb-border-2); }
+
+@media (max-width: 360px) {
+  .kx-hero .kx-amount, .ce-hero .ce-big, .kp-hero .kp-big { font-size: var(--mb-t-h1); }
+  .rc-amount { font-size: 28px; }
+  .ce-split .v { font-size: var(--mb-t-sm); }
+}

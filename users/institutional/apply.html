@@ -15,172 +15,108 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/institution.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
-<body data-shell="app" data-nav="home" data-root="../../" data-title="Go Institutional" data-sub="Upgrade your trading presence" data-back="../index.html" data-unread="3">
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Go Institutional" data-sub="Verified firms. Real performance." data-back="../index.html" data-unread="3">
 
 <div class="app">
   <div data-render="topbar"></div>
   <main class="page">
 
-    <!-- HERO -->
-    <section class="card" style="text-align:center;padding:var(--mb-s5) var(--mb-s4)">
-      <div style="font-size:48px;margin-bottom:var(--mb-s3)">
-        <span data-icon="briefcase" data-icon-size="48"></span>
+    <div class="ap-steps hide" id="apBar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+    <!-- 0 · LANDING -->
+    <section class="stack g4" data-step="0">
+      <div class="card" style="text-align:center;padding:var(--mb-s5) var(--mb-s4)">
+        <span data-icon="bank" data-icon-size="44" style="color:var(--mb-green)"></span>
+        <div class="t-h2 w-black mt3">Institutional</div>
+        <p class="t-sm c-2 mt2">Verified firms. Real performance. Greater opportunities.</p>
       </div>
-      <div class="t-h2 w-black">Become an Institutional Trader</div>
-      <p class="t-sm c-3 mt2" style="max-width:400px;margin-left:auto;margin-right:auto">
-        Showcase your Deriv trading portfolio to the KonfluenX community.
-        Link your accounts, verify your identity, and let your performance speak for itself.
-      </p>
+      <div class="card">
+        <ul class="oauth-steps">
+          <li><span data-icon="verified"></span><span>Verified company profile with the Verified Firm badge</span></li>
+          <li><span data-icon="link"></span><span>Track record from up to 20 connected Deriv accounts</span></li>
+          <li><span data-icon="users"></span><span>A team with roles — Owner, Administrator, Trader, Analyst, Community Manager, Viewer</span></li>
+          <li><span data-icon="community"></span><span>Attract followers and investors; same Trader → Premium → Pro room path</span></li>
+        </ul>
+      </div>
+      <div class="ptype-compare" id="apCompare"></div>
+      <button class="btn btn-brand btn-block" type="button" data-go="1">Apply as Institutional Trader</button>
+      <a class="btn btn-ghost btn-block" href="index.html">I already have an institution</a>
     </section>
 
-    <!-- BENEFITS -->
-    <section class="page-section">
-      <div class="label mb2">What you get</div>
-      <div class="stack">
-        <div class="card row g3">
-          <span data-icon="results" data-icon-size="22" style="color:var(--mb-green)"></span>
-          <div><div class="w-semi">Public Portfolio</div>
-          <div class="t-xs c-3">Display live account stats — balance, profit, win rate, drawdown — to followers and visitors</div></div>
-        </div>
-        <div class="card row g3">
-          <span data-icon="wallet" data-icon-size="22" style="color:var(--mb-green)"></span>
-          <div><div class="w-semi">Account Linking</div>
-          <div class="t-xs c-3">Connect multiple Deriv MT5 accounts and choose which ones are visible</div></div>
-        </div>
-        <div class="card row g3">
-          <span data-icon="community" data-icon-size="22" style="color:var(--mb-green)"></span>
-          <div><div class="w-semi">Team Access</div>
-          <div class="t-xs c-3">Add analysts and traders to your institutional profile</div></div>
-        </div>
-        <div class="card row g3">
-          <span data-icon="check" data-icon-size="22" style="color:var(--mb-green)"></span>
-          <div><div class="w-semi">Verified Badge</div>
-          <div class="t-xs c-3">Get the institutional verified badge after document review</div></div>
-        </div>
+    <!-- 1 · ACCOUNT TYPE -->
+    <section class="stack g3 hide" data-step="1">
+      <div class="t-h3 w-bold">Choose account type</div>
+      <div id="apTypes">
+        <button class="ap-type is-active" type="button" data-type="company">
+          <span class="at-ic"><span data-icon="bank"></span></span>
+          <span><span class="at-t" style="display:block">Company / Trading Firm</span>
+            <span class="at-d" style="display:block">For registered companies, funds and professional teams.</span></span>
+          <span class="at-dot"></span></button>
+        <button class="ap-type" type="button" data-type="team">
+          <span class="at-ic"><span data-icon="users"></span></span>
+          <span><span class="at-t" style="display:block">Professional Team</span>
+            <span class="at-d" style="display:block">For trading groups and non-registered teams.</span></span>
+          <span class="at-dot"></span></button>
       </div>
+      <p class="t-xs c-3">Trading on your own? Your individual profile already gives you one Deriv connection and the same room path.</p>
+      <button class="btn btn-brand btn-block" type="button" data-go="2">Continue</button>
     </section>
 
-    <!-- APPLICATION FORM -->
-    <section class="page-section">
-      <div class="label mb2">Application</div>
-      <div class="card" id="applyForm">
-        <div class="form-group">
-          <label class="form-label" for="applyCompany">Company / Trading name</label>
-          <input class="input" type="text" id="applyCompany" placeholder="e.g. JT Capital">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="applyBio">Trading bio</label>
-          <textarea class="input" id="applyBio" rows="3" placeholder="Describe your trading style, experience, and strategy focus..."></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="applyWebsite">Website (optional)</label>
-          <input class="input" type="url" id="applyWebsite" placeholder="https://">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Deriv MT5 Login</label>
-          <input class="input" type="text" id="applyMT5" placeholder="e.g. MTR40012884">
-          <div class="t-xs c-3 mt1">We'll verify ownership via the Deriv API</div>
-        </div>
+    <!-- 2 · COMPANY DETAILS -->
+    <section class="stack g3 hide" data-step="2">
+      <div class="t-h3 w-bold" id="apDetailsTitle">Company details</div>
+      <div class="field"><label for="apName" id="apNameLbl">Company name</label>
+        <input class="input" id="apName" maxlength="80" placeholder="e.g. Alpha Capital Trading Ltd"></div>
+      <div class="field" id="apRegWrap"><label for="apReg">Registration number (CAC)</label>
+        <input class="input" id="apReg" maxlength="30" placeholder="e.g. RC1234567"></div>
+      <div class="field"><label for="apCountry">Country</label>
+        <select class="select" id="apCountry">
+          <option>Nigeria</option><option>Ghana</option><option>Kenya</option><option>South Africa</option>
+          <option>United Kingdom</option><option>United Arab Emirates</option><option>Other</option>
+        </select></div>
+      <div class="field"><label for="apWeb">Company website (optional)</label>
+        <input class="input" id="apWeb" type="url" maxlength="120" placeholder="https://"></div>
+      <div class="field"><label for="apDesc">Business description</label>
+        <textarea class="textarea" id="apDesc" maxlength="400" rows="3" placeholder="What you trade and how you manage risk"></textarea></div>
+      <span class="field-error hide" id="apDetailsErr"></span>
+      <button class="btn btn-brand btn-block" type="button" data-go="3">Continue</button>
+    </section>
 
-        <div class="label mt3 mb2">Identity Verification</div>
-        <div class="stack" id="docUploads">
-          <div class="card card-flat inst-doc-upload" data-doc="government_id">
-            <div class="row g3">
-              <span data-icon="file" data-icon-size="20"></span>
-              <div class="grow">
-                <div class="w-semi t-sm">Government-issued ID</div>
-                <div class="t-xs c-3">Passport, national ID, or driver's licence</div>
-              </div>
-              <label class="btn btn-sm btn-ghost inst-upload-btn">
-                <span data-icon="plus" data-icon-size="14"></span> Upload
-                <input type="file" accept="image/*,.pdf" hidden>
-              </label>
-            </div>
-            <div class="inst-doc-preview hide"></div>
-          </div>
-          <div class="card card-flat inst-doc-upload" data-doc="proof_of_address">
-            <div class="row g3">
-              <span data-icon="file" data-icon-size="20"></span>
-              <div class="grow">
-                <div class="w-semi t-sm">Proof of address</div>
-                <div class="t-xs c-3">Utility bill or bank statement (last 3 months)</div>
-              </div>
-              <label class="btn btn-sm btn-ghost inst-upload-btn">
-                <span data-icon="plus" data-icon-size="14"></span> Upload
-                <input type="file" accept="image/*,.pdf" hidden>
-              </label>
-            </div>
-            <div class="inst-doc-preview hide"></div>
-          </div>
-          <div class="card card-flat inst-doc-upload" data-doc="trading_statement">
-            <div class="row g3">
-              <span data-icon="file" data-icon-size="20"></span>
-              <div class="grow">
-                <div class="w-semi t-sm">Trading statement (6 months)</div>
-                <div class="t-xs c-3">MT5 account statement or broker report</div>
-              </div>
-              <label class="btn btn-sm btn-ghost inst-upload-btn">
-                <span data-icon="plus" data-icon-size="14"></span> Upload
-                <input type="file" accept="image/*,.pdf" hidden>
-              </label>
-            </div>
-            <div class="inst-doc-preview hide"></div>
-          </div>
-        </div>
+    <!-- 3 · DOCUMENTS -->
+    <section class="stack g3 hide" data-step="3">
+      <div class="t-h3 w-bold">Upload documents</div>
+      <p class="t-xs c-3">PDF or image, up to 10 MB each. Documents are only seen by the KonfluenX verification team.</p>
+      <div id="apDocs"></div>
+      <span class="field-error hide" id="apDocsErr">Upload every required document to continue.</span>
+      <button class="btn btn-brand btn-block" type="button" data-go="4">Continue</button>
+    </section>
 
-        <div class="label mt3 mb2">Business Documents (optional)</div>
-        <div class="stack">
-          <div class="card card-flat inst-doc-upload" data-doc="cac_certificate">
-            <div class="row g3">
-              <span data-icon="briefcase" data-icon-size="20"></span>
-              <div class="grow">
-                <div class="w-semi t-sm">CAC Certificate / Business Registration</div>
-                <div class="t-xs c-3">Certificate of incorporation or business name registration</div>
-              </div>
-              <label class="btn btn-sm btn-ghost inst-upload-btn">
-                <span data-icon="plus" data-icon-size="14"></span> Upload
-                <input type="file" accept="image/*,.pdf" hidden>
-              </label>
-            </div>
-            <div class="inst-doc-preview hide"></div>
-          </div>
-          <div class="card card-flat inst-doc-upload" data-doc="tax_id">
-            <div class="row g3">
-              <span data-icon="file" data-icon-size="20"></span>
-              <div class="grow">
-                <div class="w-semi t-sm">Tax Identification Number (TIN)</div>
-                <div class="t-xs c-3">Tax clearance or TIN certificate</div>
-              </div>
-              <label class="btn btn-sm btn-ghost inst-upload-btn">
-                <span data-icon="plus" data-icon-size="14"></span> Upload
-                <input type="file" accept="image/*,.pdf" hidden>
-              </label>
-            </div>
-            <div class="inst-doc-preview hide"></div>
-          </div>
-          <div class="card card-flat inst-doc-upload" data-doc="memorandum">
-            <div class="row g3">
-              <span data-icon="file" data-icon-size="20"></span>
-              <div class="grow">
-                <div class="w-semi t-sm">Memorandum of Association</div>
-                <div class="t-xs c-3">MEMART or articles of association</div>
-              </div>
-              <label class="btn btn-sm btn-ghost inst-upload-btn">
-                <span data-icon="plus" data-icon-size="14"></span> Upload
-                <input type="file" accept="image/*,.pdf" hidden>
-              </label>
-            </div>
-            <div class="inst-doc-preview hide"></div>
-          </div>
-        </div>
+    <!-- 4 · REVIEW -->
+    <section class="stack g3 hide" data-step="4">
+      <div class="between"><div class="t-h3 w-bold">Review application</div>
+        <button class="btn btn-ghost btn-xs" type="button" data-go="2">Edit</button></div>
+      <div class="card" id="apReview"></div>
+      <div class="label">Documents</div>
+      <div class="card" id="apReviewDocs"></div>
+      <label class="check"><input type="checkbox" id="apTruth"><span class="box"><span data-icon="check"></span></span>
+        <span class="t-xs">The details and documents are true and belong to this business.</span></label>
+      <button class="btn btn-brand btn-block" type="button" id="apSubmit">Submit for verification</button>
+    </section>
 
-        <button class="btn btn-primary btn-lg mt4" id="btnApply" style="width:100%">
-          Submit Application</button>
-        <div class="t-xs c-3 mt2" style="text-align:center">
-          Applications are typically reviewed within 2 business days</div>
+    <!-- 5 · IN REVIEW -->
+    <section class="stack g3 hide" data-step="5">
+      <div class="card" style="text-align:center">
+        <span data-icon="hourglass" data-icon-size="44" style="color:var(--mb-warn)"></span>
+        <div class="t-h2 w-black mt3">Application submitted</div>
+        <p class="t-sm c-2 mt2">Our team is reviewing your company details and documents. This usually takes 1–3 business days.</p>
       </div>
+      <div class="card" id="apStatus"></div>
+      <a class="btn btn-ghost btn-block" href="index.html">Go to dashboard</a>
+      <p class="t-xs c-3" style="text-align:center">You will be notified once approved. After approval, connect Deriv accounts
+        with secure Deriv authorization — never a password.</p>
     </section>
 
   </main>
@@ -194,68 +130,162 @@
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
 <script>
-(function () {
-  /* File upload preview feedback */
-  MB.$$('.inst-doc-upload').forEach(function (card) {
-    var fileInput = card.querySelector('input[type="file"]');
-    var preview = card.querySelector('.inst-doc-preview');
-    var uploadBtn = card.querySelector('.inst-upload-btn');
-    if (!fileInput) { return; }
+MB.ready(function () {
+  /* Stage 1 keeps the draft application in localStorage (mb.inst.application).
+     Stage 2: POST /institutional/applications (multipart for documents); the
+     verification team reviews it in the staff portal and the result arrives
+     as a notification. */
+  var KEY = 'mb.inst.application';
+  var app = { type: 'company', name: '', reg: '', country: 'Nigeria', website: '', description: '', docs: {} };
+  var DOCS = {
+    company: [
+      { id: 'cac', label: 'CAC Certificate', icon: 'file', req: true },
+      { id: 'tax', label: 'Company ID / Tax Document', icon: 'file', req: true },
+      { id: 'director', label: 'Director’s ID (NIN / BVN / Passport)', icon: 'key', req: true },
+      { id: 'address', label: 'Proof of Address', icon: 'home', req: true },
+      { id: 'logo', label: 'Company Logo', icon: 'image', req: false }
+    ],
+    team: [
+      { id: 'lead_id', label: 'Team lead ID (NIN / Passport)', icon: 'key', req: true },
+      { id: 'address', label: 'Proof of Address', icon: 'home', req: true },
+      { id: 'statement', label: 'Trading statement (6 months)', icon: 'file', req: true },
+      { id: 'logo', label: 'Team Logo', icon: 'image', req: false }
+    ]
+  };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved) { app = saved; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(app)); } catch (e) {} }
 
-    fileInput.addEventListener('change', function () {
-      var file = fileInput.files[0];
-      if (!file) { return; }
-      preview.classList.remove('hide');
-      preview.innerHTML =
-        '<div class="row g2 mt2" style="padding:var(--mb-s2);background:var(--mb-surface-2);border-radius:var(--mb-r-sm)">' +
-          '<span data-icon="check" data-icon-size="14" style="color:var(--mb-green)"></span>' +
-          '<span class="t-xs grow">' + MB.esc(file.name) + ' (' + Math.round(file.size / 1024) + ' KB)</span>' +
-          '<button class="btn btn-sm btn-ghost inst-doc-remove" type="button" style="padding:2px">' +
-            MB.icon('close', 12) + '</button>' +
-        '</div>';
-      uploadBtn.innerHTML = '<span data-icon="check" data-icon-size="14"></span> Uploaded';
-      uploadBtn.style.color = 'var(--mb-green)';
-      MB.mountIcons(preview);
+  /* profile-type comparison */
+  var PT = MB.instProfile.TYPES;
+  MB.$('#apCompare').innerHTML = ['individual', 'institution'].map(function (k) {
+    return '<div class="ptype-col' + (k === 'institution' ? ' is-current' : '') + '">' +
+      '<span class="ptype-chip ptype-' + k + '">' + MB.icon(PT[k].icon, 12) + MB.esc(PT[k].label) + '</span>' +
+      '<ul>' + PT[k].points.map(function (p) { return '<li>' + MB.icon('check', 12) + '<span>' + MB.esc(p) + '</span></li>'; }).join('') + '</ul></div>';
+  }).join('');
 
-      preview.querySelector('.inst-doc-remove').addEventListener('click', function () {
-        fileInput.value = '';
-        preview.classList.add('hide');
-        preview.innerHTML = '';
-        uploadBtn.innerHTML = '<span data-icon="plus" data-icon-size="14"></span> Upload';
-        uploadBtn.style.color = '';
-        MB.mountIcons(uploadBtn);
-      });
-    });
+  function show(n) {
+    MB.$$('[data-step]').forEach(function (s) { s.classList.toggle('hide', Number(s.getAttribute('data-step')) !== n); });
+    var bar = MB.$('#apBar');
+    bar.classList.toggle('hide', n < 1 || n > 4);
+    MB.$$('span', bar).forEach(function (s, i) { s.classList.toggle('is-done', i < n); });
+    if (n === 2) { paintDetails(); }
+    if (n === 3) { paintDocs(); }
+    if (n === 4) { paintReview(); }
+    if (n === 5) { paintStatus(); }
+    window.scrollTo(0, 0);
+  }
+
+  /* 1 · type */
+  MB.$('#apTypes').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-type]');
+    if (!b) { return; }
+    app.type = b.getAttribute('data-type');
+    MB.$$('#apTypes .ap-type').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+    save();
   });
 
-  /* Submit */
-  var btn = MB.$('#btnApply');
-  if (btn) {
-    btn.addEventListener('click', function () {
-      var company = MB.$('#applyCompany').value.trim();
-      var bio = MB.$('#applyBio').value.trim();
-      var mt5 = MB.$('#applyMT5').value.trim();
-      if (!company) { MB.toast('Enter your company or trading name'); return; }
-      if (!bio) { MB.toast('Enter your trading bio'); return; }
-      if (!mt5) { MB.toast('Enter your Deriv MT5 login'); return; }
-
-      btn.disabled = true;
-      btn.textContent = 'Submitting…';
-      setTimeout(function () {
-        btn.innerHTML = MB.icon('check', 16) + ' Application Submitted';
-        btn.className = 'btn btn-lg mt4';
-        btn.style.width = '100%';
-        btn.style.background = 'var(--mb-green)';
-        btn.style.color = '#fff';
-        MB.toast('Application submitted successfully!');
-      }, 1200);
-    });
+  /* 2 · details */
+  function paintDetails() {
+    var co = app.type === 'company';
+    MB.$('#apDetailsTitle').textContent = co ? 'Company details' : 'Team details';
+    MB.$('#apNameLbl').textContent = co ? 'Company name' : 'Team name';
+    MB.$('#apRegWrap').classList.toggle('hide', !co);
+    MB.$('#apName').value = app.name; MB.$('#apReg').value = app.reg; MB.$('#apCountry').value = app.country;
+    MB.$('#apWeb').value = app.website; MB.$('#apDesc').value = app.description;
   }
-})();
+  function readDetails() {
+    app.name = MB.$('#apName').value.trim(); app.reg = MB.$('#apReg').value.trim();
+    app.country = MB.$('#apCountry').value; app.description = MB.$('#apDesc').value.trim();
+    var web = MB.$('#apWeb').value.trim();
+    app.website = web ? MB.instSocials.safeUrl(web) : '';
+    var err = app.name.length < 3 ? 'Enter the ' + (app.type === 'company' ? 'company' : 'team') + ' name.'
+      : app.type === 'company' && !/^[A-Za-z]{0,3}\d{4,}$/.test(app.reg.replace(/\s/g, '')) ? 'Enter the registration number, e.g. RC1234567.'
+      : web && !app.website ? 'The website link does not look right.'
+      : app.description.length < 20 ? 'Describe the business in at least 20 characters.' : '';
+    MB.$('#apDetailsErr').textContent = err;
+    MB.$('#apDetailsErr').classList.toggle('hide', !err);
+    save();
+    return !err;
+  }
+
+  /* 3 · documents — names only in Stage 1 */
+  function paintDocs() {
+    MB.$('#apDocs').innerHTML = DOCS[app.type].map(function (dc) {
+      var f = app.docs[dc.id];
+      return '<div class="ap-doc">' +
+        '<span class="ad-ic">' + MB.icon(dc.icon, 20) + '</span>' +
+        '<div class="grow" style="min-width:0"><div class="ad-t">' + MB.esc(dc.label) + '</div>' +
+          '<div class="ad-s ' + (f ? 'is-ok' : dc.req ? 'is-req' : '') + '">' +
+            (f ? MB.esc(f) : dc.req ? 'Required' : 'Optional') + '</div></div>' +
+        '<label class="btn btn-ghost btn-sm none">' + (f ? 'Replace' : 'Upload') +
+          '<input type="file" accept="image/*,.pdf" hidden data-doc="' + dc.id + '"></label>' +
+      '</div>';
+    }).join('');
+  }
+  MB.$('#apDocs').addEventListener('change', function (e) {
+    var inp = e.target.closest('[data-doc]');
+    if (!inp || !inp.files[0]) { return; }
+    var f = inp.files[0];
+    if (f.size > 10 * 1024 * 1024) { MB.toast('That file is over 10 MB', 'err'); return; }
+    app.docs[inp.getAttribute('data-doc')] = f.name + ' · ' + Math.max(1, Math.round(f.size / 1024)) + ' KB';
+    save(); paintDocs();
+  });
+  function docsOk() {
+    var ok = DOCS[app.type].every(function (dc) { return !dc.req || app.docs[dc.id]; });
+    MB.$('#apDocsErr').classList.toggle('hide', ok);
+    return ok;
+  }
+
+  /* 4 · review */
+  function paintReview() {
+    var rows = [
+      [app.type === 'company' ? 'Company' : 'Team', app.name],
+      app.type === 'company' ? ['Registration', app.reg] : null,
+      ['Country', app.country], ['Website', app.website || '—'], ['About', app.description]
+    ].filter(Boolean);
+    MB.$('#apReview').innerHTML = rows.map(function (r) {
+      return '<div class="ap-status"><span class="c-3">' + MB.esc(r[0]) + '</span><span style="text-align:right;min-width:0;overflow-wrap:anywhere">' +
+        MB.esc(r[1]) + '</span></div>';
+    }).join('');
+    MB.$('#apReviewDocs').innerHTML = DOCS[app.type].filter(function (dc) { return app.docs[dc.id]; }).map(function (dc) {
+      return '<div class="ap-status"><span>' + MB.esc(dc.label) + '</span><span class="c-up t-xs w-bold none">Uploaded ' + MB.icon('check', 12) + '</span></div>';
+    }).join('');
+  }
+
+  /* 5 · status */
+  function paintStatus() {
+    var rows = [['Company details', 'Under review', 'badge-warn'], ['Documents', 'Under review', 'badge-warn'],
+                ['Identity verification', 'Pending', 'badge-neutral'], ['Deriv account connection', 'After approval', 'badge-neutral']];
+    MB.$('#apStatus').innerHTML = rows.map(function (r) {
+      return '<div class="ap-status"><span>' + r[0] + '</span><span class="badge ' + r[2] + '">' + r[1] + '</span></div>';
+    }).join('');
+  }
+
+  MB.$('main.page').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-go]');
+    if (!b) { return; }
+    var to = Number(b.getAttribute('data-go'));
+    var from = Number(b.closest('[data-step]').getAttribute('data-step'));
+    if (from === 2 && to === 3 && !readDetails()) { return; }
+    if (from === 3 && to === 4 && !docsOk()) { return; }
+    show(to);
+  });
+  MB.$('#apSubmit').addEventListener('click', function () {
+    if (!MB.$('#apTruth').checked) { MB.toast('Confirm the details are true', 'err'); return; }
+    app.submitted_at = new Date().toISOString();
+    save();
+    MB.api.post('institutional/applications', { type: app.type, name: app.name, reg: app.reg, country: app.country });
+    show(5);
+  });
+
+  if (app.submitted_at) { show(5); } else { show(0); }
+  MB.$$('#apTypes .ap-type').forEach(function (x) { x.classList.toggle('is-active', x.getAttribute('data-type') === app.type); });
+});
 </script>
 </body>
 </html>

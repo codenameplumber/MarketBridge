@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/signals.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="signals" data-root="../../" data-title="Provider" data-back="index.html" data-unread="3">
@@ -27,31 +28,51 @@
     <section class="profile-hero">
       <div id="pAvatar"></div>
       <div style="text-align:center">
-        <div class="row g2 center"><span class="ph-name" id="pName">—</span>
-          <span id="pVerified"></span></div>
+        <div class="row g2 center wrap"><span class="ph-name" id="pName">—</span>
+          <span id="pBadges"></span></div>
         <div class="ph-handle" id="pHandle">—</div>
       </div>
-      <p class="ph-bio" id="pBio">—</p>
+      <p class="ph-bio" id="pBio"></p>
       <div class="row g2">
         <button class="btn btn-primary" id="btnFollow" style="min-width:150px">
           <span data-icon="userplus"></span> Follow</button>
         <button class="btn btn-ghost" id="btnShare" aria-label="Share profile">
           <span data-icon="link"></span></button>
-        <button class="btn btn-ghost none" aria-label="Message"><span data-icon="chat"></span></button>
+        <a class="btn btn-ghost none hide" id="btnRoom" aria-label="Open room"><span data-icon="chat"></span></a>
       </div>
     </section>
 
     <!-- ACHIEVEMENTS -->
     <div id="pAchievements" class="row g2 wrap mb3" style="justify-content:center"></div>
 
-    <div class="stat-grid">
-      <div class="stat-cell"><div class="stat-v" id="pSignals">—</div><div class="stat-k">Signals</div></div>
-      <div class="stat-cell"><div class="stat-v c-up" id="pWin">—</div><div class="stat-k">Win rate</div></div>
-      <div class="stat-cell"><div class="stat-v" id="pWins">—</div><div class="stat-k">Wins</div></div>
-      <div class="stat-cell"><div class="stat-v" id="pLosses">—</div><div class="stat-k">Losses</div></div>
-    </div>
+    <!-- §17: two sources, two blocks. They are never combined into one number. -->
+    <section class="card sx-perf is-kx" aria-labelledby="kxPerfT">
+      <div class="sx-perf-h"><span data-icon="signals"></span>
+        <span class="t grow" id="kxPerfT">KonfluenX Signal Performance</span></div>
+      <div class="sx-perf-src">Every published signal, resolved by KonfluenX from the price feed — not from the provider's claims.</div>
+      <div class="stat-grid cols-3 mt3">
+        <div class="stat-cell"><div class="stat-v" id="kWin">—</div><div class="stat-k">Win rate</div></div>
+        <div class="stat-cell"><div class="stat-v c-up" id="kWins">—</div><div class="stat-k">Wins</div></div>
+        <div class="stat-cell"><div class="stat-v c-down" id="kLosses">—</div><div class="stat-k">Losses</div></div>
+        <div class="stat-cell"><div class="stat-v" id="kPub">—</div><div class="stat-k">Published</div></div>
+        <div class="stat-cell"><div class="stat-v" id="kOpen">—</div><div class="stat-k">Open</div></div>
+        <div class="stat-cell"><div class="stat-v" id="kExt">—</div><div class="stat-k">TP2+ reached</div></div>
+      </div>
+      <div class="label mt4">Performance Points</div>
+      <div class="row g4 wrap mt2" id="kPoints"></div>
+      <div class="t-xs c-3 mt2">Forex &amp; metals: 1 point = 1 pip. Other markets: 1 point = a 0.01% move from entry. Performance Points are not KX Points.</div>
+      <div id="kWarn"></div>
+    </section>
 
-    <div id="pSampleWarn"></div>
+    <section class="card sx-perf is-deriv" aria-labelledby="dvPerfT">
+      <div class="sx-perf-h"><span data-icon="verified"></span>
+        <span class="t grow" id="dvPerfT">Verified Deriv Performance</span>
+        <span id="dvBadge"></span></div>
+      <div class="sx-perf-src" id="dvSrc">Read from the provider's connected Deriv account.</div>
+      <div id="dvBody" class="mt3"></div>
+    </section>
+
+    <div class="sx-link" id="matchLink"></div>
 
     <div class="tabs" data-group id="pTabs">
       <button class="tab is-active" data-value="overview">Overview</button>
@@ -61,29 +82,21 @@
 
     <section id="panePOverview" class="page-section">
       <div class="card">
-        <div class="label">Performance (all time)</div>
-        <div data-chart="area" data-seed="provider" data-h="140" class="mt3"></div>
-        <div class="stat-grid cols-3 mt4">
-          <div class="stat-cell"><div class="stat-v c-up num" id="pPL">—</div><div class="stat-k">Total P/L</div></div>
-          <div class="stat-cell"><div class="stat-v num" id="pRR">—</div><div class="stat-k">Avg R/R</div></div>
-          <div class="stat-cell"><div class="stat-v c-up num" id="pBest">—</div><div class="stat-k">Best</div></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="label">Markets traded</div>
+        <div class="label">Markets</div>
         <div class="post-tags mt3" id="pMarkets"></div>
       </div>
+      <div class="card" id="pRoomCard"></div>
     </section>
 
     <section id="panePSignals" class="page-section hide">
-      <div class="stack g4" id="pSignalList"></div>
+      <div class="stack g3" id="pSignalList"></div>
     </section>
 
     <section id="panePResults" class="page-section hide">
       <div class="alert alert-green">
         <span data-icon="shield"></span>
-        <div class="t-xs">Results here are resolved from real contract outcomes and
-        price data, not from the provider's own claims. Retracted signals still count.</div>
+        <div class="t-xs">Results are resolved from the price feed: TP1 before the stop is a WIN and
+        stays a win; the stop before TP1 is a LOSS. Disputes go to a moderator — results are never voted on.</div>
       </div>
       <div class="list" id="pResults"></div>
     </section>
@@ -98,6 +111,8 @@
 <script src="../../assets/js/core/collection.js"></script>
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/signal-tracker.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
 <script src="../../assets/js/components/achievements.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
@@ -107,74 +122,176 @@
 
 MB.ready(function () {
   var uname = new URLSearchParams(location.search).get('u');
-  MB.api.list('providers').then(function (rows) {
-    var u = rows.filter(function (x) { return !uname || x.username === uname; })[0] || rows[0];
-    var s = u.stats;
-    MB.$('.topbar-title').textContent = u.username;
-    document.getElementById('pAvatar').innerHTML = MB.avatar(u, 'avatar-xl');
-    document.getElementById('pName').textContent = u.username;
-    document.getElementById('pHandle').textContent = '@' + u.username.toLowerCase();
-    document.getElementById('pBio').textContent = u.bio;
-    if (u.is_verified) {
-      document.getElementById('pVerified').innerHTML =
-        '<span class="badge badge-verified">' + MB.icon('check', 11) + 'Verified</span>';
+  var sx = MB.card.sx;
+
+  Promise.all([
+    MB.api.list('providers'),
+    MB.api.list('signal-providers'),
+    MB.api.list('signals')
+  ]).then(function (r) {
+    var provs = r[0], perf = r[1], signals = r[2];
+    var p = perf.filter(function (x) { return x.username === uname; })[0] ||
+            perf.filter(function (x) { return !uname && x.username === (provs[0] || {}).username; })[0] || perf[0];
+    var u = provs.filter(function (x) { return x.username === p.username; })[0] || {};
+    var mine = signals.filter(function (s) { return s.author.username === p.username; });
+    var author = (mine[0] || {}).author || {};
+    paintHero(p, u, author);
+    paintKx(p.konfluenx);
+    paintDeriv(p.deriv);
+    paintLink(p);
+    paintOverview(p, mine);
+    paintLists(mine);
+    MB.mountIcons();
+  });
+
+  function paintHero(p, u, author) {
+    var name = p.display_name || p.username;
+    MB.$('.topbar-title').textContent = name;
+    document.getElementById('pAvatar').innerHTML = MB.avatar({ username: p.username, display_name: name, avatar_url: u.avatar_url }, 'avatar-xl');
+    document.getElementById('pName').textContent = name;
+    document.getElementById('pHandle').textContent = '@' + p.username.toLowerCase() +
+      (p.profile_type === 'institution' ? ' · Institution' : '');
+    document.getElementById('pBio').textContent = u.bio || (p.profile_type === 'institution'
+      ? 'Institutional trading desk. Signals are published by the desk team.' : '');
+    var b = '';
+    if (p.profile_type === 'institution') { b += '<span class="badge badge-info">Institution</span> '; }
+    if (u.is_verified || author.is_verified) { b += '<span class="badge badge-verified">' + MB.icon('check', 11) + 'Verified</span> '; }
+    if (u.is_pro || author.is_pro) { b += '<span class="badge badge-pro">Pro</span>'; }
+    document.getElementById('pBadges').innerHTML = b;
+    if (p.room) {
+      var rb = document.getElementById('btnRoom');
+      rb.href = '../community/room.html?room=' + encodeURIComponent(p.room.id);
+      rb.classList.remove('hide');
     }
-    document.getElementById('pSignals').textContent = s.total_signals;
-    document.getElementById('pWin').textContent = s.win_rate + '%';
-    document.getElementById('pWins').textContent = s.wins;
-    document.getElementById('pLosses').textContent = s.losses;
-    document.getElementById('pPL').textContent = MB.fmt.signed(s.total_pl);
-    document.getElementById('pRR').textContent = '1:' + s.avg_risk_reward;
-    document.getElementById('pBest').textContent = MB.fmt.signed(s.best_signal_pl);
-    document.getElementById('pMarkets').innerHTML = (u.markets_traded || []).map(function (m) {
-      return '<a class="chip-market" href="../markets/detail.html?symbol=' + m + '">' + m + '</a>';
+  }
+
+  function paintKx(k) {
+    /* win rate never carries a "+" */
+    document.getElementById('kWin').textContent = k.win_rate === null ? '—' : k.win_rate + '%';
+    document.getElementById('kWins').textContent = k.wins;
+    document.getElementById('kLosses').textContent = k.losses;
+    document.getElementById('kPub').textContent = k.published;
+    document.getElementById('kOpen').textContent = k.waiting + k.active;
+    document.getElementById('kExt').textContent = k.extended_targets;
+    document.getElementById('kPoints').innerHTML = ['pips', 'pts'].map(function (unit) {
+      var v = k.points[unit] || 0;
+      return '<div><div class="t-h3 w-black num ' + (v > 0 ? 'c-up' : v < 0 ? 'c-down' : '') + '">' +
+        sx.fmtPts(v, unit) + '</div><div class="t-xs c-3">' +
+        (unit === 'pips' ? 'Forex &amp; metals' : 'Synthetics, crypto, indices…') + '</div></div>';
     }).join('');
-
-    /* A small sample is stated, never quietly presented as a rank. */
-    if (!s.is_ranked) {
-      document.getElementById('pSampleWarn').innerHTML =
-        '<div class="alert alert-warn">' + MB.icon('info', 18) +
-        '<div class="t-xs">This provider has published ' + s.sample_size +
-        ' signals — below the minimum needed to appear on leaderboards. ' +
-        'Treat the win rate as provisional.</div></div>';
-      MB.mountIcons(document.getElementById('pSampleWarn'));
+    var warn = '';
+    if (k.resolved < 20) {
+      warn += '<div class="alert alert-warn mt3">' + MB.icon('info', 18) + '<div class="t-xs">' + k.resolved +
+        ' resolved signals — below the 20 needed for leaderboards. Treat the win rate as provisional.</div></div>';
     }
-    MB.mountIcons(); MB.mountCharts();
-  });
+    if (k.disputes_open) {
+      warn += '<div class="t-xs c-3 mt2">' + MB.icon('gavel', 12) + ' ' + k.disputes_open +
+        ' result' + (k.disputes_open === 1 ? '' : 's') + ' under moderator review — counted as recorded until reviewed.</div>';
+    }
+    document.getElementById('kWarn').innerHTML = warn;
+  }
 
-  MB.collection({
-    from: 'signals', into: '#pSignalList', template: MB.card.signal,
-    perPage: 5, mode: 'more', countInto: '#pSigCount', skeletonCount: 3,
-    emptyIcon: 'signals', emptyTitle: 'No signals yet',
-    emptyText: 'This provider has not published anything.'
-  });
-  MB.collection({ into: '#pResults', from: 'signals', skeleton: false,
-    perPage: 10, mode: 'more', countInto: '#pResCount',
-    prepare: function (rows) { return rows.filter(function (s) { return s.result; }); },
-    template: function (s) {
-      var won = s.result.outcome === 'won';
-      return '<div class="list-row"><span class="none" style="color:var(--mb-' +
-        (won ? 'green' : 'sell') + ')">' + MB.icon(won ? 'trendup' : 'trenddown', 20) + '</span>' +
-        '<span class="grow"><span class="lr-title" style="display:block">' +
-        s.market.short_name + ' · ' + s.direction.toUpperCase() + '</span>' +
-        '<span class="lr-sub">Resolved ' + s.result.resolved_by.replace(/_/g, ' ') + '</span></span>' +
-        '<span class="badge ' + (won ? 'badge-won' : 'badge-lost') + ' none">' +
-        (won ? 'Won' : 'Lost') + '</span></div>';
-    },
-    emptyIcon: 'results', emptyTitle: 'No resolved signals yet',
-    emptyText: 'Results appear once published signals settle.' });
+  function paintDeriv(d) {
+    var body = document.getElementById('dvBody');
+    if (!d || !d.connected) {
+      document.getElementById('dvSrc').textContent = 'No Deriv account is connected.';
+      document.getElementById('dvBadge').innerHTML = '<span class="sx-chip sx-nomatch">Not connected</span>';
+      body.innerHTML = '<div class="t-sm c-2">Only KonfluenX signal performance is available for this provider. ' +
+        'Verified trading results appear here once a Deriv account is connected.</div>';
+      return;
+    }
+    document.getElementById('dvBadge').innerHTML = '<span class="sx-chip sx-match">' + MB.icon('check', 11) + 'Deriv Connected</span>';
+    document.getElementById('dvSrc').textContent = 'Read-only from the connected Deriv account' +
+      (d.accounts.length > 1 ? 's' : '') + ' · last ' + d.window + ' · synced ' + MB.fmt.ago(d.last_sync) + '.';
+    var visible = d.accounts.filter(function (a) { return a.public; });
+    body.innerHTML =
+      '<div class="stat-grid cols-2">' +
+        '<div class="stat-cell"><div class="stat-v">' + d.win_rate + '%</div><div class="stat-k">Win rate</div></div>' +
+        '<div class="stat-cell"><div class="stat-v">' + MB.fmt.compact(d.trades) + '</div><div class="stat-k">Trades</div></div>' +
+        '<div class="stat-cell"><div class="stat-v ' + (d.net_pl >= 0 ? 'c-up' : 'c-down') + '">' + MB.fmt.signed(d.net_pl) + '</div><div class="stat-k">Net P/L</div></div>' +
+        '<div class="stat-cell"><div class="stat-v">' + d.max_drawdown + '%</div><div class="stat-k">Max drawdown</div></div>' +
+      '</div>' +
+      '<div class="label mt4">Connected account' + (d.accounts.length > 1 ? 's' : '') + '</div>' +
+      '<div class="mt2">' + visible.map(function (a) {
+        return '<div class="sx-acct">' + MB.icon('briefcase', 14) + '<span class="grow truncate">' + MB.esc(a.label) +
+          '</span><span class="num c-2">' + MB.esc(a.login) + '</span></div>';
+      }).join('') +
+      (d.accounts.length > visible.length
+        ? '<div class="t-xs c-3 mt2">' + (d.accounts.length - visible.length) + ' further account' +
+          (d.accounts.length - visible.length === 1 ? ' is' : 's are') + ' connected but not shown publicly.</div>' : '') +
+      '</div>';
+  }
+
+  function paintLink(p) {
+    var m = p.matching;
+    var el = document.getElementById('matchLink');
+    if (!m.applies) {
+      el.innerHTML = MB.icon('link', 18) + '<div class="grow t-xs c-3"><strong class="c-2">Matching-trade rate not available.</strong> ' +
+        'It is measured for providers with a connected Deriv account posting in Premium or Pro rooms, and for institutions.</div>';
+      return;
+    }
+    el.innerHTML = MB.icon('link', 18) +
+      '<div class="grow"><div class="t-xs c-3">Matching-trade rate — links the two blocks above</div>' +
+      '<div class="t-xs c-2 mt2">' + m.matched + ' of ' + m.eligible_signals +
+        ' checked signals had a matching trade on the connected Deriv account. A signal without a match has not lost — the result is decided by price alone.</div></div>' +
+      '<span class="n">' + (m.rate === null ? '—' : m.rate + '%') + '</span>';
+  }
+
+  function paintOverview(p, mine) {
+    var seen = {};
+    document.getElementById('pMarkets').innerHTML = mine.filter(function (s) {
+      if (seen[s.market.symbol]) { return false; }
+      seen[s.market.symbol] = 1; return true;
+    }).map(function (s) {
+      return '<a class="chip-market" href="../markets/detail.html?symbol=' + encodeURIComponent(s.market.symbol) + '">' +
+        MB.esc(s.market.short_name) + '</a>';
+    }).join('') || '<span class="t-xs c-3">No signals yet.</span>';
+    var rc = document.getElementById('pRoomCard');
+    if (!p.room) { rc.classList.add('hide'); return; }
+    var tier = { premium: 'Premium room · Deriv Verified', pro: 'Pro room · monetised', trader: 'Trader room', market: 'Market room' }[p.room.tier] || 'Room';
+    rc.innerHTML = '<div class="between g3"><div class="grow"><div class="label">Room</div>' +
+      '<div class="t-sm w-semi mt2 truncate">' + MB.esc(p.room.name) + '</div><div class="t-xs c-3">' + tier + '</div></div>' +
+      '<a class="btn btn-ghost btn-sm none" href="../community/room.html?room=' + encodeURIComponent(p.room.id) + '">Open</a></div>';
+  }
+
+  function paintLists(mine) {
+    var list = mine.slice().sort(function (a, b) { return Date.parse(b.published_at) - Date.parse(a.published_at); });
+    MB.collection({
+      data: list, into: '#pSignalList', template: MB.card.sig,
+      perPage: 6, mode: 'more', skeleton: false,
+      emptyIcon: 'signals', emptyTitle: 'No signals yet',
+      emptyText: 'This provider has not published anything.'
+    });
+    MB.collection({
+      data: list.filter(function (s) { return s.result; }), into: '#pResults', skeleton: false,
+      perPage: 10, mode: 'more',
+      template: function (s) {
+        var v = sx.view(s);
+        var won = v.status === 'won';
+        return '<a class="list-row" href="detail-' + (s.kind === 'executable' ? 'executable' : 'analysis') +
+          '.html?id=' + encodeURIComponent(s.id) + '"><span class="none" style="color:var(--mb-' +
+          (won ? 'green' : 'sell') + ')">' + MB.icon(won ? 'trendup' : 'trenddown', 20) + '</span>' +
+          '<span class="grow" style="min-width:0"><span class="lr-title truncate" style="display:block">' +
+          MB.esc(s.market.short_name) + ' · ' + v.dir + '</span>' +
+          '<span class="lr-sub">' + (won ? 'TP' + Math.max.apply(null, v.hits.concat([1])) + ' hit' : 'SL hit') +
+          ' · ' + MB.fmt.ago(v.resolvedAt || s.published_at) + '</span></span>' +
+          '<span class="none">' + sx.chip(v) + '</span></a>';
+      },
+      emptyIcon: 'results', emptyTitle: 'No resolved signals yet',
+      emptyText: 'Results appear once published signals settle.'
+    });
+  }
 
   /* Share profile link */
   document.getElementById('btnShare').addEventListener('click', function () {
-    var url = location.href;
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(function () { MB.toast('Profile link copied'); });
+      navigator.clipboard.writeText(location.href).then(function () { MB.toast('Profile link copied'); });
     } else {
       MB.toast('Profile link copied');
     }
   });
 
-  /* Load achievements for this provider */
+  /* Achievements */
   MB.api.get('achievements').then(function (r) {
     var d = r.data || {};
     var badges = (d.badges || []).filter(function (b) { return b.earned; });
@@ -191,7 +308,7 @@ MB.ready(function () {
   });
 
   document.getElementById('pTabs').addEventListener('mb:change', function (e) {
-    ['overview','signals','results'].forEach(function (k) {
+    ['overview', 'signals', 'results'].forEach(function (k) {
       document.getElementById('paneP' + k.charAt(0).toUpperCase() + k.slice(1))
         .classList.toggle('hide', k !== e.detail.value);
     });

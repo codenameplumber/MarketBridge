@@ -91,8 +91,11 @@
         '<header class="topbar">' +
           '<a class="topbar-back" href="' + back + '" aria-label="Go back">' + MB.icon('back', 22) + '</a>' +
           '<div class="grow">' +
-            '<div class="topbar-title" style="font-size:var(--mb-t-h2)">' + MB.esc(title || '') + '</div>' +
-            (sub ? '<div class="topbar-sub">' + MB.esc(sub) + '</div>' : '') +
+            /* One line, always: a long title steps down a size, then ellipsises
+               rather than wrapping into the fixed-height bar. */
+            '<div class="topbar-title is-inner' + ((title || '').length > 18 ? ' is-long' : '') +
+              '" title="' + MB.esc(title || '') + '">' + MB.esc(title || '') + '</div>' +
+            (sub ? '<div class="topbar-sub is-inner">' + MB.esc(sub) + '</div>' : '') +
           '</div>' +
           '<div class="row g1 none">' + (body.hasAttribute('data-bare') ? '' : right) + '</div>' +
         '</header>';
@@ -119,23 +122,24 @@
      One home for every account destination, opened from the avatar. Slides
      down from the top so it reads as part of the header it came from.
      ====================================================================== */
+  /* Deriv balances, transfers and transaction history are not listed here:
+     they stay one tap away from the Home balance card and the wallet pages,
+     so the drawer can hold account destinations rather than money plumbing. */
   var ACCT_NAV = [
     { group: null },
-    { label: 'My Dashboard',              icon: 'grid',      href: 'users/index.html' },
-    { label: 'Deriv Accounts & Balances', icon: 'wallet',    href: 'users/wallet/accounts.html' },
-    { label: 'Transfer Money',            icon: 'refresh',   href: 'users/wallet/transfer.html' },
-    { label: 'Transaction History',       icon: 'clock',     href: 'users/wallet/history.html' },
-    { label: 'Account Statement',         icon: 'file',      href: 'users/wallet/statement.html' },
-    { group: null },
-    { label: 'IB / Partner Status',       icon: 'briefcase', href: 'users/profile/partner.html' },
+    { label: 'My Profile',                icon: 'users',     href: 'users/profile/index.html' },
+    { label: 'Partnership Program',       icon: 'handshake', href: 'users/profile/partner.html' },
     { label: 'My Signals',                icon: 'signals',   href: 'users/signals/index.html' },
     { label: 'Saved',                     icon: 'bookmark',  href: 'users/profile/saved.html' },
     { label: 'Leaderboard',               icon: 'results',   href: 'users/results/leaderboard.html' },
-    { label: 'Rewards',                   icon: 'star',      href: 'users/profile/rewards.html' },
+    { label: 'KX Points & Rewards',       icon: 'star',      href: 'users/profile/rewards.html' },
     { label: 'Achievements',              icon: 'flame',     href: 'users/profile/achievements.html' },
     { label: 'My Community Activity',     icon: 'community', href: 'users/community/index.html' },
-    { group: null },
-    { label: 'Institutional Trading',     icon: 'briefcase', href: 'users/institutional/index.html' },
+    { label: 'Institutional Trading',     icon: 'bank',      href: 'users/institutional/index.html' },
+    { group: 'Wallet' },
+    { label: 'Wallet & Credits',          icon: 'wallet',    href: 'users/wallet/credits.html', pill: 'New' },
+    { label: 'Creator Earnings',          icon: 'coin',      href: 'users/creator/earnings.html' },
+    { label: 'Account Statement',         icon: 'file',      href: 'users/wallet/statement.html' },
     { group: 'More' },
     { label: 'Notifications',             icon: 'bell',      href: 'users/notifications.html', count: 3 },
     { label: 'Help & Support',            icon: 'info',      href: 'faq.html' },
@@ -148,9 +152,12 @@
 
     var items = ACCT_NAV.map(function (n) {
       if (n.group === null) { return '</div><div class="acct-drawer-group">'; }
-      if (n.group) { return '<div class="acct-drawer-label">' + n.group + '</div>'; }
+      if (n.group) {
+        return '</div><div class="acct-drawer-group"><div class="acct-drawer-label">' + n.group + '</div>';
+      }
       return '<a class="acct-drawer-item" href="' + r + n.href + '">' +
         MB.icon(n.icon, 18) + '<span>' + n.label + '</span>' +
+        (n.pill ? '<span class="tag-new">' + n.pill + '</span>' : '') +
         (n.count ? '<span class="count">' + n.count + '</span>'
                  : '<span class="chev">' + MB.icon('chevright', 16) + '</span>') +
       '</a>';
@@ -497,6 +504,249 @@
   }
 
   /* ======================================================================
+     DISCLAIMERS (directive §16)
+
+     Four notices, each versioned. Acceptance is stored per key as
+     { key, version, accepted_at } in localStorage 'mb.disclaimers', and a
+     notice shows again only when its version string changes.
+
+       MB.disclaimer.require('paid_room').then(join, stayPut);
+
+     require() resolves once the notice is accepted (immediately if it
+     already was) and rejects with Error('declined') otherwise. The customer
+     app gates three areas on first visit by path — trade, signals and
+     community — and declining one of those returns the user to Home.
+
+     Defined at load, not on ready, so any page script can call it
+     synchronously after shell.js.
+
+     Stage 2: acceptance is a legal record. The backend stores
+     (user_id, key, version, accepted_at, ip, user_agent) in an append-only
+     table, /me returns the accepted versions, and server-side actions that
+     need a notice (placing a trade, paying for a room) refuse until the
+     current version is on file. localStorage is only the Stage 1 stand-in.
+     ====================================================================== */
+  var DISCLAIMER_KEY = 'mb.disclaimers';
+
+  var DISCLAIMERS = {
+    trade: {
+      version: '2026-10-12',
+      title: 'Risk Disclosure',
+      sub: 'Please read before you trade',
+      points: [
+        'Trading synthetic indices, forex, crypto and other leveraged products carries a high level of risk. You can lose all of the money you put in.',
+        'Trades are placed on your own Deriv account. Deriv executes and settles them; KonfluenX never holds your funds.',
+        'Nothing on KonfluenX is investment advice. Past performance, including verified results, does not guarantee future results.',
+        'Only trade with money you can afford to lose.'
+      ],
+      links: [{ label: 'Full Risk Disclosure', href: 'users/legal/risk-disclosure.html' }],
+      accept: 'I understand the risks'
+    },
+    signals: {
+      version: '2026-10-12',
+      title: 'User-Generated Signal Disclaimer',
+      sub: 'Signals are posted by members, not by KonfluenX',
+      points: [
+        'Signals and analysis are published by community members. They are not recommendations or advice from KonfluenX.',
+        'Results and performance points are measured automatically against market prices. They describe what already happened and do not predict what happens next.',
+        'You decide whether to act on a signal, and any trade you place is your own decision and your own risk.',
+        'Report any signal that looks misleading so a moderator can review it.'
+      ],
+      links: [
+        { label: 'Signal Disclaimer', href: 'users/legal/signal-disclaimer.html' },
+        { label: 'Risk Disclosure', href: 'users/legal/risk-disclosure.html' }
+      ],
+      accept: 'I understand'
+    },
+    community: {
+      version: '2026-10-12',
+      title: 'Community Guidelines',
+      sub: 'What we expect from every member',
+      points: [
+        'Be respectful. No harassment, hate speech, spam or impersonation.',
+        'Never promise guaranteed profits, ask members for money outside KonfluenX, offer to manage accounts or ask for login details.',
+        'Posts, comments and analysis are the opinion of their authors, not of KonfluenX, and are not financial advice.',
+        'Moderators may remove content or restrict accounts that break these guidelines.'
+      ],
+      links: [
+        { label: 'Community Guidelines', href: 'users/legal/community-guidelines.html' },
+        { label: 'Report content', href: 'users/legal/report.html' }
+      ],
+      accept: 'I agree to the guidelines'
+    },
+    paid_room: {
+      version: '2026-10-12',
+      title: 'Subscription & Trading Risk Notice',
+      sub: 'Before you pay for a room',
+      points: [
+        'A room subscription is paid in KX credits and buys access to the creator’s content and discussion only. It does not buy trades, results or any guarantee.',
+        'Creators are independent members. Their verified past performance does not guarantee future results.',
+        'Any trade you place after reading room content is your own decision, on your own Deriv account, at your own risk.',
+        'Renewals, cancellations and refunds follow the Terms of Service.'
+      ],
+      links: [
+        { label: 'Terms of Service', href: 'terms.html' },
+        { label: 'Risk Disclosure', href: 'users/legal/risk-disclosure.html' }
+      ],
+      accept: 'I understand and agree'
+    }
+  };
+
+  /* Customer-app areas that gate on first visit. */
+  var DISCLAIMER_GATES = [
+    { re: /\/users\/trade\//,     key: 'trade' },
+    { re: /\/users\/signals\//,   key: 'signals' },
+    { re: /\/users\/community\//, key: 'community' }
+  ];
+
+  function readDisclaimers() {
+    try {
+      var v = JSON.parse(localStorage.getItem(DISCLAIMER_KEY) || '{}');
+      return v && typeof v === 'object' ? v : {};
+    } catch (e) { return {}; }
+  }
+  function writeDisclaimer(key) {
+    var all = readDisclaimers();
+    all[key] = { key: key, version: DISCLAIMERS[key].version, accepted_at: new Date().toISOString() };
+    try { localStorage.setItem(DISCLAIMER_KEY, JSON.stringify(all)); }
+    catch (e) { /* private mode — accepted for this page view only */ }
+    return all[key];
+  }
+
+  var sessionAccepted = {};   /* survives a storage failure for this page view */
+  var pendingDisclaimer = {}; /* one open sheet per key, however many callers */
+
+  function isAccepted(key) {
+    var d = DISCLAIMERS[key];
+    if (!d) { return false; }
+    if (sessionAccepted[key] === d.version) { return true; }
+    var rec = readDisclaimers()[key];
+    return !!(rec && rec.version === d.version);
+  }
+
+  function openDisclaimer(key, resolve, reject) {
+    var d = DISCLAIMERS[key];
+    var r = MB.root();
+    var lastFocus = document.activeElement;
+    var settled = false;
+    var cid = 'dcAgree_' + key;
+
+    var body =
+      '<div class="dc-body">' +
+        '<ul class="dc-points">' + d.points.map(function (p) {
+          return '<li>' + MB.icon('info', 15) + '<span>' + MB.esc(p) + '</span></li>';
+        }).join('') + '</ul>' +
+        '<div class="dc-links">' + d.links.map(function (l) {
+          return '<a href="' + r + l.href + '" target="_blank" rel="noopener">' +
+            MB.icon('file', 14) + MB.esc(l.label) + '</a>';
+        }).join('') + '</div>' +
+        '<label class="check dc-agree" for="' + cid + '">' +
+          '<input type="checkbox" id="' + cid + '">' +
+          '<span class="box">' + MB.icon('check', 13) + '</span>' +
+          '<span>I have read and understood this notice.</span>' +
+        '</label>' +
+        '<p class="dc-ver">Version ' + MB.esc(d.version) + '</p>' +
+      '</div>';
+
+    var m = MB.modal({
+      title: d.title,
+      sub: d.sub,
+      body: body,
+      actions: [
+        { label: 'Decline', kind: 'ghost', close: true },
+        { label: d.accept, kind: 'brand', disabled: true, onClick: function (h) {
+          settled = true;
+          sessionAccepted[key] = d.version;
+          var rec = writeDisclaimer(key);
+          h.close();
+          resolve(rec);
+        } }
+      ],
+      /* Escape, the close button and Decline all land here undecided. */
+      onClose: function () {
+        document.removeEventListener('keydown', trap, true);
+        if (lastFocus && lastFocus.focus) { try { lastFocus.focus(); } catch (e) {} }
+        if (!settled) { settled = true; reject(new Error('declined')); }
+      }
+    });
+
+    var sheet = m.$('.sheet');
+    sheet.classList.add('dc-sheet');
+    sheet.setAttribute('aria-describedby', 'dcDesc_' + key);
+    m.$('.dc-points').id = 'dcDesc_' + key;
+
+    /* A stray tap on the backdrop must not count as an answer. Capture
+       phase, so neither MB.modal nor the global sheet handler sees it. */
+    m.root.addEventListener('click', function (e) {
+      if (e.target === m.root) { e.stopImmediatePropagation(); }
+    }, true);
+
+    var agree = m.$('#' + cid);
+    agree.addEventListener('change', function () {
+      m.setAction(1, { disabled: !agree.checked });
+    });
+
+    /* Focus trap — Tab and Shift+Tab cycle inside the sheet. */
+    function focusables() {
+      return Array.prototype.slice.call(sheet.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'));
+    }
+    function trap(e) {
+      if (e.key !== 'Tab') { return; }
+      var f = focusables();
+      if (!f.length) { return; }
+      var first = f[0], last = f[f.length - 1];
+      if (!sheet.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+    document.addEventListener('keydown', trap, true);
+    setTimeout(function () { agree.focus(); }, 60);
+  }
+
+  MB.disclaimer = {
+    KEYS: Object.keys(DISCLAIMERS),
+    /** The copy and version for a key — for legal pages and settings. */
+    get: function (key) { return DISCLAIMERS[key] || null; },
+    accepted: isAccepted,
+    /** The stored acceptance records, keyed by notice. */
+    records: readDisclaimers,
+    require: function (key) {
+      if (!DISCLAIMERS[key]) { return Promise.reject(new Error('unknown disclaimer: ' + key)); }
+      if (isAccepted(key)) {
+        return Promise.resolve(readDisclaimers()[key] ||
+          { key: key, version: DISCLAIMERS[key].version, accepted_at: null });
+      }
+      if (pendingDisclaimer[key]) { return pendingDisclaimer[key]; }
+      var p = new Promise(function (resolve, reject) {
+        MB.ready(function () { openDisclaimer(key, resolve, reject); });
+      });
+      pendingDisclaimer[key] = p;
+      var clear = function () { delete pendingDisclaimer[key]; };
+      p.then(clear, clear);
+      return p;
+    },
+    /** QA helper: forget one acceptance (or all) so the notice shows again. */
+    reset: function (key) {
+      var all = key ? readDisclaimers() : {};
+      if (key) { delete all[key]; delete sessionAccepted[key]; } else { sessionAccepted = {}; }
+      try { localStorage.setItem(DISCLAIMER_KEY, JSON.stringify(all)); } catch (e) {}
+    }
+  };
+
+  function gateByPath() {
+    var path = String(location.pathname || '').replace(/\\/g, '/');
+    for (var i = 0; i < DISCLAIMER_GATES.length; i++) {
+      if (DISCLAIMER_GATES[i].re.test(path)) {
+        MB.disclaimer.require(DISCLAIMER_GATES[i].key).catch(function () {
+          location.href = MB.url('users/index.html');
+        });
+        return;
+      }
+    }
+  }
+
+  /* ======================================================================
      BOOT
      ====================================================================== */
   /* ======================================================================
@@ -522,7 +772,7 @@
     var body = document.body;
     var shell = body.getAttribute('data-shell');
 
-    if (shell === 'app')   { renderTopbar(body); renderTabbar(body); renderAcctDrawer(); body.classList.add('has-app'); bootSession(); }
+    if (shell === 'app')   { renderTopbar(body); renderTabbar(body); renderAcctDrawer(); body.classList.add('has-app'); bootSession(); gateByPath(); }
     if (shell === 'auth')  { body.classList.add('has-auth'); }
     if (shell === 'admin') { renderAdminRail(body); applyPermissions(); }
     if (shell === 'site')  { renderSiteHeader(body); renderSiteFooter(); }

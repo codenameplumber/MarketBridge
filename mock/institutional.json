@@ -7,11 +7,24 @@
     "company": "JT Capital",
     "bio": "Systematic volatility trader specialising in Deriv synthetics. 4+ years of consistent returns across Volatility and Crash/Boom indices.",
     "website": "",
-    "showcase": { "public": false, "show_balances": true, "show_history": true },
+    "showcase": {
+      "public": false,
+      "show_balances": true,
+      "show_history": true
+    },
     "socials": [
-      { "platform": "x", "url": "https://x.com/jtcapital" },
-      { "platform": "telegram", "url": "https://t.me/jtcapital" },
-      { "platform": "website", "url": "https://jtcapital.com" }
+      {
+        "platform": "x",
+        "url": "https://x.com/jtcapital"
+      },
+      {
+        "platform": "telegram",
+        "url": "https://t.me/jtcapital"
+      },
+      {
+        "platform": "website",
+        "url": "https://jtcapital.com"
+      }
     ],
     "linked_accounts": [
       {
@@ -20,14 +33,18 @@
         "platform": "MT5",
         "type": "Standard",
         "currency": "USD",
-        "balance": 24350.80,
-        "profit_total": 8420.50,
+        "balance": 24350.8,
+        "profit_total": 8420.5,
         "profit_pct": 52.8,
         "drawdown_max": 12.4,
         "trades_total": 1842,
         "win_rate": 67.2,
         "visible": true,
-        "linked_at": "2026-05-20T10:00:00Z"
+        "linked_at": "2026-05-20T10:00:00Z",
+        "name": "USD Account — Primary",
+        "connection": "oauth",
+        "connected_by": "John Trader",
+        "is_primary": true
       },
       {
         "id": "acct_02",
@@ -36,13 +53,16 @@
         "type": "Synthetic",
         "currency": "USD",
         "balance": 43209.15,
-        "profit_total": 18930.00,
-        "profit_pct": 78.0,
+        "profit_total": 18930,
+        "profit_pct": 78,
         "drawdown_max": 8.1,
         "trades_total": 3201,
         "win_rate": 71.5,
         "visible": true,
-        "linked_at": "2026-06-12T15:30:00Z"
+        "linked_at": "2026-06-12T15:30:00Z",
+        "name": "MT5 Synthetic",
+        "connection": "oauth",
+        "connected_by": "John Trader"
       },
       {
         "id": "acct_03",
@@ -50,14 +70,35 @@
         "platform": "MT5",
         "type": "Financial",
         "currency": "USD",
-        "balance": 5100.00,
-        "profit_total": -320.00,
+        "balance": 5100,
+        "profit_total": -320,
         "profit_pct": -5.9,
-        "drawdown_max": 22.0,
+        "drawdown_max": 22,
         "trades_total": 145,
         "win_rate": 48.3,
         "visible": false,
-        "linked_at": "2026-09-01T08:00:00Z"
+        "linked_at": "2026-09-01T08:00:00Z",
+        "name": "MT5 Financial",
+        "connection": "oauth",
+        "connected_by": "John Trader"
+      },
+      {
+        "id": "acct_04",
+        "name": "Account 04",
+        "login": "CR9038821",
+        "platform": "Deriv",
+        "type": "Options",
+        "currency": "USD",
+        "balance": 9850.4,
+        "profit_total": 1210.75,
+        "profit_pct": 14,
+        "drawdown_max": 9.6,
+        "trades_total": 412,
+        "win_rate": 63.4,
+        "visible": false,
+        "linked_at": "2026-10-03T08:00:00Z",
+        "connection": "oauth",
+        "connected_by": "Daniel Udo"
       }
     ],
     "documents": [
@@ -88,29 +129,211 @@
     ],
     "team": [
       {
-        "id": "tm_01",
-        "name": "Sarah Kim",
-        "role": "analyst",
-        "email": "sarah@jtcapital.com",
-        "added_at": "2026-08-20T10:00:00Z"
+        "id": "tm_00",
+        "name": "John Trader",
+        "role": "owner",
+        "email": "john@jtcapital.com",
+        "title": "Founder & Lead Trader",
+        "added_at": "2023-01-15T09:00:00Z",
+        "is_you": true
+      },
+      {
+        "id": "tm_03",
+        "name": "Daniel Udo",
+        "role": "admin",
+        "email": "daniel@jtcapital.com",
+        "title": "Operations",
+        "added_at": "2025-03-02T10:00:00Z"
       },
       {
         "id": "tm_02",
         "name": "Marcus Chen",
         "role": "trader",
         "email": "marcus@jtcapital.com",
+        "title": "Senior Trader",
         "added_at": "2026-09-01T14:00:00Z"
+      },
+      {
+        "id": "tm_01",
+        "name": "Sarah Kim",
+        "role": "analyst",
+        "email": "sarah@jtcapital.com",
+        "title": "Head of Research",
+        "added_at": "2026-08-20T10:00:00Z"
+      },
+      {
+        "id": "tm_04",
+        "name": "James Okafor",
+        "role": "analyst",
+        "email": "james@jtcapital.com",
+        "title": "Market Analyst",
+        "added_at": "2026-08-28T10:00:00Z"
+      },
+      {
+        "id": "tm_05",
+        "name": "Grace Bassey",
+        "role": "community_manager",
+        "email": "grace@jtcapital.com",
+        "title": "Community",
+        "added_at": "2026-09-10T10:00:00Z"
+      },
+      {
+        "id": "tm_06",
+        "name": "Victor Ekpo",
+        "role": "viewer",
+        "email": "victor@jtcapital.com",
+        "title": "Investor relations",
+        "added_at": "2026-09-22T10:00:00Z"
       }
     ],
     "portfolio_stats": {
-      "total_balance": 72659.95,
-      "total_profit": 27030.50,
-      "total_profit_pct": 59.3,
-      "avg_win_rate": 62.3,
+      "total_balance": 82510.35,
+      "total_profit": 28241.25,
+      "total_profit_pct": 52,
+      "avg_win_rate": 62.6,
       "accounts_visible": 2,
-      "accounts_total": 3,
+      "accounts_total": 4,
       "followers": 284,
       "portfolio_views": 1520
-    }
+    },
+    "profile_type": "institution",
+    "profile_types": {
+      "individual": {
+        "label": "Individual",
+        "max_deriv_connections": 1,
+        "summary": "One person, one Deriv login. Personal achievements and performance."
+      },
+      "institution": {
+        "label": "Institution",
+        "max_deriv_connections": 20,
+        "summary": "Verified business. Up to 20 Deriv connections, a team with roles, company achievements and performance."
+      }
+    },
+    "company_details": {
+      "legal_name": "JT Capital Ltd",
+      "registration_number": "RC1234567",
+      "country": "Nigeria",
+      "city": "Lagos",
+      "website": "https://jtcapital.com",
+      "joined_at": "2023-01-15T09:00:00Z",
+      "verified_business": true
+    },
+    "max_deriv_connections": 20,
+    "team_settings": {
+      "analyst_publish": "approval"
+    },
+    "signal_drafts": [
+      {
+        "id": "dr_01",
+        "author_id": "tm_01",
+        "author": "Sarah Kim",
+        "role": "analyst",
+        "market": "V75 (1s)",
+        "direction": "BUY",
+        "entry": 542880.5,
+        "sl": 538550.27,
+        "tp1": 549408.14,
+        "timeframe": "1H",
+        "note": "Retest of the 1H demand zone.",
+        "created_at": "2026-10-12T07:40:00Z",
+        "status": "pending"
+      },
+      {
+        "id": "dr_02",
+        "author_id": "tm_04",
+        "author": "James Okafor",
+        "role": "analyst",
+        "market": "XAU/USD",
+        "direction": "SELL",
+        "entry": 2381.4,
+        "sl": 2392,
+        "tp1": 2362.5,
+        "timeframe": "4H",
+        "note": "Rejection at the weekly high.",
+        "created_at": "2026-10-11T16:05:00Z",
+        "status": "pending"
+      }
+    ],
+    "audit_log": [
+      {
+        "id": "au_07",
+        "at": "2026-10-11T16:05:00Z",
+        "actor": "James Okafor",
+        "role": "analyst",
+        "type": "signal",
+        "action": "draft.submitted",
+        "text": "Signal draft (XAU/USD SELL) submitted for approval by James Okafor — Analyst"
+      },
+      {
+        "id": "au_06",
+        "at": "2026-10-10T12:30:00Z",
+        "actor": "James Okafor",
+        "role": "analyst",
+        "type": "signal",
+        "action": "signal.published",
+        "text": "Signal published (V75 (1s) BUY) by James Okafor — Analyst, approved by Daniel Udo — Administrator"
+      },
+      {
+        "id": "au_05",
+        "at": "2026-10-03T08:00:00Z",
+        "actor": "Daniel Udo",
+        "role": "admin",
+        "type": "account",
+        "action": "account.connected",
+        "text": "Deriv Account 04 connected by Daniel Udo — Administrator"
+      },
+      {
+        "id": "au_04",
+        "at": "2026-09-22T10:00:00Z",
+        "actor": "Daniel Udo",
+        "role": "admin",
+        "type": "team",
+        "action": "member.invited",
+        "text": "Victor Ekpo invited as Viewer by Daniel Udo — Administrator"
+      },
+      {
+        "id": "au_03",
+        "at": "2026-09-10T10:00:00Z",
+        "actor": "John Trader",
+        "role": "owner",
+        "type": "team",
+        "action": "member.invited",
+        "text": "Grace Bassey invited as Community Manager by John Trader — Owner"
+      },
+      {
+        "id": "au_02",
+        "at": "2026-09-01T08:00:00Z",
+        "actor": "John Trader",
+        "role": "owner",
+        "type": "account",
+        "action": "account.connected",
+        "text": "Deriv MT5 Financial connected by John Trader — Owner"
+      },
+      {
+        "id": "au_01",
+        "at": "2026-08-20T10:00:00Z",
+        "actor": "John Trader",
+        "role": "owner",
+        "type": "settings",
+        "action": "settings.changed",
+        "text": "Analyst signals set to \"Require approval\" by John Trader — Owner"
+      }
+    ],
+    "community_performance": {
+      "net_points": 12640,
+      "signals": 214,
+      "wins": 154,
+      "losses": 52,
+      "breakeven": 8,
+      "win_rate": 72,
+      "rr": "1:6.1",
+      "avg_points": 59.1
+    },
+    "company_achievements": [
+      "founding_institution",
+      "top_signal_provider",
+      "consistent_performer",
+      "community_builder"
+    ]
   }
 }

@@ -3,6 +3,8 @@
     "id": "usr_me",
     "username": "johntrader",
     "display_name": "John Trader",
+    "profile_type": "individual",
+    "country": "Nigeria",
     "email": "john@example.com",
     "avatar_url": null,
     "is_verified": true,
@@ -34,7 +36,10 @@
       ],
       "total_balance": 4024.95,
       "accounts": 4,
-      "primary_account": "USD Account (VAZ)"
+      "primary_account": "USD Account (VAZ)",
+      "connections": 1,
+      "max_connections": 1,
+      "connected_at": "2026-03-02T10:15:00.000Z"
     },
     "performance": {
       "today_pl": 72.4,
@@ -45,11 +50,30 @@
       "losses": 36,
       "total_signals": 128,
       "avg_risk_reward": 2.35,
-      "best_signal": 320.5
+      "best_signal": 320.5,
+      "source": "deriv_trade_history",
+      "verified_at": "2026-10-12T06:00:00.000Z"
     },
     "unread_notifications": 3,
     "member_since": "Apr 2023",
     "moderator_since": "2026-05-14T09:00:00.000Z",
-    "flags_raised": 37
+    "flags_raised": 37,
+    "signal_performance": {
+      "published": 12,
+      "won": 7,
+      "lost": 3,
+      "open": 2,
+      "performance_points": 920,
+      "best_market": "V75 (1s)",
+      "since": "2026-05-01T00:00:00.000Z"
+    },
+    "progression": {
+      "current": "performance",
+      "next": "reputation",
+      "hint": "Keep publishing verified signals. A consistent 90-day record builds your reputation."
+    },
+    "is_pro": true,
+    "title": "Professional Trader",
+    "joined_at": "2023-04-10T00:00:00Z"
   }
 }

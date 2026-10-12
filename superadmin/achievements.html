@@ -42,6 +42,14 @@
         the system to earn badges.</div>
       </div>
 
+      <div class="alert alert-green">
+        <span data-icon="signals"></span>
+        <div class="t-sm"><strong>Achievements feed privileges.</strong> Holding any badge marked
+        <em>Unlocks signal posting</em> makes a user eligible to post signals (unless suspended).
+        Every badge also awards its <em>KX Points on award</em> once. Top Signal Provider is a
+        performance award and can never be a prerequisite.</div>
+      </div>
+
       <div id="stats"></div>
       <div id="badgeTable"></div>
       <div id="recentAwards"></div>
@@ -68,6 +76,7 @@
 <script src="../assets/js/core/ws.js"></script>
 <script src="../assets/js/components/cards.js"></script>
 <script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/kx.js"></script>
 <script src="../assets/js/core/roles.js"></script>
 <script src="../assets/js/core/shell.js"></script>
 <script>
@@ -130,6 +139,42 @@
     }).join('');
   }
 
+  /* ---- privileges (MB.kx config, Super Admin only) ------------------- */
+  function badgeKey(b) { return String(b.name).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); }
+  function privSwitch(b) {
+    var key = badgeKey(b), info = MB.kx.badges.info(key) || {};
+    var perf = MB.kx.badges.isPerformanceAward(key);
+    return '<label class="switch" title="' + (perf ? 'Performance award — never a prerequisite' : 'Unlocks signal posting') + '">' +
+      '<input type="checkbox" data-priv="' + key + '"' + (info.unlocks_signals && !perf ? ' checked' : '') + (perf ? ' disabled' : '') +
+      ' data-can="achievement.edit_criteria" aria-label="Unlocks signal posting: ' + MB.esc(b.name) + '">' +
+      '<span class="track"></span></label>';
+  }
+  function pointsInput(b, wide) {
+    var key = badgeKey(b), info = MB.kx.badges.info(key) || {};
+    return '<input class="input input-sm num" type="number" min="0" max="1000" step="5" value="' + Number(info.points || 0) + '"' +
+      ' style="width:' + (wide ? '100%' : '90px') + '" data-pts="' + key + '" data-can="achievement.edit_criteria"' +
+      ' aria-label="KX Points on award: ' + MB.esc(b.name) + '">';
+  }
+  function savePriv(key, patch, label) {
+    var badgesPatch = {}; badgesPatch[key] = patch;
+    MB.kx.admin.setConfig({ badges: badgesPatch });
+    /* Stage 2: PATCH /api/v1/admin/achievements/{id}/privileges — audited. */
+    MB.api.patch('admin/achievements/' + key + '/privileges', patch).then(function () { MB.toast(label); });
+    MB.$$('[data-priv="' + key + '"]').forEach(function (el) { el.checked = !!(MB.kx.badges.info(key) || {}).unlocks_signals; });
+    MB.$$('[data-pts="' + key + '"]').forEach(function (el) { el.value = (MB.kx.badges.info(key) || {}).points || 0; });
+  }
+  document.addEventListener('change', function (e) {
+    var t = e.target;
+    if (t.matches && t.matches('[data-priv]')) {
+      var k = t.getAttribute('data-priv');
+      savePriv(k, { unlocks_signals: t.checked }, MB.kx.badges.name(k) + (t.checked ? ' now unlocks signal posting' : ' no longer unlocks signal posting'));
+    } else if (t.matches && t.matches('[data-pts]')) {
+      var k2 = t.getAttribute('data-pts');
+      var v = Math.max(0, Math.min(1000, Math.round(Number(t.value) || 0)));
+      savePriv(k2, { points: v }, MB.kx.badges.name(k2) + ' awards ' + v + ' KX Points');
+    }
+  });
+
   /* slide-over */
   function openSO(title, html) {
     document.getElementById('soTitle').textContent = title;
@@ -154,7 +199,8 @@
   /* ---- main ------------------------------------------------------------ */
 
   MB.ready(function () {
-    MB.api.get('admin/achievements').then(function (res) {
+    Promise.all([MB.api.get('admin/achievements'), MB.kx.ready()]).then(function (all) {
+      var res = all[0];
       var badges = res.data;
       var meta   = res.meta;
       var awards = res.recent_awards || [];
@@ -182,6 +228,8 @@
               '<th class="t-xs">Criteria (hidden)</th>' +
               '<th class="t-xs">Threshold</th>' +
               '<th class="t-xs">Secondary</th>' +
+              '<th class="t-xs" style="text-align:center">Unlocks signal posting</th>' +
+              '<th class="t-xs">KX Points on award</th>' +
               '<th class="t-xs" style="text-align:right">Holders</th>' +
               '<th class="t-xs" style="text-align:center">Active</th>' +
               '<th class="t-xs" style="text-align:right">Actions</th>' +
@@ -218,6 +266,8 @@
                   (b.criteria.threshold || '') + '" style="width:90px" data-field="threshold" data-can="achievement.edit_criteria">') +
           '</td>' +
           '<td>' + secHtml + '</td>' +
+          '<td style="text-align:center">' + privSwitch(b) + '</td>' +
+          '<td>' + pointsInput(b) + '</td>' +
           '<td style="text-align:right"><span class="w-bold">' + MB.fmt.compact(b.holders) + '</span></td>' +
           '<td style="text-align:center">' +
             '<label class="switch"><input type="checkbox"' + checked + ' data-field="status" data-can="achievement.edit_criteria">' +
@@ -266,6 +316,12 @@
                   '<div class="field"><label class="form-label">Secondary threshold</label>' +
                     '<input class="input" type="text" value="' + b.criteria.secondary.threshold + '"></div>'
                 : '<p class="t-xs c-3">No secondary condition set.</p>') +
+              '<hr>' +
+              '<h3 class="t-sm w-bold">Privileges &amp; KX Points</h3>' +
+              '<div class="between" data-can="achievement.edit_criteria"><div><div class="t-sm w-semi">Unlocks signal posting</div>' +
+                '<div class="t-xs c-3">' + (MB.kx.badges.isPerformanceAward(badgeKey(b)) ? 'Performance award — never a prerequisite' : 'Holders become eligible to post signals') + '</div></div>' +
+                privSwitch(b) + '</div>' +
+              '<div class="field" data-can="achievement.edit_criteria"><label class="form-label">KX Points on award</label>' + pointsInput(b, true) + '</div>' +
               '<hr>' +
               '<div class="info-row"><span class="ir-k">Holders</span><span class="ir-v">' + b.holders + '</span></div>' +
               '<div class="info-row"><span class="ir-k">Created</span><span class="ir-v">' + MB.fmt.date(b.created_at) + '</span></div>' +

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KX Receipt — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Receipt" data-sub="KX transaction" data-back="kx-history.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+    <div id="rcRoot"><div class="card"><div class="skeleton sk-line w40"></div><div class="skeleton sk-line w80"></div></div></div>
+    <div class="stack g2" id="rcActions"></div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var q = new URLSearchParams(location.search);
+  var id = q.get('id'), payId = q.get('pay');
+
+  function when(iso) {
+    var d = new Date(iso);
+    return MB.fmt.date(iso) + ' – ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+  function kx(n) { return MB.fmt.price(Math.abs(n), 2) + ' KX'; }
+  function usdt(n) { return MB.fmt.price(n, 2) + ' USDT'; }
+  function shortHash(h) { return h && h.length > 20 ? h.slice(0, 10) + '…' + h.slice(-8) : (h || '—'); }
+
+  /* A top-up that KaastroPay has not confirmed yet (from the checkout). */
+  function pendingReceipt(p) {
+    var st = p.status === 'confirming' || p.status === 'awaiting_payment' ? 'pending' : p.status;
+    return MB.kx.ui.receipt({
+      title: 'KX Top Up',
+      amount: '+ ' + kx(p.kx),
+      status: st,
+      hero_note: st === 'pending' ? 'We are still confirming this transaction.' :
+                 st === 'underpaid' ? 'Partially received — no KX credited yet.' : 'This payment request expired.',
+      summary: [
+        { k: 'Amount to send', v: usdt(p.amount) },
+        { k: 'Amount received', v: usdt(p.received || 0) },
+        { k: 'KaastroPay fee', v: usdt(0) }
+      ],
+      charges: usdt(0),
+      net: { k: 'KX to be credited', v: kx(p.kx) },
+      info: [
+        { k: 'Reference', v: p.reference },
+        { k: 'Date & Time', v: when(p.created_at) },
+        { k: 'Transaction type', v: 'Crypto top-up (USDT · ' + p.network + ')' },
+        { k: 'Deposit address', v: '<code>' + MB.esc(shortHash(p.address)) + '</code>', html: true }
+      ],
+      notice_text: st === 'expired'
+        ? 'Do not send funds to this address. If you already did, contact support with the reference above.'
+        : 'KX is credited only after KaastroPay confirms the payment on the network. If you did not make this transaction, contact support immediately.'
+    });
+  }
+
+  function txnReceipt(t) {
+    var m = t.meta || {};
+    if (t.type === 'topup') {
+      return MB.kx.ui.receipt({
+        title: 'KX Top Up',
+        amount: '+ ' + kx(t.amount),
+        status: 'completed',
+        hero_note: 'Credited to your KX wallet.',
+        summary: [
+          { k: 'Amount sent', v: usdt(m.sent != null ? m.sent : t.amount) },
+          { k: 'KaastroPay fee', v: usdt(m.fee || 0) },
+          { k: 'Network fee', v: 'Paid by sender' }
+        ],
+        charges: usdt(m.fee || 0),
+        net: { k: 'Amount received', v: kx(t.amount) },
+        info: [
+          { k: 'Transaction ID', v: t.id },
+          { k: 'Reference', v: t.ref || '—' },
+          { k: 'Date & Time', v: when(t.at) },
+          { k: 'Transaction type', v: 'Crypto top-up (USDT · ' + (m.network || '—') + ')' }
+        ],
+        details: [
+          { k: 'Method', v: 'USDT via KaastroPay' },
+          { k: 'Rate applied', v: '1 USDT = 1 KX' },
+          { k: 'Network tx hash', v: '<code>' + MB.esc(shortHash(m.txid)) + '</code>', html: true },
+          { k: 'Outcome', v: 'Credited' }
+        ]
+      });
+    }
+    var sub = t.type === 'subscription';
+    return MB.kx.ui.receipt({
+      title: sub ? 'Pro Room Subscription' : 'KX Purchase',
+      amount: '− ' + kx(t.amount),
+      status: t.status || 'completed',
+      hero_note: 'Paid from your KX balance.',
+      summary: [
+        { k: 'Price', v: kx(t.amount) },
+        { k: 'Fees', v: kx(0) }
+      ],
+      charges: kx(0),
+      net: { k: 'Amount deducted', v: kx(t.amount) },
+      info: [
+        { k: 'Transaction ID', v: t.id },
+        { k: 'Date & Time', v: when(t.at) },
+        { k: 'Transaction type', v: sub ? 'Subscription' : 'Purchase' }
+      ],
+      details: [
+        { k: 'Item', v: t.label },
+        { k: 'Paid with', v: 'KX balance (1 KX = $1)' },
+        sub ? { k: 'Period', v: '30 days from purchase' } : { k: 'Access', v: 'Added to your account' }
+      ]
+    });
+  }
+
+  function draw() {
+    var html, ref;
+    var p = payId ? MB.kx.payments.get(payId) : null;
+    if (p && p.status === 'completed' && p.txn_id) { id = p.txn_id; p = null; }
+    var t = !p && id ? MB.kx.transaction(id) : null;
+
+    if (p) { html = pendingReceipt(p); ref = p.reference; }
+    else if (t) { html = txnReceipt(t); ref = t.id; }
+    else {
+      html = '<div class="empty">' + MB.icon('receipt', 46) + '<h3>Receipt not found</h3>' +
+        '<p>This transaction is not in your KX history.</p></div>';
+    }
+    MB.$('#rcRoot').innerHTML = html;
+    MB.$('#rcActions').innerHTML =
+      (ref ? '<button class="btn btn-outline btn-block" type="button" data-copy="' + MB.esc(ref) + '">' + MB.icon('copy', 16) + ' Copy reference</button>' : '') +
+      (p ? '<a class="btn btn-trade btn-block" href="pay.html?id=' + encodeURIComponent(p.id) + '">Back to checkout</a>'
+         : '<a class="btn btn-outline btn-block" href="kx-history.html">All transactions</a>');
+    MB.mountIcons(document);
+  }
+
+  draw();
+  MB.kx.ready().then(draw);
+  if (payId) { setInterval(function () { MB.kx.payments.settle(); }, 2000); MB.kx.on(draw); }
+});
+</script>
+</body>
+</html>

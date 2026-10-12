@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal Disputes — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/signals.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="superadmin" data-nav="disputes" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <div class="grow">
+        <h1 id="pageTitle">Signal Disputes</h1>
+        <div class="sub" id="pageSub">Automated results that a user has disputed, for moderator review</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+    </header>
+    <main class="admin-body">
+      <div id="stats"></div>
+
+      <section class="panel">
+        <div class="panel-head"><h2>How a result is decided</h2></div>
+        <div class="panel-body">
+          <div class="admin-cols c-even">
+            <ul class="t-sm c-2 stack g2" style="padding-left:18px;margin:0">
+              <li>A signal becomes active only when price reaches its entry. Not reached in 24h → <strong>Expired</strong>.</li>
+              <li><strong>TP1 before SL = WIN</strong>, permanently. A later return to the stop never changes it; TP2–TP5 only add points.</li>
+              <li><strong>SL before TP1 = LOSS.</strong> Both levels inside one tick → resolved against the author.</li>
+            </ul>
+            <ul class="t-sm c-2 stack g2" style="padding-left:18px;margin:0">
+              <li>Community opinion never overrides the system, and outcomes are never voted on.</li>
+              <li>A reviewer may only <strong>Uphold</strong> the automated result or <strong>Correct</strong> it when the data was wrong (e.g. an invalid tick).</li>
+              <li>Both actions need a written reason and are recorded in the dispute's audit log.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div id="table"></div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/signal-tracker.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+/* Decisions taken in this browser (prototype). Stage 2: the dispute record and
+   its audit log live server-side: POST /admin/disputes/{id}/uphold|correct. */
+var DKEY = 'mb.disputes.decisions';
+function decisions() {
+  try { return JSON.parse(localStorage.getItem(DKEY) || '{}'); } catch (e) { return {}; }
+}
+
+function statusBadge(st) {
+  var map = { open: ['badge-warn', 'Open — awaiting review'], upheld: ['badge-info', 'Upheld'],
+              corrected: ['badge-active', 'Corrected'] };
+  var d = map[st] || ['badge-neutral', st];
+  return '<span class="badge ' + d[0] + '">' + d[1] + '</span>';
+}
+function outcomeChip(o, pts, unit) {
+  var cls = { won: 'sx-won', lost: 'sx-lost', expired: 'sx-exp' }[o] || 'sx-wait';
+  var lbl = { won: 'WIN', lost: 'LOSS', expired: 'EXPIRED' }[o] || String(o || '').toUpperCase();
+  return '<span class="sx-chip ' + cls + '">' + lbl +
+    (o === 'won' || o === 'lost' ? ' ' + MB.card.sx.fmtPts(pts, unit) : '') + '</span>';
+}
+
+/* Local disputes raised from the app in this browser join the queue. */
+function localRows() {
+  if (!MB.signalTracker) { return []; }
+  return MB.signalTracker.disputes().map(function (d) {
+    var s = d.signal || {};
+    return {
+      id: d.id, local: true, status: d.status, opened_at: d.at,
+      raised_by: { username: 'you (this browser)', role: 'follower' }, reason: d.reason,
+      signal: { id: d.signal_id, author: { username: s.author || '—' },
+        market: { short_name: s.pair || s.symbol || '—', symbol: s.symbol }, direction: String(s.direction || '').toLowerCase(),
+        levels: s.levels || {} },
+      system: { outcome: s.status, points: s.points, unit: s.unit }
+    };
+  });
+}
+
+MB.ready(function () {
+  MB.api.list('admin/disputes').then(function (rows) {
+    var dec = decisions();
+    rows.forEach(function (d) {
+      if (dec[d.id]) { d.status = dec[d.id].action === 'correct' ? 'corrected' : 'upheld'; }
+    });
+    var all = localRows().concat(rows);
+    var open = all.filter(function (d) { return d.status === 'open'; }).length;
+    var corrected = all.filter(function (d) { return d.status === 'corrected'; }).length;
+    var upheld = all.filter(function (d) { return d.status === 'upheld'; }).length;
+    var reviewed = corrected + upheld;
+
+    MB.statSlider('#stats', 'Dispute queue', [
+      { k: 'Open', v: open, tone: open ? 'warn' : undefined, note: 'awaiting a moderator', spark: false },
+      { k: 'Upheld', v: upheld, note: 'automated result stood', spark: false },
+      { k: 'Corrected', v: corrected, note: 'data was wrong', spark: false },
+      { k: 'Correction rate', v: reviewed ? Math.round(corrected / reviewed * 100) + '%' : '—', spark: false },
+      { k: 'Total', v: all.length, spark: false }
+    ]);
+
+    MB.datatable({
+      data: all, into: '#table', perPage: 20, sortKey: 'opened_at', sortDir: 'desc',
+      searchPlaceholder: 'Search disputes, providers, markets…',
+      search: ['id', 'reason', 'signal.author.username', 'signal.market.short_name', 'raised_by.username'],
+      columns: [
+        { key: 'id', label: 'Dispute', sortable: true,
+          render: function (d) {
+            return '<a class="cell-link" href="dispute-detail.html?id=' + encodeURIComponent(d.id) + '">' +
+              '<div class="n">' + MB.esc(d.id) + (d.local ? ' <span class="badge badge-neutral">local</span>' : '') + '</div>' +
+              '<div class="h c-3">' + MB.fmt.ago(d.opened_at) + '</div></a>';
+          } },
+        { key: 'signal.market.short_name', label: 'Signal', sortable: true,
+          sortValue: function (d) { return d.signal.market.short_name; },
+          render: function (d) {
+            var sell = d.signal.direction === 'sell';
+            return '<div><span class="w-bold ' + (sell ? 'c-down' : 'c-up') + '">' + (sell ? 'SELL' : 'BUY') + '</span> ' +
+              MB.esc(d.signal.market.short_name) + '<div class="h c-3">' + MB.esc(d.signal.id || '') + '</div></div>';
+          } },
+        { key: 'signal.author.username', label: 'Provider', sortable: true,
+          sortValue: function (d) { return d.signal.author.username; },
+          render: function (d) { return MB.esc(d.signal.author.display_name || d.signal.author.username); } },
+        { key: 'raised_by.username', label: 'Raised by', sortable: true,
+          sortValue: function (d) { return d.raised_by.username; },
+          render: function (d) {
+            return MB.esc(d.raised_by.username) + '<div class="h c-3">' + MB.esc(d.raised_by.role || '') + '</div>';
+          } },
+        { key: 'system.outcome', label: 'Automated result', sortable: true,
+          sortValue: function (d) { return d.system.outcome; },
+          render: function (d) { return outcomeChip(d.system.outcome, d.system.points, d.system.unit); } },
+        { key: 'reason', label: 'Reason', sortable: false,
+          render: function (d) {
+            return '<span class="c-2 t-xs" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:300px">' +
+              MB.esc(d.reason) + '</span>';
+          } },
+        { key: 'status', label: 'Status', sortable: true, filter: ['open', 'upheld', 'corrected'],
+          render: function (d) { return statusBadge(d.status); } },
+        { key: '', label: 'Actions', align: 'right',
+          render: function (d) {
+            return '<div class="row-actions"><a class="btn btn-ghost btn-xs" data-can="signal.dispute.review" href="dispute-detail.html?id=' +
+              encodeURIComponent(d.id) + '">' + (d.status === 'open' ? 'Review' : 'View') + '</a></div>';
+          } }
+      ],
+      done: function () { if (MB.applyPermissions) { MB.applyPermissions(document); } }
+    });
+  });
+});
+</script>
+</body>
+</html>

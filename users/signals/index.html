@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/signals.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="signals" data-root="../../" data-title="Signals" data-sub="Follow top traders and trade quality signals" data-unread="3">
@@ -42,6 +43,8 @@
         <button class="chip" data-value="analysis">Analysis</button>
         <button class="chip" data-value="boosted">Boosted</button>
         <button class="chip" data-value="active">Active Now</button>
+        <button class="chip" data-value="waiting">Waiting for Entry</button>
+        <button class="chip" data-value="results">Results</button>
       </div>
       <div class="chips" data-group id="catChips"></div>
       <div class="filter-row">
@@ -56,6 +59,11 @@
       <div class="sec-head"><h2>Top Signal Providers</h2>
         <a href="../results/leaderboard.html">View all</a></div>
       <div class="hscroll" id="topProviders"></div>
+    </section>
+
+    <section class="page-section hide" id="mineSec">
+      <div class="sec-head"><h2>Your Signals</h2><span class="t-xs c-3" id="mineRec"></span></div>
+      <div class="stack g3" id="mineFeed"></div>
     </section>
 
     <section class="page-section">
@@ -155,6 +163,8 @@
 
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/signal-tracker.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
@@ -184,6 +194,24 @@
 
 MB.ready(function () {
   document.getElementById('catChips').innerHTML = catChips();
+
+  /* Signals published from this browser — tracked live by MB.signalTracker */
+  function paintMine() {
+    var T = MB.signalTracker;
+    var mine = T.list().slice().reverse();
+    document.getElementById('mineSec').classList.toggle('hide', !mine.length);
+    if (!mine.length) { return; }
+    var st = T.stats();
+    document.getElementById('mineRec').textContent = st.won + 'W / ' + st.lost + 'L' +
+      (st.open ? ' · ' + st.open + ' open' : '');
+    var feed = document.getElementById('mineFeed');
+    feed.innerHTML = mine.slice(0, 5).map(function (r) {
+      return MB.card.sig(T.toFeedSignal(r));
+    }).join('');
+    MB.mountIcons(feed); MB.mountCharts(feed);
+  }
+  paintMine();
+  MB.signalTracker.on(paintMine);
   document.getElementById('fpCat').innerHTML = catChips();
 
   MB.render({ into: '#topProviders', from: 'providers', limit: 8,
@@ -201,7 +229,10 @@ MB.ready(function () {
       kind: function (s, v) {
         if (v === 'all') { return true; }
         if (v === 'boosted') { return s.boost && s.boost.is_boosted; }
-        if (v === 'active') { return s.status === 'active'; }
+        var stage = (s.lifecycle && s.lifecycle.stage) || s.status;
+        if (v === 'active') { return stage === 'active'; }
+        if (v === 'waiting') { return stage === 'waiting' || stage === 'pending'; }
+        if (v === 'results') { return stage === 'won' || stage === 'lost'; }
         return s.kind === v;
       },
       category: function (s, v) { return v === 'all' || s.market.category === v; },

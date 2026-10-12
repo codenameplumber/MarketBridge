@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/institution.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="home" data-root="../../" data-title="Institutional" data-sub="Manage your portfolio" data-back="../index.html" data-unread="3">
@@ -23,15 +24,19 @@
   <div data-render="topbar"></div>
   <main class="page">
 
+    <div id="actingAs"></div>
+
     <!-- STATUS BANNER -->
     <section class="card inst-status" id="instStatus">
       <div class="between">
-        <div>
-          <div class="row g2">
+        <div style="min-width:0">
+          <div class="row g2" style="flex-wrap:wrap">
+            <span id="instType"></span>
             <span class="badge badge-verified" id="instTier">&mdash;</span>
             <span class="badge badge-active" id="instVerified">Verified</span>
           </div>
           <div class="t-h3 w-bold mt2" id="instCompany">&mdash;</div>
+          <div class="t-xs c-3 mt1" id="instReg"></div>
           <div class="t-xs c-3 mt1" id="instBio">&mdash;</div>
         </div>
       </div>
@@ -41,6 +46,20 @@
         <a class="btn btn-ghost btn-sm" href="apply.html">
           <span data-icon="settings"></span> Settings</a>
       </div>
+    </section>
+
+    <!-- SHORTCUTS -->
+    <nav class="inst-nav" aria-label="Institution">
+      <a href="accounts.html"><span data-icon="link"></span>Accounts<span class="in-n" id="navAccts">&mdash;</span></a>
+      <a href="team.html"><span data-icon="users"></span>Team<span class="in-n" id="navTeam">&mdash;</span></a>
+      <a href="audit.html"><span data-icon="activity"></span>Audit log<span class="in-n">History</span></a>
+      <a href="portfolio.html?preview=1"><span data-icon="globe"></span>Profile<span class="in-n">Public view</span></a>
+    </nav>
+
+    <!-- PROFILE TYPE -->
+    <section class="page-section">
+      <div class="label">Profile type</div>
+      <div class="ptype-compare" id="ptypeCompare"></div>
     </section>
 
     <!-- SHOWCASE TO INVESTORS -->
@@ -110,8 +129,8 @@
     <section class="page-section">
       <div class="between mb2">
         <div class="label">Linked Deriv Accounts</div>
-        <button class="btn btn-sm btn-primary" id="btnLinkAcct">
-          <span data-icon="plus" data-icon-size="14"></span> Link Account</button>
+        <a class="btn btn-sm btn-ghost" href="accounts.html">
+          <span data-icon="link" data-icon-size="14"></span> Manage</a>
       </div>
       <div id="instAccounts" class="stack"></div>
     </section>
@@ -137,8 +156,8 @@
     <section class="page-section">
       <div class="between mb2">
         <div class="label">Team Members</div>
-        <button class="btn btn-sm btn-ghost" id="btnAddTeam">
-          <span data-icon="userplus" data-icon-size="14"></span> Add</button>
+        <a class="btn btn-sm btn-ghost" href="team.html">
+          <span data-icon="users" data-icon-size="14"></span> Roles</a>
       </div>
       <div id="instTeam" class="stack"></div>
     </section>
@@ -149,31 +168,6 @@
         <div class="label">Verification Documents</div>
       </div>
       <div id="instDocs" class="stack"></div>
-    </section>
-
-    <!-- LINK ACCOUNT FORM (hidden by default) -->
-    <section class="page-section hide" id="linkAcctForm">
-      <div class="label mb2">Link a Deriv Account</div>
-      <div class="card">
-        <div class="form-group">
-          <label class="form-label" for="linkLogin">MT5 Login ID</label>
-          <input class="input" type="text" id="linkLogin" placeholder="e.g. MTR40012884">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="linkType">Account Type</label>
-          <select class="input" id="linkType">
-            <option value="Standard">Standard</option>
-            <option value="Synthetic">Synthetic</option>
-            <option value="Financial">Financial</option>
-          </select>
-        </div>
-        <div class="t-xs c-3 mb3">We'll verify ownership through the Deriv API. Only MT5 accounts are supported.</div>
-        <div class="row g2">
-          <button class="btn btn-primary" id="btnConfirmLink">
-            <span data-icon="plus" data-icon-size="14"></span> Link Account</button>
-          <button class="btn btn-ghost" id="btnCancelLink">Cancel</button>
-        </div>
-      </div>
     </section>
 
     <!-- SWITCH MODE -->
@@ -215,6 +209,21 @@
     else { MB.$('#instVerified').className = 'badge'; MB.$('#instVerified').textContent = 'Pending'; }
     MB.$('#instCompany').textContent = d.company || '—';
     MB.$('#instBio').textContent = d.bio || '';
+    MB.$('#instType').innerHTML = MB.instProfile.badge(d);
+    var cd = d.company_details || {};
+    MB.$('#instReg').textContent = [cd.legal_name, cd.registration_number, [cd.city, cd.country].filter(Boolean).join(', ')]
+      .filter(Boolean).join(' · ');
+
+    /* profile type — the two kinds side by side, current one marked */
+    var PT = MB.instProfile;
+    MB.$('#ptypeCompare').innerHTML = ['individual', 'institution'].map(function (k) {
+      var t = PT.TYPES[k], cur = PT.type(d) === k;
+      return '<div class="ptype-col' + (cur ? ' is-current' : '') + '">' +
+        '<div class="row g2"><span class="ptype-chip ptype-' + k + '">' + MB.icon(t.icon, 12) + MB.esc(t.label) + '</span>' +
+          (cur ? '<span class="t-xs w-bold c-up">Yours</span>' : '') + '</div>' +
+        '<ul>' + t.points.map(function (p) { return '<li>' + MB.icon('check', 12) + '<span>' + MB.esc(p) + '</span></li>'; }).join('') + '</ul>' +
+      '</div>';
+    }).join('');
 
     /* portfolio summary */
     MB.$('#instTotalBal').innerHTML = fmt.money(stats.total_balance) + '<span class="cur">USD</span>';
@@ -231,8 +240,9 @@
     MB.$('#instFollowers').textContent = stats.followers || 0;
     MB.$('#instViews').textContent = stats.portfolio_views || 0;
 
-    /* linked accounts */
-    var accts = d.linked_accounts || [];
+    /* linked accounts — includes ones connected on accounts.html */
+    var accts = MB.instAccounts.load(d);
+    MB.$('#navAccts').textContent = accts.length + ' / ' + PT.maxConnections(d);
     MB.$('#instAccounts').innerHTML = accts.map(function (a) {
       return MB.card.instAccount(a);
     }).join('');
@@ -274,6 +284,14 @@
     function persist() { SC.save(sc); paintShowcase(); }
     paintShowcase();
 
+    /* What the acting role may change here (demo switcher above). */
+    var acting = MB.instTeam.actingAs();
+    if (!MB.instTeam.can(acting, 'settings.manage')) {
+      ['#scPublic', '#scBalances', '#scHistory', '#scCreateLink', '#scLinkLabel', '#scLinkDur'].forEach(function (s) { MB.$(s).disabled = true; });
+      MB.$('#showcaseCard').insertAdjacentHTML('beforeend',
+        '<p class="t-xs c-3 mt3">Viewing as ' + MB.esc(MB.instTeam.label(acting)) + ' — only an Owner or Administrator can change what investors see.</p>');
+    }
+
     MB.$('#scPublic').addEventListener('change', function () {
       sc.public = this.checked; persist();
       MB.toast(sc.public ? 'Portfolio is now public' : 'Portfolio is now private');
@@ -307,6 +325,9 @@
     /* visibility toggles — saved, so the public portfolio honours them */
     MB.$$('.inst-vis-toggle').forEach(function (btn) {
       btn.addEventListener('click', function () {
+        if (!MB.instTeam.can(MB.instTeam.actingAs(), 'accounts.manage')) {
+          MB.toast('Only an Owner or Administrator can change this', 'err'); return;
+        }
         var id = btn.getAttribute('data-acct');
         var acct = accts.filter(function (a) { return a.id === id; })[0];
         if (!acct) { return; }
@@ -319,7 +340,8 @@
     });
 
     /* team */
-    var team = d.team || [];
+    var team = MB.instTeam.load(d);
+    MB.$('#navTeam').textContent = team.length + ' members';
     MB.$('#instTeam').innerHTML = team.length ? team.map(function (t) {
       return MB.card.instTeamMember(t);
     }).join('') : '<div class="empty">No team members added</div>';
@@ -368,26 +390,9 @@
     });
   });
 
-  /* Link account form toggle */
-  var linkForm = MB.$('#linkAcctForm');
-  MB.$('#btnLinkAcct').addEventListener('click', function () {
-    linkForm.classList.toggle('hide');
-    if (!linkForm.classList.contains('hide')) { linkForm.scrollIntoView({ behavior: 'smooth' }); }
-  });
-  MB.$('#btnCancelLink').addEventListener('click', function () { linkForm.classList.add('hide'); });
-  MB.$('#btnConfirmLink').addEventListener('click', function () {
-    var login = MB.$('#linkLogin').value.trim();
-    if (!login) { MB.toast('Enter an MT5 login ID'); return; }
-    this.disabled = true;
-    this.textContent = 'Linking…';
-    var btn = this;
-    setTimeout(function () {
-      btn.innerHTML = MB.icon('check', 14) + ' Account Linked';
-      btn.style.background = 'var(--mb-green)';
-      MB.toast('Account linked successfully');
-      setTimeout(function () { linkForm.classList.add('hide'); }, 800);
-    }, 1200);
-  });
+  /* Accounts are connected on accounts.html through Deriv authorization
+     (OAuth) — never a login ID or password typed here. */
+  MB.instTeam.switcher(MB.$('#actingAs'), function () { location.reload(); });
 })();
 </script>
 </body>

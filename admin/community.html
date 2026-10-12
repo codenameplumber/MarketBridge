@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../assets/css/base.css">
 <link rel="stylesheet" href="../assets/css/components.css">
 <link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/rooms.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="admin" data-role="admin" data-nav="community" data-root="../">
@@ -35,6 +36,18 @@
     <main class="admin-body">
       
       <div id="stats"></div>
+      <section class="panel" id="proQueue" data-can="room.pro.review" style="margin-bottom:var(--mb-s5)">
+        <div class="panel-head">
+          <h2>Pro applications</h2>
+          <span class="badge badge-warn" id="proCount">&mdash;</span>
+        </div>
+        <div class="panel-body">
+          <p class="t-xs c-3" style="margin-bottom:var(--mb-s3)">Premium rooms that completed three consecutive qualifying
+            months (signal activity, verified performance, consistency, no violations, minimum activity).
+            Approving turns on KX subscriptions at the price shown. Rejecting needs a reason the owner will see.</p>
+          <div id="proApps"></div>
+        </div>
+      </section>
       <div id="table"></div>
     </main>
   </div>
@@ -58,6 +71,7 @@
 <script src="../assets/js/core/ws.js"></script>
 <script src="../assets/js/components/cards.js"></script>
 <script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/components/rooms.js"></script>
 <script src="../assets/js/core/roles.js"></script>
 <script src="../assets/js/core/shell.js"></script>
 <script>
@@ -175,6 +189,148 @@ MB.ready(function () {
         });
       }
     });
+  });
+});
+
+/* ------------------------------------------------------------------------
+   PRO APPLICATIONS — the approval queue for Premium -> Pro.
+   Stage 1 keeps decisions in localStorage (mb.admin.proDecisions).
+   Stage 2: GET /admin/rooms/pro-applications, POST …/{id}/approve and
+   …/{id}/reject {reason}; the server re-checks the three months, writes the
+   staff audit entry and notifies the owner.
+   ------------------------------------------------------------------------ */
+MB.ready(function () {
+  var host = document.getElementById('proApps');
+  if (!host) { return; }
+  var KEY = 'mb.admin.proDecisions';
+  function read() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function write(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
+  var REASONS = [
+    ['inconsistent', 'Months not consistent'],
+    ['unverified', 'Performance could not be verified'],
+    ['violations', 'Violations or upheld disputes'],
+    ['activity', 'Activity below minimum'],
+    ['other', 'Other']
+  ];
+  var apps = [];
+
+  function usd(n) { return (n >= 0 ? '+' : '-') + '$' + MB.fmt.price(Math.abs(n || 0), 2); }
+  function pct(n) { return (n >= 0 ? '+' : '') + Number(n || 0).toFixed(1) + '%'; }
+
+  function card(r) {
+    var a = r.pro.application, ev = a.evidence || {}, dec = read()[r.id];
+    var months = (r.pro.months || []).map(function (m) {
+      return '<span class="badge ' + (m.qualified ? 'badge-active' : 'badge-neutral') + '">' +
+        (m.qualified ? MB.icon('check', 11) + ' ' : '') + MB.esc(m.month) + '</span>';
+    }).join(' ');
+    var cell = function (k, v, cls) { return '<div><div class="k">' + k + '</div><div class="v ' + (cls || '') + '">' + v + '</div></div>'; };
+    return '<div class="proapp" data-app="' + MB.esc(r.id) + '">' +
+      '<div class="between" style="gap:var(--mb-s3);flex-wrap:wrap">' +
+        '<div class="cell-user">' + MB.avatar(r.owner, 'avatar-sm') +
+          '<div><div class="n">' + MB.esc(r.name) + '</div>' +
+          '<div class="h">' + MB.esc(r.owner.display_name || r.owner.username) + ' · ' +
+            (r.owner_type === 'institution' ? 'Institution' : 'Individual') + ' · applied ' + MB.fmt.ago(a.submitted_at) + '</div></div></div>' +
+        '<div class="row g2" style="flex-wrap:wrap">' + MB.rooms.tierBadge(r) + MB.rooms.derivBadge(r) + '</div>' +
+      '</div>' +
+      '<div class="row g2 mt3" style="flex-wrap:wrap"><span class="t-xs c-3">Months qualified ' +
+        (r.pro.months_qualified || 0) + ' of ' + (r.pro.months_required || 3) + '</span>' + months + '</div>' +
+      '<div class="proapp-ev">' +
+        cell('Signals (3 mo)', ev.signals_3m) +
+        cell('Win rate', Number(ev.win_rate_3m || 0) + '%') +
+        cell('Verified net P/L', usd(ev.net_pl_3m), MB.fmt.dirClass(ev.net_pl_3m)) +
+        cell('Worst month', pct(ev.worst_month_pct), MB.fmt.dirClass(ev.worst_month_pct)) +
+        cell('Max drawdown', Number(ev.max_drawdown || 0).toFixed(1) + '%') +
+        cell('Upheld disputes', ev.disputes_upheld || 0) +
+        cell('Avg active members', ev.avg_active_members || 0) +
+        cell('Proposed price', (r.pro.price_kx || 0) + ' KX / mo') +
+      '</div>' +
+      '<p class="t-xs c-2 mt3">' + summary(ev, r) + '</p>' +
+      (dec
+        ? '<div class="row g2 mt3"><span class="badge ' + (dec.decision === 'approved' ? 'badge-active' : 'badge-lost') + '">' +
+            dec.decision + '</span><span class="t-xs c-3">' + MB.esc(dec.by) + ' · ' + MB.fmt.ago(dec.at) +
+            (dec.reason ? ' · ' + MB.esc(dec.reason) : '') + '</span></div>'
+        : '<div class="proapp-acts">' +
+            '<a class="btn btn-ghost btn-sm" href="../users/community/room.html?room=' + encodeURIComponent(r.id) + '">' +
+              MB.icon('eye', 14) + ' Open room</a>' +
+            '<button class="btn btn-sell btn-sm" type="button" data-can="room.pro.reject" data-reject="' + MB.esc(r.id) + '">Reject</button>' +
+            '<button class="btn btn-trade btn-sm" type="button" data-can="room.pro.approve" data-approve="' + MB.esc(r.id) + '">Approve Pro</button>' +
+          '</div>') +
+    '</div>';
+  }
+
+  function summary(ev, r) {
+    var bits = [(r.pro.months_qualified || 0) + ' consecutive qualifying months'];
+    bits.push((ev.disputes_upheld ? ev.disputes_upheld + ' upheld dispute(s)' : 'no upheld disputes'));
+    bits.push((ev.worst_month_pct >= 0 ? 'no losing month' : 'one losing month (' + pct(ev.worst_month_pct) + ')'));
+    bits.push('drawdown ' + Number(ev.max_drawdown || 0).toFixed(1) + '% of a 25% limit');
+    return 'Evidence: ' + bits.join(' · ') + '. Figures are read from the owner’s connected Deriv account.';
+  }
+
+  function paint() {
+    var d = read();
+    var open = apps.filter(function (r) { return !d[r.id]; }).length;
+    document.getElementById('proCount').textContent = open ? open + ' waiting' : 'Queue clear';
+    document.getElementById('proCount').className = 'badge ' + (open ? 'badge-warn' : 'badge-active');
+    host.innerHTML = apps.length ? apps.map(card).join('')
+      : '<div class="t-sm c-3">No Pro applications right now.</div>';
+    MB.mountIcons(host);
+    if (MB.applyPermissions) { MB.applyPermissions(host); }
+  }
+
+  function decide(r, decision, reason) {
+    var d = read();
+    var who = (MB.roles && MB.roles.current && MB.roles.current()) || document.body.getAttribute('data-role') || 'staff';
+    d[r.id] = { decision: decision, reason: reason || '', at: new Date().toISOString(),
+                by: typeof who === 'string' ? who.charAt(0).toUpperCase() + who.slice(1) : 'Staff' };
+    write(d);
+    MB.api.post('admin/rooms/' + r.id + '/pro/' + (decision === 'approved' ? 'approve' : 'reject'), { reason: reason || '' });
+    paint();
+    MB.toast(decision === 'approved' ? r.name + ' is now a Pro Room' : 'Application rejected — the owner has been told why');
+  }
+
+  host.addEventListener('click', function (e) {
+    var ap = e.target.closest('[data-approve]'), rj = e.target.closest('[data-reject]');
+    if (!ap && !rj) { return; }
+    var id = (ap || rj).getAttribute(ap ? 'data-approve' : 'data-reject');
+    var r = apps.filter(function (x) { return x.id === id; })[0];
+    if (!r) { return; }
+    if (ap) {
+      MB.confirm({
+        title: 'Approve ' + r.name + ' as a Pro Room?',
+        body: 'Subscriptions open at ' + (r.pro.price_kx || 0) + ' KX / month. The owner keeps their Deriv connection and the room stays under monthly review.',
+        confirm: 'Approve Pro'
+      }).then(function (yes) { if (yes) { decide(r, 'approved'); } });
+      return;
+    }
+    var chosen = REASONS[0][0];
+    MB.modal({
+      title: 'Reject Pro application',
+      sub: r.name + ' — the owner sees this reason',
+      body: '<div class="label">Reason</div>' +
+        '<div class="chips mt2" data-group id="rjReasons" style="flex-wrap:wrap">' + REASONS.map(function (x, i) {
+          return '<button class="chip' + (i === 0 ? ' is-active' : '') + '" type="button" data-value="' + x[0] + '">' + x[1] + '</button>';
+        }).join('') + '</div>' +
+        '<div class="label mt4">Note to the owner</div>' +
+        '<textarea class="textarea mt2" id="rjNote" rows="3" placeholder="What should they fix before applying again? (at least 10 characters)"></textarea>',
+      actions: [
+        { label: 'Cancel', kind: 'ghost', close: true },
+        { label: 'Reject application', kind: 'sell', onClick: function (m) {
+            var note = (m.$('#rjNote').value || '').trim();
+            if (note.length < 10) { MB.toast('Add a note of at least 10 characters', 'err'); return; }
+            var label = REASONS.filter(function (x) { return x[0] === chosen; })[0][1];
+            m.close();
+            decide(r, 'rejected', label + ' — ' + note);
+          } }
+      ],
+      onOpen: function (root) {
+        root.querySelector('#rjReasons').addEventListener('mb:change', function (ev) { chosen = ev.detail.value; });
+      }
+    });
+  });
+
+  MB.api.list('rooms').then(function (rows) {
+    apps = rows.filter(function (r) { return r.kind === 'trader' && r.pro && r.pro.application; });
+    paint();
   });
 });
 </script>

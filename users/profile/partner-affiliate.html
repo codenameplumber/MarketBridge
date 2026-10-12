@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deriv Affiliate Program — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/partner.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Deriv Affiliate" data-sub="Become a Deriv Affiliate with our support" data-back="partner.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page pp-affiliate">
+
+    <!-- ================================================================
+         HERO
+         ================================================================ -->
+    <section class="pp-hero pp-affiliate" aria-labelledby="afHeroT">
+      <svg class="pp-hero-art" viewBox="0 0 170 130" aria-hidden="true" focusable="false">
+        <rect class="accent-soft" x="14" y="26" width="128" height="78" rx="8"/>
+        <rect class="accent" x="62" y="108" width="32" height="6" rx="3"/>
+        <polyline class="line" points="26,90 50,74 72,82 98,54 128,40"/>
+        <circle class="coin" cx="138" cy="96" r="24"/>
+        <circle class="coin-rim" cx="138" cy="96" r="18"/>
+        <text class="coin-k" x="138" y="104" text-anchor="middle">$</text>
+      </svg>
+      <div class="pp-hero-copy">
+        <span class="pp-tag pp-tag-deriv">Deriv</span>
+        <h2 id="afHeroT" class="mt2">Deriv Affiliate Program</h2>
+        <p>Earn commission from people you refer to Deriv &mdash; with KonfluenX coaching you all the way.</p>
+      </div>
+    </section>
+
+    <div class="pp-feats" id="afFeats"></div>
+
+    <!-- ================================================================
+         STATUS
+         ================================================================ -->
+    <section class="card" id="status" aria-labelledby="afStatusT">
+      <div class="between">
+        <h2 class="t-sm w-bold" id="afStatusT">Your application</h2>
+        <span class="pp-state" id="afState">&mdash;</span>
+      </div>
+      <p class="t-xs c-3 mt2" id="afStateText"></p>
+      <ol class="pp-pipe mt4" id="afPipe"></ol>
+    </section>
+
+    <!-- Stage 1 only — stands in for the KonfluenX partner team and Deriv -->
+    <section class="pp-demo" id="afDemo" aria-label="Demo controls">
+      <div class="pp-demo-k"><span data-icon="settings" data-icon-size="13"></span> Prototype demo controls</div>
+      <p>Steps after your application are taken by the KonfluenX partner team and by Deriv,
+        not by you. In this prototype you can play their part to see each stage.</p>
+      <div class="row g2" id="afDemoBtns"></div>
+    </section>
+
+    <!-- ================================================================
+         ONBOARDING CHECKLIST
+         ================================================================ -->
+    <section class="card" id="onboarding" aria-labelledby="afObT">
+      <div class="between">
+        <h2 class="t-sm w-bold" id="afObT">Onboarding checklist</h2>
+        <span class="t-xs c-3 num" id="afObCount">0 / 0</span>
+      </div>
+      <p class="t-xs c-3 mt2" id="afObHint"></p>
+      <div class="pp-checklist mt2" id="afChecklist"></div>
+      <button class="btn btn-primary btn-block mt3" id="afObDone" type="button" disabled>Finish onboarding</button>
+    </section>
+
+    <!-- ================================================================
+         HOW IT WORKS
+         ================================================================ -->
+    <section class="card" id="how" aria-labelledby="afHowT">
+      <h2 class="t-sm w-bold" id="afHowT">How it works</h2>
+      <ol class="pp-steps mt4" id="afHow"></ol>
+      <div class="alert alert-green mt4">
+        <span data-icon="shield"></span>
+        <div class="t-xs"><strong>Deriv pays your commission, not KonfluenX.</strong>
+          <span id="afCommission"></span></div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         APPLICATION FORM (or the submitted application)
+         ================================================================ -->
+    <section class="card" id="apply" aria-labelledby="afApplyT">
+      <h2 class="t-sm w-bold" id="afApplyT">Apply to join</h2>
+      <p class="t-xs c-3 mt2">Takes two minutes. Your KonfluenX partner manager replies within 2 business days.</p>
+
+      <form class="pp-form mt4" id="afForm" novalidate>
+        <div class="field">
+          <label for="afName">Full name</label>
+          <input class="input" id="afName" name="fullname" autocomplete="name" required>
+          <span class="field-error" data-err="name" hidden>Enter your full name.</span>
+        </div>
+        <div class="field">
+          <label for="afEmail">Email</label>
+          <input class="input" id="afEmail" name="email" type="email" autocomplete="email" required>
+          <span class="field-error" data-err="email" hidden>Enter a valid email address.</span>
+        </div>
+        <div class="fp-row">
+          <div class="field">
+            <label for="afCountry">Country</label>
+            <input class="input" id="afCountry" name="country" autocomplete="country-name" required>
+            <span class="field-error" data-err="country" hidden>Enter your country.</span>
+          </div>
+          <div class="field">
+            <label for="afLogin">Deriv account ID</label>
+            <input class="input" id="afLogin" name="loginid" placeholder="CR1234567" autocapitalize="characters" required>
+            <span class="field-error" data-err="loginid" hidden>Use your Deriv login ID, e.g. CR1234567.</span>
+          </div>
+        </div>
+        <div class="fp-row">
+          <div class="field">
+            <label for="afChannel">Main channel</label>
+            <select class="select" id="afChannel" name="channel" required></select>
+          </div>
+          <div class="field">
+            <label for="afAudience">Audience size</label>
+            <select class="select" id="afAudience" name="audience" required></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="afLink">Link to your channel <span class="c-3">(optional)</span></label>
+          <input class="input" id="afLink" name="link" type="url" placeholder="https://">
+        </div>
+        <div class="field">
+          <label for="afAbout">Tell us about your audience <span class="c-3">(optional)</span></label>
+          <textarea class="textarea" id="afAbout" name="about" rows="3" maxlength="500"></textarea>
+        </div>
+        <label class="check" for="afAgreeComm">
+          <input type="checkbox" id="afAgreeComm" name="agree_comm">
+          <span class="box"><span data-icon="check" data-icon-size="13"></span></span>
+          <span class="t-xs">I understand my commission is set and paid by Deriv, not by KonfluenX.</span>
+        </label>
+        <label class="check" for="afAgreeTerms">
+          <input type="checkbox" id="afAgreeTerms" name="agree_terms">
+          <span class="box"><span data-icon="check" data-icon-size="13"></span></span>
+          <span class="t-xs">I agree to the KonfluenX partner <a class="c-up" href="../../terms.html">terms</a> and will follow Deriv&rsquo;s promotion rules.</span>
+        </label>
+        <span class="field-error" data-err="agree" hidden>Please confirm both statements.</span>
+        <button class="btn btn-primary btn-block" type="submit">Submit application</button>
+      </form>
+
+      <dl class="pp-kv mt3 hide" id="afSummary"></dl>
+    </section>
+
+    <!-- ================================================================
+         COACHING
+         ================================================================ -->
+    <a class="install-card" href="../resources/index.html">
+      <span class="ic-mark" style="color:var(--mb-warn)"><span data-icon="target" data-icon-size="22"></span></span>
+      <span class="grow">
+        <span class="ic-t">We coach you to succeed</span>
+        <span class="ic-d">Strategy guides, promotional material and ongoing support.</span>
+      </span>
+      <span class="none c-3" data-icon="chevright" data-icon-size="18"></span>
+    </a>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+
+  /* ---- state ----------------------------------------------------------
+     Stage 1: progress lives in localStorage 'mb.partner'.affiliate as
+       { status, history: { <stage>: iso }, checklist: { <id>: iso },
+         onboarding_done, application: {…} }.
+     Stage 2: POST /partner/affiliate/applications creates the application
+     (status 'applicant'); the KonfluenX partner team moves it to
+     'onboarding' and, once the checklist is verified, submits it to Deriv
+     ('submitted'). Deriv's decision arrives through the partner manager
+     ('approved'), and 'active' is set when Deriv issues the affiliate link.
+     Commission is never recorded as KonfluenX money: Deriv pays it. */
+  var STORE = 'mb.partner';
+  function loadAll() {
+    try { return JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function saveAll(all) {
+    try { localStorage.setItem(STORE, JSON.stringify(all)); } catch (e) { /* this view only */ }
+  }
+  var memo = null; /* survives a storage failure for this page view */
+  function getS() { var all = loadAll(); return all.affiliate || memo || {}; }
+  function setS(patch) {
+    var all = loadAll();
+    all.affiliate = Object.assign({}, all.affiliate || memo || {}, patch);
+    memo = all.affiliate; saveAll(all);
+    return all.affiliate;
+  }
+  function goTo(status) {
+    var h = Object.assign({}, getS().history || {});
+    h[status] = new Date().toISOString();
+    setS({ status: status, history: h });
+  }
+
+  var P = null, ME = {};
+
+  function render() {
+    var s = getS();
+    var cur = s.status || P.status;
+    var ids = P.pipeline.map(function (x) { return x.id; });
+    var idx = ids.indexOf(cur);
+
+    /* status pill + pipeline */
+    var pill = MB.$('#afState');
+    pill.textContent = idx < 0 ? 'Not applied' : P.pipeline[idx].label;
+    pill.className = 'pp-state' + (cur === 'active' ? ' is-live' : idx >= 0 ? ' is-progress' : '');
+    MB.$('#afStateText').textContent = idx < 0
+      ? 'Apply below to start. Each stage appears here as it happens.'
+      : P.pipeline[idx].text;
+
+    var h = s.history || {};
+    MB.$('#afPipe').innerHTML = P.pipeline.map(function (st, i) {
+      var cls = i < idx || (i === idx && cur === 'active') ? 'is-done' : i === idx ? 'is-current' : '';
+      return '<li class="' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '>' +
+        '<span class="pp-pipe-dot">' + (cls === 'is-done' ? MB.icon('check', 12) : (i + 1)) + '</span>' +
+        '<div class="grow"><div class="pp-pipe-t">' + MB.esc(st.label) + '</div>' +
+          (i === idx || cls === 'is-done' ? '<div class="pp-pipe-d">' + MB.esc(st.text) + '</div>' : '') +
+          (h[st.id] ? '<div class="pp-pipe-when">' + MB.fmt.date(h[st.id]) + '</div>' : '') +
+        '</div></li>';
+    }).join('');
+
+    /* application form vs summary */
+    var applied = idx >= 0;
+    MB.$('#afForm').classList.toggle('hide', applied);
+    MB.$('#afSummary').classList.toggle('hide', !applied);
+    MB.$('#afApplyT').textContent = applied ? 'Your application' : 'Apply to join';
+    if (applied) {
+      var a = s.application || {};
+      var rows = [['Name', a.name], ['Country', a.country], ['Deriv account', a.loginid],
+                  ['Main channel', a.channel], ['Audience', a.audience],
+                  ['Submitted', h.applicant ? MB.fmt.date(h.applicant) : '—']];
+      MB.$('#afSummary').innerHTML = rows.map(function (r) {
+        return '<div><dt>' + r[0] + '</dt><dd>' + MB.esc(r[1] || '—') + '</dd></div>';
+      }).join('');
+    }
+
+    /* onboarding checklist — usable only during onboarding */
+    var done = s.checklist || {};
+    var open = cur === 'onboarding' && !s.onboarding_done;
+    var count = P.checklist.filter(function (c) { return done[c.id]; }).length;
+    MB.$('#afObCount').textContent = count + ' / ' + P.checklist.length;
+    MB.$('#afObHint').textContent =
+      idx < ids.indexOf('onboarding') ? 'Unlocks once the partner team accepts your application.' :
+      s.onboarding_done && cur === 'onboarding' ? 'Done. The partner team is preparing your submission to Deriv.' :
+      cur === 'onboarding' ? 'Tick each item as you complete it with your coach.' :
+      'Onboarding complete.';
+    MB.$('#afChecklist').innerHTML = P.checklist.map(function (c) {
+      var id = 'afCk_' + c.id;
+      return '<label class="check" for="' + id + '">' +
+        '<input type="checkbox" id="' + id + '" data-ck="' + c.id + '"' +
+          (done[c.id] || idx > ids.indexOf('onboarding') ? ' checked' : '') + (open ? '' : ' disabled') + '>' +
+        '<span class="box">' + MB.icon('check', 13) + '</span>' +
+        '<span><span class="pp-check-t">' + MB.esc(c.label) + '</span>' +
+        '<span class="pp-check-d">' + MB.esc(c.text) + '</span></span></label>';
+    }).join('');
+    var obBtn = MB.$('#afObDone');
+    obBtn.disabled = !(open && count === P.checklist.length);
+    obBtn.classList.toggle('hide', idx > ids.indexOf('onboarding') || !!s.onboarding_done);
+
+    renderDemo(cur, s);
+  }
+
+  /* One "next stage" control at a time, so the order can't be skipped. */
+  function renderDemo(cur, s) {
+    var next = {
+      applicant:  { to: 'onboarding', label: 'Partner team accepts application' },
+      onboarding: s.onboarding_done ? { to: 'submitted', label: 'KonfluenX submits to Deriv' } : null,
+      submitted:  { to: 'approved',   label: 'Deriv approves affiliate' },
+      approved:   { to: 'active',     label: 'Deriv issues affiliate link' }
+    }[cur];
+    var host = MB.$('#afDemoBtns');
+    host.innerHTML =
+      (next ? '<button class="btn btn-ghost btn-sm" type="button" data-demo-to="' + next.to + '">' +
+        MB.esc(next.label) + '</button>' :
+        '<span class="t-xs c-3">' + (cur === 'onboarding' ? 'Finish the onboarding checklist first.' :
+          cur === 'active' ? 'All stages complete.' : 'Submit an application first.') + '</span>') +
+      '<button class="btn btn-ghost btn-sm none" type="button" data-demo-reset>Reset demo</button>';
+  }
+
+  MB.$('#afDemoBtns').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-demo-to]');
+    if (b) {
+      goTo(b.getAttribute('data-demo-to'));
+      render();
+      MB.toast('Demo: moved to ' + MB.$('#afState').textContent);
+      return;
+    }
+    if (e.target.closest('[data-demo-reset]')) {
+      var all = loadAll(); delete all.affiliate; memo = null; saveAll(all);
+      fillForm(); render();
+      MB.toast('Demo reset');
+    }
+  });
+
+  MB.$('#afChecklist').addEventListener('change', function (e) {
+    var id = e.target.getAttribute('data-ck');
+    if (!id) { return; }
+    var ck = Object.assign({}, getS().checklist || {});
+    if (e.target.checked) { ck[id] = new Date().toISOString(); } else { delete ck[id]; }
+    setS({ checklist: ck });
+    render();
+    var again = MB.$('[data-ck="' + id + '"]');
+    if (again) { again.focus(); }
+  });
+
+  MB.$('#afObDone').addEventListener('click', function () {
+    /* Stage 2: POST /partner/affiliate/onboarding/complete — the partner
+       team reviews it and submits the application to Deriv. */
+    setS({ onboarding_done: new Date().toISOString() });
+    render();
+    MB.toast('Onboarding complete. We’ll submit you to Deriv next.');
+  });
+
+  /* ---- application form ---------------------------------------------- */
+  function fillForm() {
+    var f = MB.$('#afForm');
+    f.reset();
+    f.fullname.value = ME.display_name || '';
+    f.email.value = ME.email || '';
+    f.loginid.value = (ME.deriv && ME.deriv.deriv_id) || '';
+    MB.$$('[data-err]', f).forEach(function (n) { n.hidden = true; });
+  }
+
+  MB.$('#afForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var v = {
+      name: f.fullname.value.trim(), email: f.email.value.trim(), country: f.country.value.trim(),
+      loginid: f.loginid.value.trim().toUpperCase(), channel: f.channel.value,
+      audience: f.audience.value, link: f.link.value.trim(), about: f.about.value.trim()
+    };
+    var bad = {
+      name: v.name.length < 2,
+      email: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email),
+      country: v.country.length < 2,
+      loginid: !/^[A-Z]{2,4}\d{5,}$/.test(v.loginid),
+      agree: !(f.agree_comm.checked && f.agree_terms.checked)
+    };
+    var first = null;
+    Object.keys(bad).forEach(function (k) {
+      var msg = MB.$('[data-err="' + k + '"]', f);
+      if (msg) { msg.hidden = !bad[k]; }
+      var input = { name: f.fullname, email: f.email, country: f.country, loginid: f.loginid }[k];
+      if (input) { input.setAttribute('aria-invalid', bad[k] ? 'true' : 'false'); }
+      if (bad[k] && !first) { first = k === 'agree' ? f.agree_comm : input; }
+    });
+    if (first) { first.focus(); return; }
+
+    /* Stage 2: POST /partner/affiliate/applications with this payload. */
+    setS({ application: v });
+    goTo('applicant');
+    render();
+    MB.toast('Application submitted');
+    MB.$('#status').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  /* ---- load ------------------------------------------------------------ */
+  Promise.all([MB.api.get('partner'), MB.api.get('me').catch(function () { return { data: {} }; })])
+    .then(function (res) {
+      P = res[0].data.affiliate; ME = res[1].data || {};
+
+      MB.$('#afFeats').innerHTML = [{ icon: 'coin', title: 'Earn commission' }].concat(
+        P.support.slice(0, 3)).map(function (x) {
+        return '<div class="pp-feat"><span class="pp-feat-ic">' + MB.icon(x.icon, 18) + '</span>' +
+          '<span class="pp-feat-t">' + MB.esc(x.title) + '</span></div>';
+      }).join('');
+
+      MB.$('#afHow').innerHTML = P.how.map(function (x, i) {
+        return '<li><span class="pp-step-n">' + (i + 1) + '</span><div class="grow">' +
+          '<div class="pp-step-t">' + MB.esc(x.title) + '</div>' +
+          '<div class="pp-step-d">' + MB.esc(x.text) + '</div></div></li>';
+      }).join('');
+      MB.$('#afCommission').textContent = ' ' + P.commission_note;
+
+      MB.$('#afChannel').innerHTML = P.channels.map(function (c) {
+        return '<option>' + MB.esc(c) + '</option>'; }).join('');
+      MB.$('#afAudience').innerHTML = P.audience.map(function (c) {
+        return '<option>' + MB.esc(c) + '</option>'; }).join('');
+
+      fillForm();
+      render();
+      MB.mountIcons(document);
+
+      /* Arriving on #apply after applying lands on the status instead. */
+      if (location.hash === '#apply' && getS().status) {
+        MB.$('#status').scrollIntoView({ block: 'start' });
+      }
+    });
+});
+</script>
+</body>
+</html>

@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/signals.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="signals" data-root="../../" data-title="Signal Detail" data-back="index.html" data-unread="3">
@@ -35,11 +36,13 @@
           contract KonfluenX can configure and buy, so the trade button opens a
           pre-filled ticket rather than sending you elsewhere.</div>
         </div>
-        <div class="stat-grid cols-3 mt4">
+        <div class="label mt4">Provider · KonfluenX signal record</div>
+        <div class="stat-grid cols-3 mt2">
           <div class="stat-cell"><div class="stat-v c-up" id="aWin">78%</div><div class="stat-k">Win rate</div></div>
           <div class="stat-cell"><div class="stat-v" id="aSig">156</div><div class="stat-k">Signals</div></div>
           <div class="stat-cell"><div class="stat-v" id="aFol">1.2K</div><div class="stat-k">Followers</div></div>
         </div>
+        <a class="btn btn-ghost btn-block btn-sm mt3" id="aProvider" href="provider.html">Provider performance</a>
       </div>
     </section>
 
@@ -65,6 +68,8 @@
 <script src="../../assets/js/core/collection.js"></script>
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/signal-tracker.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
@@ -72,15 +77,46 @@
 <script>
 
 MB.ready(function () {
+
+  /* A signal published from this browser lives in MB.signalTracker; every
+     other one comes from the API. Both render through the same templates. */
   var id = new URLSearchParams(location.search).get('id');
-  MB.api.list('signals').then(function (rows) {
-    var s = rows.filter(function (x) { return x.kind === 'executable' && (!id || x.id === id); })[0] || rows[0];
-    document.getElementById('sigHost').innerHTML = MB.card.signal(s);
-    document.getElementById('aWin').textContent = (s.author.win_rate || 0) + '%';
-    document.getElementById('aSig').textContent = s.author.signals_count;
-    document.getElementById('aFol').textContent = MB.fmt.compact(s.author.followers);
-    MB.mountIcons(); MB.mountCharts();
-  });
+  var T = MB.signalTracker;
+  var host = document.getElementById('sigHost');
+  var current = null;
+
+  function paint(s) {
+    current = s;
+    host.innerHTML = MB.card.signalDetail(s);
+    MB.card.bindSignalDetail(host, s, function () { paint(reload(current)); });
+    MB.mountIcons(host); MB.mountCharts(host);
+    onSignal(s);
+  }
+  function reload(s) { return s.local && T.get(s.id) ? T.toFeedSignal(T.get(s.id)) : s; }
+
+  var mine = id && T ? T.get(id) : null;
+  if (mine) {
+    paint(T.toFeedSignal(mine));
+    /* live: entry hit, TP/SL, further targets */
+    T.on(function (rec) { if (rec.id === id) { paint(T.toFeedSignal(rec)); } });
+  } else {
+    MB.api.list('signals').then(function (rows) {
+      var s = rows.filter(function (x) { return x.id === id; })[0] ||
+              rows.filter(function (x) { return x.kind === 'executable'; })[0] || rows[0];
+      /* each kind has its own page — never show an executable signal under "no trade button" */
+      if (s.kind === 'analysis') { location.replace('detail-analysis.html?id=' + encodeURIComponent(s.id)); return; }
+      paint(s);
+    });
+  }
+  function onSignal(s) {
+    /* KonfluenX signal record only — verified Deriv performance lives on the provider page */
+    document.getElementById('aWin').textContent = s.author.win_rate ? s.author.win_rate + '%' : '—';
+    document.getElementById('aSig').textContent = s.author.signals_count || '—';
+    document.getElementById('aFol').textContent = s.author.followers ? MB.fmt.compact(s.author.followers) : '—';
+    var pl = document.getElementById('aProvider');
+    if (pl) { pl.href = 'provider.html?u=' + encodeURIComponent(s.author.username); }
+  }
+
   MB.collection({
     from: 'comments', into: '#sigComments', template: MB.card.comment,
     perPage: 10, mode: 'more', skeleton: false,

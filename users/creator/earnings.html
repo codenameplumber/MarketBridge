@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Creator Earnings — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Creator Earnings" data-sub="From your Pro rooms, courses and webinars" data-back="../wallet/credits.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- ================================================================
+         EARNINGS — money, in USD. Not KX.
+         ================================================================ -->
+    <section class="ce-hero">
+      <div class="between">
+        <div style="min-width:0">
+          <div class="t-sm c-2 w-semi">Available to withdraw</div>
+          <div class="ce-big num mt2" id="ceAvail">$0.00</div>
+        </div>
+        <a class="btn btn-trade btn-sm none" href="withdraw.html" id="ceWithdrawTop">Withdraw</a>
+      </div>
+      <div class="ce-split">
+        <div><div class="k">Available</div><div class="v num is-avail" id="ceA">$0</div></div>
+        <div><div class="k">Pending</div><div class="v num is-pend" id="ceP">$0</div></div>
+        <div><div class="k">Lifetime</div><div class="v num" id="ceL">$0</div></div>
+      </div>
+      <a class="btn btn-trade btn-block mt4" href="withdraw.html" id="ceWithdraw">Withdraw to KaastroPay</a>
+    </section>
+
+    <div class="ce-sep">
+      <span data-icon="info"></span>
+      <span><b class="c-1">Creator Earnings are not your KX balance.</b> Earnings are money you made as a
+        creator and are paid out to KaastroPay. Your KX balance (<b class="c-1 num" id="ceKx">0.00 KX</b>) is
+        platform credit you bought to spend, and can't be withdrawn.</span>
+    </div>
+
+    <div class="card">
+      <div class="t-sm w-bold">How earnings become available</div>
+      <p class="t-xs c-2 mt2" id="ceHow">&mdash;</p>
+      <div class="row g2 mt3"><span class="badge badge-warn" id="ceComm">Commission &mdash;</span>
+        <span class="t-xs c-3">Provisional &mdash; to be finalised</span></div>
+    </div>
+
+    <!-- ================================================================
+         PAYOUT ACCOUNT
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Payout account</h2></div>
+      <div id="ceAcct"></div>
+    </section>
+
+    <!-- ================================================================
+         EARNINGS HISTORY
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Earnings history</h2></div>
+      <div class="chips" data-group id="ceSrc">
+        <button class="chip is-active" data-value="all">All</button>
+        <button class="chip" data-value="pro_room">Pro rooms</button>
+        <button class="chip" data-value="course">Courses</button>
+        <button class="chip" data-value="webinar">Webinars</button>
+      </div>
+      <div class="list" id="ceEarn"></div>
+    </section>
+
+    <!-- ================================================================
+         WITHDRAWALS
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Withdrawal history</h2></div>
+      <div class="list" id="ceWd"></div>
+    </section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var SRC = { pro_room: ['Pro room', 'crown'], course: ['Course', 'book'], webinar: ['Webinar', 'play'] };
+  var src = 'all';
+
+  function money(n) { return MB.fmt.money(n); }
+  function tight(n) { return n >= 10000 ? '$' + MB.fmt.compact(n) : MB.fmt.money(n); }
+
+  function draw() {
+    var c = MB.kx.creator.summary();
+    if (!c || !c.summary) { return; }
+    var s = c.summary;
+    MB.$('#ceAvail').textContent = money(s.available);
+    MB.$('#ceA').textContent = tight(s.available);
+    MB.$('#ceP').textContent = tight(s.pending);
+    MB.$('#ceL').textContent = tight(s.lifetime);
+    MB.$('#ceKx').textContent = MB.fmt.price(MB.kx.balance(), 2) + ' KX';
+    MB.$('#ceComm').textContent = 'Platform commission ' + c.commission_pct + '%';
+    MB.$('#ceHow').textContent = 'When someone pays for your Pro room, course or webinar, the platform commission (' +
+      c.commission_pct + '%) is deducted first. The rest is held as Pending for ' + c.pending_days +
+      ' days to cover refunds and disputes, then moves to Available. Withdrawals go only to a linked, verified KaastroPay account.';
+
+    var canWithdraw = c.kaastropay && c.kaastropay.linked && c.kaastropay.verified && s.available >= c.min_withdrawal;
+    ['#ceWithdraw', '#ceWithdrawTop'].forEach(function (sel) {
+      var b = MB.$(sel);
+      b.classList.toggle('is-disabled', !canWithdraw);
+      b.setAttribute('aria-disabled', canWithdraw ? 'false' : 'true');
+    });
+
+    var k = c.kaastropay || {};
+    MB.$('#ceAcct').innerHTML = k.linked
+      ? '<div class="ce-acct"><span class="kx-mark is-sm" aria-hidden="true">K</span>' +
+          '<div class="grow" style="min-width:0"><div class="t-sm w-bold">KaastroPay account</div>' +
+          '<div class="t-xs c-3 truncate">' + MB.esc(k.account_name) + ' &middot; ' + MB.esc(k.email) + '</div></div>' +
+          (k.verified ? '<span class="badge badge-verified">' + MB.icon('verified', 11) + ' Verified</span>'
+                      : '<span class="badge badge-warn">Verification pending</span>') + '</div>'
+      : '<div class="alert alert-warn"><span data-icon="warning"></span><div class="t-xs"><strong>No KaastroPay account linked.</strong> ' +
+          'Link and verify a KaastroPay account in Settings before you can withdraw.</div></div>';
+
+    var rows = (c.earnings || []).filter(function (e) { return src === 'all' || e.source === src; });
+    MB.$('#ceEarn').innerHTML = rows.length ? rows.map(function (e) {
+      var meta = SRC[e.source] || ['Other', 'receipt'];
+      var pend = e.status === 'pending';
+      return '<div class="ce-earn">' +
+        '<div class="row g3"><span class="kx-row-ic ' + (pend ? '' : 'is-topup') + '">' + MB.icon(meta[1], 18) + '</span>' +
+          '<div class="grow" style="min-width:0"><div class="t-sm w-semi truncate">' + MB.esc(e.title) + '</div>' +
+            '<div class="t-xs c-3">' + MB.esc(meta[0]) + ' &middot; ' + MB.esc(e.units || '') + ' &middot; ' + MB.fmt.date(e.at) + '</div></div>' +
+          '<span class="badge ' + (pend ? 'badge-warn' : 'badge-active') + '">' + (pend ? 'Pending' : 'Available') + '</span></div>' +
+        '<div class="ce-calc">' +
+          '<div><div class="k">Gross</div><div class="v num">' + money(e.gross) + '</div></div>' +
+          '<div><div class="k">Commission</div><div class="v num c-2">−' + money(e.commission) + '</div></div>' +
+          '<div><div class="k">Net</div><div class="v num c-up">' + money(e.net) + '</div></div>' +
+        '</div>' +
+        (pend ? '<div class="t-xs c-3 mt2">' + MB.icon('hourglass', 11) + ' Available ' + MB.fmt.date(e.available_at) + '</div>' : '') +
+      '</div>';
+    }).join('') : '<div class="empty">' + MB.icon('wallet', 40) + '<h3>No earnings here yet</h3><p>Earnings from this source will appear here.</p></div>';
+
+    var wd = c.withdrawals || [];
+    MB.$('#ceWd').innerHTML = wd.length ? wd.map(function (w) {
+      var done = w.status === 'completed';
+      return '<a class="list-row is-tight" href="withdrawal.html?id=' + encodeURIComponent(w.id) + '">' +
+        '<span class="kx-row-ic ' + (done ? 'is-topup' : '') + '">' + MB.icon(done ? 'check' : 'clock', 18) + '</span>' +
+        '<span class="grow"><span class="lr-title" style="display:block">To KaastroPay</span>' +
+          '<span class="lr-sub">' + MB.esc(w.id) + ' &middot; ' + MB.fmt.date(w.created_at) + '</span></span>' +
+        '<span style="text-align:right"><span class="kx-amt-val num" style="display:block">' + money(w.amount) + '</span>' +
+          '<span class="t-xs ' + (done ? 'c-up' : 'c-warn') + '">' + (done ? 'Completed' : 'Processing') + '</span></span></a>';
+    }).join('') : '<div class="empty">' + MB.icon('receipt', 40) + '<h3>No withdrawals yet</h3><p>Your payouts to KaastroPay will appear here.</p></div>';
+
+    MB.mountIcons(document);
+  }
+
+  MB.$('#ceSrc').addEventListener('mb:change', function (e) { src = e.detail.value; draw(); });
+  MB.kx.creator.load().then(draw);
+  MB.kx.ready().then(draw);
+  MB.kx.on(draw);
+  setInterval(function () { MB.kx.creator.summary(); }, 3000);
+});
+</script>
+</body>
+</html>

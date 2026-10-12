@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KaastroPay Checkout — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Checkout" data-sub="Powered by KaastroPay" data-back="add-funds.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page" id="payRoot">
+    <div class="card"><div class="skeleton sk-line w40"></div><div class="skeleton sk-line w80"></div></div>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+/* ==========================================================================
+   KaastroPay checkout.
+
+   "I have sent the payment" only moves the request to "Awaiting network
+   confirmation". KX is credited when the (simulated) KaastroPay webhook
+   reports the payment as received and verified — never by the button.
+   Stage 2: the server credits ONLY from the verified KaastroPay webhook;
+   this page polls GET /api/v1/kx/payments/{id} for the status.
+   ========================================================================== */
+MB.ready(function () {
+  var id = new URLSearchParams(location.search).get('id');
+  var root = MB.$('#payRoot');
+  var timer = null, lastStatus = null;
+
+  function fmtUsdt(n) { return MB.fmt.price(n, 2) + ' USDT'; }
+  function fmtKx(n) { return MB.fmt.price(n, 2) + ' KX'; }
+  function when(iso) {
+    var d = new Date(iso);
+    return MB.fmt.date(iso) + ', ' + d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+
+  /* A QR-like pattern drawn from the address. It is a DEMO: the layout is
+     right (three finder squares, quiet zone) but it does not encode data.
+     Stage 2: render the real KaastroPay payment URI with a QR library. */
+  function demoQr(seed) {
+    var N = 25, cells = [], h = 0, i, x, y;
+    for (i = 0; i < seed.length; i++) { h = (h * 31 + seed.charCodeAt(i)) % 2147483647; }
+    function rnd() { h = (h * 48271) % 2147483647; return h / 2147483647; }
+    function finder(fx, fy) {
+      for (y = 0; y < 7; y++) { for (x = 0; x < 7; x++) {
+        var edge = x === 0 || y === 0 || x === 6 || y === 6;
+        var core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+        if (edge || core) { cells.push([fx + x, fy + y]); }
+      } }
+    }
+    function inFinder(cx, cy) {
+      return (cx < 8 && cy < 8) || (cx > N - 9 && cy < 8) || (cx < 8 && cy > N - 9);
+    }
+    finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
+    for (y = 0; y < N; y++) { for (x = 0; x < N; x++) {
+      if (inFinder(x, y)) { continue; }
+      if (x > 9 && x < 15 && y > 9 && y < 15) { continue; }   /* room for the logo */
+      if (rnd() > 0.52) { cells.push([x, y]); }
+    } }
+    return '<svg viewBox="0 0 ' + N + ' ' + N + '" role="img" aria-label="Demo QR code, not scannable" shape-rendering="crispEdges">' +
+      cells.map(function (c) { return '<rect x="' + c[0] + '" y="' + c[1] + '" width="1" height="1" fill="currentColor"/>'; }).join('') +
+      '</svg>';
+  }
+
+  function step(state, title, sub) {
+    var ic = state === 'is-done' ? MB.icon('check', 13) : '';
+    return '<li class="kx-step ' + state + '"><span class="kx-dot">' + ic + '</span>' +
+      '<div><div class="kx-step-t">' + MB.esc(title) + '</div>' +
+      (sub ? '<div class="kx-step-s">' + MB.esc(sub) + '</div>' : '') + '</div></li>';
+  }
+
+  function addressBlock(p, label) {
+    return '<div class="card stack g3">' +
+      '<div class="kx-qr-wrap"><div class="kx-qr">' + demoQr(p.address) +
+        '<span class="kx-qr-logo" aria-hidden="true">₮</span></div>' +
+        '<span class="kx-demo-tag">Demo QR &middot; prototype</span></div>' +
+      '<div><div class="t-xs c-3">' + MB.esc(label || ('Wallet address (' + p.network + ')')) + '</div>' +
+        '<div class="kx-addr mt2"><code id="payAddr">' + MB.esc(p.address) + '</code>' +
+        '<button class="btn btn-green-soft btn-sm" data-copy="#payAddr" type="button">' + MB.icon('copy', 15) + ' Copy</button></div></div>' +
+      '<div class="kx-kv">' +
+        '<div><div class="k">Amount</div><div class="v num"><span id="payAmt">' + MB.esc(fmtUsdt(p.status === 'underpaid' ? p.shortfall : p.amount)) + '</span> ' +
+          '<button class="icon-btn" style="width:24px;height:24px;vertical-align:middle" data-copy="' + (p.status === 'underpaid' ? p.shortfall : p.amount) + '" aria-label="Copy amount" type="button">' + MB.icon('copy', 13) + '</button></div></div>' +
+        '<div><div class="k">Network</div><div class="v">' + MB.esc(p.network_label) + '</div></div>' +
+      '</div></div>' +
+      '<div class="alert alert-warn"><span data-icon="warning"></span><div class="t-xs">' +
+        '<strong>Only send USDT on the ' + MB.esc(p.network) + ' network.</strong> Sending another coin, or USDT on a ' +
+        'different network, can result in the permanent loss of your funds.</div></div>';
+  }
+
+  function render(p) {
+    clearInterval(timer);
+    if (!p) {
+      root.innerHTML = '<div class="empty">' + MB.icon('receipt', 46) + '<h3>Payment not found</h3>' +
+        '<p>This checkout link has no payment behind it. Start a new top-up.</p>' +
+        '<a class="btn btn-trade mt4" href="add-funds.html">Add Funds</a></div>';
+      MB.mountIcons(root); return;
+    }
+    lastStatus = p.status;
+    var html = '';
+
+    if (p.status === 'awaiting_payment') {
+      html =
+        '<section class="kx-pay-head">' +
+          '<div class="kx-pay-amt num">Pay ' + MB.esc(fmtUsdt(p.amount)) + '</div>' +
+          '<p class="t-sm c-2 mt2">Send exactly <b class="c-up num">' + MB.esc(fmtUsdt(p.amount)) + '</b> (' + MB.esc(p.network) +
+          ') to the address below. You will receive <b class="c-1">' + MB.esc(fmtKx(p.kx)) + '</b>.</p>' +
+          '<div class="mt3"><span class="kx-timer" id="payTimer">' + MB.icon('clock', 14) + '<span>Payment expires in <b class="num" id="payLeft">15:00</b></span></span></div>' +
+        '</section>' +
+        addressBlock(p) +
+        '<button class="btn btn-trade btn-block btn-lg" id="paySent" type="button">I have sent the payment</button>' +
+        '<p class="t-xs c-3" style="text-align:center">Tapping this does not credit KX. We wait for KaastroPay to confirm ' +
+          'the payment on the network, then credit your wallet automatically.</p>' +
+        '<div class="row g2 t-xs c-3" style="justify-content:center">' + MB.icon('shield', 14) +
+          '<span>Reference <b class="c-2 num">' + MB.esc(p.reference) + '</b> &middot; Powered by KaastroPay</span></div>';
+    }
+
+    else if (p.status === 'confirming') {
+      var total = Date.parse(p.confirm_at) - Date.parse(p.sent_at);
+      var gone = Math.max(0, Date.now() - Date.parse(p.sent_at));
+      var frac = Math.min(1, gone / (total || 1));
+      var conf = Math.min(p.confirmations_needed, Math.floor(frac * 1.6 * p.confirmations_needed));
+      var detected = frac >= 0.6;
+      html =
+        '<div class="kx-state"><div class="kx-state-ic is-wait">' + MB.icon('hourglass', 38) + '</div>' +
+          '<h2>Awaiting network confirmation</h2>' +
+          '<p>We are waiting for KaastroPay to confirm <b class="num">' + MB.esc(fmtUsdt(p.amount)) + '</b> on ' + MB.esc(p.network) + '. ' +
+          'Your KX will be credited automatically &mdash; you can leave this page.</p></div>' +
+        '<section class="card"><ol class="kx-steps">' +
+          step('is-done', 'You marked the payment as sent', when(p.sent_at)) +
+          step(detected ? 'is-done' : 'is-active', 'Detected on the ' + p.network + ' network',
+               detected ? p.confirmations_needed + ' of ' + p.confirmations_needed + ' confirmations' : conf + ' of ' + p.confirmations_needed + ' confirmations') +
+          step(detected ? 'is-active' : 'is-todo', 'Verified by KaastroPay', 'Amount and network matched to your reference') +
+          step('is-todo', MB.fmt.price(p.kx, 2) + ' KX credited to your wallet', '') +
+        '</ol></section>' +
+        '<div class="card"><div class="rc-row"><span class="rc-k">Reference</span><span class="rc-v num">' + MB.esc(p.reference) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Amount</span><span class="rc-v num">' + MB.esc(fmtUsdt(p.amount)) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Network</span><span class="rc-v">' + MB.esc(p.network_label) + '</span></div></div>' +
+        '<a class="btn btn-outline btn-block" href="kx-receipt.html?pay=' + encodeURIComponent(p.id) + '">' + MB.icon('receipt', 16) + ' View pending receipt</a>' +
+        '<a class="btn btn-outline btn-block" href="credits.html">Back to Wallet</a>';
+    }
+
+    else if (p.status === 'completed') {
+      var t = MB.kx.transaction(p.txn_id) || {};
+      html =
+        '<div class="kx-state"><div class="kx-state-ic">' + MB.icon('check', 38) + '</div>' +
+          '<h2>Payment Successful!</h2>' +
+          '<p><b class="num">' + MB.esc(fmtKx(p.kx)) + '</b> has been credited to your wallet.</p></div>' +
+        '<section class="card">' +
+          '<div class="rc-row"><span class="rc-k">Amount paid</span><span class="rc-v num">' + MB.esc(fmtUsdt(p.received)) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">KX credited</span><span class="rc-v num c-up">' + MB.esc(fmtKx(p.kx)) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Reference</span><span class="rc-v num">' + MB.esc(p.reference) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Network</span><span class="rc-v">' + MB.esc(p.network) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Time</span><span class="rc-v">' + MB.esc(when(p.completed_at)) + '</span></div>' +
+        '</section>' +
+        '<a class="btn btn-trade btn-block btn-lg" href="credits.html">View Wallet</a>' +
+        '<a class="btn btn-outline btn-block" href="../community/rooms.html">Browse Pro Rooms</a>' +
+        (t.id ? '<a class="btn btn-outline btn-block" href="kx-receipt.html?id=' + encodeURIComponent(t.id) + '">' + MB.icon('receipt', 16) + ' View receipt</a>' : '');
+    }
+
+    else if (p.status === 'underpaid') {
+      html =
+        '<div class="kx-state"><div class="kx-state-ic is-bad">' + MB.icon('warning', 38) + '</div>' +
+          '<h2>Payment partially received</h2>' +
+          '<p>KaastroPay received <b class="num" style="color:var(--mb-warn)">' + MB.esc(fmtUsdt(p.received)) + '</b> of ' +
+          MB.esc(fmtUsdt(p.amount)) + '. <strong class="c-1">No KX has been credited yet.</strong></p></div>' +
+        '<section class="card">' +
+          '<div class="rc-row"><span class="rc-k">Expected</span><span class="rc-v num">' + MB.esc(fmtUsdt(p.amount)) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Received</span><span class="rc-v num">' + MB.esc(fmtUsdt(p.received)) + '</span></div>' +
+          '<div class="rc-row"><span class="rc-k">Still to send</span><span class="rc-v num c-warn">' + MB.esc(fmtUsdt(p.shortfall)) + '</span></div>' +
+        '</section>' +
+        '<p class="t-sm c-2">Send the remaining <b class="c-1 num">' + MB.esc(fmtUsdt(p.shortfall)) + '</b> to the same address on the same network. ' +
+          'Once the full amount is confirmed you receive ' + MB.esc(fmtKx(p.kx)) + '. If you can\'t, contact support with your reference and we will arrange a refund of what was received.</p>' +
+        addressBlock(p, 'Same address (' + p.network + ')') +
+        '<button class="btn btn-trade btn-block btn-lg" id="paySent" type="button">I have sent the remaining ' + MB.esc(fmtUsdt(p.shortfall)) + '</button>' +
+        '<a class="btn btn-outline btn-block" href="../../contact.html">Contact support</a>';
+    }
+
+    else if (p.status === 'expired') {
+      html =
+        '<div class="kx-state"><div class="kx-state-ic is-bad">' + MB.icon('clock', 38) + '</div>' +
+          '<h2>Payment request expired</h2>' +
+          '<p>The 15-minute window for <b class="num" style="color:var(--mb-warn)">' + MB.esc(fmtUsdt(p.amount)) + '</b> closed before a payment was confirmed. ' +
+          '<strong class="c-1">Do not send funds to this address.</strong></p></div>' +
+        '<div class="alert alert-info"><span data-icon="info"></span><div class="t-xs">Already sent it? Contact support with ' +
+          'reference <b class="num">' + MB.esc(p.reference) + '</b> and your transaction hash. KaastroPay can still trace late payments.</div></div>' +
+        '<a class="btn btn-trade btn-block btn-lg" href="add-funds.html?amount=' + encodeURIComponent(p.amount) + '">Start a new payment</a>' +
+        '<a class="btn btn-outline btn-block" href="../../contact.html">Contact support</a>';
+    }
+
+    root.innerHTML = html;
+    MB.mountIcons(root);
+    wire(p);
+  }
+
+  function wire(p) {
+    var sent = MB.$('#paySent');
+    if (sent) {
+      sent.addEventListener('click', function () {
+        var amt = p.status === 'underpaid' ? p.shortfall : p.amount;
+        MB.confirm({
+          title: 'Have you sent ' + fmtUsdt(amt) + '?',
+          body: 'Only confirm once your wallet shows the transfer as sent on ' + p.network +
+                '. We will credit KX after KaastroPay confirms it on the network.',
+          confirm: 'Yes, I have sent it',
+          cancel: 'Not yet'
+        }).then(function (ok) {
+          if (!ok) { return; }
+          render(MB.kx.payments.markSent(p.id));
+          poll();
+        });
+      });
+    }
+    if (p.status === 'awaiting_payment') {
+      var tick = function () {
+        var left = Math.max(0, Math.floor((Date.parse(p.expires_at) - Date.now()) / 1000));
+        var el = MB.$('#payLeft');
+        if (el) { el.textContent = MB.fmt.duration(left); }
+        var tm = MB.$('#payTimer');
+        if (tm) { tm.classList.toggle('is-low', left < 180); }
+        if (left <= 0) { render(MB.kx.payments.expire(p.id)); }
+      };
+      tick();
+      timer = setInterval(tick, 1000);
+    }
+    if (p.status === 'confirming') { poll(); }
+  }
+
+  function poll() {
+    clearInterval(timer);
+    timer = setInterval(function () {
+      var p = MB.kx.payments.get(id);
+      if (!p) { return; }
+      if (p.status !== lastStatus || p.status === 'confirming') { render(p); }
+      if (p.status === 'completed') { MB.toast(MB.fmt.price(p.kx, 2) + ' KX credited', 'ok'); }
+    }, 1200);
+  }
+
+  render(MB.kx.payments.get(id));
+});
+</script>
+</body>
+</html>

@@ -1,206 +1,144 @@
 {
   "data": {
-    "status": "active",
-    "tier": "Silver",
-    "next_tier": "Gold",
-    "joined_at": "2026-03-09T08:30:00.000Z",
-    "programme": "Deriv Partner Programme (IB)",
-    "referral_code": "KX-JT-4821",
-    "referral_url": "https://konfluenx.com/r/KX-JT-4821",
-    "stats": {
-      "clicks": 1842,
-      "signups": 64,
-      "funded": 21,
-      "conversion_pct": 32.8,
-      "active_traders": 17,
-      "lots_volume": 38420.55,
-      "earned_total": 1284.4,
-      "earned_month": 214.85,
-      "pending": 214.85,
-      "currency": "USD"
+    "order": ["affiliate", "ib", "referral"],
+
+    "affiliate": {
+      "id": "affiliate",
+      "name": "Deriv Affiliate Program",
+      "tagline": "Become a Deriv Affiliate with our support.",
+      "summary": "We enrol you under the KonfluenX master affiliate account and coach you on how to promote Deriv, build your community and earn commission from your referrals.",
+      "badge": "Deriv",
+      "benefits": [
+        "Get your own Deriv affiliate account",
+        "Earn commission from people you refer, paid by Deriv",
+        "Training, resources and ongoing support",
+        "KonfluenX earns as your master affiliate"
+      ],
+      "support": [
+        { "icon": "userplus",  "title": "Onboarding",  "text": "We register you and walk you through Deriv's affiliate set-up." },
+        { "icon": "target",    "title": "Coaching",    "text": "One-to-one sessions on building and growing your audience." },
+        { "icon": "megaphone", "title": "Promo kit",   "text": "Banners, post templates and compliant promotion guidance." },
+        { "icon": "chat",      "title": "Support",     "text": "A KonfluenX partner manager you can message any time." }
+      ],
+      "how": [
+        { "title": "Join under KonfluenX",       "text": "Apply here. We register you under our master affiliate." },
+        { "title": "Get your affiliate account", "text": "We guide you through onboarding and submit you to Deriv." },
+        { "title": "Promote Deriv",              "text": "Use our training and marketing resources." },
+        { "title": "Earn commission",            "text": "Deriv pays commission directly to you for your referrals." }
+      ],
+      "status": "not_applied",
+      "pipeline": [
+        { "id": "applicant",  "label": "Applicant",          "text": "Your application is with the KonfluenX partner team." },
+        { "id": "onboarding", "label": "Onboarding",         "text": "Work through the onboarding checklist with your coach." },
+        { "id": "submitted",  "label": "Submitted to Deriv", "text": "KonfluenX has submitted your affiliate application to Deriv." },
+        { "id": "approved",   "label": "Approved",           "text": "Deriv approved your affiliate account. Your link is being issued." },
+        { "id": "active",     "label": "Active",             "text": "Your affiliate link is live. Deriv pays your commission directly." }
+      ],
+      "checklist": [
+        { "id": "session",    "label": "Attend the onboarding session",      "text": "A 30-minute call with your KonfluenX coach." },
+        { "id": "guidelines", "label": "Read Deriv's promotion guidelines",  "text": "What you can and cannot say when promoting Deriv." },
+        { "id": "kit",        "label": "Download the marketing kit",         "text": "Banners, post templates and short video scripts." },
+        { "id": "plan",       "label": "Share your promotion plan",          "text": "Where and how you will reach your audience." },
+        { "id": "verified",   "label": "Confirm your Deriv account is verified", "text": "Deriv approves affiliates with fully verified accounts only." }
+      ],
+      "channels": ["Social media", "YouTube", "Telegram or WhatsApp group", "Website or blog", "In-person community", "Other"],
+      "audience": ["Under 500", "500 to 5,000", "5,000 to 50,000", "Over 50,000"],
+      "commission_note": "Commission is set, calculated and paid by Deriv under Deriv's affiliate terms, directly into your Deriv affiliate account. KonfluenX does not pay, hold or forward this commission."
     },
-    "tier_progress": {
-      "current": 21,
-      "target": 35,
-      "metric": "funded referrals"
+
+    "ib": {
+      "id": "ib",
+      "name": "KonfluenX IB Program",
+      "tagline": "Link your Deriv account to our IB.",
+      "summary": "Ask Deriv support to link your trading account to the KonfluenX IB. Once we verify the link you get a Partner Badge and become eligible for KonfluenX rewards based on your qualifying trading activity.",
+      "badge": "Trading Rewards",
+      "benefits": [
+        "Link your Deriv account to our IB",
+        "Get a Partner Badge on your profile",
+        "Earn KonfluenX rewards from qualifying trading activity",
+        "Full guidance on how to link your account"
+      ],
+      "status": "not_linked",
+      "ib_code": "KXIB-104522",
+      "deriv_loginid": "CR1234567",
+      "pipeline": [
+        { "id": "not_linked",           "label": "Not Linked",           "text": "Your Deriv account is not linked to the KonfluenX IB yet." },
+        { "id": "instructions_viewed",  "label": "Instructions Viewed",  "text": "You have the message template. Send it to Deriv support." },
+        { "id": "submitted",            "label": "User Submitted",       "text": "You told us your request has been sent to Deriv." },
+        { "id": "verification_pending", "label": "Verification Pending", "text": "KonfluenX is confirming the link with Deriv. This usually takes 1 to 3 business days." },
+        { "id": "verified",             "label": "Verified",             "text": "Your account is linked to the KonfluenX IB. Your Partner Badge is live." }
+      ],
+      "message_template": "Hello Deriv Support,\n\nPlease link my Deriv account {loginid} to the KonfluenX IB (partner code {ib_code}).\n\nPlease confirm once this has been done.\n\nThank you,\n{name}",
+      "steps": [
+        { "title": "Copy the message",      "text": "It already includes your Deriv login ID and the KonfluenX IB code." },
+        { "title": "Open Deriv live chat",  "text": "Log in to Deriv and open Live chat from the Help Centre." },
+        { "title": "Paste and send",        "text": "Ask the agent to link your account to the KonfluenX IB. Keep the chat reference." },
+        { "title": "Tell us it's sent",     "text": "Tap \"I've submitted my request\". KonfluenX then verifies the link with Deriv." }
+      ],
+      "note": "Linking does not move your funds or change how you trade. It only records with Deriv that your account is introduced by KonfluenX.",
+      "rewards": {
+        "period": "Oct 2026",
+        "qualifying_trades": 46,
+        "qualifying_volume": 18250,
+        "est_points": 120,
+        "rule": "IB rewards are KX Points, credited monthly from qualifying trading activity on your linked account. KonfluenX sets the qualifying rules and may change them. Points can never be bought."
+      }
     },
-    "referrals": [
-      {
-        "id": "RF9100",
-        "name": "K. Adeyemi",
-        "status": "funded",
-        "signed_up_at": "2026-09-03T08:30:00.000Z",
-        "funded_at": "2026-09-05T08:30:00.000Z",
-        "volume": 0,
-        "commission": 4.5
-      },
-      {
-        "id": "RF9107",
-        "name": "T. Nwosu",
-        "status": "funded",
-        "signed_up_at": "2026-08-28T08:30:00.000Z",
-        "funded_at": "2026-08-31T08:30:00.000Z",
-        "volume": 940,
-        "commission": 21.5
-      },
-      {
-        "id": "RF9114",
-        "name": "M. Okafor",
-        "status": "signed_up",
-        "signed_up_at": "2026-08-22T08:30:00.000Z",
-        "funded_at": null,
-        "volume": 0.0,
-        "commission": 0.0
-      },
-      {
-        "id": "RF9121",
-        "name": "S. Bello",
-        "status": "funded",
-        "signed_up_at": "2026-08-16T08:30:00.000Z",
-        "funded_at": "2026-08-21T08:30:00.000Z",
-        "volume": 2820,
-        "commission": 55.5
-      },
-      {
-        "id": "RF9128",
-        "name": "J. Mensah",
-        "status": "pending",
-        "signed_up_at": "2026-08-10T08:30:00.000Z",
-        "funded_at": null,
-        "volume": 0.0,
-        "commission": 0.0
-      },
-      {
-        "id": "RF9135",
-        "name": "A. Diallo",
-        "status": "signed_up",
-        "signed_up_at": "2026-08-04T08:30:00.000Z",
-        "funded_at": null,
-        "volume": 0.0,
-        "commission": 0.0
-      },
-      {
-        "id": "RF9142",
-        "name": "R. Chukwu",
-        "status": "funded",
-        "signed_up_at": "2026-07-29T08:30:00.000Z",
-        "funded_at": "2026-08-06T08:30:00.000Z",
-        "volume": 5640,
-        "commission": 10.5
-      },
-      {
-        "id": "RF9149",
-        "name": "P. Osei",
-        "status": "funded",
-        "signed_up_at": "2026-07-23T08:30:00.000Z",
-        "funded_at": "2026-08-01T08:30:00.000Z",
-        "volume": 180,
-        "commission": 27.5
-      },
-      {
-        "id": "RF9156",
-        "name": "L. Kamau",
-        "status": "signed_up",
-        "signed_up_at": "2026-07-17T08:30:00.000Z",
-        "funded_at": null,
-        "volume": 0.0,
-        "commission": 0.0
-      },
-      {
-        "id": "RF9163",
-        "name": "D. Abiola",
-        "status": "funded",
-        "signed_up_at": "2026-07-11T08:30:00.000Z",
-        "funded_at": "2026-07-22T08:30:00.000Z",
-        "volume": 2060,
-        "commission": 61.5
-      },
-      {
-        "id": "RF9170",
-        "name": "B. Tetteh",
-        "status": "pending",
-        "signed_up_at": "2026-07-05T08:30:00.000Z",
-        "funded_at": null,
-        "volume": 0.0,
-        "commission": 0.0
-      },
-      {
-        "id": "RF9177",
-        "name": "N. Eze",
-        "status": "signed_up",
-        "signed_up_at": "2026-06-29T08:30:00.000Z",
-        "funded_at": null,
-        "volume": 0.0,
-        "commission": 0.0
-      }
-    ],
-    "payouts": [
-      {
-        "id": "PO4100",
-        "period": "Apr 2026",
-        "referrals_funded": 2,
-        "volume": 4200,
-        "amount": 53.24,
-        "currency": "USD",
-        "status": "paid",
-        "paid_by": "Deriv",
-        "paid_at": "2026-03-10T08:30:00.000Z"
-      },
-      {
-        "id": "PO4113",
-        "period": "May 2026",
-        "referrals_funded": 5,
-        "volume": 6030,
-        "amount": 94.23,
-        "currency": "USD",
-        "status": "paid",
-        "paid_by": "Deriv",
-        "paid_at": "2026-04-09T08:30:00.000Z"
-      },
-      {
-        "id": "PO4126",
-        "period": "Jun 2026",
-        "referrals_funded": 8,
-        "volume": 7860,
-        "amount": 138.64,
-        "currency": "USD",
-        "status": "paid",
-        "paid_by": "Deriv",
-        "paid_at": "2026-05-09T08:30:00.000Z"
-      },
-      {
-        "id": "PO4139",
-        "period": "Jul 2026",
-        "referrals_funded": 4,
-        "volume": 9690,
-        "amount": 215.55,
-        "currency": "USD",
-        "status": "paid",
-        "paid_by": "Deriv",
-        "paid_at": "2026-06-08T08:30:00.000Z"
-      },
-      {
-        "id": "PO4152",
-        "period": "Aug 2026",
-        "referrals_funded": 7,
-        "volume": 11520,
-        "amount": 249.12,
-        "currency": "USD",
-        "status": "paid",
-        "paid_by": "Deriv",
-        "paid_at": "2026-07-08T08:30:00.000Z"
-      },
-      {
-        "id": "PO4165",
-        "period": "Sep 2026",
-        "referrals_funded": 3,
-        "volume": 4350,
-        "amount": 90.61,
-        "currency": "USD",
-        "status": "pending",
-        "paid_by": "Deriv",
-        "paid_at": null
-      }
-    ]
+
+    "referral": {
+      "id": "referral",
+      "name": "KonfluenX Referral Program",
+      "tagline": "Refer users to KonfluenX.",
+      "summary": "Invite people to join KonfluenX. Earn 20% of the platform fees KonfluenX collects from them, for life, subject to the programme terms.",
+      "badge": "Lifetime Benefit",
+      "benefits": [
+        "Earn 20% of platform fees",
+        "Lifetime benefit on every user you refer",
+        "Track your referrals and earnings",
+        "Share your referral link anywhere"
+      ],
+      "status": "active",
+      "share_pct": 20,
+      "hold_days": 14,
+      "currency": "USD",
+      "referral_code": "KX-JT-4821",
+      "referral_url": "https://konfluenx.com/r/KX-JT-4821",
+      "stats": { "clicks": 412, "signups": 10 },
+      "referrals": [
+        { "id": "RF9100", "name": "K. Adeyemi", "joined_at": "2026-09-03T08:30:00.000Z", "status": "paying" },
+        { "id": "RF9107", "name": "T. Nwosu",   "joined_at": "2026-08-28T08:30:00.000Z", "status": "paying" },
+        { "id": "RF9114", "name": "M. Okafor",  "joined_at": "2026-08-22T08:30:00.000Z", "status": "signed_up" },
+        { "id": "RF9121", "name": "S. Bello",   "joined_at": "2026-08-16T08:30:00.000Z", "status": "paying" },
+        { "id": "RF9128", "name": "J. Mensah",  "joined_at": "2026-08-10T08:30:00.000Z", "status": "signed_up" },
+        { "id": "RF9142", "name": "R. Chukwu",  "joined_at": "2026-07-29T08:30:00.000Z", "status": "paying" },
+        { "id": "RF9149", "name": "P. Osei",    "joined_at": "2026-07-23T08:30:00.000Z", "status": "paying" },
+        { "id": "RF9163", "name": "D. Abiola",  "joined_at": "2026-07-11T08:30:00.000Z", "status": "paying" },
+        { "id": "RF9170", "name": "B. Tetteh",  "joined_at": "2026-07-05T08:30:00.000Z", "status": "signed_up" },
+        { "id": "RF9177", "name": "N. Eze",     "joined_at": "2026-06-29T08:30:00.000Z", "status": "signed_up" }
+      ],
+      "fees": [
+        { "id": "RFE2010", "referral_id": "RF9100", "name": "K. Adeyemi", "type": "Pro room subscription", "amount_paid": 50, "platform_fee": 10, "share": 2.00, "state": "pending",   "at": "2026-10-09T10:12:00.000Z" },
+        { "id": "RFE2009", "referral_id": "RF9107", "name": "T. Nwosu",   "type": "Course purchase",       "amount_paid": 40, "platform_fee": 8,  "share": 1.60, "state": "pending",   "at": "2026-10-06T15:40:00.000Z" },
+        { "id": "RFE2008", "referral_id": "RF9100", "name": "K. Adeyemi", "type": "Course purchase",       "amount_paid": 20, "platform_fee": 4,  "share": 0.80, "state": "pending",   "at": "2026-09-30T09:05:00.000Z" },
+        { "id": "RFE2007", "referral_id": "RF9121", "name": "S. Bello",   "type": "Pro room subscription", "amount_paid": 30, "platform_fee": 6,  "share": 1.20, "state": "available", "at": "2026-09-24T18:22:00.000Z" },
+        { "id": "RFE2006", "referral_id": "RF9149", "name": "P. Osei",    "type": "Pro room subscription", "amount_paid": 25, "platform_fee": 5,  "share": 1.00, "state": "available", "at": "2026-09-20T07:48:00.000Z" },
+        { "id": "RFE2005", "referral_id": "RF9142", "name": "R. Chukwu",  "type": "Pro room subscription", "amount_paid": 100, "platform_fee": 20, "share": 4.00, "state": "available", "at": "2026-09-18T12:30:00.000Z" },
+        { "id": "RFE2004", "referral_id": "RF9163", "name": "D. Abiola",  "type": "Pro room subscription", "amount_paid": 50, "platform_fee": 10, "share": 2.00, "state": "paid",      "at": "2026-09-02T11:00:00.000Z" },
+        { "id": "RFE2003", "referral_id": "RF9121", "name": "S. Bello",   "type": "Pro room subscription", "amount_paid": 30, "platform_fee": 6,  "share": 1.20, "state": "paid",      "at": "2026-08-24T18:20:00.000Z" },
+        { "id": "RFE2002", "referral_id": "RF9142", "name": "R. Chukwu",  "type": "Course purchase",       "amount_paid": 60, "platform_fee": 12, "share": 2.40, "state": "paid",      "at": "2026-08-12T14:15:00.000Z" },
+        { "id": "RFE2001", "referral_id": "RF9163", "name": "D. Abiola",  "type": "Pro room subscription", "amount_paid": 50, "platform_fee": 10, "share": 2.00, "state": "paid",      "at": "2026-08-02T11:00:00.000Z" }
+      ],
+      "payouts": [
+        { "id": "RPO0902", "period": "Paid 1 Oct 2026", "amount": 3.20, "currency": "USD", "status": "paid", "paid_at": "2026-10-01T06:00:00.000Z" },
+        { "id": "RPO0901", "period": "Paid 1 Sep 2026", "amount": 4.40, "currency": "USD", "status": "paid", "paid_at": "2026-09-01T06:00:00.000Z" }
+      ],
+      "terms": [
+        "You earn 20% of the platform fee KonfluenX keeps on each payment a referred user makes, not 20% of what they pay.",
+        "Earnings stay pending for 14 days so refunds and chargebacks can settle, then become available.",
+        "Available earnings are paid out on the 1st of each month.",
+        "The benefit lasts for the life of the referred user's account while the programme runs, subject to the programme terms.",
+        "Self-referrals, duplicate accounts and incentivised sign-ups are not eligible and can lead to earnings being withheld."
+      ]
+    }
   }
 }

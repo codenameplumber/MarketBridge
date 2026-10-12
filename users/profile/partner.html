@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>IB / Partner Status — KonfluenX</title>
+<title>Partnership Program — KonfluenX</title>
 <meta name="theme-color" content="#080B0F">
 <link rel="manifest" href="../../manifest.webmanifest">
 <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
@@ -15,122 +15,50 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/partner.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
-<body data-shell="app" data-nav="home" data-root="../../" data-title="IB / Partner Status" data-sub="Deriv Partner Programme" data-back="index.html" data-unread="3">
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Partnership Program" data-sub="Earn together. Grow together." data-back="index.html" data-unread="3">
 
 <div class="app">
   <div data-render="topbar"></div>
   <main class="page">
 
     <!-- ================================================================
-         STATUS
+         HERO
          ================================================================ -->
-    <section class="card">
-      <div class="between">
-        <div>
-          <div class="t-xs c-3">Programme</div>
-          <div class="t-h3 w-bold" id="pgName">&mdash;</div>
-        </div>
-        <span class="badge badge-active" id="pgStatus">&mdash;</span>
-      </div>
-
-      <div class="tier-row mt4">
-        <span class="tier-badge" id="pgTier">&mdash;</span>
-        <div class="grow">
-          <div class="between t-xs c-3">
-            <span>Progress to <b id="pgNext">&mdash;</b></span>
-            <span id="pgProg">&mdash;</span>
-          </div>
-          <div class="bar mt2"><span id="pgBar" style="width:0%"></span></div>
-        </div>
+    <section class="pp-hero" aria-labelledby="ppHeroT">
+      <svg class="pp-hero-art" viewBox="0 0 170 130" aria-hidden="true" focusable="false">
+        <rect class="bar" x="18"  y="86" width="20" height="44" rx="3"/>
+        <rect class="bar" x="46"  y="68" width="20" height="62" rx="3"/>
+        <rect class="bar" x="74"  y="50" width="20" height="80" rx="3"/>
+        <rect class="bar" x="102" y="30" width="20" height="100" rx="3"/>
+        <polyline class="line" points="8,96 40,74 68,80 104,40 140,14"/>
+        <path class="line" d="M126 12h16v16"/>
+        <circle class="coin" cx="132" cy="96" r="30"/>
+        <circle class="coin-rim" cx="132" cy="96" r="24"/>
+        <text class="coin-k" x="132" y="105" text-anchor="middle">K</text>
+      </svg>
+      <div class="pp-hero-copy">
+        <h2 id="ppHeroT">3 Ways to Earn with <em>KonfluenX</em></h2>
+        <p>Join our partnership programmes and earn while you trade, refer and build a community.</p>
       </div>
     </section>
 
     <!-- ================================================================
-         REFERRAL LINK
+         THE THREE PROGRAMMES
          ================================================================ -->
-    <section class="card">
-      <div class="t-sm w-bold">Your referral link</div>
-      <p class="t-xs c-3 mt2">
-        Anyone who opens a Deriv account through this link is attributed to you
-        by Deriv.
-      </p>
-      <div class="copy-field mt3">
-        <input class="input" id="pgUrl" readonly value="">
-        <button class="btn btn-brand btn-sm" data-copy="#pgUrl">
-          <span data-icon="copy"></span> Copy</button>
-      </div>
-      <div class="row g2 mt3">
-        <span class="t-xs c-3">Code</span>
-        <span class="t-xs w-bold num" id="pgCode">&mdash;</span>
-      </div>
-    </section>
+    <div class="stack g4" id="ppCards" aria-live="polite"></div>
 
-    <!-- ================================================================
-         FUNNEL — clicks through to funded
-         ================================================================ -->
-    <section class="page-section">
-      <div class="sec-head"><h2>Referral funnel</h2>
-        <span class="t-xs c-3" id="pgConv">&mdash;</span></div>
-      <div class="stat-grid">
-        <div class="stat-cell"><div class="stat-v" id="pgClicks">&mdash;</div><div class="stat-k">Clicks</div></div>
-        <div class="stat-cell"><div class="stat-v" id="pgSignups">&mdash;</div><div class="stat-k">Signed up</div></div>
-        <div class="stat-cell"><div class="stat-v c-up" id="pgFunded">&mdash;</div><div class="stat-k">Funded</div></div>
-        <div class="stat-cell"><div class="stat-v" id="pgActive">&mdash;</div><div class="stat-k">Active</div></div>
-      </div>
-    </section>
-
-    <!-- ================================================================
-         EARNINGS — paid by Deriv, never held by KonfluenX
-         ================================================================ -->
-    <section class="card">
-      <div class="between">
-        <div>
-          <div class="t-xs c-3">Commission earned (all time)</div>
-          <div class="t-h1 w-black num c-up" id="pgEarned">&mdash;</div>
-        </div>
-        <div style="text-align:right">
-          <div class="t-xs c-3">This month</div>
-          <div class="t-h3 w-bold num" id="pgMonth">&mdash;</div>
-        </div>
-      </div>
-      <div data-chart="area" data-seed="ibearn" data-h="130" data-h-min="110" class="mt4"></div>
-
-      <div class="alert alert-green mt4">
-        <span data-icon="shield"></span>
-        <div class="t-xs"><strong>Deriv pays this, not KonfluenX.</strong> Commission is
-        calculated and settled by Deriv into your Deriv account under their partner
-        terms. KonfluenX never holds or forwards partner money, and these figures are a
-        read of Deriv&rsquo;s reporting.</div>
-      </div>
-    </section>
-
-    <!-- ================================================================
-         PAYOUTS
-         ================================================================ -->
-    <section class="page-section">
-      <div class="sec-head"><h2>Payout history</h2></div>
-      <div class="list" id="pgPayouts"></div>
-    </section>
-
-    <!-- ================================================================
-         REFERRALS
-         ================================================================ -->
-    <section class="page-section">
-      <div class="sec-head"><h2>Your referrals</h2>
-        <span class="t-xs c-3"><span id="pgRefCount">0</span> total</span></div>
-      <div class="chips" data-group id="refTabs">
-        <button class="chip is-active" data-value="all">All</button>
-        <button class="chip" data-value="funded">Funded</button>
-        <button class="chip" data-value="signed_up">Signed up</button>
-        <button class="chip" data-value="pending">Pending</button>
-      </div>
-      <div class="list mt3" id="pgReferrals"></div>
-    </section>
+    <div class="alert alert-info">
+      <span data-icon="info"></span>
+      <div class="t-xs"><strong>Who pays what.</strong> Deriv affiliate commission is paid by
+        Deriv, directly to you, under Deriv&rsquo;s terms &mdash; KonfluenX never holds it.
+        IB rewards and referral earnings are paid by KonfluenX.</div>
+    </div>
 
     <a class="btn btn-ghost btn-block" href="../../contact.html">
-      <span data-icon="chat"></span> Questions about the programme</a>
+      <span data-icon="chat"></span> Questions about the programmes</a>
   </main>
   <div data-render="tabbar"></div>
 </div>
@@ -147,73 +75,97 @@
 <script src="../../assets/js/core/pwa.js"></script>
 <script>
 MB.ready(function () {
+
+  /* Stage 1: each programme's progress is kept in localStorage 'mb.partner'
+     by its detail page; the mock supplies the starting point.
+     Stage 2: GET /partner returns the three programme statuses from the
+     backend, which owns every transition after the user's own actions. */
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem('mb.partner') || '{}') || {}; }
+    catch (e) { return {}; }
+  }
+
+  function li(text) {
+    return '<li>' + MB.icon('check', 14) + '<span>' + MB.esc(text) + '</span></li>';
+  }
+
+  /* Status line per programme: where the user is, as words and a bar. */
+  function statusOf(key, p, st) {
+    var s = st[key] || {};
+    if (key === 'referral') {
+      var life = (p.fees || []).reduce(function (n, f) { return n + f.share; }, 0);
+      var paying = (p.referrals || []).filter(function (r) { return r.status === 'paying'; }).length;
+      return { label: 'Active', cls: 'is-live', bar: null,
+        meta: (p.referrals || []).length + ' referrals · ' + paying + ' paying · ' +
+              MB.fmt.money(life, p.currency) + ' earned' };
+    }
+    var cur = s.status || p.status;
+    var ids = p.pipeline.map(function (x) { return x.id; });
+    var idx = ids.indexOf(cur);
+    if (key === 'affiliate') {
+      if (idx < 0) { return { label: 'Not applied', cls: '', bar: 0, meta: 'Step 0 of ' + ids.length }; }
+      return { label: p.pipeline[idx].label, cls: cur === 'active' ? 'is-live' : 'is-progress',
+               bar: (idx + 1) / ids.length, meta: 'Step ' + (idx + 1) + ' of ' + ids.length };
+    }
+    /* IB: "Not Linked" is the first stage itself, so progress counts from it. */
+    if (idx < 0) { idx = 0; }
+    var last = ids.length - 1;
+    return { label: p.pipeline[idx].label,
+             cls: cur === 'verified' ? 'is-live' : (idx > 0 ? 'is-progress' : ''),
+             bar: idx / last, meta: 'Step ' + idx + ' of ' + last };
+  }
+
+  var PAGES = { affiliate: 'partner-affiliate.html', ib: 'partner-ib.html', referral: 'partner-referral.html' };
+  var CTA = {
+    affiliate: function (cur) { return !cur || cur === 'not_applied' ? 'Join Deriv Affiliate Program' : 'View my application'; },
+    ib:        function (cur) { return cur === 'verified' ? 'View Partner Badge' : (!cur || cur === 'not_linked' ? 'Get IB Link & Instructions' : 'Continue linking'); },
+    referral:  function () { return 'Get Referral Link'; }
+  };
+  var CTA_HASH = { affiliate: '#apply', ib: '#link', referral: '#share' };
+
   MB.api.get('partner').then(function (r) {
-    var p = r.data, s = p.stats, t = p.tier_progress;
+    var d = r.data, st = loadState();
+    var host = MB.$('#ppCards');
 
-    MB.$('#pgName').textContent = p.programme;
-    MB.$('#pgStatus').textContent = p.status;
-    MB.$('#pgTier').textContent = p.tier;
-    MB.$('#pgNext').textContent = p.next_tier;
-    MB.$('#pgProg').textContent = t.current + ' / ' + t.target + ' ' + t.metric;
-    MB.$('#pgBar').style.width = Math.min(100, (t.current / t.target) * 100) + '%';
+    host.innerHTML = d.order.map(function (key, i) {
+      var p = d[key], s = statusOf(key, p, st);
+      var cur = (st[key] && st[key].status) || p.status;
+      var tag = key === 'affiliate'
+        ? '<span class="pp-tag pp-tag-deriv">' + MB.esc(p.badge) + '</span>'
+        : '<span class="pp-tag">' + MB.esc(p.badge) + '</span>';
 
-    MB.$('#pgUrl').value = p.referral_url;
-    MB.$('#pgCode').textContent = p.referral_code;
-
-    MB.$('#pgClicks').textContent = MB.fmt.compact(s.clicks);
-    MB.$('#pgSignups').textContent = s.signups;
-    MB.$('#pgFunded').textContent = s.funded;
-    MB.$('#pgActive').textContent = s.active_traders;
-    MB.$('#pgConv').textContent = s.conversion_pct.toFixed(1) + '% convert';
-
-    MB.$('#pgEarned').textContent = MB.fmt.money(s.earned_total, s.currency);
-    MB.$('#pgMonth').textContent = MB.fmt.money(s.earned_month, s.currency);
-
-    /* ---- payouts ---- */
-    MB.$('#pgPayouts').innerHTML = p.payouts.slice().reverse().map(function (o) {
-      var st = o.status === 'paid' ? 'badge-active' : 'badge-warn';
-      return '<div class="list-row">' +
-        '<span class="lr-icon">' + MB.icon('wallet', 20) + '</span>' +
-        '<span class="grow" style="min-width:0">' +
-          '<span class="lr-title" style="display:block">' + MB.esc(o.period) + '</span>' +
-          '<span class="lr-sub">' + o.referrals_funded + ' funded &middot; ' +
-            MB.fmt.money(o.volume, o.currency) + ' volume</span></span>' +
-        '<span class="none" style="text-align:right">' +
-          '<span class="lr-value num c-up" style="display:block;font-weight:700">' +
-            MB.fmt.money(o.amount, o.currency) + '</span>' +
-          '<span class="badge ' + st + '">' + o.status + '</span></span></div>';
+      return '<article class="card pp-card pp-' + key + '" aria-labelledby="ppT_' + key + '">' +
+        '<div class="pp-head">' +
+          '<span class="pp-num" aria-hidden="true">' + (i + 1) + '</span>' +
+          '<div class="grow">' +
+            '<h2 class="pp-title" id="ppT_' + key + '">' + MB.esc(p.name) + '</h2>' +
+            '<div class="pp-sub">' + MB.esc(p.tagline) + '</div>' +
+          '</div>' + tag +
+        '</div>' +
+        '<p class="pp-desc">' + MB.esc(p.summary) + '</p>' +
+        '<ul class="pp-list">' + p.benefits.map(li).join('') + '</ul>' +
+        '<div class="pp-status">' +
+          '<div class="between">' +
+            '<span class="pp-status-k">Your status</span>' +
+            '<span class="pp-state ' + s.cls + '">' + MB.esc(s.label) + '</span>' +
+          '</div>' +
+          (s.bar !== null ? '<span class="bar" role="progressbar" aria-label="' + MB.esc(p.name) +
+            ' progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(s.bar * 100) +
+            '"><span style="width:' + Math.round(s.bar * 100) + '%"></span></span>' : '') +
+          '<span class="t-xs c-3">' + MB.esc(s.meta) + '</span>' +
+        '</div>' +
+        '<div class="pp-actions">' +
+          '<a class="btn btn-primary btn-block" href="' + PAGES[key] + CTA_HASH[key] + '">' +
+            MB.esc(CTA[key](cur)) + ' ' + MB.icon('chevright', 16) + '</a>' +
+          '<a class="btn btn-ghost btn-block" href="' + PAGES[key] + '#how">' +
+            MB.icon('book', 16) + ' Learn more</a>' +
+        '</div>' +
+      '</article>';
     }).join('');
-    MB.mountIcons(MB.$('#pgPayouts'));
 
-    /* ---- referrals, filterable ---- */
-    var c = MB.collection({
-      data: p.referrals, into: '#pgReferrals', perPage: 8, mode: 'more',
-      countInto: '#pgRefCount', skeleton: false,
-      initial: { status: 'all' },
-      filters: { status: function (x, v) { return v === 'all' || x.status === v; } },
-      template: function (x) {
-        var tone = { funded: 'badge-active', signed_up: 'badge-neutral',
-                     pending: 'badge-warn' }[x.status];
-        var label = x.status.replace('_', ' ');
-        return '<div class="list-row">' +
-          '<span class="avatar avatar-sm">' + MB.esc(x.name.replace(/[^A-Z]/g, '').slice(0, 2)) + '</span>' +
-          '<span class="grow" style="min-width:0">' +
-            '<span class="lr-title" style="display:block">' + MB.esc(x.name) + '</span>' +
-            '<span class="lr-sub">joined ' + MB.fmt.ago(x.signed_up_at) +
-              (x.volume ? ' &middot; ' + MB.fmt.money(x.volume) + ' volume' : '') + '</span></span>' +
-          '<span class="none" style="text-align:right">' +
-            '<span class="lr-value num ' + (x.commission ? 'c-up' : 'c-3') +
-              '" style="display:block;font-weight:700">' +
-              (x.commission ? MB.fmt.money(x.commission) : '&mdash;') + '</span>' +
-            '<span class="badge ' + tone + '">' + label + '</span></span></div>';
-      },
-      emptyIcon: 'users', emptyTitle: 'No referrals in this state',
-      emptyText: 'Share your link to bring traders in.'
-    });
-    c.bind('#refTabs', 'status');
-
-    MB.mountIcons(document);
-    MB.mountCharts(document);
+    MB.mountIcons(host);
+  }).catch(function () {
+    MB.$('#ppCards').innerHTML = '<div class="empty"><p>Could not load the programmes. Pull to refresh.</p></div>';
   });
 });
 </script>

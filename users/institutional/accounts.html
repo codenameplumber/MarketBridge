@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deriv Accounts — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/institution.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Deriv Accounts" data-sub="Connected accounts and company performance" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div id="actingAs"></div>
+
+    <!-- CONNECTIONS -->
+    <section class="card">
+      <div class="between" style="gap:var(--mb-s2);flex-wrap:wrap">
+        <div class="w-bold">Deriv connections</div>
+        <span id="ptype"></span>
+      </div>
+      <div class="conn-meter mt3">
+        <div class="progress"><i id="connBar" style="width:0"></i></div>
+        <b class="t-sm" id="connCount">0 / 20</b>
+      </div>
+      <p class="t-xs c-3 mt2" id="connNote"></p>
+      <button class="btn btn-deriv btn-block mt3" type="button" id="btnConnect" data-inst-can="accounts.manage">
+        <span data-icon="link"></span> Connect Deriv account</button>
+      <p class="t-xs c-3 mt2" data-inst-can="accounts.manage">Secure Deriv authorization with read-only access.
+        You sign in on Deriv &mdash; KonfluenX never asks for or stores a password.</p>
+    </section>
+
+    <!-- TOTAL COMPANY PERFORMANCE -->
+    <section class="page-section">
+      <div class="label">Total Company Performance</div>
+      <div class="total-balance tb-compact">
+        <div class="tb-head">
+          <span class="tb-label">Total equity (all connected accounts)</span>
+        </div>
+        <div class="tb-amount" id="totEquity">$0.00<span class="cur">USD</span></div>
+        <div class="tb-delta" id="totPL">&mdash;</div>
+        <span class="tb-spark"><span data-spark="up" data-seed="instcompany" data-h="56" data-sw="2"></span></span>
+      </div>
+      <div class="stat-grid stat-grid-sm">
+        <div class="stat-cell"><div class="stat-v" id="totReturn">&mdash;</div><div class="stat-k">Return</div></div>
+        <div class="stat-cell"><div class="stat-v" id="totWin">&mdash;</div><div class="stat-k">Win Rate</div></div>
+        <div class="stat-cell"><div class="stat-v" id="totTrades">&mdash;</div><div class="stat-k">Trades</div></div>
+        <div class="stat-cell"><div class="stat-v" id="totDD">&mdash;</div><div class="stat-k">Max DD</div></div>
+      </div>
+      <p class="t-xs c-3">Read from Deriv through each connection. Win rate is weighted by trades; max drawdown is the worst single account.</p>
+    </section>
+
+    <!-- PERFORMANCE BY ACCOUNT -->
+    <section class="page-section">
+      <div class="between">
+        <div class="label">Performance by Account</div>
+        <a class="t-xs w-semi c-up" href="portfolio.html?preview=1">Preview public profile</a>
+      </div>
+      <div id="acctList"></div>
+      <p class="t-xs c-3">&ldquo;Show publicly&rdquo; decides which accounts appear on your public company profile and in investor links.
+        Hidden accounts are left out of every public total.</p>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/institutional.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var T = MB.instTeam, A = MB.instAudit, X = MB.instAccounts, SC = MB.instShowcase;
+  var d = {}, accts = [], sc = null, team = [], max = 20;
+  var acting = T.actingAs();
+  var fmt = MB.fmt;
+  var MOCK_IDS = [];
+
+  function me() { return T.actor(team, acting); }
+  function short(n) { return (n < 0 ? '-' : '+') + '$' + fmt.compact(Math.abs(n || 0)); }
+  function icText(a) { return a.platform === 'MT5' ? 'MT5' : (a.currency || 'USD'); }
+
+  function paint() {
+    var can = T.can(acting, 'accounts.manage');
+    var n = accts.length;
+    MB.$('#connCount').textContent = n + ' / ' + max;
+    MB.$('#connBar').style.width = Math.min(100, n / max * 100) + '%';
+    var full = n >= max;
+    MB.$('#btnConnect').disabled = full;
+    MB.$('#connNote').textContent = full
+      ? 'You have reached the limit of ' + max + ' Deriv connections. Remove one to connect another.'
+      : (max - n) + ' of ' + max + ' connections left. Each connection brings in that Deriv login’s accounts.';
+
+    var t = X.totals(accts);
+    MB.$('#totEquity').innerHTML = fmt.money(t.balance) + '<span class="cur">USD</span>';
+    MB.$('#totPL').className = 'tb-delta ' + fmt.dirClass(t.profit);
+    MB.$('#totPL').textContent = (t.profit >= 0 ? '+' : '-') + fmt.money(Math.abs(t.profit)) + ' total P/L';
+    MB.$('#totReturn').className = 'stat-v ' + fmt.dirClass(t.return_pct);
+    MB.$('#totReturn').textContent = fmt.pct(t.return_pct, 1);
+    MB.$('#totWin').textContent = t.win_rate.toFixed(1) + '%';
+    MB.$('#totTrades').textContent = fmt.compact(t.trades);
+    MB.$('#totDD').textContent = t.drawdown.toFixed(1) + '%';
+
+    MB.$('#acctList').innerHTML = accts.length ? accts.map(function (a) {
+      var vis = !!sc.visible[a.id];
+      var known = MOCK_IDS.indexOf(a.id) > -1;
+      return '<div class="acct-perf-card">' +
+        '<div class="acct-perf-row">' +
+          '<span class="ap-ic' + (a.is_primary ? ' is-primary' : '') + '">' + MB.esc(icText(a)) + '</span>' +
+          '<div class="ap-main">' +
+            '<div class="ap-n"><span>' + MB.esc(a.name || a.login) + '</span>' +
+              (a.is_primary ? '<span class="badge badge-active none">Primary</span>' : '') + '</div>' +
+            '<div class="ap-s">' + MB.esc(a.login) + ' · ' + MB.esc(a.platform) + ' ' + MB.esc(a.type) +
+              (a.connected_by ? ' · by ' + MB.esc(a.connected_by) : '') + '</div>' +
+          '</div>' +
+          '<div class="ap-fig"><div class="ap-bal" title="' + fmt.money(a.balance) + '">$' + fmt.compact(a.balance) + '</div>' +
+            '<div class="ap-pl ' + fmt.dirClass(a.profit_total) + '" title="' + fmt.signed(a.profit_total) + '">' +
+              short(a.profit_total) + ' · ' + fmt.pct(a.profit_pct, 1) + '</div></div>' +
+        '</div>' +
+        '<div class="t-xs c-3 mt2">Win rate ' + Number(a.win_rate || 0).toFixed(1) + '% · ' + fmt.compact(a.trades_total || 0) +
+          ' trades · max drawdown ' + Number(a.drawdown_max || 0).toFixed(1) + '%</div>' +
+        '<div class="acct-perf-foot">' +
+          '<label class="vis-toggle"><span class="switch"><input type="checkbox" data-vis="' + MB.esc(a.id) + '"' +
+            (vis ? ' checked' : '') + (can ? '' : ' disabled') + '><span class="track"></span></span>' +
+            (vis ? 'Shown publicly' : 'Hidden') + '</label>' +
+          '<span class="row g2">' +
+            (can && !a.is_primary ? '<button class="icon-btn" type="button" data-rm="' + MB.esc(a.id) + '" aria-label="Disconnect ' +
+              MB.esc(a.name || a.login) + '">' + MB.icon('trash', 16) + '</button>' : '') +
+            (known ? '<a class="btn btn-ghost btn-xs" href="account.html?id=' + encodeURIComponent(a.id) + '">Details</a>' : '') +
+          '</span>' +
+        '</div>' +
+      '</div>';
+    }).join('') : '<div class="card t-sm c-3">No Deriv accounts connected yet.</div>';
+
+    T.apply(document, acting);
+    MB.mountIcons();
+  }
+
+  MB.$('#acctList').addEventListener('change', function (e) {
+    var cb = e.target.closest('[data-vis]');
+    if (!cb || !T.can(acting, 'accounts.manage')) { return; }
+    var a = accts.filter(function (x) { return x.id === cb.getAttribute('data-vis'); })[0];
+    if (!a) { return; }
+    sc.visible[a.id] = cb.checked;
+    SC.save(sc);
+    A.log({ actor: me().name, role: acting, type: 'account', action: 'account.visibility',
+            text: (a.name || a.login) + ' set to ' + (cb.checked ? 'public' : 'hidden') + ' ' + A.by(me()) });
+    MB.toast((a.name || a.login) + (cb.checked ? ' is shown on your public profile' : ' is hidden from your public profile'));
+    paint();
+  });
+
+  MB.$('#acctList').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-rm]');
+    if (!b || !T.can(acting, 'accounts.manage')) { return; }
+    var a = accts.filter(function (x) { return x.id === b.getAttribute('data-rm'); })[0];
+    if (!a) { return; }
+    MB.confirm({ title: 'Disconnect ' + (a.name || a.login) + '?',
+                 body: 'KonfluenX stops reading this account. Its past verified results stay in your history.',
+                 confirm: 'Disconnect', danger: true }).then(function (yes) {
+      if (!yes) { return; }
+      X.remove(a.id);
+      delete sc.visible[a.id]; SC.save(sc);
+      accts = accts.filter(function (x) { return x.id !== a.id; });
+      /* Stage 2: DELETE /institutional/accounts/{id} — revokes the Deriv token. */
+      A.log({ actor: me().name, role: acting, type: 'account', action: 'account.removed',
+              text: 'Deriv ' + (a.name || a.login) + ' disconnected ' + A.by(me()) });
+      MB.toast('Disconnected');
+      paint();
+    });
+  });
+
+  /* Simulated Deriv OAuth. Stage 2: redirect to Deriv's authorize URL with a
+     read-only scope, then /oauth/deriv/callback stores the token server side
+     and returns the accounts under that login. */
+  MB.$('#btnConnect').addEventListener('click', function () {
+    if (!T.can(acting, 'accounts.manage') || accts.length >= max) { return; }
+    MB.modal({
+      title: 'Connect Deriv Account',
+      sub: 'Link your Deriv accounts to verify your trading performance',
+      body: '<ul class="oauth-steps">' +
+          '<li>' + MB.icon('check', 16) + '<span>Read-only access to trading data</span></li>' +
+          '<li>' + MB.icon('check', 16) + '<span>No access to your password — you sign in on Deriv</span></li>' +
+          '<li>' + MB.icon('check', 16) + '<span>Secure and encrypted connection; revoke it any time</span></li>' +
+        '</ul>' +
+        '<div class="field mt4"><label for="connName">Name this account</label>' +
+          '<input class="input" id="connName" maxlength="40" value="Account ' + ('0' + (accts.length + 1)).slice(-2) + '"></div>' +
+        '<p class="t-xs c-3 mt2">' + (max - accts.length) + ' of ' + max + ' connections left.</p>',
+      actions: [
+        { label: 'Cancel', kind: 'ghost', close: true },
+        { label: 'Connect with Deriv', kind: 'trade', onClick: function (m) {
+            var name = (m.$('#connName').value || '').trim() || 'Deriv account';
+            m.close();
+            MB.toast('Opening Deriv to authorize…');
+            setTimeout(function () {
+              if (accts.length >= max) { MB.toast('Connection limit reached', 'err'); return; }
+              var seed = Date.now() % 997;
+              var bal = 2000 + seed * 9.7, pl = (seed % 3 === 0 ? -1 : 1) * (100 + seed * 1.3);
+              var a = { id: 'acct_' + Date.now().toString(36), name: name, login: 'CR' + (9100000 + seed * 37),
+                platform: 'Deriv', type: 'Options', currency: 'USD', balance: Math.round(bal * 100) / 100,
+                profit_total: Math.round(pl * 100) / 100, profit_pct: Math.round(pl / (bal - pl) * 1000) / 10,
+                drawdown_max: 6 + seed % 9, trades_total: 20 + seed % 80, win_rate: 50 + seed % 20,
+                linked_at: new Date().toISOString(), connection: 'oauth', connected_by: me().name };
+              X.add(a);
+              accts.push(a);
+              sc.visible[a.id] = false; SC.save(sc);
+              A.log({ actor: me().name, role: acting, type: 'account', action: 'account.connected',
+                      text: 'Deriv ' + name + ' connected ' + A.by(me()) });
+              MB.toast(name + ' connected — hidden from your public profile until you show it');
+              paint();
+            }, 1100);
+          } }
+      ]
+    });
+  });
+
+  T.switcher(MB.$('#actingAs'), function (role) { acting = role; paint(); });
+
+  MB.api.get('institutional').then(function (r) {
+    d = r.data || {};
+    team = T.load(d);
+    MOCK_IDS = (d.linked_accounts || []).map(function (a) { return a.id; });
+    accts = X.load(d);
+    sc = SC.load(d);
+    max = MB.instProfile.maxConnections(d);
+    MB.$('#ptype').innerHTML = MB.instProfile.badge(d);
+    MB.mountCharts();
+    paint();
+  });
+});
+</script>
+</body>
+</html>

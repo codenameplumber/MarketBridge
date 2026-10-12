@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/rooms.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="community" data-root="../../" data-title="Community" data-sub="Every market has a room. Every trader can have one too." data-unread="3">
@@ -36,13 +37,27 @@
     </div>
 
     <section class="page-section">
-      <div class="sec-head"><h2>Rooms</h2><a href="rooms.html">View all</a></div>
       <div class="chips" data-group id="roomTabs">
         <button class="chip is-active" data-value="market">Market Rooms</button>
         <button class="chip" data-value="trader">Trader Rooms</button>
         <button class="chip" data-value="mine">Joined Rooms</button>
       </div>
+      <div class="rooms-head">
+        <h2 id="roomsTitle">Popular Rooms</h2>
+        <a class="t-sm w-semi c-up" id="roomsMore" href="rooms.html">View all</a>
+      </div>
+      <div class="chips hide" data-group id="tierChips" aria-label="Room tier">
+        <button class="chip is-active" data-value="all">All</button>
+        <button class="chip" data-value="trader">Trader</button>
+        <button class="chip" data-value="premium">Premium</button>
+        <button class="chip" data-value="pro">Pro</button>
+      </div>
+      <p class="tier-help hide" id="tierHelp">Trader Rooms are open to anyone. <b>Premium</b> rooms have a connected
+        Deriv account, so their performance is verified. <b>Pro</b> rooms are paid in KX, after three
+        qualifying months and KonfluenX approval.</p>
       <div class="stack g2" id="roomList"></div>
+      <a class="btn btn-ghost btn-block hide" id="btnCreateRoom" href="create-room.html">
+        <span data-icon="plus"></span> Create your own room</a>
     </section>
 
     <section class="page-section">
@@ -75,6 +90,8 @@
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/rooms.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
@@ -106,15 +123,56 @@ MB.ready(function () {
   var pairSel = document.getElementById('pairSel');
   var markets = [];
 
+  /* Rooms: Market (one per pair) · Trader (tiered) · Joined. */
+  var startTab = new URLSearchParams(location.search).get('tab');
+  var roomTab = ['market', 'trader', 'mine'].indexOf(startTab) > -1 ? startTab : 'market';
+  var ROOM_HEAD = {
+    market: ['Popular Rooms', 'View all', 'rooms.html'],
+    trader: ['Trader Rooms', 'Create', 'create-room.html'],
+    mine:   ['Your Joined Rooms', 'Manage', 'rooms.html']
+  };
   var rooms = MB.collection({
-    from: 'rooms', into: '#roomList', template: MB.card.roomRow,
-    perPage: 5, mode: 'more', skeleton: false,
-    initial: { tab: 'market' },
-    filters: { tab: function (r, v) { return v === 'mine' ? r.is_member : r.kind === v; } },
+    from: 'rooms', into: '#roomList', perPage: 6, mode: 'more', skeleton: false,
+    template: function (r) {
+      return roomTab === 'market' ? MB.card.roomRow(r) : MB.card.roomTier(r, roomTab === 'mine' ? 'joined' : '');
+    },
+    prepare: function (rows) {
+      rows = MB.rooms.merge(rows);
+      /* Pro and Premium ahead of plain trader rooms, then most members. */
+      var rank = { pro: 0, premium: 1, trader: 2 };
+      return rows.sort(function (a, b) {
+        var ta = rank[MB.rooms.tier(a)], tb = rank[MB.rooms.tier(b)];
+        ta = ta === undefined ? 3 : ta; tb = tb === undefined ? 3 : tb;
+        if (ta !== tb) { return ta - tb; }
+        return (b.member_count || 0) - (a.member_count || 0);
+      });
+    },
+    initial: { tab: roomTab, tier: 'all' },
+    filters: {
+      tab: function (r, v) { return v === 'mine' ? (r.is_member || r.is_owner) : r.kind === v; },
+      tier: function (r, v) { return v === 'all' || roomTab !== 'trader' || MB.rooms.tier(r) === v; }
+    },
     emptyIcon: 'community', emptyTitle: 'No rooms here',
-    emptyText: 'Join a market room to see it listed.'
+    emptyText: 'Join a market room or a trader room to see it listed.'
   });
-  rooms.bind('#roomTabs', 'tab');
+  function paintRoomTab() {
+    var h = ROOM_HEAD[roomTab];
+    MB.$('#roomsTitle').textContent = h[0];
+    MB.$('#roomsMore').textContent = h[1];
+    MB.$('#roomsMore').setAttribute('href', h[2]);
+    MB.$('#tierChips').classList.toggle('hide', roomTab !== 'trader');
+    MB.$('#tierHelp').classList.toggle('hide', roomTab !== 'trader');
+    MB.$('#btnCreateRoom').classList.toggle('hide', roomTab !== 'trader');
+    MB.$$('#roomTabs .chip').forEach(function (c) {
+      c.classList.toggle('is-active', c.getAttribute('data-value') === roomTab);
+    });
+  }
+  paintRoomTab();
+  MB.$('#roomTabs').addEventListener('mb:change', function (e) {
+    roomTab = e.detail.value; paintRoomTab(); rooms.set('tab', roomTab);
+  });
+  rooms.bind('#tierChips', 'tier');
+  MB.rooms.wireList(MB.$('#roomList'), function () { return rooms.all(); }, function () { rooms.refresh(); });
 
   var feed = MB.collection({
     from: 'posts', into: '#feed', template: MB.card.post,

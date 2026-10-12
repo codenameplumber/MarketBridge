@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Rewards — KonfluenX</title>
+<title>KX Points &amp; Rewards — KonfluenX</title>
 <meta name="theme-color" content="#080B0F">
 <link rel="manifest" href="../../manifest.webmanifest">
 <link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
@@ -15,73 +15,73 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
-<body data-shell="app" data-nav="home" data-root="../../" data-title="Rewards" data-sub="Points for what you contribute" data-back="index.html" data-unread="3">
+<body data-shell="app" data-nav="home" data-root="../../" data-title="KX Points &amp; Rewards" data-sub="Earned for contributing, never bought" data-back="index.html" data-unread="3">
 
 <div class="app">
   <div data-render="topbar"></div>
   <main class="page">
 
     <!-- ================================================================
-         POINTS BALANCE
+         BALANCE
          ================================================================ -->
-    <section class="total-balance tb-compact">
-      <div class="tb-head">
-        <span class="tb-label">Reward points</span>
-        <span class="grow"></span>
-        <span class="tier-badge" id="rwTier">&mdash;</span>
+    <section class="kp-hero">
+      <div class="between">
+        <span class="t-sm c-2 w-semi">KX Points</span>
+        <span class="badge badge-boost"><span data-icon="flame"></span> <span id="kpStreak">0</span>-day streak</span>
       </div>
-      <div class="tb-amount" id="rwBalance">0<span class="cur">pts</span></div>
-      <div class="tb-delta c-up" id="rwStreak">&mdash;</div>
-      <span class="tb-spark"><span data-spark="up" data-seed="rwpts" data-h="56" data-sw="2"></span></span>
+      <div class="kp-big num mt2" id="kpBal">0<small>pts</small></div>
+      <div class="t-xs c-3 mt2"><span id="kpLife">0</span> earned all time</div>
+      <div class="between t-xs c-3 mt4">
+        <span>Earned today</span><span class="num"><b class="c-1" id="kpToday">0</b> / <span id="kpCap">0</span> daily limit</span>
+      </div>
+      <div class="bar mt2"><span id="kpBar" style="width:0%"></span></div>
     </section>
 
-    <div class="pf-meta">
-      <span class="pf-chip"><span data-icon="flame" data-icon-size="13"></span>
-        <span><span id="rwLifetime">&mdash;</span> lifetime</span></span>
-      <span class="pf-chip"><span data-icon="results" data-icon-size="13"></span>
-        <span>Rank #<span id="rwRank">&mdash;</span></span></span>
+    <div class="alert alert-green">
+      <span data-icon="shield"></span>
+      <div class="t-xs"><strong>KX Points cannot be bought with money or KX.</strong> They are earned only
+      by contributing to KonfluenX, have no cash value, and can't be withdrawn or transferred.
+      KX credits are a separate thing &mdash; <a href="../wallet/credits.html" class="c-up w-semi">Wallet &amp; Credits</a>.</div>
     </div>
 
-    <section class="card">
-      <div class="between t-xs c-3">
-        <span>Progress to <b id="rwNext">&mdash;</b></span>
-        <span id="rwProg">&mdash;</span>
-      </div>
-      <div class="bar mt2"><span id="rwBar" style="width:0%"></span></div>
-    </section>
+    <!-- ================================================================
+         SIGNAL POSTING STATUS
+         ================================================================ -->
+    <section class="card priv-card" id="kpPriv"></section>
 
     <!-- ================================================================
          HOW TO EARN
          ================================================================ -->
     <section class="page-section">
-      <div class="sec-head"><h2>How to earn</h2></div>
-      <div class="list" id="rwEarn"></div>
+      <div class="sec-head"><h2>How to earn</h2><span class="t-xs c-3">Daily limits apply</span></div>
+      <div class="list" id="kpEarn"></div>
     </section>
 
     <!-- ================================================================
-         REDEEM
+         SPEND
          ================================================================ -->
     <section class="page-section">
-      <div class="sec-head"><h2>Redeem</h2>
-        <span class="t-xs c-3">Points only &mdash; never cash</span></div>
-      <div class="stack g3" id="rwCatalogue"></div>
+      <div class="sec-head"><h2>Spend points on</h2><span class="t-xs c-3">Visibility, never money</span></div>
+      <div class="stack g3" id="kpSpend"></div>
     </section>
 
-    <div class="alert alert-green">
-      <span data-icon="shield"></span>
-      <div class="t-xs"><strong>Points are not money.</strong> They are earned for
-      contributing to the platform and can only be spent on the perks above.
-      They are never withdrawable, never transferable, and have no cash value.</div>
-    </div>
+    <!-- ================================================================
+         FAIR PLAY
+         ================================================================ -->
+    <section class="card">
+      <div class="t-sm w-bold">Fair-play rules</div>
+      <div class="mt2" id="kpRules"></div>
+    </section>
 
     <!-- ================================================================
          HISTORY
          ================================================================ -->
     <section class="page-section">
       <div class="sec-head"><h2>Points history</h2></div>
-      <div class="list" id="rwHistory"></div>
+      <div class="list" id="kpHistory"></div>
     </section>
   </main>
   <div data-render="tabbar"></div>
@@ -94,108 +94,126 @@
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
 <script>
 MB.ready(function () {
-  MB.api.get('rewards').then(function (r) {
-    var d = r.data;
-    var balance = d.balance;
+  var EARN_ICON = {
+    answer_question: 'chat', helpful_post: 'thumbsup', educational: 'book', achievement: 'star',
+    streak_day: 'flame', quality_signal: 'signals', approved_activity: 'verified'
+  };
+  var RULES = [
+    'Daily limits on every way of earning, plus an overall daily cap.',
+    'No points for repetitive or duplicate comments, or for very short answers.',
+    'No points for spam, self-engagement (liking or marking your own content helpful) or fake activity.',
+    'Points are reversed if the content that earned them is removed by a moderator.',
+    'Accounts that game the system can lose points and posting privileges.'
+  ];
+  var catalogue = [];
 
-    MB.$('#rwBalance').innerHTML = MB.fmt.price(balance, 0) + '<span class="cur">pts</span>';
-    MB.$('#rwStreak').textContent = d.streak_days + '-day streak';
-    MB.$('#rwTier').textContent = d.tier;
-    MB.$('#rwLifetime').textContent = MB.fmt.price(d.lifetime, 0);
-    MB.$('#rwRank').textContent = d.rank;
-    MB.$('#rwNext').textContent = d.next_tier;
-    MB.$('#rwProg').textContent = balance + ' / ' + d.tier_at + ' pts';
-    MB.$('#rwBar').style.width = Math.min(100, (balance / d.tier_at) * 100) + '%';
+  function draw() {
+    var cfg = MB.kx.config().points;
+    var bal = MB.kx.points.balance();
+    MB.$('#kpBal').innerHTML = MB.fmt.price(bal, 0) + '<small>pts</small>';
+    MB.$('#kpLife').textContent = MB.fmt.price(MB.kx.points.lifetime(), 0);
+    MB.$('#kpStreak').textContent = MB.kx.points.streak();
+    var today = MB.kx.points.today().total || 0;
+    MB.$('#kpToday').textContent = today;
+    MB.$('#kpCap').textContent = cfg.daily_cap_total;
+    MB.$('#kpBar').style.width = Math.min(100, today / (cfg.daily_cap_total || 1) * 100) + '%';
 
-    /* ---- earn list: done rows read green, open rows stay neutral ---- */
-    MB.$('#rwEarn').innerHTML = d.earn.map(function (e) {
-      return '<div class="list-row">' +
-        '<span class="lr-icon' + (e.done ? ' is-done' : '') + '">' +
-          MB.icon(e.done ? 'check' : e.icon, 20) + '</span>' +
-        '<span class="grow" style="min-width:0">' +
-          '<span class="lr-title" style="display:block">' + MB.esc(e.label) + '</span>' +
-          '<span class="lr-sub">' + (e.done ? 'Earned' : 'Not yet earned') + '</span></span>' +
-        '<span class="lr-value num ' + (e.done ? 'c-up' : 'c-3') + '" style="font-weight:700">' +
-          '+' + e.points + '</span></div>';
+    /* ---- privileges -------------------------------------------------- */
+    var pv = MB.kx.privileges();
+    MB.$('#kpPriv').classList.toggle('is-locked', !pv.can_post_signals);
+    MB.$('#kpPriv').innerHTML =
+      '<div class="row g3" style="align-items:flex-start">' +
+        '<span class="kp-ic' + (pv.can_post_signals ? '' : ' is-spend') + '">' + MB.icon(pv.can_post_signals ? 'check' : 'lock', 18) + '</span>' +
+        '<div class="grow">' +
+          '<div class="t-sm w-bold">Signal posting ' + (pv.can_post_signals ? 'unlocked' : 'locked') + '</div>' +
+          pv.reasons.map(function (r) { return '<div class="t-xs c-2 mt2">' + MB.esc(r) + '</div>'; }).join('') +
+          '<div class="t-xs c-3 mt2">Each signal costs <b class="c-1">' + pv.signal_cost + ' pts</b>, refunded if validation rejects it.</div>' +
+          '<a class="t-xs c-up w-semi mt2" style="display:inline-block" href="achievements.html">See which achievements unlock it &rarr;</a>' +
+        '</div></div>';
+
+    /* ---- earn -------------------------------------------------------- */
+    var bp = Object.keys(MB.kx.config().badges).map(function (id) { return Number(MB.kx.config().badges[id].points || 0); });
+    var achRange = Math.min.apply(null, bp) + '–' + Math.max.apply(null, bp);
+    MB.$('#kpEarn').innerHTML = Object.keys(cfg.earn).map(function (k) {
+      var e = cfg.earn[k];
+      var isAch = k === 'achievement';
+      return '<div class="list-row is-tight">' +
+        '<span class="kp-ic">' + MB.icon(EARN_ICON[k] || 'plus', 18) + '</span>' +
+        '<span class="grow"><span class="lr-title" style="display:block">' + MB.esc(e.label) + '</span>' +
+          '<span class="lr-sub">' + (isAch ? 'Varies by badge &middot; once per badge' : 'Up to ' + e.daily_cap + ' pts a day') + '</span></span>' +
+        '<span class="kx-amt-val num c-up">' + (isAch ? '+' + achRange : '+' + e.points) + '</span></div>';
     }).join('');
-    MB.mountIcons(MB.$('#rwEarn'));
 
-    /* ---- redeem catalogue ---- */
-    function drawCatalogue() {
-      MB.$('#rwCatalogue').innerHTML = d.catalogue.map(function (c) {
-        var afford = balance >= c.cost;
-        return '<article class="card reward-card">' +
-          '<div class="between">' +
-            '<div style="min-width:0">' +
-              '<div class="t-sm w-bold">' + MB.esc(c.name) + '</div>' +
-              '<div class="t-xs c-2 mt2">' + MB.esc(c.desc) + '</div>' +
-            '</div>' +
-            '<span class="reward-cost num' + (afford ? '' : ' is-short') + '">' +
-              c.cost + '<small>pts</small></span>' +
-          '</div>' +
-          '<button class="btn ' + (afford ? 'btn-brand' : 'btn-ghost') +
-            ' btn-block btn-sm mt3" data-redeem="' + c.id + '"' +
-            (afford ? '' : ' disabled') + '>' +
-            (afford ? 'Redeem' : (c.cost - balance) + ' points short') + '</button>' +
-        '</article>';
-      }).join('');
+    /* ---- spend ------------------------------------------------------- */
+    MB.$('#kpSpend').innerHTML = catalogue.map(function (c) {
+      var cost = MB.kx.points.cost(c.id) || c.cost;
+      var afford = bal >= cost;
+      var action;
+      if (c.id === 'signal_post') {
+        action = '<a class="btn btn-outline btn-block btn-sm mt3" href="../signals/compose.html">Post a signal</a>';
+      } else if (c.id === 'boost') {
+        action = '<a class="btn btn-outline btn-block btn-sm mt3" href="../community/index.html">Choose a post to boost</a>';
+      } else {
+        action = '<button class="btn ' + (afford ? 'btn-trade' : 'btn-outline') + ' btn-block btn-sm mt3" data-redeem="' + MB.esc(c.id) + '"' +
+          (afford ? '' : ' disabled') + ' type="button">' + (afford ? 'Redeem' : (cost - bal) + ' points short') + '</button>';
+      }
+      return '<article class="card reward-card">' +
+        '<div class="between" style="align-items:flex-start">' +
+          '<div style="min-width:0"><div class="t-sm w-bold">' + MB.esc(c.name) + '</div>' +
+            '<div class="t-xs c-2 mt2">' + MB.esc(c.desc) + '</div></div>' +
+          '<span class="reward-cost num' + (afford ? '' : ' is-short') + '">' + cost + '<small>pts</small></span>' +
+        '</div>' + action + '</article>';
+    }).join('');
 
-      MB.$$('[data-redeem]').forEach(function (b) {
-        b.addEventListener('click', function () {
-          var item = d.catalogue.filter(function (x) {
-            return x.id === b.getAttribute('data-redeem');
-          })[0];
-          if (!item) { return; }
-          MB.confirm({
-            title: 'Redeem ' + item.name + '?',
-            body: 'This spends ' + item.cost + ' points. You will have ' +
-                  (balance - item.cost) + ' left.',
-            confirm: 'Redeem'
-          }).then(function (ok) {
-            if (!ok) { return; }
-            balance -= item.cost;
-            MB.$('#rwBalance').innerHTML =
-              MB.fmt.price(balance, 0) + '<span class="cur">pts</span>';
-            MB.$('#rwProg').textContent = balance + ' / ' + d.tier_at + ' pts';
-            MB.$('#rwBar').style.width =
-              Math.min(100, (balance / d.tier_at) * 100) + '%';
-            d.history.unshift({
-              id: 'PTnew', label: item.name + ' redeemed',
-              points: -item.cost, at: new Date().toISOString()
-            });
-            drawCatalogue();
-            drawHistory();
-            MB.toast(item.name + ' redeemed', 'ok');
-          });
-        });
-      });
-    }
+    /* ---- history ----------------------------------------------------- */
+    var hist = MB.kx.points.history().slice(0, 15);
+    MB.$('#kpHistory').innerHTML = hist.length ? hist.map(function (h) {
+      var up = h.points >= 0;
+      return '<div class="list-row is-tight">' +
+        '<span class="kp-ic' + (up ? '' : ' is-spend') + '">' + MB.icon(up ? 'plus' : 'minus', 18) + '</span>' +
+        '<span class="grow"><span class="lr-title truncate" style="display:block">' + MB.esc(h.label) + '</span>' +
+          '<span class="lr-sub">' + MB.fmt.ago(h.at) + '</span></span>' +
+        '<span class="kx-amt-val num ' + (up ? 'c-up' : 'c-down') + '">' + (up ? '+' : '−') + Math.abs(h.points) + '</span></div>';
+    }).join('') : '<div class="empty">' + MB.icon('gift', 40) + '<h3>No points yet</h3><p>Answer a question or share an analysis to start earning.</p></div>';
 
-    /* ---- history: credits green, debits red ---- */
-    function drawHistory() {
-      MB.$('#rwHistory').innerHTML = d.history.slice(0, 12).map(function (h) {
-        var up = h.points >= 0;
-        return '<div class="list-row">' +
-          '<span class="lr-icon">' + MB.icon(up ? 'plus' : 'minus', 20) + '</span>' +
-          '<span class="grow" style="min-width:0">' +
-            '<span class="lr-title" style="display:block">' + MB.esc(h.label) + '</span>' +
-            '<span class="lr-sub">' + MB.fmt.ago(h.at) + '</span></span>' +
-          '<span class="lr-value num ' + (up ? 'c-up' : 'c-down') +
-            '" style="font-weight:700">' + (up ? '+' : '') + h.points + '</span></div>';
-      }).join('');
-      MB.mountIcons(MB.$('#rwHistory'));
-    }
-
-    drawCatalogue();
-    drawHistory();
     MB.mountIcons(document);
-    MB.mountCharts(document);
+  }
+
+  MB.$('#kpRules').innerHTML = RULES.map(function (r) {
+    return '<div class="kp-rule">' + MB.icon('warning', 15) + '<span>' + MB.esc(r) + '</span></div>';
+  }).join('');
+
+  MB.$('#kpSpend').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-redeem]');
+    if (!b) { return; }
+    var item = catalogue.filter(function (x) { return x.id === b.getAttribute('data-redeem'); })[0];
+    if (!item) { return; }
+    var cost = MB.kx.points.cost(item.id) || item.cost;
+    MB.confirm({
+      title: 'Redeem ' + item.name + '?',
+      body: 'This spends ' + cost + ' KX Points. You will have ' + (MB.kx.points.balance() - cost) + ' left.',
+      confirm: 'Redeem'
+    }).then(function (ok) {
+      if (!ok) { return; }
+      var r = MB.kx.points.spend(item.id, { ref: item.id + ':' + Date.now(), label: item.name });
+      if (r.ok) { MB.toast(item.name + ' redeemed', 'ok'); }
+      else { MB.toast(r.reason === 'insufficient' ? 'Not enough points' : 'Could not redeem', 'err'); }
+    });
   });
+
+  MB.api.get('rewards').then(function (r) {
+    catalogue = (r.data && r.data.redemptions) || [];
+    draw();
+  }).catch(function () { draw(); });
+  MB.kx.ready().then(draw);
+  MB.kx.on(draw);
+  draw();
 });
 </script>
 </body>

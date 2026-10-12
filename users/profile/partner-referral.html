@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KonfluenX Referral Program — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/partner.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Referral Program" data-sub="Refer users to KonfluenX" data-back="partner.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page pp-referral">
+
+    <!-- ================================================================
+         HERO
+         ================================================================ -->
+    <section class="pp-hero pp-referral" aria-labelledby="rfHeroT">
+      <svg class="pp-hero-art" viewBox="0 0 170 130" aria-hidden="true" focusable="false">
+        <rect class="accent-soft" x="62" y="54" width="70" height="62" rx="8"/>
+        <rect class="accent" x="92" y="54" width="10" height="62"/>
+        <rect class="accent-soft" x="56" y="40" width="82" height="18" rx="5"/>
+        <path class="line" d="M97 40c-10-22-34-14-22 0M97 40c10-22 34-14 22 0"/>
+        <circle class="coin" cx="40" cy="100" r="20"/>
+        <circle class="coin-rim" cx="40" cy="100" r="15"/>
+        <circle class="coin" cx="148" cy="104" r="16"/>
+        <circle class="coin-rim" cx="148" cy="104" r="11"/>
+      </svg>
+      <div class="pp-hero-copy">
+        <span class="pp-tag">Lifetime Benefit</span>
+        <h2 id="rfHeroT" class="mt2">Invite. They join. <em>You earn.</em></h2>
+        <p>Earn <b id="rfPctHero">20%</b> of the platform fees KonfluenX collects from the people you refer &mdash; for life.</p>
+      </div>
+    </section>
+
+    <div class="pp-feats">
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="percent" data-icon-size="18"></span></span><span class="pp-feat-t">20% of platform fees</span></div>
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="hourglass" data-icon-size="18"></span></span><span class="pp-feat-t">Lifetime benefit</span></div>
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="users" data-icon-size="18"></span></span><span class="pp-feat-t">Track referrals</span></div>
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="share" data-icon-size="18"></span></span><span class="pp-feat-t">Share your link</span></div>
+    </div>
+
+    <!-- ================================================================
+         LINK + CODE
+         ================================================================ -->
+    <section class="card" id="share" aria-labelledby="rfShareT">
+      <h2 class="t-sm w-bold" id="rfShareT">Your referral link</h2>
+      <p class="t-xs c-3 mt2">Anyone who signs up through your link or with your code is attributed to you.</p>
+      <div class="pp-share mt3">
+        <input class="input" id="rfUrl" readonly value="" aria-label="Referral link">
+        <button class="btn btn-ghost btn-sm" type="button" data-copy="#rfUrl">
+          <span data-icon="copy" data-icon-size="15"></span> Copy</button>
+        <button class="btn btn-primary btn-sm" type="button" id="rfShare">
+          <span data-icon="share" data-icon-size="15"></span> Share</button>
+      </div>
+      <div class="pp-code mt3">
+        <span class="stack">
+          <span class="t-xs c-3">Referral code</span>
+          <b id="rfCode">&mdash;</b>
+        </span>
+        <button class="btn btn-ghost btn-sm" type="button" data-copy="#rfCode" aria-label="Copy referral code">
+          <span data-icon="copy" data-icon-size="15"></span> Copy</button>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         EARNINGS
+         ================================================================ -->
+    <section class="page-section" aria-labelledby="rfEarnT">
+      <div class="sec-head"><h2 id="rfEarnT">Your earnings</h2>
+        <span class="t-xs c-3" id="rfEarnSub">&mdash;</span></div>
+      <div class="pp-earn">
+        <div class="stat-tile"><div class="stat-k">Pending</div>
+          <div class="stat-v num" id="rfPending">&mdash;</div>
+          <div class="stat-d" id="rfPendingD">&mdash;</div></div>
+        <div class="stat-tile is-avail"><div class="stat-k">Available</div>
+          <div class="stat-v num c-up" id="rfAvail">&mdash;</div>
+          <div class="stat-d" id="rfAvailD">&mdash;</div></div>
+        <div class="stat-tile"><div class="stat-k">Paid</div>
+          <div class="stat-v num" id="rfPaid">&mdash;</div>
+          <div class="stat-d" id="rfPaidD">&mdash;</div></div>
+        <div class="stat-tile"><div class="stat-k">Lifetime</div>
+          <div class="stat-v num" id="rfLife">&mdash;</div>
+          <div class="stat-d" id="rfLifeD">&mdash;</div></div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         WORKED EXAMPLE
+         ================================================================ -->
+    <section class="card" id="how" aria-labelledby="rfHowT">
+      <h2 class="t-sm w-bold" id="rfHowT">How your 20% is worked out</h2>
+      <p class="t-xs c-3 mt2">You earn from the fee KonfluenX keeps &mdash; not from what your referral pays.</p>
+      <div class="pp-example mt4" role="group" aria-label="Example: platform fee $10, your 20% is $2">
+        <div class="pp-ex-cell"><div class="pp-ex-v num">$50</div><div class="pp-ex-k">Referral pays for a Pro room</div></div>
+        <span class="pp-ex-op" aria-hidden="true">&rarr;</span>
+        <div class="pp-ex-cell"><div class="pp-ex-v num">$10</div><div class="pp-ex-k">KonfluenX platform fee</div></div>
+        <span class="pp-ex-op" aria-hidden="true">&times;20%</span>
+        <div class="pp-ex-cell is-you"><div class="pp-ex-v num c-up">$2</div><div class="pp-ex-k">Your earnings</div></div>
+      </div>
+      <p class="t-xs c-2 mt3">Platform fee <b class="num">$10</b> &rarr; your 20% = <b class="num c-up">$2</b>.
+        The other $40 goes to the room&rsquo;s creator &mdash; you never earn a share of the full $50.</p>
+      <ol class="pp-steps mt4">
+        <li><span class="pp-step-n">1</span><div class="grow"><div class="pp-step-t">Share your link</div>
+          <div class="pp-step-d">Friends sign up to KonfluenX through your link or code.</div></div></li>
+        <li><span class="pp-step-n">2</span><div class="grow"><div class="pp-step-t">They use paid features</div>
+          <div class="pp-step-d">Pro rooms, courses and other paid features carry a KonfluenX platform fee.</div></div></li>
+        <li><span class="pp-step-n">3</span><div class="grow"><div class="pp-step-t">You earn 20% of that fee</div>
+          <div class="pp-step-d">Pending for 14 days, then available, then paid out on the 1st of the month.</div></div></li>
+      </ol>
+    </section>
+
+    <!-- ================================================================
+         FUNNEL
+         ================================================================ -->
+    <div class="stat-grid cols-3">
+      <div class="stat-cell"><div class="stat-v num" id="rfClicks">&mdash;</div><div class="stat-k">Link clicks</div></div>
+      <div class="stat-cell"><div class="stat-v num" id="rfSignups">&mdash;</div><div class="stat-k">Sign-ups</div></div>
+      <div class="stat-cell"><div class="stat-v num" id="rfPaying">&mdash;</div><div class="stat-k">Paying users</div></div>
+    </div>
+
+    <!-- ================================================================
+         REFERRALS
+         ================================================================ -->
+    <section class="page-section" aria-labelledby="rfListT">
+      <div class="sec-head"><h2 id="rfListT">Your referrals</h2>
+        <span class="t-xs c-3"><span id="rfCount">0</span> shown</span></div>
+      <div class="chips" data-group id="rfTabs">
+        <button class="chip is-active" data-value="all">All</button>
+        <button class="chip" data-value="paying">Paying</button>
+        <button class="chip" data-value="signed_up">Signed up</button>
+      </div>
+      <div class="card card-flush"><div class="list" id="rfList"></div></div>
+    </section>
+
+    <!-- ================================================================
+         FEE ACTIVITY — every 20% traced back to its platform fee
+         ================================================================ -->
+    <section class="page-section" aria-labelledby="rfFeesT">
+      <div class="sec-head"><h2 id="rfFeesT">Platform fee activity</h2></div>
+      <div class="card card-flush" id="rfFees"></div>
+    </section>
+
+    <section class="page-section" aria-labelledby="rfPayT">
+      <div class="sec-head"><h2 id="rfPayT">Payouts</h2></div>
+      <div class="card card-flush"><div class="list" id="rfPayouts"></div></div>
+    </section>
+
+    <section class="card" aria-labelledby="rfTermsT">
+      <h2 class="t-sm w-bold" id="rfTermsT">Programme terms</h2>
+      <ul class="pp-terms mt3" id="rfTerms"></ul>
+      <a class="t-xs c-up w-semi mt3" style="display:inline-block" href="../../terms.html">Full Terms of Service</a>
+    </section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+
+  /* Stage 1: read-only view of mock/partner.json → referral.
+     Stage 2: GET /partner/referral returns the link, the referred users and
+     a ledger of platform-fee events. The backend computes each share as
+     share_pct × platform_fee at the moment the fee is collected (never from
+     the gross payment), holds it as 'pending' for hold_days, then releases
+     it to 'available' and pays it out monthly ('paid'). Refunds and
+     chargebacks reverse the matching pending share. */
+
+  MB.api.get('partner').then(function (r) {
+    var p = r.data.referral, cur = p.currency;
+    var pct = p.share_pct;
+
+    /* Every share is recomputed from its platform fee, so the page can
+       never drift into "20% of what the user paid". */
+    var fees = p.fees.map(function (f) {
+      return Object.assign({}, f, { share: Math.round(f.platform_fee * pct) / 100 });
+    });
+    function sum(list, k) { return list.reduce(function (n, x) { return n + x[k]; }, 0); }
+    function by(state) { return fees.filter(function (f) { return f.state === state; }); }
+
+    MB.$('#rfPctHero').textContent = pct + '%';
+    MB.$('#rfUrl').value = p.referral_url;
+    MB.$('#rfCode').textContent = p.referral_code;
+
+    /* ---- earnings ---- */
+    var pend = by('pending'), avail = by('available'), paid = by('paid');
+    var now = new Date();
+    var nextPayout = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    MB.$('#rfPending').textContent = MB.fmt.money(sum(pend, 'share'), cur);
+    MB.$('#rfPendingD').textContent = p.hold_days + '-day hold';
+    MB.$('#rfAvail').textContent = MB.fmt.money(sum(avail, 'share'), cur);
+    MB.$('#rfAvailD').textContent = 'Paid ' + nextPayout.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+    MB.$('#rfPaid').textContent = MB.fmt.money(sum(paid, 'share'), cur);
+    MB.$('#rfPaidD').textContent = p.payouts.length + ' payouts';
+    MB.$('#rfLife').textContent = MB.fmt.money(sum(fees, 'share'), cur);
+    MB.$('#rfLifeD').textContent = 'From ' + MB.fmt.money(sum(fees, 'platform_fee'), cur) + ' in fees';
+    MB.$('#rfEarnSub').textContent = pct + '% of platform fees';
+
+    /* ---- funnel ---- */
+    var paying = p.referrals.filter(function (x) { return x.status === 'paying'; }).length;
+    MB.$('#rfClicks').textContent = MB.fmt.compact(p.stats.clicks);
+    MB.$('#rfSignups').textContent = p.referrals.length;
+    MB.$('#rfPaying').textContent = paying;
+
+    /* ---- referrals: fees generated and 20% earned per person ---- */
+    var refs = p.referrals.map(function (x) {
+      var mine = fees.filter(function (f) { return f.referral_id === x.id; });
+      return Object.assign({}, x, { fees: sum(mine, 'platform_fee'), earned: sum(mine, 'share') });
+    });
+    var col = MB.collection({
+      data: refs, into: '#rfList', perPage: 6, mode: 'more', countInto: '#rfCount', skeleton: false,
+      initial: { status: 'all' },
+      filters: { status: function (x, v) { return v === 'all' || x.status === v; } },
+      template: function (x) {
+        var tone = x.status === 'paying' ? 'badge-active' : 'badge-neutral';
+        return '<div class="list-row">' +
+          MB.avatar({ name: x.name, username: x.id }, 'avatar-sm') +
+          '<span class="grow" style="min-width:0">' +
+            '<span class="lr-title" style="display:block">' + MB.esc(x.name) + '</span>' +
+            '<span class="lr-sub">Joined ' + MB.fmt.date(x.joined_at) + ' &middot; ' +
+              (x.fees ? MB.fmt.money(x.fees, cur) + ' in fees' : 'no fees yet') + '</span></span>' +
+          '<span class="none" style="text-align:right">' +
+            '<span class="lr-value num ' + (x.earned ? 'c-up' : 'c-3') + '" style="display:block;font-weight:700">' +
+              (x.earned ? MB.fmt.money(x.earned, cur) : '&mdash;') + '</span>' +
+            '<span class="badge ' + tone + '">' + (x.status === 'paying' ? 'Paying' : 'Signed up') + '</span>' +
+          '</span></div>';
+      },
+      emptyIcon: 'users', emptyTitle: 'No referrals here yet',
+      emptyText: 'Share your link to invite traders.'
+    });
+    col.bind('#rfTabs', 'status');
+
+    /* ---- fee ledger ---- */
+    var TONE = { pending: 'badge-warn', available: 'badge-active', paid: 'badge-neutral' };
+    MB.$('#rfFees').innerHTML = fees.map(function (f) {
+      return '<div class="pp-fee-row">' +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="lr-title t-sm w-semi" style="display:block">' + MB.esc(f.type) + '</span>' +
+          '<span class="t-xs c-3">' + MB.esc(f.name) + ' &middot; ' + MB.fmt.date(f.at) + '</span>' +
+          '<span class="pp-fee-math" style="display:block">Paid ' + MB.fmt.money(f.amount_paid, cur) +
+            ' &middot; platform fee <b>' + MB.fmt.money(f.platform_fee, cur) + '</b> &times; ' + pct + '%</span>' +
+        '</span>' +
+        '<span class="pp-fee-v">' +
+          '<span class="num c-up">' + MB.fmt.money(f.share, cur) + '</span>' +
+          '<span class="badge ' + TONE[f.state] + '">' + f.state + '</span>' +
+        '</span></div>';
+    }).join('');
+
+    MB.$('#rfPayouts').innerHTML = p.payouts.map(function (o) {
+      return '<div class="list-row">' +
+        '<span class="lr-icon">' + MB.icon('wallet', 20) + '</span>' +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="lr-title" style="display:block">' + MB.esc(o.period) + '</span>' +
+          '<span class="lr-sub">Referral earnings payout</span></span>' +
+        '<span class="lr-value num" style="font-weight:700">' + MB.fmt.money(o.amount, o.currency) + '</span></div>';
+    }).join('');
+
+    MB.$('#rfTerms').innerHTML = p.terms.map(function (t) {
+      return '<li>' + MB.icon('check', 13) + '<span>' + MB.esc(t) + '</span></li>';
+    }).join('');
+
+    /* ---- share ---- */
+    MB.$('#rfShare').addEventListener('click', function () {
+      var data = { title: 'Join me on KonfluenX',
+                   text: 'Trade, follow verified traders and learn on KonfluenX. Use my code ' + p.referral_code + '.',
+                   url: p.referral_url };
+      if (navigator.share) {
+        navigator.share(data).catch(function () { /* the user closed the share sheet */ });
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(p.referral_url).then(function () { MB.toast('Link copied'); });
+      }
+    });
+
+    MB.mountIcons(document);
+  });
+});
+</script>
+</body>
+</html>

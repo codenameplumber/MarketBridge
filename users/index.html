@@ -51,17 +51,67 @@
       <a class="quick-item q-signals" href="signals/index.html">
         <span data-icon="signals"></span><span>Signals</span></a>
       <a class="quick-item q-community" href="community/index.html">
-        <span data-icon="community"></span><span>Community</span></a>
-      <a class="quick-item q-results" href="results/index.html">
-        <span data-icon="results"></span><span>Results</span></a>
+        <span data-icon="community"></span><span>Com&shy;mu&shy;nity</span></a>
+      <a class="quick-item q-inst" href="institutional/index.html" aria-label="Institutional (new)">
+        <span class="tag-new q-new" aria-hidden="true">New</span>
+        <span data-icon="bank"></span><span>Institu&shy;tional</span></a>
       <a class="quick-item q-resources" href="resources/index.html">
-        <span data-icon="resources"></span><span>Resources</span></a>
+        <span data-icon="resources"></span><span>Re&shy;sources</span></a>
     </nav>
 
     <section class="page-section">
       <div class="sec-head"><h2>Popular Markets</h2>
         <a href="markets/index.html">View all</a></div>
       <div class="hscroll" id="popularMarkets"></div>
+    </section>
+
+    <!-- Institutional Trading — announcement banner. The art is inline SVG
+         and every colour comes from tokens, so it re-themes with the app. -->
+    <section class="inst-banner" aria-labelledby="ibTitle">
+      <svg class="ib-art" viewBox="0 0 240 150" preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">
+        <g class="ib-grid">
+          <path d="M0 30H240M0 60H240M0 90H240M0 120H240"/>
+        </g>
+        <g class="ib-candles">
+          <path class="up" d="M112 92v22M128 84v22M176 50v22M192 40v20M224 18v24"/>
+          <rect class="up" x="109" y="96" width="6" height="12" rx="1"/>
+          <rect class="dn" x="125" y="88" width="6" height="10" rx="1"/>
+          <rect class="up" x="173" y="54" width="6" height="12" rx="1"/>
+          <rect class="up" x="189" y="44" width="6" height="11" rx="1"/>
+          <rect class="up" x="221" y="22" width="6" height="14" rx="1"/>
+        </g>
+        <g class="ib-bldg">
+          <path d="M120 150V86l22-10v74z"/>
+          <path d="M146 150V58l26-14v106z"/>
+          <path d="M178 150V72l20-8v86z"/>
+          <path d="M202 150V40l24-12v122z"/>
+          <path d="M228 150V96l12-4v58z"/>
+        </g>
+        <g class="ib-win">
+          <path d="M126 96h10M126 106h10M126 116h10M126 126h10M126 136h10"/>
+          <path d="M152 70h14M152 80h14M152 90h14M152 100h14M152 110h14M152 120h14M152 130h14M152 140h14"/>
+          <path d="M183 82h10M183 92h10M183 102h10M183 112h10M183 122h10M183 132h10"/>
+          <path d="M208 52h12M208 62h12M208 72h12M208 82h12M208 92h12M208 102h12M208 112h12M208 122h12M208 132h12"/>
+        </g>
+        <polyline class="ib-line" points="96,128 118,112 136,118 160,88 182,94 204,58 240,30"/>
+        <circle class="ib-dot" cx="240" cy="30" r="3"/>
+      </svg>
+
+      <div class="ib-copy">
+        <span class="tag-new">New</span>
+        <h2 class="ib-title" id="ibTitle">Institutional <span>Trading</span></h2>
+        <p class="ib-text">Discover verified trading firms and professional teams. Follow
+          institutional traders and explore their verified performance and opportunities.</p>
+        <a class="btn btn-brand btn-sm ib-cta" href="institutional/index.html">
+          Explore Institutions <span data-icon="chevright" data-icon-size="16"></span></a>
+      </div>
+
+      <ul class="ib-feats" aria-label="What you'll find">
+        <li><span data-icon="bank" data-icon-size="15"></span>Verified Firms</li>
+        <li><span data-icon="users" data-icon-size="15"></span>Top Institutional Traders</li>
+        <li><span data-icon="chart" data-icon-size="15"></span>Performance Insights</li>
+        <li><span data-icon="star" data-icon-size="15"></span>Exclusive Opportunities</li>
+      </ul>
     </section>
 
     <section class="page-section">
@@ -124,7 +174,6 @@
 <script src="../assets/js/core/shell.js"></script>
 <script src="../assets/js/core/pwa.js"></script>
 <script>
-
 MB.ready(function () {
   document.getElementById('installMark').innerHTML = MB.brandMark(26);
   MB.mountIcons();

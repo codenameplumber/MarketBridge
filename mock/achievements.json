@@ -1,115 +1,110 @@
 {
   "data": {
+    "summary": { "total": 10, "earned": 5, "rarest": "konfluenx_partner" },
     "badges": [
       {
-        "id": "founding_member",
-        "name": "Founding Member",
-        "icon": "star",
-        "tier": "legendary",
-        "description": "Joined KonfluenX during the founding phase",
-        "earned": true,
-        "earned_at": "2026-03-15T09:00:00Z",
-        "holders": 142
+        "id": "founding_member", "name": "Founding Member", "icon": "crown", "tone": "gold", "tier": "legendary",
+        "description": "Early supporter of KonfluenX.", "kind": "Permanent", "applies": ["individual", "institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-03-15T09:00:00Z", "holders": 142
       },
       {
-        "id": "top_signal_provider",
-        "name": "Top Signal Provider",
-        "icon": "signals",
-        "tier": "gold",
-        "description": "Consistently delivers high-quality signals",
-        "earned": true,
-        "earned_at": "2026-08-22T14:30:00Z",
-        "holders": 38
+        "id": "top_signal_provider", "name": "Top Signal Provider", "icon": "target", "tone": "red", "tier": "gold",
+        "description": "High accuracy signals.", "kind": "Dynamic · reviewed every 30 / 90 days", "applies": ["individual", "institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-08-22T14:30:00Z", "holders": 38
       },
       {
-        "id": "consistent_trader",
-        "name": "Consistent Trader",
-        "icon": "trade",
-        "tier": "silver",
-        "description": "Maintains a steady trading rhythm",
-        "earned": true,
-        "earned_at": "2026-07-10T11:00:00Z",
-        "holders": 210
+        "id": "consistent_trader", "name": "Consistent Trader", "icon": "chart", "tone": "green", "tier": "silver",
+        "description": "Sustained performance.", "kind": "Dynamic", "applies": ["individual"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-07-10T11:00:00Z", "holders": 210
       },
       {
-        "id": "community_contributor",
-        "name": "Community Contributor",
-        "icon": "community",
-        "tier": "silver",
-        "description": "Actively enriches the community",
-        "earned": false,
-        "earned_at": null,
-        "progress": 68,
-        "holders": 175
+        "id": "community_contributor", "name": "Community Contributor", "icon": "chat", "tone": "purple", "tier": "silver",
+        "description": "Valuable posts and discussions.", "kind": "Dynamic", "applies": ["individual"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-09-02T10:00:00Z", "holders": 320
       },
       {
-        "id": "market_specialist",
-        "name": "Market Specialist",
-        "icon": "markets",
-        "tier": "gold",
-        "description": "Deep expertise in a specific market category",
-        "earned": true,
-        "earned_at": "2026-09-05T16:45:00Z",
-        "holders": 52
+        "id": "market_specialist", "name": "Market Specialist", "label": "V75 Specialist", "icon": "flame", "tone": "red", "tier": "gold",
+        "description": "Expert in V75 market.", "kind": "Dynamic", "applies": ["individual", "institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-09-20T16:00:00Z", "holders": 54
       },
       {
-        "id": "trading_mentor",
-        "name": "Trading Mentor",
-        "icon": "userplus",
-        "tier": "gold",
-        "description": "Helps other traders improve their skills",
-        "earned": false,
-        "earned_at": null,
-        "progress": 40,
-        "holders": 24
+        "id": "trading_mentor", "name": "Trading Mentor", "icon": "mortarboard", "tone": "blue", "tier": "gold",
+        "description": "Help and educate other traders.", "kind": "Dynamic", "applies": ["individual"],
+        "status": "in_progress", "earned": false, "earned_at": null, "progress": 62, "holders": 27
       },
       {
-        "id": "rising_trader",
-        "name": "Rising Trader",
-        "icon": "flame",
-        "tier": "bronze",
-        "description": "Showing rapid improvement in trading performance",
-        "earned": true,
-        "earned_at": "2026-06-18T08:20:00Z",
-        "holders": 320
+        "id": "rising_trader", "name": "Rising Trader", "icon": "trendup", "tone": "green", "tier": "bronze",
+        "description": "Strong early performance.", "kind": "Time-limited", "applies": ["individual"],
+        "status": "in_progress", "earned": false, "earned_at": null, "progress": 35, "holders": 480
       },
       {
-        "id": "konfluenx_partner",
-        "name": "KonfluenX Partner",
-        "icon": "briefcase",
-        "tier": "legendary",
-        "description": "Official IB / affiliate partner",
-        "earned": false,
-        "earned_at": null,
-        "progress": 0,
-        "holders": 18
+        "id": "konfluenx_partner", "name": "KonfluenX Partner", "icon": "handshake", "tone": "gold", "tier": "legendary",
+        "description": "IB / Sub-partner status.", "kind": "Valid while active", "applies": ["individual", "institution"],
+        "status": "locked", "earned": false, "earned_at": null, "progress": 0, "holders": 12
       },
       {
-        "id": "analysis_expert",
-        "name": "Analysis Expert",
-        "icon": "results",
-        "tier": "gold",
-        "description": "Produces outstanding market analysis",
-        "earned": false,
-        "earned_at": null,
-        "progress": 55,
-        "holders": 31
+        "id": "analysis_expert", "name": "Analysis Expert", "icon": "book", "tone": "purple", "tier": "gold",
+        "description": "High quality market analysis.", "kind": "Dynamic", "applies": ["individual"],
+        "status": "locked", "earned": false, "earned_at": null, "progress": 0, "holders": 19
       },
       {
-        "id": "streak_master",
-        "name": "Streak Master",
-        "icon": "flame",
-        "tier": "silver",
-        "description": "Legendary consistency on the platform",
-        "earned": true,
-        "earned_at": "2026-09-28T12:00:00Z",
-        "holders": 89
+        "id": "streak_master", "name": "Streak Master", "icon": "bolt", "tone": "red", "tier": "silver",
+        "description": "Win consecutive signals.", "kind": "Dynamic", "applies": ["individual"],
+        "status": "locked", "earned": false, "earned_at": null, "progress": 0, "holders": 66
       }
     ],
-    "summary": {
-      "total": 10,
-      "earned": 5,
-      "rarest": "konfluenx_partner"
-    }
+    "institution_summary": { "total": 10, "earned": 6, "rarest": "elite_institution" },
+    "institution_badges": [
+      {
+        "id": "founding_institution", "name": "Founding Institution", "icon": "bank", "tone": "gold", "tier": "legendary",
+        "description": "Early institutional supporter.", "kind": "Permanent", "applies": ["institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-03-20T09:00:00Z", "holders": 9
+      },
+      {
+        "id": "top_signal_provider", "name": "Top Signal Provider", "icon": "target", "tone": "red", "tier": "gold",
+        "description": "High accuracy signals.", "kind": "Dynamic · reviewed every 30 / 90 days", "applies": ["individual", "institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-08-22T14:30:00Z", "holders": 38
+      },
+      {
+        "id": "consistent_performer", "name": "Consistent Performer", "icon": "chart", "tone": "green", "tier": "silver",
+        "description": "Sustained long-term results.", "kind": "Dynamic", "applies": ["institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-07-14T11:00:00Z", "holders": 14
+      },
+      {
+        "id": "market_specialist", "name": "Market Specialist", "icon": "brain", "tone": "purple", "tier": "gold",
+        "description": "Outstanding performance in a market.", "kind": "Dynamic", "applies": ["individual", "institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-09-20T16:00:00Z", "holders": 54
+      },
+      {
+        "id": "community_builder", "name": "Community Builder", "icon": "mortarboard", "tone": "blue", "tier": "gold",
+        "description": "Grow an active trading community.", "kind": "Dynamic", "applies": ["institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-09-28T10:00:00Z", "holders": 11
+      },
+      {
+        "id": "konfluenx_partner", "name": "KonfluenX Partner", "icon": "handshake", "tone": "gold", "tier": "legendary",
+        "description": "Strategic partner with active referrals.", "kind": "Valid while active", "applies": ["individual", "institution"],
+        "status": "unlocked", "earned": true, "earned_at": "2026-10-01T10:00:00Z", "holders": 12
+      },
+      {
+        "id": "education_partner", "name": "Education Partner", "icon": "chat", "tone": "purple", "tier": "gold",
+        "description": "Provide educational content or mentorship.", "kind": "Dynamic", "applies": ["institution"],
+        "status": "in_progress", "earned": false, "earned_at": null, "progress": 48, "holders": 6
+      },
+      {
+        "id": "high_volume_trader", "name": "High Volume Trader", "icon": "globe", "tone": "teal", "tier": "gold",
+        "description": "Significant verified trading volume.", "kind": "Dynamic", "applies": ["institution"],
+        "status": "locked", "earned": false, "earned_at": null, "progress": 0, "holders": 7
+      },
+      {
+        "id": "global_influencer", "name": "Global Influencer", "icon": "crown", "tone": "gold", "tier": "legendary",
+        "description": "Strong impact across institutions.", "kind": "Dynamic", "applies": ["institution"],
+        "status": "locked", "earned": false, "earned_at": null, "progress": 0, "holders": 3
+      },
+      {
+        "id": "elite_institution", "name": "Elite Institution", "icon": "bolt", "tone": "purple", "tier": "legendary",
+        "description": "Top performing institution by platform.", "kind": "Dynamic", "applies": ["institution"],
+        "status": "locked", "earned": false, "earned_at": null, "progress": 0, "holders": 2
+      }
+    ]
   }
 }

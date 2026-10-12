@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KonfluenX IB Program — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/partner.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="KonfluenX IB" data-sub="Link your Deriv account to our IB" data-back="partner.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page pp-ib">
+
+    <!-- ================================================================
+         HERO
+         ================================================================ -->
+    <section class="pp-hero pp-ib" aria-labelledby="ibHeroT">
+      <svg class="pp-hero-art" viewBox="0 0 170 130" aria-hidden="true" focusable="false">
+        <rect class="accent-soft" x="20" y="40" width="54" height="80" rx="10"/>
+        <rect class="accent-soft" x="92" y="22" width="60" height="98" rx="10"/>
+        <polyline class="line" points="100,96 114,84 126,90 144,60"/>
+        <path class="line" d="M62 70h18M84 70h10"/>
+        <circle class="accent" cx="82" cy="70" r="7"/>
+      </svg>
+      <div class="pp-hero-copy">
+        <span class="pp-tag">Trading Rewards</span>
+        <h2 id="ibHeroT" class="mt2">KonfluenX IB Program</h2>
+        <p>Link your Deriv account to our IB and earn KonfluenX rewards from your qualifying trading activity.</p>
+      </div>
+    </section>
+
+    <div class="pp-feats">
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="verified" data-icon-size="18"></span></span><span class="pp-feat-t">Partner Badge</span></div>
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="star" data-icon-size="18"></span></span><span class="pp-feat-t">KX Points rewards</span></div>
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="chart" data-icon-size="18"></span></span><span class="pp-feat-t">Based on trading activity</span></div>
+      <div class="pp-feat"><span class="pp-feat-ic"><span data-icon="chat" data-icon-size="18"></span></span><span class="pp-feat-t">Ongoing support</span></div>
+    </div>
+
+    <!-- ================================================================
+         VERIFIED — badge and rewards (hidden until verified)
+         ================================================================ -->
+    <section class="pp-badge hide" id="ibBadge" aria-labelledby="ibBadgeT">
+      <span class="pp-badge-ic"><span data-icon="handshake" data-icon-size="24"></span></span>
+      <div class="grow">
+        <div class="t-xs c-up w-bold">Verified</div>
+        <h2 class="t-h3 w-bold" id="ibBadgeT">KonfluenX Partner Badge</h2>
+        <p class="t-xs c-2 mt2">Shown on your profile. Your account is linked to the KonfluenX IB.</p>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         STATUS
+         ================================================================ -->
+    <section class="card" id="status" aria-labelledby="ibStatusT">
+      <div class="between">
+        <h2 class="t-sm w-bold" id="ibStatusT">Link status</h2>
+        <span class="pp-state" id="ibState">&mdash;</span>
+      </div>
+      <p class="t-xs c-3 mt2" id="ibStateText"></p>
+      <div class="alert alert-warn mt3 hide" id="ibFailed">
+        <span data-icon="warning"></span>
+        <div class="t-xs"><strong>We couldn&rsquo;t confirm the link yet.</strong> Deriv has no record
+          of your account under the KonfluenX IB. Check your chat with Deriv support and send the
+          request again, then tell us below.</div>
+      </div>
+      <ol class="pp-pipe mt4" id="ibPipe"></ol>
+    </section>
+
+    <!-- Stage 1 only — stands in for KonfluenX verification -->
+    <section class="pp-demo" id="ibDemo" aria-label="Demo controls">
+      <div class="pp-demo-k"><span data-icon="settings" data-icon-size="13"></span> Prototype demo controls</div>
+      <p>Only KonfluenX can mark a link as verified, after checking with Deriv. In this prototype
+        you can play the verification team to see each stage.</p>
+      <div class="row g2" id="ibDemoBtns"></div>
+    </section>
+
+    <!-- ================================================================
+         HOW TO LINK
+         ================================================================ -->
+    <section class="card" id="link" aria-labelledby="ibLinkT">
+      <h2 class="t-sm w-bold" id="ibLinkT">How to link your account</h2>
+      <ol class="pp-steps mt4" id="ibSteps"></ol>
+
+      <button class="btn btn-primary btn-block mt4" type="button" id="ibReveal">
+        <span data-icon="link"></span> Get IB Link &amp; Instructions</button>
+
+      <div class="stack g3 mt4 hide" id="ibKit">
+        <dl class="pp-kv">
+          <div><dt>Your Deriv login ID</dt><dd id="ibLogin">&mdash;</dd></div>
+          <div><dt>KonfluenX IB code</dt>
+            <dd class="row g2" style="justify-content:flex-end">
+              <span id="ibCode">&mdash;</span>
+              <button class="btn btn-ghost btn-xs" type="button" data-copy="#ibCode" aria-label="Copy IB code">
+                <span data-icon="copy" data-icon-size="13"></span></button>
+            </dd></div>
+        </dl>
+        <div>
+          <div class="between">
+            <span class="t-xs w-bold">Message for Deriv support</span>
+            <span class="t-xs c-3">Paste into Deriv live chat</span>
+          </div>
+          <div class="pp-template mt2" id="ibTemplate"></div>
+        </div>
+        <button class="btn btn-ghost btn-block" type="button" id="ibCopy">
+          <span data-icon="copy"></span> Copy message</button>
+        <button class="btn btn-primary btn-block" type="button" id="ibSubmit">
+          <span data-icon="check"></span> I&rsquo;ve submitted my request</button>
+        <p class="t-xs c-3" id="ibSubmitNote"></p>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         REWARDS — eligibility once verified
+         ================================================================ -->
+    <section class="card" id="rewards" aria-labelledby="ibRewT">
+      <div class="between">
+        <h2 class="t-sm w-bold" id="ibRewT">Trade and earn rewards</h2>
+        <span class="pp-state" id="ibRewState">Locked</span>
+      </div>
+      <p class="t-xs c-3 mt2" id="ibRewLead">Unlocks when KonfluenX verifies your IB link.</p>
+      <div class="stat-grid cols-3 mt3 hide" id="ibRewStats">
+        <div class="stat-cell"><div class="stat-v num" id="ibRewTrades">&mdash;</div><div class="stat-k">Qualifying trades</div></div>
+        <div class="stat-cell"><div class="stat-v num" id="ibRewVol">&mdash;</div><div class="stat-k">Volume</div></div>
+        <div class="stat-cell"><div class="stat-v num c-up" id="ibRewPts">&mdash;</div><div class="stat-k">Est. KX Points</div></div>
+      </div>
+      <p class="t-xs c-3 mt3" id="ibRewRule"></p>
+      <a class="btn btn-ghost btn-block mt3" href="rewards.html">
+        <span data-icon="star"></span> KX Points &amp; Rewards</a>
+    </section>
+
+    <!-- ================================================================
+         WHAT YOU GET
+         ================================================================ -->
+    <section class="card" id="how" aria-labelledby="ibHowT">
+      <h2 class="t-sm w-bold" id="ibHowT">What you get</h2>
+      <ul class="pp-list mt3" id="ibBenefits"></ul>
+      <div class="alert alert-green mt3">
+        <span data-icon="info"></span>
+        <div class="t-xs" id="ibNote"></div>
+      </div>
+    </section>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+
+  /* ---- state ----------------------------------------------------------
+     Stage 1: localStorage 'mb.partner'.ib = { status, history:{…}, failed_at }.
+     The user can move themselves only as far as 'submitted'.
+     Stage 2: POST /partner/ib/instructions-viewed and /partner/ib/submitted
+     record the user's steps. The backend then queues verification
+     ('verification_pending'), checks the client against the KonfluenX IB
+     client list from Deriv, and sets 'verified' (granting the Partner Badge
+     and reward eligibility) or returns the request with a reason. */
+  var STORE = 'mb.partner';
+  function loadAll() {
+    try { return JSON.parse(localStorage.getItem(STORE) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function saveAll(all) {
+    try { localStorage.setItem(STORE, JSON.stringify(all)); } catch (e) { /* this view only */ }
+  }
+  var memo = null;
+  function getS() { var all = loadAll(); return all.ib || memo || {}; }
+  function setS(patch) {
+    var all = loadAll();
+    all.ib = Object.assign({}, all.ib || memo || {}, patch);
+    memo = all.ib; saveAll(all);
+    return all.ib;
+  }
+  function goTo(status, extra) {
+    var h = Object.assign({}, getS().history || {});
+    h[status] = new Date().toISOString();
+    setS(Object.assign({ status: status, history: h }, extra || {}));
+  }
+
+  var P = null, ME = {};
+  function cur() { return getS().status || P.status; }
+  function idxOf(id) { return P.pipeline.map(function (x) { return x.id; }).indexOf(id); }
+
+  function message() {
+    return P.message_template
+      .replace('{loginid}', P.deriv_loginid)
+      .replace('{ib_code}', P.ib_code)
+      .replace('{name}', ME.display_name || '');
+  }
+
+  function render() {
+    var s = getS(), c = cur(), idx = Math.max(0, idxOf(c));
+    var verified = c === 'verified';
+
+    var pill = MB.$('#ibState');
+    pill.textContent = P.pipeline[idx].label;
+    pill.className = 'pp-state' + (verified ? ' is-live' : idx > 0 ? ' is-progress' : '');
+    MB.$('#ibStateText').textContent = P.pipeline[idx].text;
+    MB.$('#ibFailed').classList.toggle('hide', !(s.failed_at && c === 'instructions_viewed'));
+
+    var h = s.history || {};
+    MB.$('#ibPipe').innerHTML = P.pipeline.map(function (st, i) {
+      var cls = i < idx || (verified && i === idx) ? 'is-done' : i === idx ? 'is-current' : '';
+      return '<li class="' + cls + '"' + (i === idx ? ' aria-current="step"' : '') + '>' +
+        '<span class="pp-pipe-dot">' + (cls === 'is-done' ? MB.icon('check', 12) : (i + 1)) + '</span>' +
+        '<div class="grow"><div class="pp-pipe-t">' + MB.esc(st.label) + '</div>' +
+          (i <= idx ? '<div class="pp-pipe-d">' + MB.esc(st.text) + '</div>' : '') +
+          (h[st.id] && i <= idx ? '<div class="pp-pipe-when">' + MB.fmt.date(h[st.id]) + '</div>' : '') +
+        '</div></li>';
+    }).join('');
+
+    /* Instructions: revealed once viewed; submit only until the user has submitted. */
+    var viewed = idx >= idxOf('instructions_viewed');
+    MB.$('#ibReveal').classList.toggle('hide', viewed);
+    MB.$('#ibKit').classList.toggle('hide', !viewed);
+    var canSubmit = c === 'instructions_viewed';
+    MB.$('#ibSubmit').classList.toggle('hide', !canSubmit);
+    MB.$('#ibSubmitNote').textContent = canSubmit
+      ? 'Tap this only after you have sent the message to Deriv support.'
+      : verified ? 'Your link is verified. Nothing more to do.'
+      : 'Request sent ' + (h.submitted ? MB.fmt.date(h.submitted) : '') +
+        '. KonfluenX will confirm the link with Deriv.';
+
+    MB.$('#ibBadge').classList.toggle('hide', !verified);
+
+    /* Rewards eligibility follows verification, never the user's own claim. */
+    var rs = MB.$('#ibRewState');
+    rs.textContent = verified ? 'Eligible' : 'Locked';
+    rs.className = 'pp-state' + (verified ? ' is-live' : '');
+    MB.$('#ibRewStats').classList.toggle('hide', !verified);
+    MB.$('#ibRewLead').textContent = verified
+      ? 'Qualifying activity on your linked account, ' + P.rewards.period + ' so far.'
+      : 'Unlocks when KonfluenX verifies your IB link.';
+
+    renderDemo(c);
+  }
+
+  function renderDemo(c) {
+    var btns = {
+      submitted: [{ to: 'verification_pending', label: 'KonfluenX starts verification' }],
+      verification_pending: [
+        { to: 'verified', label: 'Verify the link' },
+        { to: 'instructions_viewed', label: 'Not found at Deriv', fail: true }
+      ]
+    }[c] || [];
+    MB.$('#ibDemoBtns').innerHTML =
+      (btns.length ? btns.map(function (b) {
+        return '<button class="btn btn-ghost btn-sm" type="button" data-demo-to="' + b.to + '"' +
+          (b.fail ? ' data-demo-fail' : '') + '>' + MB.esc(b.label) + '</button>';
+      }).join('') :
+      '<span class="t-xs c-3">' + (c === 'verified' ? 'Verified. All stages complete.' :
+        'Waiting for you: view the instructions and submit your request.') + '</span>') +
+      '<button class="btn btn-ghost btn-sm none" type="button" data-demo-reset>Reset demo</button>';
+  }
+
+  MB.$('#ibDemoBtns').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-demo-to]');
+    if (b) {
+      var fail = b.hasAttribute('data-demo-fail');
+      goTo(b.getAttribute('data-demo-to'), { failed_at: fail ? new Date().toISOString() : null });
+      render();
+      MB.toast(fail ? 'Demo: request returned to the user' : 'Demo: moved to ' + MB.$('#ibState').textContent,
+               fail ? 'err' : 'ok');
+      return;
+    }
+    if (e.target.closest('[data-demo-reset]')) {
+      var all = loadAll(); delete all.ib; memo = null; saveAll(all);
+      render();
+      MB.toast('Demo reset');
+    }
+  });
+
+  function reveal() {
+    if (cur() === 'not_linked') { goTo('instructions_viewed'); }
+    render();
+  }
+  MB.$('#ibReveal').addEventListener('click', function () {
+    reveal();
+    MB.$('#ibCopy').focus();
+  });
+
+  MB.$('#ibCopy').addEventListener('click', function () {
+    var text = message();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { MB.toast('Message copied'); },
+        function () { MB.toast('Select the message and copy it', 'err'); });
+    } else { MB.toast('Select the message and copy it', 'err'); }
+  });
+
+  MB.$('#ibSubmit').addEventListener('click', function () {
+    MB.confirm({
+      title: 'Sent your request to Deriv?',
+      body: 'Confirm only if you have messaged Deriv support asking them to link ' +
+            P.deriv_loginid + ' to the KonfluenX IB. We then check with Deriv, ' +
+            'usually within 1 to 3 business days.',
+      confirm: 'Yes, I’ve sent it', cancel: 'Not yet'
+    }).then(function (ok) {
+      if (!ok) { return; }
+      goTo('submitted', { failed_at: null });
+      render();
+      MB.toast('Thanks. We’ll verify the link with Deriv.');
+      MB.$('#status').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  Promise.all([MB.api.get('partner'), MB.api.get('me').catch(function () { return { data: {} }; })])
+    .then(function (res) {
+      P = res[0].data.ib; ME = res[1].data || {};
+      if (ME.deriv && ME.deriv.deriv_id) { P.deriv_loginid = ME.deriv.deriv_id; }
+
+      MB.$('#ibSteps').innerHTML = P.steps.map(function (x, i) {
+        return '<li><span class="pp-step-n">' + (i + 1) + '</span><div class="grow">' +
+          '<div class="pp-step-t">' + MB.esc(x.title) + '</div>' +
+          '<div class="pp-step-d">' + MB.esc(x.text) + '</div></div></li>';
+      }).join('');
+      MB.$('#ibLogin').textContent = P.deriv_loginid;
+      MB.$('#ibCode').textContent = P.ib_code;
+      MB.$('#ibTemplate').textContent = message();
+      MB.$('#ibBenefits').innerHTML = P.benefits.map(function (b) {
+        return '<li>' + MB.icon('check', 14) + '<span>' + MB.esc(b) + '</span></li>';
+      }).join('');
+      MB.$('#ibNote').textContent = P.note;
+
+      var rw = P.rewards;
+      MB.$('#ibRewTrades').textContent = rw.qualifying_trades;
+      MB.$('#ibRewVol').textContent = '$' + MB.fmt.compact(rw.qualifying_volume);
+      MB.$('#ibRewPts').textContent = '~' + rw.est_points;
+      MB.$('#ibRewRule').textContent = rw.rule;
+
+      /* Arriving from the hub's "Get IB Link & Instructions" counts as viewing them. */
+      if (location.hash === '#link') { reveal(); } else { render(); }
+      MB.mountIcons(document);
+    });
+});
+</script>
+</body>
+</html>

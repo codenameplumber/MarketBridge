@@ -1,6 +1,145 @@
 {
   "data": [
     {
+      "id": "pst_me_1",
+      "author": {
+        "id": "usr_me",
+        "username": "johntrader",
+        "display_name": "John Trader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 66.7,
+        "signals_count": 12,
+        "followers": 156,
+        "profile_type": "individual"
+      },
+      "market": {
+        "symbol": "frxGBPUSD",
+        "name": "GBP/USD",
+        "short_name": "GBP/USD",
+        "pair": "GBP/USD",
+        "category": "forex",
+        "decimal_places": 5,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 1.26418,
+        "change_pct_24h": 0.14
+      },
+      "room_id": "room_frxGBPUSD",
+      "kind": "post",
+      "body": "Risk management > entries. Learned that the expensive way.",
+      "tags": [
+        "Price Action"
+      ],
+      "media": [
+        {
+          "type": "chart",
+          "seed": "pst200"
+        }
+      ],
+      "engagement": {
+        "likes": 49,
+        "comments": 70,
+        "shares": 2
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-10-11T17:24:07.572Z"
+    },
+    {
+      "id": "pst_me_2",
+      "author": {
+        "id": "usr_me",
+        "username": "johntrader",
+        "display_name": "John Trader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 66.7,
+        "signals_count": 12,
+        "followers": 156,
+        "profile_type": "individual"
+      },
+      "market": {
+        "symbol": "frxXAUUSD",
+        "name": "Gold / USD",
+        "short_name": "XAU/USD",
+        "pair": "XAU/USD",
+        "category": "commodities",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier",
+          "cfd_mt5"
+        ],
+        "last_price": 2342.18,
+        "change_pct_24h": -0.68
+      },
+      "room_id": "room_frxXAUUSD",
+      "kind": "post",
+      "body": "Do not chase this. Wait for the retest.",
+      "tags": [
+        "SMC"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 15,
+        "comments": 65,
+        "shares": 18
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-10-09T17:24:07.572Z"
+    },
+    {
+      "id": "pst_me_3",
+      "author": {
+        "id": "usr_me",
+        "username": "johntrader",
+        "display_name": "John Trader",
+        "avatar_url": null,
+        "is_verified": true,
+        "is_pro": true,
+        "win_rate": 66.7,
+        "signals_count": 12,
+        "followers": 156,
+        "profile_type": "individual"
+      },
+      "market": {
+        "symbol": "1HZ100V",
+        "name": "Volatility 100 (1s) Index",
+        "short_name": "V100 (1s)",
+        "pair": null,
+        "category": "synthetic_indices",
+        "decimal_places": 2,
+        "contract_kinds": [
+          "binary",
+          "multiplier"
+        ],
+        "last_price": 1247.84,
+        "change_pct_24h": -0.82
+      },
+      "room_id": "room_1HZ100V",
+      "kind": "market_talk",
+      "body": "The 1-second variant behaves completely differently from the standard one.",
+      "tags": [
+        "ICT"
+      ],
+      "media": [],
+      "engagement": {
+        "likes": 109,
+        "comments": 32,
+        "shares": 6
+      },
+      "is_liked": false,
+      "is_saved": false,
+      "created_at": "2026-10-07T17:24:07.572Z"
+    },
+    {
       "id": "pst_official",
       "author": {
         "id": "usr_mb",
@@ -16,7 +155,7 @@
       "market": null,
       "room_id": null,
       "kind": "announcement",
-      "body": "New mentorship session today at 8PM GMT+1. Don\u2019t miss it! \ud83c\udfaf",
+      "body": "New mentorship session today at 8PM GMT+1. Don’t miss it! 🎯",
       "tags": [
         "Announcement"
       ],
@@ -195,7 +334,7 @@
       },
       "room_id": "room_frxEURJPY",
       "kind": "post",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Swing"
       ],
@@ -552,7 +691,7 @@
       },
       "room_id": "room_R_10",
       "kind": "discussion",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Supply & Demand"
       ],
@@ -638,7 +777,7 @@
       },
       "room_id": "room_JD75",
       "kind": "discussion",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Breakout"
       ],
@@ -903,7 +1042,7 @@
       },
       "room_id": "room_crySOLUSD",
       "kind": "post",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "ICT"
       ],
@@ -2068,7 +2207,7 @@
       },
       "room_id": "room_JD25",
       "kind": "post",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Liquidity Sweep"
       ],
@@ -2285,7 +2424,7 @@
       },
       "room_id": "room_cryETHUSD",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Supply & Demand"
       ],
@@ -2548,7 +2687,7 @@
       },
       "room_id": "room_OTC_N225",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "ICT"
       ],
@@ -2679,7 +2818,7 @@
       },
       "room_id": "room_frxXPDUSD",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "SMC"
       ],
@@ -2722,7 +2861,7 @@
       },
       "room_id": "room_BOOM1000",
       "kind": "market_talk",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Breakout"
       ],
@@ -2766,7 +2905,7 @@
       },
       "room_id": "room_frxXAUUSD",
       "kind": "market_talk",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Liquidity Sweep"
       ],
@@ -2808,7 +2947,7 @@
       },
       "room_id": "room_CRASH300",
       "kind": "discussion",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Supply & Demand"
       ],
@@ -2986,7 +3125,7 @@
       },
       "room_id": "room_cryBTCUSD",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Scalping"
       ],
@@ -3903,7 +4042,7 @@
       },
       "room_id": "room_frxNZDUSD",
       "kind": "discussion",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Breakout"
       ],
@@ -4215,7 +4354,7 @@
       },
       "room_id": "room_1HZ75V",
       "kind": "post",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Liquidity Sweep"
       ],
@@ -4347,7 +4486,7 @@
       },
       "room_id": "room_OTC_AS51",
       "kind": "market_talk",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "ICT"
       ],
@@ -4432,7 +4571,7 @@
       },
       "room_id": "room_1HZ100V",
       "kind": "post",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Swing"
       ],
@@ -4522,7 +4661,7 @@
       },
       "room_id": "room_OTC_DJI",
       "kind": "market_talk",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "SMC"
       ],
@@ -4657,7 +4796,7 @@
       },
       "room_id": "room_CRASH1000",
       "kind": "discussion",
-      "body": "V75 just swept liquidity \ud83d\udd25 Watching the 543k area closely.",
+      "body": "V75 just swept liquidity 🔥 Watching the 543k area closely.",
       "tags": [
         "Scalping"
       ],
@@ -4699,7 +4838,7 @@
       },
       "room_id": "room_cryBCHUSD",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Breakout"
       ],
@@ -4746,7 +4885,7 @@
       },
       "room_id": "room_frxGBPJPY",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Liquidity Sweep"
       ],
@@ -4928,7 +5067,7 @@
       },
       "room_id": "room_cryBTCUSD",
       "kind": "post",
-      "body": "Careful with the spread around the session open \u2014 got clipped last week.",
+      "body": "Careful with the spread around the session open — got clipped last week.",
       "tags": [
         "Scalping"
       ],

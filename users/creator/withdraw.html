@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Withdraw Earnings — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Withdraw Earnings" data-sub="To your KaastroPay account" data-back="earnings.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- STEP 1 — amount -->
+    <div class="stack g6" id="wStep1">
+      <section class="ce-hero">
+        <div class="t-sm c-2 w-semi">Available earnings</div>
+        <div class="ce-big num mt2" id="wAvail">$0.00</div>
+      </section>
+
+      <div class="field">
+        <label for="wAmt">Amount</label>
+        <div class="kx-custom">
+          <div class="kx-prefix"><span>$</span>
+            <input class="input num" id="wAmt" type="number" inputmode="decimal" min="20" step="0.01" value="100"></div>
+          <button class="btn btn-outline btn-sm" type="button" id="wMax">Max</button>
+        </div>
+        <span class="field-hint" id="wHint">Minimum $20.00</span>
+        <span class="field-error hide" id="wErr"></span>
+      </div>
+
+      <section class="page-section">
+        <div class="label">Send to</div>
+        <div id="wDest"></div>
+        <div class="kx-point"><span data-icon="info"></span>
+          <span>Payouts go only to a KaastroPay account that is linked to your profile and verified.</span></div>
+      </section>
+
+      <button class="btn btn-trade btn-block btn-lg" id="wNext" type="button">Continue</button>
+    </div>
+
+    <!-- STEP 2 — confirm -->
+    <div class="stack g4 hide" id="wStep2">
+      <section class="card">
+        <div class="rc-row"><span class="rc-k">Amount</span><span class="rc-v num" id="cAmt">$0.00</span></div>
+        <div class="rc-row"><span class="rc-k">Fees</span><span class="rc-v num">$0.00</span></div>
+        <div class="rc-net"><span>You will receive</span><span class="num" id="cGet">$0.00</span></div>
+      </section>
+      <div id="cDest"></div>
+      <div class="kx-point"><span data-icon="clock"></span>
+        <span>Funds are sent to your KaastroPay wallet. Most payouts complete within a few minutes.</span></div>
+      <button class="btn btn-trade btn-block btn-lg" id="wConfirm" type="button">Confirm Withdrawal</button>
+      <button class="btn btn-outline btn-block" id="wBack" type="button">Change amount</button>
+    </div>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var c = null, amount = 100;
+
+  function acct(k) {
+    if (!k || !k.linked) {
+      return '<div class="alert alert-warn"><span data-icon="warning"></span><div class="t-xs"><strong>No KaastroPay account linked.</strong> ' +
+        'Link and verify a KaastroPay account before withdrawing. Earnings stay safe in Available until then.</div></div>';
+    }
+    return '<div class="ce-acct"><span class="kx-mark is-sm" aria-hidden="true">K</span>' +
+      '<div class="grow" style="min-width:0"><div class="t-sm w-bold">KaastroPay</div>' +
+      '<div class="t-xs c-3 truncate">' + MB.esc(k.account_name) + ' &middot; ' + MB.esc(k.email) + '</div></div>' +
+      (k.verified ? '<span class="badge badge-verified">Verified</span>' : '<span class="badge badge-warn">Unverified</span>') + '</div>';
+  }
+
+  function check() {
+    var s = c.summary, err = '';
+    if (!c.kaastropay || !c.kaastropay.linked) { err = 'Link a KaastroPay account first.'; }
+    else if (!c.kaastropay.verified) { err = 'Your KaastroPay account must be verified before payouts.'; }
+    else if (!(amount > 0)) { err = 'Enter an amount.'; }
+    else if (amount < c.min_withdrawal) { err = 'Minimum withdrawal is ' + MB.fmt.money(c.min_withdrawal) + '.'; }
+    else if (amount > s.available) { err = 'You have ' + MB.fmt.money(s.available) + ' available.'; }
+    var e = MB.$('#wErr');
+    e.textContent = err;
+    e.classList.toggle('hide', !err);
+    MB.$('#wNext').disabled = !!err;
+    return !err;
+  }
+
+  function draw() {
+    c = MB.kx.creator.summary();
+    if (!c || !c.summary) { return; }
+    MB.$('#wAvail').textContent = MB.fmt.money(c.summary.available);
+    MB.$('#wHint').textContent = 'Minimum ' + MB.fmt.money(c.min_withdrawal) + ' · Pending earnings can\'t be withdrawn yet.';
+    MB.$('#wDest').innerHTML = acct(c.kaastropay);
+    MB.$('#cDest').innerHTML = acct(c.kaastropay);
+    if (amount > c.summary.available) { amount = Math.floor(c.summary.available * 100) / 100; MB.$('#wAmt').value = amount; }
+    check();
+    MB.mountIcons(document);
+  }
+
+  MB.$('#wAmt').addEventListener('input', function (e) { amount = Math.round(Number(e.target.value || 0) * 100) / 100; check(); });
+  MB.$('#wMax').addEventListener('click', function () {
+    amount = c ? c.summary.available : 0;
+    MB.$('#wAmt').value = amount; check();
+  });
+  MB.$('#wNext').addEventListener('click', function () {
+    if (!check()) { return; }
+    MB.$('#cAmt').textContent = MB.fmt.money(amount);
+    MB.$('#cGet').textContent = MB.fmt.money(amount);
+    MB.$('#wStep1').classList.add('hide');
+    MB.$('#wStep2').classList.remove('hide');
+    document.body.setAttribute('data-title', 'Confirm Withdrawal');
+    var h = MB.$('.topbar-title');
+    if (h) { h.textContent = 'Confirm Withdrawal'; }
+    window.scrollTo(0, 0);
+  });
+  MB.$('#wBack').addEventListener('click', function () {
+    MB.$('#wStep2').classList.add('hide');
+    MB.$('#wStep1').classList.remove('hide');
+    var h = MB.$('.topbar-title');
+    if (h) { h.textContent = 'Withdraw Earnings'; }
+  });
+  MB.$('#wConfirm').addEventListener('click', function () {
+    var b = MB.$('#wConfirm');
+    b.disabled = true; b.textContent = 'Submitting…';
+    /* Stage 2: POST /api/v1/creator/withdrawals — the server re-checks the
+       balance and the verified KaastroPay link, then calls KaastroPay. */
+    MB.kx.creator.withdraw(amount).then(function (w) {
+      location.href = 'withdrawal.html?id=' + encodeURIComponent(w.id);
+    }).catch(function (e) {
+      b.disabled = false; b.textContent = 'Confirm Withdrawal';
+      var msg = { insufficient: 'Not enough available earnings', below_minimum: 'Below the minimum withdrawal',
+                  no_payout_account: 'Link a KaastroPay account first', payout_account_unverified: 'Verify your KaastroPay account first' }[e.code];
+      MB.toast(msg || 'Could not submit the withdrawal', 'err');
+    });
+  });
+
+  MB.kx.creator.load().then(draw);
+});
+</script>
+</body>
+</html>

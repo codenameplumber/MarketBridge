@@ -15,6 +15,9 @@
      MB.card.resource(r)      -> <x-resource.card ... />
      MB.card.leaderRow(row)   -> <x-results.leaderboard-row ... />
      MB.card.notification(n)  -> <x-notification.row ... />
+     MB.card.chatSignal(s)    -> room chat signal (MB.signalTracker.toMessageSignal)
+     MB.card.signalDetail(s)  -> lifecycle, TP ladder, matching, Agree/Dispute, history
+     MB.card.sx.view(s)       -> shared signal view model (feed or tracker shape)
    ========================================================================== */
 
 (function (global) {
@@ -55,6 +58,26 @@
     return s.kind === 'executable' ? C.signalExecutable(s) : C.signalAnalysis(s);
   };
 
+  /* Entry / SL / TP1…TP5 with hit ticks — every signal carries price levels. */
+  function levelGrid(s) {
+    if (!C.sx) { return ''; }
+    var v = C.sx.view(s);
+    if (!isFinite(v.entry)) { return ''; }
+    var dp = C.sx.shortDp(v.entry, v.dp);
+    var cell = function (k, val, cls) {
+      return '<div class="level-cell ' + (cls || '') + '"><div class="lk">' + k + '</div><div class="lv">' +
+        MB.fmt.price(val, dp) + '</div></div>';
+    };
+    var out = cell('Entry', v.entry) + cell('Stop Loss', v.sl, 'is-sl');
+    v.tps.forEach(function (tp, i) {
+      var hit = v.hits.indexOf(i + 1) > -1;
+      out += cell('TP' + (i + 1) + (hit ? ' ' + MB.icon('check', 10) : ''), tp, 'is-tp' + (hit ? ' is-hit' : ''));
+    });
+    return '<div class="signal-levels' + (v.tps.length === 1 ? ' cols-3' : '') + '">' + out + '</div>' +
+      '<div class="t-xs c-3 mt2">TP1 is the official win target' + (v.timeframe ? ' &middot; ' + MB.esc(v.timeframe) : '') +
+      ' &middot; ' + MB.icon('lock', 11) + ' locked' + (v.version > 1 ? ' (v' + v.version + ')' : '') + '</div>';
+  }
+
   function signalHead(s, kindLabel, kindClass) {
     return '<div class="signal-head">' +
       MB.avatar(s.author, 'avatar-sm') +
@@ -83,7 +106,14 @@
     '</div>';
   }
 
+  /* Full-card status: the lifecycle chip and the matching badge when the
+     signal model carries them (C.sx, defined further down); otherwise the
+     legacy result badge. */
   function resultBadge(s) {
+    if (C.sx && (s.lifecycle || s.levels)) {
+      var v = C.sx.view(s);
+      return C.sx.chip(v, true) + C.sx.matchChip(v);
+    }
     if (!s.result) {
       return s.status === 'active' ? '<span class="badge badge-active">Active</span>' : '';
     }
@@ -128,6 +158,7 @@
           '<span class="row g1">' + resultBadge(s) + '</span>' +
         '</div>' +
         (s.body ? '<p class="t-sm c-2 mt3 clamp-2">' + MB.esc(s.body) + '</p>' : '') +
+        levelGrid(s) +
         '<div class="signal-params">' + paramCells + '</div>' +
         (s.tags && s.tags.length
           ? '<div class="post-tags">' + s.tags.map(function (t) {
@@ -171,7 +202,8 @@
           '<span class="row g1">' + resultBadge(s) + '</span>' +
         '</div>' +
         (s.body ? '<p class="t-sm c-2 mt3 clamp-2">' + MB.esc(s.body) + '</p>' : '') +
-        '<div class="signal-levels' + (tps.length < 2 ? ' cols-3' : '') + '">' + levels + '</div>' +
+        (C.sx && s.levels ? levelGrid(s)
+          : '<div class="signal-levels' + (tps.length < 2 ? ' cols-3' : '') + '">' + levels + '</div>') +
         (a.risk_reward ? '<div class="t-xs c-3 mt2">Risk/Reward 1:' + a.risk_reward +
           (a.timeframe ? ' &middot; ' + MB.esc(a.timeframe) : '') + '</div>' : '') +
         (s.tags && s.tags.length
@@ -463,67 +495,52 @@
      ====================================================================== */
   C.sig = function (s) {
     var exec = s.kind === 'executable';
+    var sx = C.sx;
+    if (sx) { sx.ensureCss(); }
+    var v = sx ? sx.view(s) : null;
     var xp = (s.execution && s.execution.params) || {};
-    /* Direction is the glance label — short, and the thing that matters.
-       The contract family lives in the detail grid below. */
-    var dir = xp.direction || s.direction || 'neutral';
+    var dir = (v && v.dir) || xp.direction || s.direction || 'neutral';
     var isSell = /sell|fall|down|put/i.test(dir);
-    var isFlat = dir === 'neutral';
+    var isFlat = String(dir).toLowerCase() === 'neutral';
     var m = s.market;
     var label = String(dir).toUpperCase();
 
-    var detail;
-    if (exec && s.execution) {
-      var p = xp;
-      var bits = [];
-      if (p.duration) { bits.push(p.duration + (p.duration_unit === 't' ? ' ticks' : '')); }
-      if (p.growth_rate) { bits.push(p.growth_rate + '% growth'); }
-      if (p.multiplier) { bits.push('x' + p.multiplier); }
-      if (p.digit !== undefined) { bits.push('digit ' + p.digit); }
-      if (p.sub_type) { bits.push(p.sub_type); }
-      bits.push('stake ' + s.execution.stake_min + '–' + s.execution.stake_max);
+    function cell(k, val, cls) {
+      return '<div class="' + (cls || '') + '"><div class="k">' + k +
+             '</div><div class="v">' + MB.esc(val) + '</div></div>';
+    }
+
+    /* Price levels are required on every signal — executable ones too. TP1 is
+       the official win target; a hit level carries a tick. Extra targets
+       collapse into "+n" so the card stays one row tall. */
+    var detail = '';
+    if (v && isFinite(v.entry)) {
+      var dp = Math.abs(v.entry || 0) >= 10000 ? 0 : v.dp;
+      var tick = function (i) { return v.hits.indexOf(i) > -1 ? MB.icon('check', 9) : ''; };
+      var extra = v.tps.length > 2 ? '<span class="sig-more">+' + (v.tps.length - 2) + '</span>' : '';
       detail =
-        '<div class="sig-levels cols-3">' +
-          cell('Contract', s.execution.contract_label) +
-          cell('Setup', bits.slice(0, 2).join(' · ')) +
-          cell('Win rate', (s.author.win_rate || 0) + '%') +
-        '</div>';
-    } else {
-      var a = s.analysis || {};
-      var tp = a.take_profits || [];
-      /* Big numbers lose their decimals so the cell stays readable; small
-         ones keep full pip precision, which is where it actually matters. */
-      var dp = Math.abs(a.entry_price || 0) >= 10000 ? 0 : m.decimal_places;
-      detail =
-        '<div class="sig-levels' + (tp.length < 2 ? ' cols-3' : '') + '">' +
-          cell('Entry', MB.fmt.price(a.entry_price, dp)) +
-          cell('Stop', MB.fmt.price(a.stop_loss, dp), 'is-sl') +
-          (tp[0] !== undefined ? cell('TP1', MB.fmt.price(tp[0], dp), 'is-tp') : '') +
-          (tp[1] !== undefined ? cell('TP2', MB.fmt.price(tp[1], dp), 'is-tp') : '') +
+        '<div class="sig-levels' + (v.tps.length < 2 ? ' cols-3' : '') + '">' +
+          cell('Entry', MB.fmt.price(v.entry, dp)) +
+          cell('SL', MB.fmt.price(v.sl, dp), 'is-sl') +
+          (v.tps[0] !== undefined ? cell('TP1' + tick(1), MB.fmt.price(v.tps[0], dp), 'is-tp' + (v.hits.indexOf(1) > -1 ? ' is-hit' : '')) : '') +
+          (v.tps[1] !== undefined ? cell('TP2' + tick(2) + extra, MB.fmt.price(v.tps[1], dp), 'is-tp' + (v.hits.indexOf(2) > -1 ? ' is-hit' : '')) : '') +
         '</div>';
     }
 
-    function cell(k, v, cls) {
-      return '<div class="' + (cls || '') + '"><div class="k">' + MB.esc(k) +
-             '</div><div class="v">' + MB.esc(v) + '</div></div>';
-    }
-
-    var result = '';
-    if (s.result) {
-      var won = s.result.outcome === 'won';
-      result = '<span class="badge ' + (won ? 'badge-won' : 'badge-lost') + '">' +
-        (won ? (s.result.hit_level || 'won').toUpperCase() : 'SL') + '</span>';
-    } else if (s.status === 'active') {
-      result = '<span class="badge badge-active">Active</span>';
-    }
+    var sub = [MB.esc(MB.catLabel(m.category))];
+    if (v && v.timeframe) { sub.push(MB.esc(v.timeframe)); }
+    if (exec && s.execution && s.execution.contract_label) { sub.push(MB.esc(s.execution.contract_label)); }
 
     var href = R() + 'users/signals/detail-' + (exec ? 'executable' : 'analysis') + '.html?id=' + s.id;
+    var e = s.engagement || {};
+    var inst = s.author.profile_type === 'institution';
 
     return '<article class="sig ' + (exec ? 'is-exec' : 'is-anal') + '">' +
       '<div class="sig-top">' +
         MB.avatar(s.author, 'avatar-xs') +
-        '<span class="sig-who">' + MB.esc(s.author.username) + '</span>' +
-        (s.author.is_pro ? '<span class="badge badge-pro">Pro</span>' : '') +
+        '<span class="sig-who truncate">' + MB.esc(s.author.display_name || s.author.username) + '</span>' +
+        (inst ? '<span class="badge badge-info">Institution</span>'
+              : s.author.is_pro ? '<span class="badge badge-pro">Pro</span>' : '') +
         (s.boost && s.boost.is_boosted ? '<span class="badge badge-boost">' + MB.icon('flame', 11) + '</span>' : '') +
         '<span class="grow"></span>' +
         '<span class="sig-time">' + MB.fmt.ago(s.published_at) + '</span>' +
@@ -535,18 +552,17 @@
           (isFlat ? '' : MB.icon(isSell ? 'down' : 'up', 14)) + MB.esc(label) + '</span>' +
         '<span style="min-width:0">' +
           '<span class="sig-market truncate" style="display:block">' + MB.esc(m.short_name) + '</span>' +
-          '<span class="sig-cat">' + MB.esc(MB.catLabel(m.category)) + '</span>' +
+          '<span class="sig-cat truncate" style="display:block">' + sub.join(' · ') + '</span>' +
         '</span>' +
-        '<svg class="sig-spark" data-spark="' + (isSell ? 'down' : 'up') +
-          '" data-seed="' + s.id + '" data-h="26" data-fill="false"></svg>' +
+        (v ? sx.chip(v) : '') +
       '</div>' +
 
       detail +
 
       '<div class="sig-foot">' +
-        '<span class="sig-stat">' + MB.icon('heart', 13) + (s.engagement.likes || 0) + '</span>' +
-        '<span class="sig-stat">' + MB.icon('comment', 13) + (s.engagement.comments || 0) + '</span>' +
-        result +
+        '<span class="sig-stat">' + MB.icon('heart', 13) + (e.likes || 0) + '</span>' +
+        '<span class="sig-stat">' + MB.icon('comment', 13) + (e.comments || 0) + '</span>' +
+        (v ? sx.matchChip(v) : '') +
         (exec
           ? '<a class="btn btn-primary btn-xs" href="' + R() + 'users/' +
             ((s.execution && s.execution.trade_route) || 'trade/index.html') + '">Trade</a>'
@@ -616,41 +632,10 @@
       '</div>';
     }
 
-    var signalCard = '';
-    if (msg.signal) {
-      var s = msg.signal;
-      var buy = s.direction === 'BUY';
-      var st = s.status || s.result || 'active';
-      var px = function (v) { return isFinite(Number(v)) ? MB.fmt.price(Number(v), s.dp) : MB.esc(String(v)); };
-      var STATUS = {
-        pending: '<span class="badge">Waiting for entry</span>',
-        active:  '<span class="badge badge-active">Running</span>',
-        won:     '<span class="badge badge-won">Won' + (s.points ? ' · +' + s.points + ' pts' : '') + '</span>',
-        lost:    '<span class="badge badge-lost">Lost</span>',
-        expired: '<span class="badge">Expired</span>'
-      };
-
-      signalCard = '<div class="signal-form-card sig-' + st + ' mt2" data-signal-id="' + MB.esc(s.id || '') + '">' +
-        '<div class="between">' +
-          '<div class="row g2">' +
-            '<span style="color:var(--mb-' + (buy ? 'green' : 'sell') + ')">' + MB.icon(buy ? 'up' : 'down', 16) + '</span>' +
-            '<span class="w-bold t-sm">' + MB.esc(s.pair) + ' ' + (buy ? 'BUY' : 'SELL') + '</span>' +
-          '</div>' +
-          (STATUS[st] || STATUS.active) +
-        '</div>' +
-        '<div class="signal-form-row mt2">' +
-          '<div><div class="t-xs c-3">Entry</div><div class="t-sm w-semi num">' + px(s.entry) + '</div></div>' +
-          '<div><div class="t-xs c-3">Take profit</div><div class="t-sm w-semi num c-up">' + px(s.tp) + '</div></div>' +
-        '</div>' +
-        '<div class="signal-form-row mt1">' +
-          '<div><div class="t-xs c-3">Stop loss</div><div class="t-sm w-semi num c-down">' + px(s.sl) + '</div></div>' +
-          '<div><div class="t-xs c-3">Posted</div><div class="t-sm">' + MB.fmt.ago(msg.created_at) + '</div></div>' +
-        '</div>' +
-        (st === 'won' || st === 'lost'
-          ? '<div class="t-xs c-3 mt2">Closed at ' + px(s.exit) + ' · resolved from the live price</div>'
-          : '') +
-      '</div>';
-    }
+    /* Room signals render through C.chatSignal (signal lifecycle section) —
+       it accepts MB.signalTracker.toMessageSignal(sig) and the legacy
+       {pair, direction, dp, entry, tp, sl, status, points, exit} shape. */
+    var signalCard = msg.signal ? C.chatSignal(msg.signal) : '';
 
     return '<div class="msg' + (msg.is_own ? ' msg-own' : '') +
         (msg.is_flagged ? ' is-flagged' : '') + '" data-msg-id="' + MB.esc(msg.id || '') + '">' +
@@ -793,5 +778,524 @@
           : '<span class="btn btn-primary btn-xs">Join</span>') +
       '</span>' +
     '</a>';
+  };
+})(window);
+
+/* ==========================================================================
+   SIGNAL LIFECYCLE — shared view model and templates (directive §5–§9)
+
+   Every signal card reads a signal through C.sx.view(), which accepts either
+   a feed signal from mock/signals.json (levels + lifecycle + performance) or
+   a record from MB.signalTracker. Cards never compute results themselves —
+   the engine in signal-tracker.js decides, these only display.
+
+     C.sigLifecycle(s)  Published → Waiting → Entry Hit → Monitoring → Result
+     C.sigLadder(s)     Entry / SL / TP1…TP5 with hit ticks + Performance Points
+     C.sigMatching(s)   "✓ Matching Trade Found" / "No Matching Trade Verified"
+     C.sigFeedback(s)   Agree · Dispute under a result
+     C.sigVersions(s)   locked versions and correction reasons (audit history)
+     C.sigPriceChart(o) price history with entry / SL / TP lines (staff review)
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var MB = global.MB;
+  var C = MB.card;
+
+  /* Cards render on pages that do not link signals.css — load it once. */
+  var cssDone = false;
+  function ensureCss() {
+    if (cssDone || typeof document === 'undefined') { return; }
+    cssDone = true;
+    if (document.querySelector('link[href$="signals.css"]')) { return; }
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = MB.root() + 'assets/css/signals.css';
+    document.head.appendChild(l);
+  }
+
+  /* +42.5 pips · −16 pts · 0 pts */
+  function fmtPts(p, unit) {
+    var n = Number(p || 0);
+    var abs = Math.abs(n);
+    var txt = MB.fmt.price(abs, abs % 1 ? 1 : 0);
+    return (n > 0 ? '+' : n < 0 ? '−' : '') + txt + ' ' + (unit || 'pts');
+  }
+  function shortDp(price, dp) { return Math.abs(Number(price) || 0) >= 10000 ? 0 : dp; }
+  function timeOf(iso) {
+    if (!iso) { return ''; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return ''; }
+    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  /* ---- view model -------------------------------------------------------- */
+  function view(s) {
+    var lc = s.lifecycle || {};
+    var a = s.analysis || {};
+    var lv = s.levels ||
+      (s.entry !== undefined ? { entry: s.entry, sl: s.sl, tps: s.tps || (s.tp !== undefined ? [s.tp] : []) }
+                             : { entry: a.entry_price, sl: a.stop_loss, tps: a.take_profits || [] });
+    var status = lc.stage || s.status || (s.result && s.result.outcome) || 'active';
+    if (status === 'pending') { status = 'waiting'; }
+    var hitsRaw = lc.tp_hits || s.tp_hits || [];
+    var hits = hitsRaw.map(function (h) { return typeof h === 'number' ? h : h.level; });
+    var hitAt = {};
+    hitsRaw.forEach(function (h) { if (h && typeof h === 'object') { hitAt[h.level] = h.at; } });
+    if (status === 'won' && !hits.length) { hits = [1]; }
+    var m = s.market && typeof s.market === 'object' ? s.market : {};
+    var perf = s.performance || {};
+    var T = MB.signalTracker;
+    var unit = perf.unit || s.unit ||
+      (T ? T.unit({ symbol: s.symbol || m.symbol, category: s.category || m.category, pair: s.pair }).unit : 'pts');
+    var points = perf.points !== undefined ? perf.points
+      : s.points !== undefined && s.unit ? s.points
+      : (T ? T.points(s) : (s.points || 0));
+
+    /* a dispute raised in this browser shows at once; Stage 2 reads it from the API */
+    var fb = T && s.id ? T.feedback(s.id) : null;
+    var dispute = fb && fb.kind === 'dispute' ? { status: fb.status, reason: fb.reason, at: fb.at, local: true }
+                : (s.dispute || null);
+
+    return {
+      id: s.id,
+      dir: String(s.direction || 'buy').toUpperCase(),
+      pair: s.pair || m.short_name || s.symbol,
+      symbol: s.symbol || m.symbol,
+      category: s.category || m.category,
+      dp: s.dp !== undefined ? s.dp : (m.decimal_places !== undefined ? m.decimal_places : 2),
+      entry: Number(lv.entry), sl: Number(lv.sl), tps: (lv.tps || []).map(Number),
+      status: status, hits: hits, hitAt: hitAt,
+      monitoring: !!(lc.monitoring || s.monitoring), monitorEnd: lc.monitor_end || s.monitor_end || null,
+      points: points, unit: unit, basis: perf.basis || null,
+      posted: s.published_at || s.posted_at, entryAt: lc.entry_hit_at || s.activated_at || null,
+      resolvedAt: lc.resolved_at || s.resolved_at || null,
+      slAt: lc.sl_hit_at || (s.status === 'lost' ? s.resolved_at : null) || null,
+      ambiguous: !!(lc.ambiguous || s.ambiguous),
+      timeframe: s.timeframe || a.timeframe || null,
+      matching: s.matching || null, dispute: dispute,
+      corrected: s.result && s.result.corrected ? s.result.corrected : null,
+      versions: s.versions || null, version: s.version || 1,
+      room: s.room || (s.room_name ? { name: s.room_name, tier: s.room_tier } : null),
+      author: s.author || null
+    };
+  }
+
+  /* ---- status chip --------------------------------------------------------- */
+  function chip(v, full) {
+    if (v.dispute && v.dispute.status === 'open') {
+      return '<span class="sx-chip sx-disp">' + MB.icon('gavel', 11) +
+        (full ? 'Disputed — Moderator Review' : 'Disputed') + '</span>';
+    }
+    var corr = v.corrected && full ? ' · corrected' : '';
+    switch (v.status) {
+      case 'waiting': return '<span class="sx-chip sx-wait">' + MB.icon('hourglass', 11) + (full ? 'Waiting for entry' : 'Waiting') + '</span>';
+      case 'active':  return '<span class="sx-chip sx-active">' + MB.icon('activity', 11) + (full ? 'Entry hit · monitoring TP/SL' : 'Active') + '</span>';
+      case 'won':
+        return '<span class="sx-chip sx-won">' + MB.icon('check', 11) + 'WIN' +
+          (full ? ' · TP' + Math.max.apply(null, v.hits.concat([1])) + ' hit' : '') +
+          ' ' + fmtPts(v.points, v.unit) + corr + '</span>';
+      case 'lost':
+        return '<span class="sx-chip sx-lost">LOSS ' + fmtPts(v.points, v.unit) + corr + '</span>';
+      case 'expired': return '<span class="sx-chip sx-exp">Expired</span>';
+      default: return '';
+    }
+  }
+
+  function matchChip(v) {
+    var mt = v.matching;
+    if (!mt || !mt.eligible || mt.status === 'pending') { return ''; }
+    return mt.status === 'found'
+      ? '<span class="sx-chip sx-match" title="Matching trade found on the provider\'s connected Deriv account">' +
+          MB.icon('verified', 11) + 'Matched</span>'
+      : '<span class="sx-chip sx-nomatch" title="No matching trade verified — this does not mean the signal lost">No match</span>';
+  }
+
+  C.sx = { view: view, chip: chip, matchChip: matchChip, fmtPts: fmtPts, ensureCss: ensureCss, timeOf: timeOf, shortDp: shortDp };
+
+  /* ======================================================================
+     LIFECYCLE STRIP
+     ====================================================================== */
+  C.sigLifecycle = function (s) {
+    ensureCss();
+    var v = view(s);
+    var at = { waiting: 1, active: 3, won: 4, lost: 4, expired: 4 }[v.status];
+    if (at === undefined) { at = 1; }
+    var expired = v.status === 'expired';
+    var steps = [
+      { l: 'Published', t: v.posted, icon: 'lock' },
+      { l: 'Waiting for entry', t: null, icon: 'hourglass' },
+      { l: expired ? 'Entry not reached' : 'Entry hit', t: v.entryAt, icon: 'target' },
+      { l: 'TP/SL monitoring', t: null, icon: 'activity' },
+      { l: v.status === 'won' ? 'WIN' : v.status === 'lost' ? 'LOSS' : expired ? 'Expired' : 'Result',
+        t: v.resolvedAt, icon: v.status === 'lost' ? 'close' : v.status === 'won' ? 'check' : 'results' }
+    ];
+    return '<div class="sx-life" role="list" aria-label="Signal lifecycle">' + steps.map(function (st, i) {
+      var cls = 'sx-step';
+      var done = false;
+      if (i === 4 && at === 4) {
+        cls += v.status === 'won' ? ' is-won' : v.status === 'lost' ? ' is-lost' : ' is-exp';
+        done = true;
+      } else if (expired && (i === 2 || i === 3)) {
+        /* never reached */
+      } else if (i < at) { cls += ' is-done'; done = true; }
+      else if (i === at) { cls += ' is-now'; }
+      return '<div class="' + cls + '" role="listitem"' + (i === at && at < 4 ? ' aria-current="step"' : '') + '>' +
+        '<span class="sx-dot">' + MB.icon(done && i < 4 ? 'check' : st.icon, 12) + '</span>' +
+        '<span class="sx-l">' + MB.esc(st.l) + '</span>' +
+        (st.t && (done || i === 0) ? '<span class="sx-t">' + MB.esc(timeOf(st.t)) + '</span>' : '') +
+      '</div>';
+    }).join('') + '</div>';
+  };
+
+  /* ======================================================================
+     TP LADDER + PERFORMANCE POINTS
+     ====================================================================== */
+  C.sigLadder = function (s) {
+    ensureCss();
+    var v = view(s);
+    var T = MB.signalTracker;
+    var mk = { symbol: v.symbol, category: v.category, pair: s.pair };
+    function pts(to) { return T ? fmtPts(T.move(mk, v.dir, v.entry, to), v.unit) : ''; }
+    var rows = '';
+    rows += '<div class="sx-rung"><span class="k">Entry<small>' +
+      (v.entryAt ? 'hit ' + MB.esc(timeOf(v.entryAt)) : v.status === 'expired' ? 'never reached' : 'not reached yet') +
+      '</small></span><span class="v">' + MB.fmt.price(v.entry, v.dp) + '</span><span class="s">' +
+      (v.entryAt ? 'HIT ' + MB.icon('check', 12) : '—') + '</span></div>';
+    v.tps.forEach(function (tp, i) {
+      var hit = v.hits.indexOf(i + 1) > -1;
+      rows += '<div class="sx-rung is-tp' + (hit ? ' is-hit' : '') + '"><span class="k">TP' + (i + 1) +
+        '<small>' + (i === 0 ? 'official win target' : pts(tp)) + '</small></span>' +
+        '<span class="v">' + MB.fmt.price(tp, v.dp) + '</span>' +
+        '<span class="s">' + (hit ? 'TP' + (i + 1) + ' HIT ' + MB.icon('check', 12) +
+          (v.hitAt[i + 1] ? '<small>' + MB.esc(timeOf(v.hitAt[i + 1])) + '</small>' : '') : (i === 0 ? pts(tp) : '—')) +
+        '</span></div>';
+    });
+    var slHit = v.status === 'lost';
+    rows += '<div class="sx-rung is-sl' + (slHit ? ' is-slhit' : '') + '"><span class="k">Stop loss<small>' + pts(v.sl) +
+      '</small></span><span class="v">' + MB.fmt.price(v.sl, v.dp) + '</span><span class="s">' +
+      (slHit ? 'SL HIT' + (v.slAt ? '<small>' + MB.esc(timeOf(v.slAt)) + '</small>' : '')
+             : v.monitorEnd === 'sl_return' ? 'Reached after win<small>result unchanged</small>' : '—') + '</span></div>';
+
+    var resolved = v.status === 'won' || v.status === 'lost';
+    var tone = v.points > 0 ? 'c-up' : v.points < 0 ? 'c-down' : '';
+    var note = v.status === 'won'
+      ? (v.monitoring ? 'WIN is final. Still monitoring TP' + (v.hits.length + 1) + ' — each further target adds points.'
+                      : v.monitorEnd === 'all_targets' ? 'WIN is final. All targets reached.' : 'WIN is final. Monitoring has ended.')
+      : v.status === 'lost' ? (v.ambiguous ? 'Stop and target were both inside one tick — resolved against the author.' : 'Stop loss reached before TP1.')
+      : v.status === 'expired' ? 'Entry not reached within 24 hours — not counted either way.'
+      : 'Points are awarded once TP1 or the stop loss is reached.';
+
+    return '<div class="sx-points"><span class="n ' + tone + '">' + (resolved ? fmtPts(v.points, v.unit) : '0 ' + MB.esc(v.unit)) +
+        '</span><span class="u">Performance Points</span></div>' +
+      '<div class="t-xs c-3 mt2">' + MB.esc(note) + ' ' +
+        MB.esc(v.basis || (v.unit === 'pips' ? '1 point = 1 pip.' : '1 point = a 0.01% move from entry.')) +
+        '. Not KX Points.</div>' +
+      '<div class="sx-ladder mt3">' + rows + '</div>';
+  };
+
+  /* ======================================================================
+     MATCHING TRADE (§9)
+     ====================================================================== */
+  C.sigMatching = function (s) {
+    ensureCss();
+    var v = view(s);
+    var mt = v.matching;
+    if (!mt) { return ''; }
+    if (!mt.eligible) {
+      return '<div class="sx-matchbox is-none">' + MB.icon('info', 20) + '<div class="grow">' +
+        '<div class="t c-2">Trade matching not applicable</div>' +
+        '<div class="t-xs c-3 mt2">' + MB.esc(mt.reason || 'Matching is checked for Premium and Pro rooms and institutions with a connected Deriv account.') + '</div></div></div>';
+    }
+    if (mt.status === 'pending') {
+      return '<div class="sx-matchbox is-none">' + MB.icon('hourglass', 20) + '<div class="grow">' +
+        '<div class="t c-2">Matching trade check pending</div>' +
+        '<div class="t-xs c-3 mt2">' + MB.esc(mt.note || 'Checked once the entry is hit.') + '</div></div></div>';
+    }
+    if (mt.status === 'found') {
+      var inst = v.author && v.author.profile_type === 'institution';
+      return '<div class="sx-matchbox is-found">' + MB.icon('verified', 20) + '<div class="grow">' +
+        '<div class="t">✓ Matching Trade Found</div>' +
+        '<div class="t-xs c-3 mt2">This signal matches the provider\'s trading activity on a connected Deriv account.</div>' +
+        '<dl class="sx-kv">' +
+          '<dt>Instrument</dt><dd>' + MB.esc(mt.instrument_name || mt.instrument) + '</dd>' +
+          '<dt>Direction / contract</dt><dd>' + MB.esc(mt.contract || mt.direction) + '</dd>' +
+          '<dt>Timing</dt><dd>' + (mt.delta_sec !== undefined ? 'opened ' + mt.delta_sec + 's after entry' : MB.esc(timeOf(mt.opened_at))) + '</dd>' +
+          (mt.account ? '<dt>' + (inst ? 'Connected account' : 'Account') + '</dt><dd>' +
+            MB.esc(mt.account.label) + ' · ' + MB.esc(mt.account.login) + '</dd>' : '') +
+        '</dl></div></div>';
+    }
+    return '<div class="sx-matchbox is-none">' + MB.icon('info', 20) + '<div class="grow">' +
+      '<div class="t">No Matching Trade Verified</div>' +
+      '<div class="t-xs c-3 mt2">' + MB.esc(mt.note || 'No trade on the connected account matched this signal.') +
+      ' <strong class="c-2">This does not mean the signal lost</strong> — the result is decided by price alone; the provider may simply not have taken the trade.</div>' +
+      '</div></div>';
+  };
+
+  /* ======================================================================
+     RESULT FEEDBACK — Agree · Dispute (no voting, no tallies)
+     ====================================================================== */
+  C.sigFeedback = function (s) {
+    ensureCss();
+    var v = view(s);
+    if (v.status !== 'won' && v.status !== 'lost' && v.status !== 'expired') {
+      return '<div class="t-xs c-3">Agree or Dispute opens once the system records a result.</div>';
+    }
+    var d = v.dispute;
+    if (d && d.status === 'open') {
+      return '<div class="alert alert-warn">' + MB.icon('gavel', 18) + '<div class="t-sm">' +
+        '<strong>Disputed — Moderator Review.</strong> The automated result stands while a moderator ' +
+        'checks the price history.' + (d.reason ? '<div class="t-xs c-2 mt2">Reason: “' + MB.esc(d.reason) + '”</div>' : '') +
+        '</div></div>';
+    }
+    if (d && (d.status === 'upheld' || d.status === 'corrected')) {
+      return '<div class="alert ' + (d.status === 'upheld' ? 'alert-info' : 'alert-green') + '">' + MB.icon('gavel', 18) +
+        '<div class="t-sm"><strong>' + (d.status === 'upheld' ? 'Dispute reviewed — result upheld.' : 'Dispute reviewed — result corrected.') +
+        '</strong>' + (v.corrected ? '<div class="t-xs c-2 mt2">' + MB.esc(v.corrected.reason || '') + '</div>' : '') + '</div></div>';
+    }
+    var fb = MB.signalTracker && v.id ? MB.signalTracker.feedback(v.id) : null;
+    var agreed = fb && fb.kind === 'agree';
+    return '<div class="t-sm w-semi">Is this result correct?</div>' +
+      '<div class="sx-verdict">' +
+        '<button class="btn btn-ghost btn-sm' + (agreed ? ' is-on' : '') + '" data-sig-agree="' + MB.esc(v.id) + '"' +
+          ' aria-pressed="' + (agreed ? 'true' : 'false') + '">' + MB.icon(agreed ? 'check' : 'thumbsup', 16) + (agreed ? ' Agreed' : ' Agree') + '</button>' +
+        '<button class="btn btn-ghost btn-sm" data-sig-dispute="' + MB.esc(v.id) + '">' + MB.icon('gavel', 16) + ' Dispute</button>' +
+      '</div>' +
+      '<div class="sx-fine">Results come from the price feed, not from votes. A dispute needs a reason and ' +
+        'goes to a moderator, who can only uphold or correct the result with a written explanation.</div>';
+  };
+
+  /** Wires Agree / Dispute buttons inside `root`. onChange() re-renders. */
+  C.bindSigFeedback = function (root, extra, onChange) {
+    if (!root || !MB.signalTracker) { return; }
+    MB.$$('[data-sig-agree]', root).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var r = MB.signalTracker.agree(b.getAttribute('data-sig-agree'));
+        MB.toast(r.ok ? 'Thanks — your feedback was recorded' : r.error, r.ok ? undefined : 'err');
+        if (r.ok && onChange) { onChange(); }
+      });
+    });
+    MB.$$('[data-sig-dispute]', root).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var id = b.getAttribute('data-sig-dispute');
+        var min = MB.signalTracker.DISPUTE_MIN;
+        MB.modal({
+          title: 'Dispute this result',
+          sub: 'A moderator reviews the price history. The result only changes if the data was wrong.',
+          body: '<div class="field"><label for="dspReason">Reason <span class="sc-req">*</span></label>' +
+            '<textarea class="textarea" id="dspReason" maxlength="500" placeholder="What does the system have wrong? e.g. a bad tick, a level that was never touched…"></textarea>' +
+            '<span class="field-hint"><span id="dspCount">0</span>/500 · at least ' + min + ' characters</span>' +
+            '<span class="field-error" id="dspErr"></span></div>',
+          actions: [
+            { label: 'Cancel', kind: 'ghost', close: true },
+            { label: 'Send to moderator', kind: 'trade', disabled: true, onClick: function (m) {
+                var r = MB.signalTracker.dispute(id, m.$('#dspReason').value, extra || null);
+                if (!r.ok) { m.$('#dspErr').textContent = r.error; return; }
+                m.close();
+                MB.toast('Disputed — Moderator Review');
+                if (onChange) { onChange(); }
+              } }
+          ],
+          onOpen: function (w, m) {
+            var ta = m.$('#dspReason');
+            ta.addEventListener('input', function () {
+              m.$('#dspCount').textContent = ta.value.length;
+              m.setAction(1, { disabled: ta.value.trim().length < min });
+            });
+            setTimeout(function () { ta.focus(); }, 60);
+          }
+        });
+      });
+    });
+  };
+
+  /* ======================================================================
+     VERSION HISTORY — the locked original is always visible
+     ====================================================================== */
+  C.sigVersions = function (s) {
+    ensureCss();
+    var v = view(s);
+    var list = v.versions || [];
+    if (!list.length) { return ''; }
+    function fmtL(x, k) {
+      return k === 'tps' ? (x.tps || []).map(function (t) { return MB.fmt.price(t, v.dp); }).join(' / ')
+                         : MB.fmt.price(x[k], v.dp);
+    }
+    function lv(x, prev, k, label) {
+      var val = fmtL(x, k), pv = prev ? fmtL(prev, k) : null;
+      return label + ' ' + (pv !== null && pv !== val ? '<s>' + pv + '</s> → <b>' + val + '</b>' : val);
+    }
+    return list.slice().reverse().map(function (x) {
+      var prev = list.filter(function (p) { return p.v === x.v - 1; })[0];
+      var cur = x.v === v.version;
+      return '<div class="sx-ver' + (cur ? ' is-current' : '') + '">' +
+        '<div class="sx-ver-h"><span class="sx-ver-v">v' + x.v + '</span>' +
+          '<span class="grow">' + (x.v === 1 ? 'Original — locked on publish' : 'Correction') + (cur ? ' · current' : '') + '</span>' +
+          '<span>' + MB.esc(timeOf(x.at)) + '</span></div>' +
+        '<div class="sx-ver-l">' + lv(x, prev, 'entry', 'Entry') + ' · ' + lv(x, prev, 'sl', 'SL') + ' · ' + lv(x, prev, 'tps', 'TP') + '</div>' +
+        (x.reason ? '<div class="sx-ver-r">“' + MB.esc(x.reason) + '”</div>' : '') +
+      '</div>';
+    }).join('');
+  };
+
+  /* ======================================================================
+     PRICE HISTORY CHART — entry / SL / TP lines and the hit sequence
+     o = { prices:[{t,p,glitch?}], entry, sl, tps:[], events:[{type,at,level}], dp, h }
+     ====================================================================== */
+  C.sigPriceChart = function (o) {
+    ensureCss();
+    var W = 640, H = o.h || 260, padL = 8, padR = 92, padT = 12, padB = 22;
+    var ps = o.prices || [];
+    if (!ps.length) { return ''; }
+    var t0 = Date.parse(ps[0].t), t1 = Date.parse(ps[ps.length - 1].t);
+    var vals = ps.map(function (p) { return p.p; }).concat([o.entry, o.sl]).concat(o.tps || []);
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    var pad = (hi - lo) * 0.06 || 1; lo -= pad; hi += pad;
+    var x = function (t) { return padL + (W - padL - padR) * ((Date.parse(t) - t0) / ((t1 - t0) || 1)); };
+    var y = function (p) { return padT + (H - padT - padB) * (1 - (p - lo) / (hi - lo)); };
+    var dp = o.dp === undefined ? 2 : o.dp;
+    var line = ps.map(function (p, i) { return (i ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.p).toFixed(1); }).join(' ');
+    function hl(val, cls, label) {
+      var yy = y(val).toFixed(1);
+      return '<line class="lv lv-' + cls + '" x1="' + padL + '" x2="' + (W - padR + 4) + '" y1="' + yy + '" y2="' + yy + '"/>' +
+        '<text class="lv-t ' + cls + '" x="' + (W - padR + 8) + '" y="' + (Number(yy) + 3.5) + '">' +
+        MB.esc(label) + ' ' + MB.fmt.price(val, shortDp(val, dp)) + '</text>';
+    }
+    var lines = hl(o.entry, 'entry', 'Entry') + hl(o.sl, 'sl', 'SL');
+    (o.tps || []).forEach(function (tp, i) { lines += hl(tp, 'tp', 'TP' + (i + 1)); });
+    var marks = '';
+    (o.events || []).forEach(function (e) {
+      var price = e.type === 'entry' ? o.entry : e.type === 'tp' ? o.tps[e.level - 1]
+        : (e.type === 'sl' || e.type === 'sl_after_win') ? o.sl : null;
+      if (price === null || price === undefined) { return; }
+      var cls = e.type === 'entry' ? 'ev-entry' : e.type === 'tp' ? 'ev-tp' : 'ev-sl';
+      var xx = x(e.at).toFixed(1);
+      marks += '<line class="ev-vline" x1="' + xx + '" x2="' + xx + '" y1="' + padT + '" y2="' + (H - padB) + '"/>' +
+        '<circle class="ev ' + cls + '" cx="' + xx + '" cy="' + y(price).toFixed(1) + '" r="5"><title>' +
+        MB.esc(e.type === 'tp' ? 'TP' + e.level + ' hit' : e.type === 'entry' ? 'Entry hit' : e.type === 'sl' ? 'SL hit' : 'Back at SL after win') +
+        ' · ' + MB.esc(timeOf(e.at)) + '</title></circle>';
+    });
+    ps.forEach(function (p) {
+      if (p.glitch) {
+        marks += '<circle class="ev ev-glitch" cx="' + x(p.t).toFixed(1) + '" cy="' + y(p.p).toFixed(1) + '" r="5"><title>Invalid print · ' +
+          MB.fmt.price(p.p, dp) + '</title></circle>';
+      }
+    });
+    var axis = '<line class="ax" x1="' + padL + '" x2="' + (W - padR) + '" y1="' + (H - padB) + '" y2="' + (H - padB) + '"/>' +
+      '<text class="ax-t" x="' + padL + '" y="' + (H - 6) + '">' + MB.esc(timeOf(ps[0].t)) + '</text>' +
+      '<text class="ax-t" x="' + (W - padR) + '" y="' + (H - 6) + '" text-anchor="end">' + MB.esc(timeOf(ps[ps.length - 1].t)) + '</text>';
+    return '<svg class="sx-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Market price history with entry, stop loss and take profit levels">' +
+      axis + lines + '<path class="px" d="' + line + '"/>' + marks + '</svg>';
+  };
+})(window);
+
+/* ==========================================================================
+   CHAT SIGNAL CARD — compact, inside a message bubble (image 06, panel 11)
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var MB = global.MB;
+  var C = MB.card;
+
+  C.chatSignal = function (s) {
+    var sx = C.sx;
+    sx.ensureCss();
+    var dir = String(s.direction || 'BUY').toUpperCase();
+    var buy = dir !== 'SELL';
+    var tps = (s.tps || (s.tp !== undefined ? [s.tp] : [])).map(Number);
+    var st = s.status || s.result || 'active';
+    if (st === 'pending') { st = 'waiting'; }
+    var hits = (s.tp_hits || []).map(function (h) { return typeof h === 'number' ? h : h.level; });
+    if (st === 'won' && !hits.length) { hits = [1]; }
+    var disputed = !!(s.dispute && s.dispute.status === 'open');
+    var v = { status: st, hits: hits, points: s.points || 0, unit: s.unit || 'pts',
+              dispute: s.dispute || null, corrected: null, matching: s.matching || null };
+    var px = function (n) {
+      return isFinite(Number(n)) ? MB.fmt.price(Number(n), s.dp) : MB.esc(String(n));
+    };
+    function cell(k, val, cls) {
+      return '<div class="' + (cls || '') + '"><div class="k">' + k + '</div><div class="v">' + val + '</div></div>';
+    }
+    var cells = cell('Entry', px(s.entry)) + cell('Stop loss', px(s.sl), 'is-sl');
+    tps.forEach(function (tp, i) {
+      var hit = hits.indexOf(i + 1) > -1;
+      cells += cell('TP' + (i + 1) + (hit ? ' ' + MB.icon('check', 9) : ''), px(tp), 'is-tp' + (hit ? ' is-hit' : ''));
+    });
+
+    var mt = s.matching;
+    var match = !mt || !mt.eligible || mt.status === 'pending' ? ''
+      : mt.status === 'found'
+        ? '<span class="c-up w-semi">' + MB.icon('verified', 11) + ' Trade Matched</span>'
+        : '<span title="This does not mean the signal lost">No matching trade verified</span>';
+
+    var bits = [];
+    if (match) { bits.push(match); }
+    if (s.timeframe) { bits.push(MB.esc(s.timeframe)); }
+    bits.push(MB.icon('lock', 11) + ' Locked' + (s.version > 1 ? ' v' + s.version : ''));
+    if (st === 'won' && s.monitoring) { bits.push('watching TP' + (hits.length + 1)); }
+    if (st === 'lost' && s.ambiguous) { bits.push('one tick spanned SL and TP — counted as SL'); }
+
+    return '<div class="signal-form-card sxm sig-' + (disputed ? 'disputed' : st === 'waiting' ? 'pending' : st) +
+        ' mt2" data-signal-id="' + MB.esc(s.id || '') + '">' +
+      '<div class="sxm-h">' +
+        '<span style="color:var(--mb-' + (buy ? 'green' : 'sell') + ')">' + MB.icon(buy ? 'up' : 'down', 15) + '</span>' +
+        '<span class="p truncate">' + MB.esc(s.pair || '') + ' ' + (buy ? 'BUY' : 'SELL') + '</span>' +
+        '<span class="grow"></span>' +
+        sx.chip(v, false) +
+      '</div>' +
+      '<div class="sxm-g">' + cells + '</div>' +
+      '<div class="sxm-f">' + bits.join(' <span aria-hidden="true">·</span> ') +
+        (s.href ? '<a href="' + MB.esc(s.href) + '">Details</a>' : '') + '</div>' +
+    '</div>';
+  };
+})(window);
+
+/* ==========================================================================
+   SIGNAL DETAIL — card + lifecycle + result + matching + audit history.
+   Used by users/signals/detail-executable.html and detail-analysis.html.
+   ========================================================================== */
+(function (global) {
+  'use strict';
+  var MB = global.MB;
+  var C = MB.card;
+
+  C.signalDetail = function (s) {
+    var sx = C.sx;
+    sx.ensureCss();
+    var v = sx.view(s);
+    var roomLine = v.room && v.room.name
+      ? '<div class="t-xs c-3 mt3">Posted in ' + MB.esc(v.room.name) +
+        (v.room.tier && v.room.tier !== 'market' ? ' · ' + MB.esc(v.room.tier.charAt(0).toUpperCase() + v.room.tier.slice(1)) + ' room' : '') + '</div>'
+      : '';
+    var match = C.sigMatching(s);
+    var versions = C.sigVersions(s);
+    return C.signal(s) +
+      '<section class="page-section">' +
+        '<div class="sec-head"><h2>Status</h2>' + sx.chip(v, true) + '</div>' +
+        '<div class="card">' + C.sigLifecycle(s) + roomLine + '</div>' +
+      '</section>' +
+      '<section class="page-section">' +
+        '<div class="sec-head"><h2>Result &amp; Performance Points</h2></div>' +
+        '<div class="card">' + C.sigLadder(s) + '</div>' +
+        '<div class="card" id="sigFeedback">' + C.sigFeedback(s) + '</div>' +
+      '</section>' +
+      (match ? '<section class="page-section">' +
+        '<div class="sec-head"><h2>Matching Trade</h2></div>' +
+        '<div class="card">' + match + '</div></section>' : '') +
+      (versions ? '<section class="page-section">' +
+        '<div class="sec-head"><h2>Locked levels &amp; history</h2>' +
+          (v.version > 1 ? '<span class="sx-chip sx-wait">' + v.version + ' versions</span>' : '') + '</div>' +
+        '<div class="card">' + versions +
+          '<div class="sx-fine">Levels lock when a signal is published. A correction creates a new version with a reason — the original is never overwritten.</div>' +
+        '</div></section>' : '');
+  };
+
+  /** Wires Agree / Dispute; `repaint` is called after a change. */
+  C.bindSignalDetail = function (root, s, repaint) {
+    var v = C.sx.view(s);
+    C.bindSigFeedback(root, {
+      id: v.id, pair: v.pair, symbol: v.symbol, direction: v.dir, status: v.status,
+      levels: { entry: v.entry, sl: v.sl, tps: v.tps }, points: v.points, unit: v.unit,
+      author: v.author ? v.author.username : null, published_at: v.posted
+    }, repaint);
   };
 })(window);

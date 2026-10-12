@@ -110,6 +110,91 @@
       </div>
 
       <button class="btn btn-primary" style="align-self:flex-start">Save settings</button>
+
+      <!-- ==============================================================
+           KX & POINTS — credits, KX Points and creator commission.
+           Values load from MB.kx.config(); Stage 2: PATCH /api/v1/admin/kx/config
+           (audited, owner only).
+           ============================================================== -->
+      <div class="between" style="margin-top:var(--mb-s4)">
+        <div><h2 class="t-h2">KX &amp; Points</h2>
+          <div class="t-xs c-3">Platform credit, earned points and the creator commission</div></div>
+      </div>
+
+      <div class="admin-cols c-even" id="kxSettings">
+
+        <section class="panel" data-can="kx.configure">
+          <div class="panel-head"><h2>KX credits</h2></div>
+          <div class="panel-body stack g4">
+            <div class="field"><label>Exchange rate</label>
+              <input class="input num" type="text" value="1 KX = $1.00" readonly aria-readonly="true" aria-label="Exchange rate">
+              <span class="field-hint">Fixed. KX is priced 1:1 with the US dollar and is not configurable.</span></div>
+            <div class="field"><label for="kxMin">Minimum top-up (USD)</label>
+              <input class="input num" id="kxMin" type="number" min="1" step="1"></div>
+            <div class="field"><label for="kxMax">Maximum top-up per payment (USD)</label>
+              <input class="input num" id="kxMax" type="number" min="1" step="1"></div>
+            <div class="field"><label for="kxWin">Payment window (minutes)</label>
+              <input class="input num" id="kxWin" type="number" min="5" max="60" step="1">
+              <span class="field-hint">A KaastroPay checkout expires after this. KX is credited only from the verified KaastroPay webhook.</span></div>
+            <div class="between"><div><div class="t-sm w-semi">KX can pay for boosting or ads</div>
+              <div class="t-xs c-3">Never. Boosting uses KX Points; KX buys subscriptions, courses, webinars and premium services.</div></div>
+              <label class="switch"><input type="checkbox" disabled aria-label="KX for boosting (always off)">
+                <span class="track"></span></label></div>
+          </div>
+        </section>
+
+        <section class="panel" data-can="points.configure">
+          <div class="panel-head"><h2>KX Points &mdash; costs</h2></div>
+          <div class="panel-body stack g4">
+            <div class="field"><label for="ptSignal">Cost to post a signal (points)</label>
+              <input class="input num" id="ptSignal" type="number" min="0" max="100" step="1">
+              <span class="field-hint">Small on purpose. Refunded when validation rejects the signal.</span></div>
+            <div class="field"><label for="ptBoost">Cost to boost content for 24h (points)</label>
+              <input class="input num" id="ptBoost" type="number" min="0" max="1000" step="5"></div>
+            <div class="field"><label for="ptStarter">Starter grant on first signal-eligibility badge (points)</label>
+              <input class="input num" id="ptStarter" type="number" min="0" max="500" step="5"></div>
+            <div class="field"><label for="ptDaily">Overall daily earning cap (points)</label>
+              <input class="input num" id="ptDaily" type="number" min="0" max="2000" step="5"></div>
+            <div class="between"><div><div class="t-sm w-semi">Points can be bought</div>
+              <div class="t-xs c-3">Never &mdash; with money or with KX. Points are earned only.</div></div>
+              <label class="switch"><input type="checkbox" disabled aria-label="Points purchasable (always off)">
+                <span class="track"></span></label></div>
+          </div>
+        </section>
+
+        <section class="panel" data-can="points.configure">
+          <div class="panel-head"><h2>KX Points &mdash; earning</h2></div>
+          <div class="panel-body panel-body-flush">
+            <table class="tbl tbl-admin" style="width:100%">
+              <thead><tr><th class="t-xs">Activity</th><th class="t-xs">Points</th><th class="t-xs">Daily cap</th></tr></thead>
+              <tbody id="ptEarn"></tbody>
+            </table>
+            <p class="t-xs c-3" style="padding:var(--mb-s3) var(--mb-s4)">Achievement points are set per badge on
+              <a href="achievements.html" class="c-up">Achievement Badges</a>. Duplicate or repetitive content, spam,
+              self-engagement and fake activity earn nothing; points are reversed when content is removed.</p>
+          </div>
+        </section>
+
+        <section class="panel" data-can="creator.commission">
+          <div class="panel-head between"><h2>Creator earnings</h2>
+            <span class="badge badge-warn">Provisional &mdash; to be finalised</span></div>
+          <div class="panel-body stack g4">
+            <div class="field"><label for="crComm">Platform commission (%)</label>
+              <input class="input num" id="crComm" type="number" min="0" max="50" step="0.5">
+              <span class="field-hint">Deducted from each sale before the net amount enters Pending. Provisional &mdash; to be finalised.</span></div>
+            <div class="field"><label for="crPend">Pending period (days)</label>
+              <input class="input num" id="crPend" type="number" min="0" max="60" step="1">
+              <span class="field-hint">Net earnings are held this long (refunds, disputes) before they become Available.</span></div>
+            <div class="field"><label for="crMin">Minimum withdrawal (USD)</label>
+              <input class="input num" id="crMin" type="number" min="1" step="1">
+              <span class="field-hint">Payouts go only to a linked, verified KaastroPay account.</span></div>
+          </div>
+        </section>
+
+      </div>
+
+      <button class="btn btn-primary" style="align-self:flex-start" id="kxSave"
+              data-can="kx.configure points.configure creator.commission">Save KX &amp; Points settings</button>
     </main>
   </div>
 </div>
@@ -122,8 +207,57 @@
 <script src="../assets/js/core/ws.js"></script>
 <script src="../assets/js/components/cards.js"></script>
 <script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/kx.js"></script>
 <script src="../assets/js/core/roles.js"></script>
 <script src="../assets/js/core/shell.js"></script>
+<script>
+MB.ready(function () {
+  function val(id) { var el = document.getElementById(id); return el ? Number(el.value) : null; }
+  function set(id, v) { var el = document.getElementById(id); if (el) { el.value = v; } }
+
+  function fill() {
+    var c = MB.kx.config();
+    set('kxMin', c.min_topup); set('kxMax', c.max_topup); set('kxWin', c.payment_window_min);
+    set('ptSignal', c.points.costs.signal_post); set('ptBoost', c.points.costs.boost);
+    set('ptStarter', c.points.starter_grant); set('ptDaily', c.points.daily_cap_total);
+    set('crComm', c.creator.commission_pct); set('crPend', c.creator.pending_days); set('crMin', c.creator.min_withdrawal);
+    var body = document.getElementById('ptEarn');
+    if (body) {
+      body.innerHTML = Object.keys(c.points.earn).filter(function (k) { return k !== 'achievement'; }).map(function (k) {
+        var e = c.points.earn[k];
+        return '<tr><td class="t-sm">' + MB.esc(e.label) + '</td>' +
+          '<td><input class="input input-sm num" type="number" min="0" max="500" style="width:80px" data-earn="' + k + '" data-f="points" value="' + e.points + '" aria-label="Points: ' + MB.esc(e.label) + '"></td>' +
+          '<td><input class="input input-sm num" type="number" min="0" max="2000" style="width:80px" data-earn="' + k + '" data-f="daily_cap" value="' + e.daily_cap + '" aria-label="Daily cap: ' + MB.esc(e.label) + '"></td></tr>';
+      }).join('');
+    }
+  }
+
+  MB.kx.ready().then(fill);
+  fill();
+
+  MB.on('#kxSave', 'click', function () {
+    var patch = {};
+    if (document.getElementById('kxMin')) {
+      patch.min_topup = val('kxMin'); patch.max_topup = val('kxMax'); patch.payment_window_min = val('kxWin');
+    }
+    if (document.getElementById('ptSignal')) {
+      patch.points = { costs: { signal_post: val('ptSignal'), boost: val('ptBoost') },
+                       starter_grant: val('ptStarter'), daily_cap_total: val('ptDaily'), earn: {} };
+      MB.$$('[data-earn]').forEach(function (el) {
+        var k = el.getAttribute('data-earn');
+        patch.points.earn[k] = patch.points.earn[k] || {};
+        patch.points.earn[k][el.getAttribute('data-f')] = Number(el.value);
+      });
+    }
+    if (document.getElementById('crComm')) {
+      patch.creator = { commission_pct: val('crComm'), pending_days: val('crPend'), min_withdrawal: val('crMin') };
+    }
+    MB.kx.admin.setConfig(patch);
+    /* Stage 2: PATCH /api/v1/admin/kx/config — validated and written to the audit log. */
+    MB.api.patch('admin/kx/config', patch).then(function () { MB.toast('KX & Points settings saved'); fill(); });
+  });
+});
+</script>
 
 </body>
 </html>

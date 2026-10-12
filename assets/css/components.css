@@ -405,6 +405,29 @@ a.chip-market:hover { border-color: var(--mb-green-line); color: var(--mb-green)
 .quick-item.q-community svg { color: var(--mb-fam-rise); }
 .quick-item.q-results svg { color: var(--mb-fam-multi); }
 .quick-item.q-resources svg { color: var(--mb-info); }
+.quick-item.q-inst svg { color: var(--mb-warn); }
+/* Labels carry soft hyphens (Institu&shy;tional) so a 320px column breaks
+   them cleanly instead of letting the word run out of its tile. */
+.quick-item { position: relative; min-width: 0; }
+.quick-item > span:last-child { max-width: 100%; line-height: 1.2; hyphens: manual; overflow-wrap: break-word; }
+.quick-item .q-new {
+  position: absolute; top: -7px; right: -3px;
+  font-size: 9px; line-height: 1; padding: 3px 6px;
+  color: var(--mb-text-on-red); font-weight: var(--mb-w-bold);
+}
+@media (max-width: 460px) {
+  .quick-item { padding: var(--mb-s3) 2px; }
+  .quick-item > span:last-child { font-size: 11px; }
+}
+@media (max-width: 400px) {
+  .quick { gap: 6px; }
+  .quick-item { padding: var(--mb-s3) 0; }
+  .quick-item > span:last-child { font-size: 10px; letter-spacing: -.01em; }
+}
+@media (max-width: 350px) {
+  .quick { gap: 4px; }
+  .quick-item > span:last-child { font-size: 9.5px; }
+}
 
 /* ==========================================================================
    MARKET CARD (strip) + MARKET ROW (list)
@@ -1568,48 +1591,77 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 .role-pick .role-tag { flex: none; margin-top: 1px; }
 
 /* ==========================================================================
-   ACHIEVEMENT BADGES
+   ACHIEVEMENT BADGES — progress card, 2-column tile grid, round row, chip
    ========================================================================== */
-.achv-summary { position: relative; }
-.achv-ring { position: relative; display: flex; align-items: center; justify-content: center; }
-.achv-ring-pct {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-size: var(--mb-t-sm); font-weight: var(--mb-w-black); color: var(--mb-text);
+.ach-bar { height: 8px; border-radius: 4px; background: var(--mb-surface-2); overflow: hidden; }
+.ach-bar > i { display: block; height: 100%; border-radius: 4px; background: var(--mb-green); transition: width var(--mb-base) var(--mb-ease); }
+
+.ach-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--mb-s3); }
+.ach-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0;
+  padding: var(--mb-s4) var(--mb-s3); border-radius: var(--mb-r-lg); text-align: left; cursor: pointer;
+  border: 1px solid var(--mb-border); background: var(--mb-surface); color: var(--mb-text);
+  transition: border-color var(--mb-fast) var(--mb-ease), transform var(--mb-fast) var(--mb-ease);
 }
-.achv-grid {
-  display: grid; grid-template-columns: 1fr; gap: var(--mb-s3);
+.ach-tile:hover { border-color: var(--mb-border-2); }
+.ach-tile:active { transform: scale(.985); }
+.ach-tile.is-unlocked { border-color: color-mix(in srgb, var(--mb-green) 32%, var(--mb-border)); }
+.ach-tile.is-locked .ach-n, .ach-tile.is-locked .ach-d { opacity: .6; }
+
+.ach-medal {
+  width: 46px; height: 46px; flex: none; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--mb-surface-2); color: var(--mb-text-2);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, currentColor 35%, transparent);
 }
-.achv-card {
-  display: flex; gap: var(--mb-s3); padding: var(--mb-s4);
-  border-radius: var(--mb-r-lg); border: 1px solid var(--mb-border);
-  background: var(--mb-surface); transition: border-color var(--mb-fast) var(--mb-ease);
+.ach-medal.tone-gold   { background: var(--mb-boost-soft);  color: var(--mb-boost); }
+.ach-medal.tone-red    { background: var(--vy-brand-soft);  color: var(--vy-brand); }
+.ach-medal.tone-green  { background: var(--mb-green-soft);  color: var(--mb-green); }
+.ach-medal.tone-purple { background: var(--mb-pro-soft);    color: var(--mb-pro); }
+.ach-medal.tone-blue   { background: var(--mb-info-soft);   color: var(--mb-info); }
+.ach-medal.tone-teal   { background: var(--vy-teal-soft);   color: var(--vy-teal); }
+.ach-medal.is-locked   { background: var(--mb-surface-2); color: var(--mb-text-3); box-shadow: inset 0 0 0 2px var(--mb-border); }
+
+.ach-n { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); color: var(--mb-text); line-height: 1.25; }
+.ach-d { font-size: 11px; color: var(--mb-text-3); line-height: 1.35; }
+.ach-prog { display: block; width: 100%; height: 4px; border-radius: 2px; background: var(--mb-surface-2); overflow: hidden; }
+.ach-prog > i { display: block; height: 100%; border-radius: 2px; background: var(--mb-info); }
+.ach-st { display: inline-flex; align-items: center; gap: 5px; margin-top: auto; font-size: 11px; font-weight: var(--mb-w-semi); }
+.ach-st .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.ach-st svg { width: 11px; height: 11px; }
+.is-unlocked .ach-st, .ach-st.is-unlocked { color: var(--mb-green); }
+.is-in_progress .ach-st, .ach-st.is-in_progress { color: var(--mb-info); }
+.is-locked .ach-st, .ach-st.is-locked { color: var(--mb-text-3); }
+
+/* Round badge row on a profile */
+.ach-strip { display: flex; gap: var(--mb-s3); overflow-x: auto; scrollbar-width: none; padding: 2px 0 6px; }
+.ach-strip::-webkit-scrollbar { display: none; }
+.ach-round { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 66px; flex: none; }
+.ach-round .ach-medal { width: 50px; height: 50px; }
+.ach-round-n { font-size: 10px; font-weight: var(--mb-w-semi); color: var(--mb-text-2); text-align: center; line-height: 1.2; }
+.ach-round.is-locked .ach-round-n { color: var(--mb-text-3); }
+
+/* Highest badge chip under a name */
+.ach-chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px;
+  border-radius: var(--mb-r-pill); font-size: 11px; font-weight: var(--mb-w-bold); border: 1px solid transparent;
 }
-.achv-card:hover { border-color: var(--mb-border-2); }
-.achv-earned { border-color: var(--mb-green); background: color-mix(in srgb, var(--mb-green) 4%, var(--mb-surface)); }
-.achv-locked { opacity: .65; }
-.achv-icon {
-  width: 52px; height: 52px; flex: none; display: flex; align-items: center; justify-content: center;
-  border-radius: var(--mb-r-md); background: var(--mb-surface-2);
-}
-.achv-body { min-width: 0; flex: 1; }
-.achv-name { font-size: var(--mb-t-sm); font-weight: var(--mb-w-bold); color: var(--mb-text); }
-.achv-tier {
-  display: inline-block; font-size: 10px; font-weight: var(--mb-w-bold); text-transform: uppercase;
-  letter-spacing: .05em; margin-top: 2px; padding: 1px 6px; border-radius: var(--mb-r-pill);
-}
-.achv-tier-bronze    { background: color-mix(in srgb, var(--mb-text-3) 15%, transparent); color: var(--mb-text-3); }
-.achv-tier-silver    { background: color-mix(in srgb, var(--mb-text-2) 15%, transparent); color: var(--mb-text-2); }
-.achv-tier-gold      { background: color-mix(in srgb, #FFD700 15%, transparent); color: #FFD700; }
-.achv-tier-legendary { background: var(--vy-brand-soft); color: var(--vy-brand); }
-.achv-progress { display: flex; align-items: center; gap: var(--mb-s2); margin-top: var(--mb-s2); }
-.achv-progress-track {
-  flex: 1; height: 4px; border-radius: 2px; background: var(--mb-surface-2); overflow: hidden;
-}
-.achv-progress-fill { height: 100%; border-radius: 2px; background: var(--mb-green); }
-.achv-badge {
-  font-size: 10px; padding: 2px 8px; border: 1px solid; border-radius: var(--mb-r-pill);
-  display: inline-flex; align-items: center; gap: 3px; background: transparent;
-}
+.ach-chip svg { width: 12px; height: 12px; }
+.ach-chip.tone-gold   { background: var(--mb-boost-soft); color: var(--mb-boost); border-color: color-mix(in srgb, var(--mb-boost) 35%, transparent); }
+.ach-chip.tone-red    { background: var(--vy-brand-soft); color: var(--vy-brand); border-color: var(--vy-brand-line); }
+.ach-chip.tone-green  { background: var(--mb-green-soft); color: var(--mb-green); border-color: var(--mb-green-line); }
+.ach-chip.tone-purple { background: var(--mb-pro-soft); color: var(--mb-pro); }
+.ach-chip.tone-blue   { background: var(--mb-info-soft); color: var(--mb-info); border-color: var(--mb-info-line); }
+.ach-chip.tone-teal   { background: var(--vy-teal-soft); color: var(--vy-teal); }
+
+/* Detail sheet */
+.ach-sheet-head { display: flex; align-items: center; gap: var(--mb-s3); }
+.ach-rows .ach-row { display: flex; justify-content: space-between; gap: var(--mb-s3); padding: 9px 0; border-bottom: 1px solid var(--mb-border); font-size: var(--mb-t-sm); }
+.ach-rows .ach-row:last-child { border-bottom: 0; }
+.ach-rows .k { color: var(--mb-text-3); }
+.ach-rows .v { font-weight: var(--mb-w-semi); text-align: right; }
+
+[data-theme="light"] .ach-tile { box-shadow: var(--mb-shadow-sm); }
 
 /* ==========================================================================
    INSTITUTIONAL TRADING
@@ -1737,3 +1789,42 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 [data-theme="light"] .tab.is-active { color: var(--mb-text); }
 [data-theme="light"] .stat-grid,
 [data-theme="light"] .stat-cell { border-color: var(--mb-border); }
+
+/* ==========================================================================
+   "NEW" TAG — marketing red, so it reads as an announcement, never a trade
+   ========================================================================== */
+.tag-new {
+  display: inline-flex; align-items: center; flex: none;
+  padding: 2px 7px; border-radius: var(--mb-r-pill);
+  background: var(--vy-brand); color: var(--mb-text-on-red);
+  font-size: 10px; font-weight: var(--mb-w-bold); letter-spacing: .02em; line-height: 1.3;
+}
+.acct-drawer-item .tag-new { margin-left: auto; }
+.acct-drawer-item .tag-new + .chev { margin-left: var(--mb-s2); }
+
+/* ==========================================================================
+   DISCLAIMER SHEET — MB.disclaimer (shell.js)
+   ========================================================================== */
+.dc-points { display: flex; flex-direction: column; gap: var(--mb-s3); }
+.dc-points li {
+  display: flex; gap: var(--mb-s2); align-items: flex-start;
+  font-size: var(--mb-t-sm); line-height: var(--mb-lh-sm); color: var(--mb-text-2);
+}
+.dc-points li svg { flex: none; margin-top: 2px; color: var(--mb-warn); }
+.dc-links { display: flex; flex-wrap: wrap; gap: var(--mb-s2); margin-top: var(--mb-s4); }
+.dc-links a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: var(--mb-r-pill);
+  border: 1px solid var(--mb-border-2); background: var(--mb-surface-2);
+  font-size: var(--mb-t-xs); font-weight: var(--mb-w-semi); color: var(--mb-text);
+}
+.dc-links a:hover { border-color: var(--mb-text-3); }
+.dc-agree {
+  margin-top: var(--mb-s4); padding: var(--mb-s3); border-radius: var(--mb-r-md);
+  border: 1px solid var(--mb-border-2); background: var(--mb-bg-2);
+  align-items: flex-start; line-height: var(--mb-lh-sm);
+}
+.dc-agree .box { margin-top: 1px; }
+.dc-ver { margin-top: var(--mb-s3); font-size: 10px; color: var(--mb-text-3); }
+.dc-sheet .sheet-foot .btn { min-width: 0; white-space: normal; line-height: 1.2; text-align: center; }
+[data-theme="light"] .dc-links a { background: var(--mb-surface); box-shadow: var(--mb-shadow-sm); }

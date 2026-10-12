@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add Funds to KX — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Add Funds to KX" data-sub="Pay with USDT via KaastroPay" data-back="credits.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <p class="t-sm c-2">Fund your KX balance with cryptocurrency.
+      <b class="c-1">No KaastroPay account required.</b> 1 USDT buys 1 KX.</p>
+
+    <!-- ================================================================
+         AMOUNT
+         ================================================================ -->
+    <section class="page-section">
+      <div class="label">Choose amount</div>
+      <div class="kx-amounts" id="afPresets"></div>
+      <div class="field mt2">
+        <label for="afCustom">Custom amount</label>
+        <div class="kx-custom">
+          <div class="kx-prefix"><span>$</span>
+            <input class="input num" id="afCustom" type="number" inputmode="decimal" min="5" max="5000" step="1" value="20"></div>
+          <span class="kx-eq num" id="afEq">= 20 KX</span>
+        </div>
+        <span class="field-hint" id="afHint">Minimum $5, maximum $5,000 per payment.</span>
+        <span class="field-error hide" id="afErr"></span>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         METHOD + NETWORK
+         ================================================================ -->
+    <section class="page-section">
+      <div class="label">Payment method</div>
+      <div class="kx-method">
+        <span class="kx-coin" aria-hidden="true">₮</span>
+        <div class="grow">
+          <div class="t-sm w-bold">USDT <span class="badge badge-active">Recommended</span></div>
+          <div class="t-xs c-3">Tether on TRC20, ERC20 or BSC</div>
+        </div>
+        <span class="kx-tick"><span data-icon="check"></span></span>
+      </div>
+
+      <div class="label mt2">Network</div>
+      <div class="segment segment-green" data-group id="afNet"></div>
+      <span class="field-hint" id="afNetHint">&mdash;</span>
+
+      <div class="card kx-points-list">
+        <div class="kx-point"><span data-icon="globe"></span>
+          <span>Pay from any crypto wallet or exchange &mdash; Binance, Bybit, Trust Wallet and others.</span></div>
+        <div class="kx-point"><span data-icon="userplus"></span>
+          <span>No KaastroPay account required. KaastroPay processes the payment for KonfluenX.</span></div>
+        <div class="kx-point"><span data-icon="verified"></span>
+          <span>KX is credited automatically once the network confirms your payment &mdash; usually a few minutes.</span></div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SUMMARY + CONTINUE
+         ================================================================ -->
+    <section class="card">
+      <div class="rc-row"><span class="rc-k">You send</span><span class="rc-v num" id="afSend">20.00 USDT</span></div>
+      <div class="rc-row"><span class="rc-k">KaastroPay fee</span><span class="rc-v num">0.00 USDT</span></div>
+      <div class="rc-row"><span class="rc-k">You receive</span><span class="rc-v num c-up" id="afGet">20.00 KX</span></div>
+      <p class="t-xs c-3 mt2" id="afGasNote">Your wallet or exchange may charge its own network fee on top.</p>
+    </section>
+
+    <button class="btn btn-trade btn-block btn-lg" id="afGo">Continue to Payment</button>
+    <p class="t-xs c-3" style="text-align:center">KX is platform credit for KonfluenX services. It is not a
+      trading balance and cannot be withdrawn.</p>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var cfg, amount, network;
+  var q = new URLSearchParams(location.search);
+
+  function init() {
+    cfg = MB.kx.config();
+    amount = Number(q.get('amount')) || amount || 20;
+    network = network || (cfg.networks.filter(function (n) { return n.recommended; })[0] || cfg.networks[0]).id;
+
+    MB.$('#afPresets').innerHTML = cfg.presets.map(function (v) {
+      return '<button class="kx-amt" type="button" data-amt="' + v + '"><b class="num">' + v + ' KX</b>' +
+        '<span class="num">' + MB.fmt.money(v) + '</span></button>';
+    }).join('');
+    MB.$('#afNet').innerHTML = cfg.networks.map(function (n) {
+      return '<button type="button" data-value="' + MB.esc(n.id) + '"' + (n.id === network ? ' class="is-active"' : '') + '>' +
+        MB.esc(n.short) + '</button>';
+    }).join('');
+    var c = MB.$('#afCustom');
+    c.min = cfg.min_topup; c.max = cfg.max_topup; c.value = amount;
+    MB.$('#afHint').textContent = 'Minimum ' + MB.fmt.money(cfg.min_topup, 'USD', 0) + ', maximum ' +
+      MB.fmt.money(cfg.max_topup, 'USD', 0) + ' per payment.';
+    update();
+  }
+
+  function valid() { return amount >= cfg.min_topup && amount <= cfg.max_topup; }
+
+  function update() {
+    MB.$$('#afPresets .kx-amt').forEach(function (b) {
+      b.classList.toggle('is-active', Number(b.getAttribute('data-amt')) === amount);
+    });
+    var kxAmt = amount / cfg.usd_rate;
+    MB.$('#afEq').textContent = '= ' + MB.fmt.price(kxAmt, kxAmt % 1 ? 2 : 0) + ' KX';
+    MB.$('#afSend').textContent = MB.fmt.price(amount, 2) + ' USDT';
+    MB.$('#afGet').textContent = MB.fmt.price(kxAmt, 2) + ' KX';
+    var net = cfg.networks.filter(function (n) { return n.id === network; })[0];
+    MB.$('#afNetHint').textContent = net.label + ' · ' + net.confirmations + ' confirmations · usually ' + net.eta + '.';
+    MB.$('#afGasNote').textContent = network === 'ERC20'
+      ? 'Ethereum network fees (gas) are paid by your wallet and can be high. TRC20 is usually cheapest.'
+      : 'Your wallet or exchange may charge its own network fee on top.';
+    var err = MB.$('#afErr');
+    if (!valid()) {
+      err.textContent = 'Enter an amount between ' + MB.fmt.money(cfg.min_topup, 'USD', 0) + ' and ' + MB.fmt.money(cfg.max_topup, 'USD', 0) + '.';
+      err.classList.remove('hide');
+    } else { err.classList.add('hide'); }
+    MB.$('#afGo').disabled = !valid();
+    MB.$('#afGo').textContent = valid() ? 'Continue to Payment — ' + MB.fmt.price(amount, 2) + ' USDT' : 'Continue to Payment';
+  }
+
+  MB.$('#afPresets').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-amt]');
+    if (!b) { return; }
+    amount = Number(b.getAttribute('data-amt'));
+    MB.$('#afCustom').value = amount;
+    update();
+  });
+  MB.$('#afCustom').addEventListener('input', function (e) {
+    amount = Math.round(Number(e.target.value || 0) * 100) / 100;
+    update();
+  });
+  MB.$('#afNet').addEventListener('mb:change', function (e) { network = e.detail.value; update(); });
+
+  MB.$('#afGo').addEventListener('click', function () {
+    if (!valid()) { return; }
+    var p;
+    try {
+      /* ?sim=underpaid lets a reviewer walk the underpaid path (Stage 1 only). */
+      p = MB.kx.payments.create({ amount: amount, network: network, sim: q.get('sim') || 'ok' });
+    } catch (e) { MB.toast('Enter a valid amount', 'err'); return; }
+    location.href = 'pay.html?id=' + encodeURIComponent(p.id);
+  });
+
+  init();
+  MB.kx.ready().then(init);
+  MB.mountIcons(document);
+});
+</script>
+</body>
+</html>

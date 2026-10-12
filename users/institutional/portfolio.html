@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/institution.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="home" data-root="../../" data-title="Portfolio" data-sub="Public trading profile" data-back="index.html" data-unread="3">
@@ -32,6 +33,7 @@
           <span class="badge badge-verified" id="portTier">—</span>
         </div>
         <div class="ph-handle" id="portCompany">—</div>
+        <div class="row g2 center mt2" id="portType"></div>
       </div>
       <p class="ph-bio" id="portBio">—</p>
       <div class="row g2 wrap" id="portSocials" style="justify-content:center"></div>
@@ -43,38 +45,84 @@
     </section>
 
     <!-- PORTFOLIO STATS -->
-    <div class="stat-grid">
+    <div class="stat-grid stat-grid-sm">
       <div class="stat-cell"><div class="stat-v" id="portBalance">—</div><div class="stat-k">Portfolio</div></div>
       <div class="stat-cell"><div class="stat-v c-up" id="portProfit">—</div><div class="stat-k">Total Profit</div></div>
       <div class="stat-cell"><div class="stat-v" id="portWinRate">—</div><div class="stat-k">Avg Win Rate</div></div>
       <div class="stat-cell"><div class="stat-v" id="portFollowers">—</div><div class="stat-k">Followers</div></div>
     </div>
 
-    <!-- GROWTH CHART -->
-    <section class="card">
-      <div class="label">Portfolio Growth</div>
-      <div data-chart="area" data-seed="instgrowth" data-h="160" class="mt3"></div>
+    <!-- TABS -->
+    <div class="tabs prof-tabs" data-group id="portTabs">
+      <button class="tab is-active" data-value="overview">Overview</button>
+      <button class="tab" data-value="performance">Performance</button>
+      <button class="tab" data-value="accounts">Accounts</button>
+      <button class="tab" data-value="team">Team</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="prof-pane" id="panePortOverview">
+      <!-- community (signals) and verified Deriv, never mixed -->
+      <section class="page-section">
+        <div class="label">Key Performance (All Time)</div>
+        <div class="perf-split" id="perfSplit"></div>
+        <p class="t-xs c-3">Community Performance is measured from signals posted on KonfluenX.
+          Verified Deriv Performance is read from the shared Deriv accounts. The two are kept separate.</p>
+      </section>
+
+      <section class="card" id="portAumCard">
+        <div class="label">Total Assets Under Management (Shared)</div>
+        <div class="row g3 mt2" style="align-items:baseline">
+          <span class="t-h2 w-black num" id="portAum">&mdash;</span>
+          <span class="t-xs c-3" id="portAumSub">&mdash;</span>
+        </div>
+      </section>
+
+      <section class="page-section" id="portAchvSection">
+        <div class="between mb2">
+          <div class="label">Achievements</div>
+          <span class="t-xs c-3" id="portAchvCount">&mdash;</span>
+        </div>
+        <div id="portAchievements" class="row g2 wrap"></div>
+      </section>
     </section>
 
-    <!-- LINKED ACCOUNTS (visible only) -->
-    <section class="page-section">
+    <!-- PERFORMANCE -->
+    <section class="prof-pane" id="panePortPerformance" hidden>
+      <div class="segment" data-group id="perfSource">
+        <button class="is-active" data-value="community">Community</button>
+        <button data-value="deriv">Deriv Verified</button>
+      </div>
+      <div class="chips mt3" data-group id="perfPeriod">
+        <button class="chip" data-value="7">7D</button>
+        <button class="chip" data-value="30">30D</button>
+        <button class="chip" data-value="90">90D</button>
+        <button class="chip" data-value="365">1Y</button>
+        <button class="chip is-active" data-value="all">All Time</button>
+      </div>
+      <section class="card mt3">
+        <div class="label" id="perfTitle">Community Signal Performance</div>
+        <div class="stat-grid stat-grid-sm mt3" id="perfStats"></div>
+        <div class="label mt4" id="perfChartLabel">Cumulative Points</div>
+        <div id="perfChart" class="mt2"></div>
+        <p class="t-xs c-3 mt2" id="perfFoot"></p>
+      </section>
+      <section class="card mt3">
+        <div class="label mb2">Signal Accuracy by Market</div>
+        <div id="perfByMarket" class="stack g2"></div>
+      </section>
+    </section>
+
+    <!-- ACCOUNTS (shared only) -->
+    <section class="prof-pane" id="panePortAccounts" hidden>
       <div class="label mb2">Trading Accounts</div>
       <div id="portAccounts" class="stack"></div>
     </section>
 
     <!-- TEAM -->
-    <section class="page-section" id="portTeamSection">
-      <div class="label mb2">Team</div>
-      <div id="portTeam" class="row g2 wrap"></div>
-    </section>
-
-    <!-- ACHIEVEMENTS -->
-    <section class="page-section" id="portAchvSection">
-      <div class="between mb2">
-        <div class="label">Achievements</div>
-        <span class="t-xs c-3" id="portAchvCount">&mdash;</span>
-      </div>
-      <div id="portAchievements" class="row g2 wrap"></div>
+    <section class="prof-pane" id="panePortTeam" hidden>
+      <div class="label mb2" id="portTeamSection">Leadership Team</div>
+      <div id="portTeam" class="stack g2"></div>
     </section>
 
   </main>
@@ -132,7 +180,7 @@
             (access.mode === 'owner' ? '&preview=1' : '');
 
     /* Totals come from the shared accounts only — a hidden account must not leak through the sum. */
-    var shared = (d.linked_accounts || []).filter(function (a) { return SC.isVisible(sc, a); });
+    var shared = MB.instAccounts.load(d).filter(function (a) { return SC.isVisible(sc, a); });
     var sum = function (k) { return shared.reduce(function (n, a) { return n + (Number(a[k]) || 0); }, 0); };
     stats = {
       total_balance: sum('balance'), total_profit: sum('profit_total'),
@@ -142,10 +190,96 @@
     };
 
     /* hero */
-    MB.$('#portName').textContent = 'John Trader';
+    var isInst = MB.instProfile.type(d) === 'institution';
+    var cd = d.company_details || {};
+    MB.$('#portName').textContent = isInst ? (d.company || 'Institution') : 'John Trader';
     MB.$('#portTier').textContent = d.tier || '—';
-    MB.$('#portCompany').textContent = d.company || '';
+    MB.$('#portCompany').textContent = isInst
+      ? ['Institutional Trader', [cd.city, cd.country].filter(Boolean).join(', ')].filter(Boolean).join(' · ')
+      : (d.company || '');
+    MB.$('#portType').innerHTML = MB.instProfile.badge(d);
+
+    /* the two performance blocks (§17) */
+    var cp = d.community_performance || {};
+    var vt = MB.instAccounts.totals(shared);
+    var hide = !sc.show_balances;
+    MB.$('#perfSplit').innerHTML =
+      '<div class="perf-box is-community">' +
+        '<div class="pb-h">' + MB.icon('signals', 15) + 'Community Performance</div>' +
+        '<div class="pb-v ' + fmt.dirClass(cp.net_points) + '">' + (cp.net_points >= 0 ? '+' : '') +
+          fmt.compact(cp.net_points || 0) + ' pts</div>' +
+        '<div class="pb-g">' +
+          '<div><b>' + (cp.signals || 0) + '</b><span>Signals</span></div>' +
+          '<div><b>' + (cp.win_rate || 0) + '%</b><span>Win rate</span></div>' +
+          '<div><b>' + MB.esc(cp.rr || '—') + '</b><span>R:R</span></div>' +
+        '</div>' +
+        '<div class="pb-src">Platform signals · performance points</div>' +
+      '</div>' +
+      '<div class="perf-box is-deriv">' +
+        '<div class="pb-h">' + MB.icon('verified', 15) + 'Verified Deriv Performance</div>' +
+        '<div class="pb-v ' + fmt.dirClass(vt.profit) + '"' + (hide ? '' : ' title="' + fmt.signed(vt.profit) + '"') + '>' +
+          (hide ? fmt.pct(vt.return_pct, 1) : (vt.profit >= 0 ? '+' : '-') + '$' + fmt.compact(Math.abs(vt.profit))) + '</div>' +
+        '<div class="pb-g">' +
+          '<div><b>' + fmt.compact(vt.trades) + '</b><span>Trades</span></div>' +
+          '<div><b>' + vt.win_rate.toFixed(0) + '%</b><span>Win rate</span></div>' +
+          '<div><b>' + vt.drawdown.toFixed(1) + '%</b><span>Max DD</span></div>' +
+        '</div>' +
+        '<div class="pb-src">' + (shared.length ? shared.length + ' shared Deriv account' + (shared.length > 1 ? 's' : '') : 'No accounts shared') + '</div>' +
+      '</div>';
     MB.$('#portBio').textContent = d.bio || '';
+
+    /* assets under management — shared accounts only */
+    MB.$('#portAum').textContent = hide ? fmt.pct(vt.return_pct, 1) : fmt.money(vt.balance || stats.total_balance);
+    MB.$('#portAumSub').textContent = hide ? 'return across ' + shared.length + ' shared account' + (shared.length === 1 ? '' : 's')
+                                           : 'across ' + shared.length + ' shared Deriv account' + (shared.length === 1 ? '' : 's');
+
+    /* Performance tab — one source at a time, never a combined figure */
+    var SRC = {
+      community: {
+        title: 'Community Signal Performance', chartLabel: 'Cumulative Points', seed: 'instsig',
+        stats: [['Net Points', (cp.net_points >= 0 ? '+' : '') + fmt.compact(cp.net_points || 0), fmt.dirClass(cp.net_points)],
+                ['Signals', cp.signals || 0, ''], ['Win Rate', (cp.win_rate || 0) + '%', ''], ['R:R', cp.rr || '—', '']],
+        foot: 'Measured by KonfluenX from published signals. Results resolve from market prices.'
+      },
+      deriv: {
+        title: 'Verified Deriv Performance', chartLabel: 'Equity Curve', seed: 'instgrowth',
+        stats: [['Total P/L', hide ? fmt.pct(vt.return_pct, 1) : (vt.profit >= 0 ? '+' : '-') + '$' + fmt.compact(Math.abs(vt.profit)), fmt.dirClass(vt.profit)],
+                ['Trades', fmt.compact(vt.trades), ''], ['Win Rate', vt.win_rate.toFixed(1) + '%', ''], ['Max DD', '-' + vt.drawdown.toFixed(1) + '%', 'c-down']],
+        foot: 'Read from ' + shared.length + ' shared Deriv account' + (shared.length === 1 ? '' : 's') + ' through Deriv authorisation. Never from signals.'
+      }
+    };
+    var src = 'community', period = 'all';
+    function paintPerf() {
+      var s = SRC[src];
+      MB.$('#perfTitle').textContent = s.title;
+      MB.$('#perfChartLabel').textContent = s.chartLabel + (period === 'all' ? ' · All time' : ' · ' + { 7: '7 days', 30: '30 days', 90: '90 days', 365: '1 year' }[period]);
+      MB.$('#perfStats').innerHTML = s.stats.map(function (c) {
+        return '<div class="stat-cell"><div class="stat-v ' + c[2] + '">' + c[1] + '</div><div class="stat-k">' + c[0] + '</div></div>';
+      }).join('');
+      /* Stage 2: the period selects the server-side series; here it re-seeds the sample chart. */
+      MB.$('#perfChart').innerHTML = '<div data-chart="area" data-seed="' + s.seed + period + '" data-h="160" data-h-min="120"></div>';
+      MB.$('#perfFoot').textContent = s.foot;
+      MB.mountCharts(MB.$('#perfChart'));
+    }
+    MB.$('#perfSource').addEventListener('mb:change', function (e) { src = e.detail.value; paintPerf(); });
+    MB.$('#perfPeriod').addEventListener('mb:change', function (e) { period = e.detail.value; paintPerf(); });
+    paintPerf();
+    var byMkt = cp.by_market || [
+      { market: 'Volatility 75 (1s)', rate: 78 }, { market: 'Boom 1000', rate: 72 }, { market: 'Crash 500', rate: 65 },
+      { market: 'Step Index', rate: 60 }, { market: 'EUR/USD', rate: 58 }, { market: 'XAU/USD', rate: 54 }
+    ];
+    MB.$('#perfByMarket').innerHTML = byMkt.map(function (m) {
+      return '<div class="row g3"><span class="t-sm" style="width:40%;min-width:0" >' + MB.esc(m.market) + '</span>' +
+        '<span class="ach-bar grow"><i style="width:' + m.rate + '%"></i></span>' +
+        '<span class="t-sm w-bold num" style="width:38px;text-align:right">' + m.rate + '%</span></div>';
+    }).join('');
+
+    /* tabs */
+    var PANES = { overview: 'panePortOverview', performance: 'panePortPerformance', accounts: 'panePortAccounts', team: 'panePortTeam' };
+    MB.$('#portTabs').addEventListener('mb:change', function (e) {
+      Object.keys(PANES).forEach(function (k) { MB.$('#' + PANES[k]).hidden = k !== e.detail.value; });
+      if (e.detail.value === 'performance') { MB.mountCharts(MB.$('#panePortPerformance')); }
+    });
 
     /* social links */
     MB.$('#portSocials').innerHTML = MB.instSocials.chips(MB.instSocials.load(d.socials));
@@ -175,14 +309,18 @@
     }).join('') : '<div class="empty">No trading accounts shared yet</div>';
 
     /* team */
-    var team = d.team || [];
+    var team = MB.instTeam.load(d);
     if (team.length) {
       MB.$('#portTeam').innerHTML = team.map(function (t) {
-        return '<div class="chip">' +
-          '<span class="avatar avatar-xs" style="background:' + MB.avatarColor(t.name) + '">' +
+        return '<div class="card card-flat row g3">' +
+          '<span class="avatar avatar-md" style="background:' + MB.avatarColor(t.name) + '">' +
             t.name.charAt(0) + '</span>' +
-          '<span>' + MB.esc(t.name) + '</span>' +
-          '<span class="badge t-xs">' + t.role + '</span>' +
+          '<span class="grow" style="min-width:0">' +
+            '<span class="t-sm w-bold row g2">' + MB.esc(t.name) +
+              (isInst && cd.verified_business ? '<span class="c-up">' + MB.icon('check', 12) + '</span>' : '') + '</span>' +
+            '<span class="t-xs c-3" style="display:block">' + MB.esc(t.title || MB.instTeam.label(t.role)) + '</span>' +
+          '</span>' +
+          '<span class="badge">' + MB.esc(MB.instTeam.label(t.role)) + '</span>' +
         '</div>';
       }).join('');
     } else {
@@ -193,10 +331,12 @@
   /* achievements */
   MB.api.get('achievements').then(function (r) {
     var d = r.data || {};
-    var badges = (d.badges || []).filter(function (b) { return b.earned; });
-    MB.$('#portAchvCount').textContent = badges.length + ' earned';
+    var set = d.institution_badges || d.badges || [];
+    var badges = set.filter(function (b) { return MB.card.achievementStatus(b) === 'unlocked'; });
+    MB.$('#portAchvCount').textContent = badges.length + '/' + set.length + ' unlocked';
     if (badges.length) {
-      MB.$('#portAchievements').innerHTML = MB.card.achievementBadges(d.badges || []);
+      MB.$('#portAchievements').className = 'ach-strip';
+      MB.$('#portAchievements').innerHTML = MB.card.achievementBadges(set);
     } else {
       MB.$('#portAchvSection').style.display = 'none';
     }

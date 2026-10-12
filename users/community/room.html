@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/rooms.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
 <body data-shell="app" data-nav="community" data-root="../../" data-title="Room" data-back="index.html" data-unread="3">
@@ -24,25 +25,28 @@
   <main class="page">
 
     <!-- Room header -->
-    <section class="card" style="padding:0;overflow:hidden">
+    <section class="card room-hero" id="roomHero" style="padding:0;overflow:hidden">
       <div class="pad">
-        <div class="between">
-          <div class="row g3" style="min-width:0">
+        <div class="between" style="align-items:flex-start">
+          <div class="row g3" style="min-width:0;align-items:flex-start">
             <span id="roomAvatar" class="none"></span>
             <div style="min-width:0">
               <div class="t-h3 w-bold truncate" id="rName">—</div>
-              <div class="t-xs c-3" id="rMeta">—</div>
+              <div class="room-badges" id="rBadges"></div>
+              <div class="t-xs c-3 mt1" id="rMeta">—</div>
             </div>
           </div>
           <div class="row g2 none">
             <button class="icon-btn" id="btnMembers" aria-label="Members">
               <span data-icon="users"></span></button>
-            <button class="btn btn-green-soft btn-sm" id="btnJoin">Join</button>
+            <div class="room-join" id="rJoinWrap"></div>
           </div>
         </div>
+        <div class="room-stats hide" id="rTierStats"></div>
         <p class="t-sm c-2 mt3" id="rDesc"></p>
         <div class="row g2 mt3" id="rLinks"></div>
       </div>
+      <button class="owner-strip hide" id="rOwnerStrip" type="button"></button>
 
       <div class="mod-strip" data-can="room.monitor">
         <span class="mod-strip-tag">
@@ -59,6 +63,7 @@
 
     <div class="tabs" data-group id="rTabs">
       <button class="tab is-active" data-value="chat">Chat</button>
+      <button class="tab hide" data-value="performance" id="tabPerf">Performance</button>
       <button class="tab" data-value="posts">Posts</button>
       <button class="tab" data-value="signals">Signals</button>
       <button class="tab" data-value="members">Members</button>
@@ -137,6 +142,38 @@
       </div>
     </section>
 
+    <!-- PRO PAYWALL — chat, posts, signals and members for non-subscribers -->
+    <section id="paneLocked" class="hide"></section>
+
+    <!-- PERFORMANCE — Verified Deriv performance (Premium / Pro rooms) -->
+    <section id="panePerformance" class="stack g3 hide">
+      <div id="perfElig"></div>
+      <div class="card">
+        <div class="perf-head">
+          <div>
+            <div class="w-bold">Trading Performance (Deriv)</div>
+            <span class="perf-src" id="perfSrc"></span>
+          </div>
+        </div>
+        <div class="perf-periods mt3" id="perfPeriods" role="tablist" aria-label="Period">
+          <button type="button" data-period="7d">7D</button>
+          <button type="button" data-period="30d" class="is-active">30D</button>
+          <button type="button" data-period="3m">3M</button>
+          <button type="button" data-period="all">All</button>
+        </div>
+        <div class="stat-grid cols-3 mt3" id="perfStats"></div>
+        <div class="mt3" id="perfChart"></div>
+        <div class="t-xs c-3 mt2" id="perfFoot"></div>
+      </div>
+      <div class="card">
+        <div class="between"><div class="label">Recent Trades</div><span class="t-xs c-3">From Deriv</span></div>
+        <div id="perfTrades" class="mt2"></div>
+      </div>
+      <p class="perf-sep">Verified Deriv Performance is read from the owner&rsquo;s connected Deriv account
+        (read-only access &mdash; KonfluenX never sees a password). It is kept separate from
+        <b>signal performance</b>, which is measured from the signals posted in this room on the Signals tab.</p>
+    </section>
+
     <!-- POSTS -->
     <section id="panePosts" class="stack g3 hide"></section>
 
@@ -168,6 +205,9 @@
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/core/signal-tracker.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/signal-composer.js"></script>
+<script src="../../assets/js/components/rooms.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
@@ -183,19 +223,17 @@ MB.ready(function () {
   var sigDirection = 'BUY';
 
   /* ---------------------------------------------------------------- room */
-  MB.api.list('rooms').then(function (rooms) {
-    room = rooms.filter(function (r) {
-      return roomId ? r.id === roomId : symbol ? r.slug === symbol : false;
-    })[0] || rooms[0];
+  MB.rooms.load().then(function (rooms) {
+    room = MB.rooms.find(rooms, roomId, roomId ? null : symbol) ||
+      rooms.filter(function (r) { return r.kind === 'market'; })[0] || rooms[0];
 
     var isTrader = room.kind === 'trader';
     var isMarket = !!room.market;
     MB.$('.topbar-title').textContent = room.name;
     document.getElementById('rName').textContent = room.name;
     document.getElementById('rDesc').textContent = room.description;
-    document.getElementById('rMeta').textContent =
-      MB.fmt.compact(room.member_count) + ' members · ' + room.online_count + ' online' +
-      (room.market ? ' · ' + MB.catLabel(room.market.category) : ' · Trader room');
+    paintMeta();
+    paintTier();
 
     document.getElementById('roomAvatar').innerHTML = isTrader
       ? MB.avatar(room.owner, 'avatar-lg')
@@ -221,17 +259,7 @@ MB.ready(function () {
       });
     }
 
-    var join = document.getElementById('btnJoin');
-    if (room.is_owner) { join.textContent = 'Manage'; join.className = 'btn btn-ghost btn-sm'; }
-    else if (room.is_member) { join.textContent = 'Joined'; join.className = 'btn btn-ghost btn-sm'; }
-    join.addEventListener('click', function () {
-      if (room.is_owner) { showTab('members'); return; }
-      room.is_member = !room.is_member;
-      join.textContent = room.is_member ? 'Joined' : 'Join';
-      join.className = 'btn btn-sm ' + (room.is_member ? 'btn-ghost' : 'btn-green-soft');
-      MB.api.post('rooms/' + room.id + (room.is_member ? '/join' : '/leave'));
-      MB.toast(room.is_member ? 'Joined ' + room.name : 'Left ' + room.name);
-    });
+    paintJoin();
 
     if (isMarket) {
       document.getElementById('rChartWrap').classList.remove('hide');
@@ -242,7 +270,7 @@ MB.ready(function () {
         '<a class="chip-tag" href="../signals/index.html">Signals</a>';
       MB.mountCharts();
 
-      /* Show signal button for market rooms (not trader rooms) */
+      /* Market rooms: anyone posts, and only this pair. */
       MB.$('#btnSignal').style.display = '';
       MB.$('#sigPairLock').textContent = room.market.short_name;
       MB.ws.seed(room.market.symbol, room.market.last_price, room.market.decimal_places);
@@ -253,13 +281,20 @@ MB.ready(function () {
       paintRecord();
     } else if (isTrader) {
       document.getElementById('rLinks').innerHTML =
-        '<a class="chip-market" href="../signals/provider.html?u=' + room.owner.username + '">' +
-          MB.esc(room.owner.username) + "'s profile</a>";
+        (room.is_local ? '' : '<a class="chip-market" href="../signals/provider.html?u=' + encodeURIComponent(room.owner.username) + '">' +
+          MB.esc(room.owner.display_name || room.owner.username) + "'s profile</a>") +
+        (room.markets || []).map(function (m) { return '<span class="chip-tag">' + MB.esc(m) + '</span>'; }).join('');
+      /* Trader rooms: the owner publishes, through the composer (any market). */
+      if (room.is_owner && hasComposer()) { MB.$('#btnSignal').style.display = ''; }
     }
 
+    if (MB.rooms.verified(room)) { MB.$('#tabPerf').classList.remove('hide'); renderPerformance(); }
+    paintOwnerStrip();
+    applyAccess();
     renderChat();
     renderMembers();
     MB.mountIcons();
+    document.addEventListener('mb:session', applyAccess);
 
     var postFilter = isMarket
       ? function (p) { return p.market && p.market.symbol === room.market.symbol; }
@@ -340,31 +375,51 @@ MB.ready(function () {
       created_at: new Date(Date.now() - 14 * 60000).toISOString(),
       signal: { pair: m.short_name, direction: 'BUY', dp: m.decimal_places,
                 entry: p - step, tp: p + step * 0.8, sl: p - step * 2, exit: p + step * 0.8,
-                status: 'won', points: MB.signalTracker.POINTS_WIN }
+                status: 'won', points: MB.signalTracker.POINTS_WIN || 10 }
     };
   }
 
+  /* Chat signal cards. Agent 2's tracker shapes them (toMessageSignal);
+     until it lands, the local mapping keeps the old shape working. */
   function signalView(s) {
-    return { id: s.id, pair: s.pair, direction: s.direction, dp: s.dp, entry: s.entry, tp: s.tp,
+    if (MB.signalTracker && typeof MB.signalTracker.toMessageSignal === 'function') {
+      try { var v = MB.signalTracker.toMessageSignal(s); if (v) { return v; } } catch (e) {}
+    }
+    var tp = s.tp !== undefined ? s.tp : (s.take_profits && s.take_profits[0]);
+    return { id: s.id, pair: s.pair || (s.market && s.market.short_name), direction: s.direction,
+             dp: s.dp !== undefined ? s.dp : (s.market && s.market.decimal_places), entry: s.entry, tp: tp,
              sl: s.sl, status: s.status, points: s.points, exit: s.exit };
   }
+  function roomOf(s) { return s.room_id || (s.room && s.room.id) || null; }
+  function hasComposer() { return !!(MB.signalComposer && typeof MB.signalComposer.open === 'function'); }
 
-  function mySignals() {
-    if (!room) { return []; }
-    return MB.signalTracker.list(function (s) { return s.room_id === room.id; }).map(function (s) {
-      return { id: s.msg_id, author: ME, body: '', attachments: [], is_own: true,
-               created_at: s.posted_at, signal: signalView(s) };
-    });
+  function roomSignals() {
+    if (!room || !MB.signalTracker || typeof MB.signalTracker.list !== 'function') { return []; }
+    var list;
+    try { list = MB.signalTracker.list(function (s) { return roomOf(s) === room.id; }); } catch (e) { list = null; }
+    if (!Array.isArray(list)) { try { list = MB.signalTracker.list(); } catch (e2) { list = []; } }
+    return (Array.isArray(list) ? list : []).filter(function (s) { return roomOf(s) === room.id; });
   }
 
-  MB.signalTracker.on(function (s) {
-    var hit = false;
-    messages.forEach(function (m) {
-      if (m.signal && m.signal.id === s.id) { m.signal = signalView(s); hit = true; }
+  function signalMessage(s) {
+    var mine = !s.author || s.author.username === ME.username || s.author.id === ME.id;
+    return { id: s.msg_id || ('sig-' + s.id), author: mine ? ME : s.author, body: '', attachments: [],
+             is_own: mine, created_at: s.posted_at || s.published_at || s.created_at || new Date().toISOString(),
+             signal: signalView(s) };
+  }
+
+  function mySignals() { return roomSignals().map(signalMessage); }
+
+  if (MB.signalTracker && typeof MB.signalTracker.on === 'function') {
+    MB.signalTracker.on(function (s) {
+      var hit = false;
+      messages.forEach(function (m) {
+        if (m.signal && m.signal.id === s.id) { m.signal = signalView(s); hit = true; }
+      });
+      if (hit) { renderChat(); }
+      paintRecord();
     });
-    if (hit) { renderChat(); }
-    paintRecord();
-  });
+  }
 
   function renderChat() {
     if (!messages.length) { seedChat(); }
@@ -563,9 +618,13 @@ MB.ready(function () {
 
   function paintRecord() {
     var host = document.getElementById('sigRecord');
-    if (!host || !room) { return; }
-    var here = MB.signalTracker.stats(function (s) { return s.room_id === room.id; });
-    var me = MB.signalTracker.stats();
+    if (!host || !room || !MB.signalTracker || typeof MB.signalTracker.stats !== 'function') { return; }
+    var here, me;
+    try {
+      here = MB.signalTracker.stats(function (s) { return roomOf(s) === room.id; });
+      me = MB.signalTracker.stats();
+    } catch (e) { return; }
+    if (!here || !me) { return; }
     host.innerHTML =
       '<div class="label mb2">Your signal record</div>' +
       '<div class="stat-grid stat-grid-sm">' +
@@ -578,7 +637,30 @@ MB.ready(function () {
         (here.win_rate !== null ? ' · ' + here.win_rate + '% win rate' : '') + '</div>';
   }
 
+  /* The composer (Agent 2) is the publishing path; it locks the pair in a
+     market room. The inline form below is only the fallback until it loads. */
+  function publishedToChat(sig) {
+    if (!sig) { return; }
+    if (!messages.some(function (m) { return m.signal && m.signal.id === sig.id; })) {
+      messages.push(signalMessage(sig));
+    }
+    paintRecord();
+    renderChat();
+    var last = document.getElementById('chatList').lastElementChild;
+    if (last) { last.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+  }
+
   document.getElementById('btnSignal').addEventListener('click', function () {
+    if (!room) { return; }
+    if (hasComposer()) {
+      MB.signalComposer.open({
+        market: room.market || null,
+        room: { id: room.id, name: room.name, tier: MB.rooms.tier(room) },
+        onPublished: publishedToChat
+      });
+      return;
+    }
+    if (!room.market) { MB.toast('Signal publishing is unavailable right now', 'err'); return; }
     sigForm.classList.toggle('hide');
     if (!sigForm.classList.contains('hide')) {
       if (!MB.$('#sigEntry').value && livePrice()) { MB.$('#sigEntry').value = roundDp(livePrice()); }
@@ -676,8 +758,7 @@ MB.ready(function () {
         if (!confirm('Remove ' + name + ' from ' + room.name + '?')) { return; }
         room.members = room.members.filter(function (m) { return m.user.username !== name; });
         room.member_count = Math.max(0, room.member_count - 1);
-        document.getElementById('rMeta').textContent =
-          MB.fmt.compact(room.member_count) + ' members · ' + room.online_count + ' online · Trader room';
+        paintMeta();
         renderMembers();
         MB.api.del('rooms/' + room.id + '/members/' + name);
         MB.toast(name + ' removed from the room');
@@ -703,15 +784,285 @@ MB.ready(function () {
     if (list) { list.scrollTop = list.scrollHeight; }
   }
 
+  var LOCKABLE = ['chat', 'posts', 'signals', 'members'];
+  var monitoring = false;   /* moderator chose to look inside a Pro room */
+  var current = 'chat';
   function showTab(v) {
-    ['chat','posts','signals','members'].forEach(function (k) {
+    current = v;
+    var locked = !!room && !MB.rooms.hasAccess(room) && !monitoring && LOCKABLE.indexOf(v) > -1;
+    ['chat','performance','posts','signals','members'].forEach(function (k) {
       document.getElementById('pane' + k.charAt(0).toUpperCase() + k.slice(1))
-        .classList.toggle('hide', k !== v);
+        .classList.toggle('hide', locked || k !== v);
     });
+    document.getElementById('paneLocked').classList.toggle('hide', !locked);
     MB.$$('#rTabs .tab').forEach(function (t) {
       t.classList.toggle('is-active', t.getAttribute('data-value') === v);
     });
-    setChatLayout(v === 'chat');
+    setChatLayout(v === 'chat' && !locked);
+  }
+
+  /* ------------------------------------------------------------- tiers */
+  function money(n) { return (n >= 0 ? '+' : '-') + '$' + MB.fmt.price(Math.abs(n || 0), 2); }
+
+  function paintMeta() {
+    var label = room.market ? MB.catLabel(room.market.category)
+      : (MB.rooms.TIERS[MB.rooms.tier(room)] || MB.rooms.TIERS.trader).label;
+    document.getElementById('rMeta').textContent =
+      MB.fmt.compact(room.member_count) + ' members · ' + room.online_count + ' online · ' + label;
+  }
+
+  function paintTier() {
+    var t = MB.rooms.tier(room);
+    var hero = document.getElementById('roomHero');
+    hero.classList.toggle('is-pro', t === 'pro');
+    hero.classList.toggle('is-premium', t === 'premium');
+    document.getElementById('rBadges').innerHTML =
+      MB.rooms.tierBadge(room) + MB.rooms.ownerBadge(room);
+    var stats = document.getElementById('rTierStats');
+    var p = room.performance && room.performance.periods && room.performance.periods['30d'];
+    if (MB.rooms.verified(room) && p) {
+      stats.innerHTML =
+        '<div class="rs"><div class="rs-v">' + p.win_rate + '%</div><div class="rs-k">Win Rate</div></div>' +
+        '<div class="rs"><div class="rs-v">' + p.trades + '</div><div class="rs-k">Total Trades</div></div>' +
+        '<div class="rs"><div class="rs-v ' + MB.fmt.dirClass(p.return_pct) + '">' + MB.fmt.pct(p.return_pct, 1) +
+          '</div><div class="rs-k">Monthly</div></div>' +
+        MB.rooms.derivBadge(room).replace('Deriv Verified', 'Deriv Connected');
+      stats.classList.remove('hide');
+    } else if (MB.rooms.verified(room)) {
+      stats.innerHTML = '<span class="t-xs c-3" style="grid-column:1 / 4">Deriv connected — verified figures appear after the first sync.</span>' +
+        MB.rooms.derivBadge(room);
+      stats.classList.remove('hide');
+    }
+  }
+
+  function paintJoin() {
+    var host = document.getElementById('rJoinWrap');
+    var pro = MB.rooms.isPro(room);
+    if (room.is_owner) {
+      host.innerHTML = '<button class="btn btn-ghost btn-sm" id="btnJoin" type="button">Manage</button>';
+    } else if (pro && room.is_subscribed) {
+      host.innerHTML = '<button class="btn btn-ghost btn-sm" id="btnJoin" type="button">' +
+        MB.icon('check', 14) + ' Subscribed</button>';
+    } else if (pro) {
+      host.innerHTML = '<button class="btn btn-pro btn-sm" id="btnJoin" type="button">Subscribe</button>' +
+        '<span class="tr-price">' + (room.pro.price_kx || 0) + ' KX / month</span>';
+    } else {
+      host.innerHTML = '<button class="btn btn-sm ' + (room.is_member ? 'btn-ghost' : 'btn-green-soft') +
+        '" id="btnJoin" type="button">' + (room.is_member ? 'Joined' : 'Join') + '</button>';
+    }
+    document.getElementById('btnJoin').addEventListener('click', onJoin);
+  }
+
+  function onJoin() {
+    if (room.is_owner) { showTab(MB.rooms.verified(room) ? 'performance' : 'members'); return; }
+    if (MB.rooms.isPro(room)) {
+      if (room.is_subscribed) { manageSubscription(); return; }
+      MB.rooms.subscribe(room, { onJoined: function () { paintJoin(); applyAccess(); } });
+      return;
+    }
+    MB.rooms.setJoined(room, !room.is_member);
+    paintJoin();
+    MB.api.post('rooms/' + room.id + (room.is_member ? '/join' : '/leave'));
+    MB.toast(room.is_member ? 'Joined ' + room.name : 'Left ' + room.name);
+  }
+
+  function manageSubscription() {
+    var sub = room.subscription || {};
+    MB.modal({
+      title: 'Your subscription',
+      sub: room.name,
+      body: '<div class="kx-rows">' +
+          '<div class="kx-r"><span>Price</span><b>' + (room.pro.price_kx || 0) + ' KX / month</b></div>' +
+          (sub.activated_at ? '<div class="kx-r"><span>Activated</span><b>' + MB.fmt.date(sub.activated_at) + '</b></div>' : '') +
+          (sub.renews_at ? '<div class="kx-r"><span>' + (sub.cancelled ? 'Access ends' : 'Next renewal') + '</span><b>' +
+            MB.fmt.date(sub.renews_at) + '</b></div>' : '') +
+        '</div>' +
+        '<p class="t-xs c-3 mt3">' + (sub.cancelled
+          ? 'Cancelled — it will not renew. You keep access until the date above.'
+          : 'Renews monthly from your KX balance. Cancel anytime; you keep access until the paid month ends.') + '</p>',
+      actions: sub.cancelled ? [{ label: 'Close', kind: 'ghost', close: true }] : [
+        { label: 'Keep it', kind: 'ghost', close: true },
+        { label: 'Cancel subscription', kind: 'sell', onClick: function (m) {
+            MB.rooms.cancelSubscription(room);
+            m.close();
+            MB.toast('Subscription cancelled — access until ' + MB.fmt.date((room.subscription || {}).renews_at));
+          } }
+      ]
+    });
+  }
+
+  function applyAccess() {
+    if (!room) { return; }
+    var host = document.getElementById('paneLocked');
+    var open = MB.rooms.hasAccess(room);
+    MB.$('#chatComposer').classList.toggle('hide', !open && monitoring);
+    if (open || monitoring) {
+      host.innerHTML = '';
+    } else {
+      var perks = (room.pro && room.pro.perks) || ['Daily signals and analysis', 'Members-only chat', 'Verified Deriv performance'];
+      host.innerHTML = '<div class="pro-lock">' +
+        '<div class="pl-ic">' + MB.icon('crown', 26) + '</div>' +
+        '<div class="t-h3 w-bold">This is a Pro Room</div>' +
+        '<p class="t-sm c-2 mt2">Chat, posts, signals and members are for subscribers. The Performance tab is open to everyone.</p>' +
+        '<div class="pl-price">' + (room.pro.price_kx || 0) + ' KX <span>/ month · ≈ $' +
+          MB.fmt.price(room.pro.price_kx || 0, 2) + '</span></div>' +
+        '<ul class="pro-perks">' + perks.map(function (x) {
+          return '<li>' + MB.icon('check', 16) + '<span>' + MB.esc(x) + '</span></li>'; }).join('') + '</ul>' +
+        '<button class="btn btn-pro btn-block mt5" type="button" id="btnLockSub">Subscribe · ' +
+          (room.pro.price_kx || 0) + ' KX / month</button>' +
+        '<p class="t-xs c-3 mt3">Renews monthly · cancel anytime</p>' +
+        (MB.rooms.canMonitor(room)
+          ? '<button class="btn btn-ghost btn-block mt3" type="button" id="btnMonitor">' + MB.icon('shield', 16) +
+            ' Monitor as moderator</button><p class="t-xs c-3 mt2">Read-only, to see and flag. You cannot post without subscribing.</p>'
+          : '') +
+      '</div>';
+      MB.mountIcons(host);
+      document.getElementById('btnLockSub').addEventListener('click', onJoin);
+      MB.on('#btnMonitor', 'click', function () { monitoring = true; applyAccess(); MB.toast('Moderator view — read-only'); });
+    }
+    showTab(current);
+  }
+
+  function paintOwnerStrip() {
+    var strip = document.getElementById('rOwnerStrip');
+    if (!room.is_owner || room.kind !== 'trader') { return; }
+    var t = MB.rooms.tier(room), p = room.pro || {};
+    var html = '';
+    if (t === 'trader') {
+      html = MB.icon('link', 15) + '<span class="grow"><b>Trader Room</b> · Connect Deriv to become a Premium Room</span>' +
+        MB.icon('chevright', 15);
+      strip.onclick = connectDeriv;
+    } else if (t === 'premium' && p.status === 'pending_review') {
+      html = MB.icon('clock', 15) + '<span class="grow"><b>Pro application under review</b> · subject to KonfluenX approval</span>' +
+        MB.icon('chevright', 15);
+      strip.onclick = function () { showTab('performance'); };
+    } else if (t === 'premium') {
+      html = MB.icon('crown', 15) + '<span class="grow"><b>Pro Eligibility — Month ' + (p.months_qualified || 0) +
+        ' of ' + (p.months_required || 3) + '</b> · see criteria</span>' + MB.icon('chevright', 15);
+      strip.onclick = function () { showTab('performance'); };
+    } else if (t === 'pro') {
+      html = MB.icon('crown', 15) + '<span class="grow"><b>Pro Room</b> · ' + (p.price_kx || 0) +
+        ' KX / month from each subscriber</span>';
+      strip.onclick = null;
+    }
+    strip.innerHTML = html;
+    strip.classList.toggle('hide', !html);
+  }
+
+  /* Simulated Deriv authorization. Stage 2: redirect to Deriv OAuth with a
+     read-only scope; the server stores the token and verifies the account. */
+  function connectDeriv() {
+    MB.modal({
+      title: 'Connect your Deriv account',
+      sub: 'Optional — upgrades this room to a Premium Room',
+      body: '<ul class="see-list">' +
+          '<li>' + MB.icon('check', 16) + '<span>Members see verified trading statistics and recent trades</span></li>' +
+          '<li>' + MB.icon('check', 16) + '<span>Read-only access — no trading or withdrawals</span></li>' +
+          '<li>' + MB.icon('check', 16) + '<span>You sign in on Deriv. KonfluenX never asks for your password</span></li>' +
+          '<li>' + MB.icon('check', 16) + '<span>Starts your Pro Room eligibility count</span></li>' +
+        '</ul>',
+      actions: [
+        { label: 'Not now', kind: 'ghost', close: true },
+        { label: 'Connect with Deriv', kind: 'trade', onClick: function (m) {
+            m.close();
+            MB.toast('Redirecting to Deriv to authorize…');
+            setTimeout(function () {
+              room.deriv_connected = true; room.tier = 'premium';
+              room.pro = Object.assign({}, room.pro || {}, { status: 'qualifying', months_qualified: 0, months_required: 3,
+                months: [{ month: 'This month', qualified: null, in_progress: true }] });
+              paintTier(); paintMeta(); paintOwnerStrip();
+              MB.$('#tabPerf').classList.remove('hide');
+              renderPerformance();
+              MB.toast('Deriv connected — this is now a Premium Room', 'ok');
+            }, 1200);
+          } }
+      ]
+    });
+  }
+
+  /* ------------------------------------------------------- performance */
+  var period = '30d';
+  function renderPerformance() {
+    var perf = room.performance;
+    MB.$('#perfSrc').innerHTML = MB.icon('verified', 13) + (perf
+      ? 'Verified from the owner’s Deriv account · synced ' + MB.fmt.ago(perf.synced_at)
+      : 'Deriv connected · waiting for the first sync');
+    var p = perf && perf.periods && perf.periods[period];
+    if (!p) {
+      MB.$('#perfStats').innerHTML = '';
+      MB.$('#perfChart').innerHTML = '<div class="empty" style="padding:24px 12px"><p>Verified figures appear after the first Deriv sync.</p></div>';
+      MB.$('#perfTrades').innerHTML = '<div class="t-sm c-3">No trades yet.</div>';
+      MB.$('#perfFoot').textContent = '';
+    } else {
+      MB.$('#perfStats').innerHTML =
+        '<div class="stat-cell"><div class="stat-v">' + p.win_rate + '%</div><div class="stat-k">Win Rate</div></div>' +
+        '<div class="stat-cell"><div class="stat-v">' + p.trades + '</div><div class="stat-k">Total Trades</div></div>' +
+        '<div class="stat-cell"><div class="stat-v ' + MB.fmt.dirClass(p.net_pl) + '" title="' + money(p.net_pl) + '">' +
+          (p.net_pl >= 0 ? '+' : '-') + '$' + MB.fmt.compact(Math.abs(p.net_pl)) + '</div><div class="stat-k">Net P/L (USD)</div></div>';
+      MB.$('#perfChart').innerHTML = '<div data-chart="area" data-seed="' + MB.esc(room.id + period) +
+        '" data-direction="' + (p.net_pl >= 0 ? 'up' : 'down') + '" data-h="120"></div>';
+      MB.$('#perfFoot').textContent = p.wins + ' wins · ' + p.losses + ' losses · return ' +
+        MB.fmt.pct(p.return_pct, 1) + ' · max drawdown ' + Number(p.max_drawdown).toFixed(1) + '%';
+      MB.$('#perfTrades').innerHTML = (perf.recent_trades || []).slice(0, 6).map(function (tr) {
+        var buy = tr.direction === 'BUY';
+        return '<div class="trade-line">' +
+          '<span class="tl-dir ' + (buy ? 'is-buy' : 'is-sell') + '">' + (buy ? 'BUY' : 'SELL') + '</span>' +
+          '<div class="grow" style="min-width:0"><div class="tl-n truncate">' + MB.esc(tr.market) + '</div>' +
+            '<div class="tl-s">' + MB.esc(tr.contract) + ' · ' + MB.fmt.ago(tr.closed_at) + '</div></div>' +
+          '<span class="tl-pl ' + MB.fmt.dirClass(tr.pl) + '">' + money(tr.pl) + '</span>' +
+        '</div>';
+      }).join('');
+      MB.mountCharts(MB.$('#perfChart'));
+    }
+    MB.$$('#perfPeriods button').forEach(function (b) {
+      b.classList.toggle('is-active', b.getAttribute('data-period') === period);
+    });
+    renderEligibility();
+    MB.mountIcons(MB.$('#panePerformance'));
+  }
+  MB.$('#perfPeriods').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-period]');
+    if (!b) { return; }
+    period = b.getAttribute('data-period');
+    renderPerformance();
+  });
+
+  /* Owner only: the road from Premium to Pro. */
+  function renderEligibility() {
+    var host = MB.$('#perfElig');
+    var p = room.pro || {};
+    if (!room.is_owner || MB.rooms.tier(room) !== 'premium' ||
+        ['qualifying', 'pending_review'].indexOf(p.status) < 0) { host.innerHTML = ''; return; }
+    var e = MB.rooms.eligibility(room);
+    var pending = e.status === 'pending_review';
+    var months = e.months.slice(-e.required);
+    while (months.length < e.required) { months.push({ month: 'Next', qualified: null }); }
+    host.innerHTML = '<div class="card elig">' +
+      '<div class="between">' +
+        '<div class="row g2" style="min-width:0"><span class="c-2 none">' + MB.icon('crown', 18) + '</span>' +
+          '<span class="w-bold">Pro Eligibility — Month ' + e.qualified + ' of ' + e.required + '</span></div>' +
+        '<span class="badge none ' + (pending ? 'badge-info' : 'badge-warn') + '">' + (pending ? 'Under review' : 'In progress') + '</span>' +
+      '</div>' +
+      '<div class="progress mt3"><i style="width:' + Math.round(e.qualified / e.required * 100) + '%"></i></div>' +
+      '<div class="elig-months">' + months.map(function (m) {
+        var cls = m.qualified ? 'is-done' : m.in_progress ? 'is-now' : '';
+        return '<div class="elig-m ' + cls + '"><b>' + MB.esc(m.month) + '</b>' +
+          (m.qualified ? 'Qualified' : m.in_progress ? 'In progress' : 'Upcoming') + '</div>';
+      }).join('') + '</div>' +
+      (pending ? '<p class="t-sm c-2 mt3">All three months qualified. KonfluenX is reviewing your application — ' +
+          'you will be notified when a decision is made.</p>'
+        : '<div class="between mt4"><div class="label">This month’s criteria</div>' +
+          '<span class="t-xs c-3">' + e.met + ' of ' + e.criteria.length + ' met so far</span></div>' +
+          '<div class="elig-list">' + e.criteria.map(function (c) {
+            return '<div class="elig-row ' + (c.pass ? 'is-pass' : 'is-wait') + '">' +
+              '<span class="er-ic">' + MB.icon(c.pass ? 'check' : 'clock', 13) + '</span>' +
+              '<div><div class="er-t">' + MB.esc(c.label) + '</div><div class="er-d">' + MB.esc(c.detail) + '</div></div>' +
+            '</div>';
+          }).join('') + '</div>') +
+      '<p class="t-xs c-3 mt3">Pro needs three consecutive qualifying months — every criterion, every month. ' +
+        'One good month is not enough, and a month that misses resets the count. ' +
+        'Pro status is subject to KonfluenX approval.</p>' +
+    '</div>';
   }
   document.getElementById('rTabs').addEventListener('mb:change', function (e) { showTab(e.detail.value); });
   setChatLayout(true);

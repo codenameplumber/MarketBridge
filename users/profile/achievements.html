@@ -15,49 +15,58 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
-<body data-shell="app" data-nav="home" data-root="../../" data-title="Achievements" data-sub="Celebrate your milestones" data-back="index.html" data-unread="3">
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Achievements" data-back="index.html" data-unread="3">
 
 <div class="app">
   <div data-render="topbar"></div>
   <main class="page">
 
-    <!-- SUMMARY -->
-    <section class="card achv-summary" id="achvSummary">
-      <div class="between mb3">
-        <div>
-          <div class="t-h2 w-black"><span id="achvEarned">0</span><span class="c-3"> / </span><span id="achvTotal">10</span></div>
-          <div class="t-xs c-3">badges earned</div>
-        </div>
-        <div class="achv-ring" id="achvRing">
-          <svg viewBox="0 0 80 80" width="80" height="80">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="var(--mb-border)" stroke-width="6"/>
-            <circle cx="40" cy="40" r="34" fill="none" stroke="var(--mb-green)" stroke-width="6"
-                    stroke-dasharray="213.6" stroke-dashoffset="213.6" stroke-linecap="round"
-                    transform="rotate(-90 40 40)" id="achvArc"/>
-          </svg>
-          <span class="achv-ring-pct" id="achvPct">0%</span>
-        </div>
+    <!-- PROGRESS -->
+    <section class="card" id="achvSummary">
+      <div class="between">
+        <div class="t-sm"><b class="c-up" id="achvEarned">0</b> of <b id="achvTotal">10</b> achievements unlocked</div>
+        <div class="t-h3 w-black" id="achvPct">0%</div>
       </div>
-      <div class="t-xs c-3">Rarest badge: <b id="achvRarest">&mdash;</b></div>
+      <div class="ach-bar mt3"><i id="achvBar" style="width:0%"></i></div>
+      <div class="t-xs c-3 mt2" id="achvSub">Earn badges. Build your reputation. Unlock more opportunities.</div>
     </section>
 
-    <!-- BADGE GRID -->
-    <section class="page-section">
-      <div class="between mb2">
-        <div class="label">All Badges</div>
-        <div class="tabs tabs-sm" data-group id="achvFilter">
-          <button class="tab is-active" data-value="all">All</button>
-          <button class="tab" data-value="earned">Earned</button>
-          <button class="tab" data-value="locked">Locked</button>
-        </div>
+    <!-- FILTER -->
+    <div class="mb2">
+      <div class="label mb2" id="achvLabel">All badges</div>
+      <div class="tabs tabs-sm" data-group id="achvFilter" style="margin:0">
+        <button class="tab is-active" data-value="all">All</button>
+        <button class="tab" data-value="unlocked">Unlocked</button>
+        <button class="tab" data-value="in_progress">In progress</button>
+        <button class="tab" data-value="locked">Locked</button>
       </div>
-      <div class="achv-grid" id="achvGrid"></div>
-    </section>
+    </div>
+
+    <!-- BADGE GRID -->
+    <div class="ach-grid" id="achvGrid" aria-live="polite"></div>
+
+    <!-- WHAT YOUR BADGES UNLOCK -->
+    <section class="card priv-card mt4" id="achvPriv"></section>
+
+    <p class="t-xs c-3" style="text-align:center">Tap a badge for details. How each badge is earned is kept private so badges can't be gamed.</p>
 
   </main>
   <div data-render="tabbar"></div>
+</div>
+
+<!-- BADGE DETAIL SHEET -->
+<div class="sheet-backdrop" id="achvSheet">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="achvSheetT">
+    <div class="sheet-grip"></div>
+    <div class="sheet-head">
+      <h2 class="t-h3 w-bold" id="achvSheetT">Badge</h2>
+      <button class="icon-btn" type="button" id="achvSheetClose" aria-label="Close"><span data-icon="close"></span></button>
+    </div>
+    <div class="sheet-body" id="achvSheetBody"></div>
+  </div>
 </div>
 
 <script src="../../assets/js/core/icons.js"></script>
@@ -68,52 +77,99 @@
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
 <script src="../../assets/js/components/achievements.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
 <script>
-(function () {
-  var root = MB.root();
+MB.ready(function () {
+  var badges = [], filter = 'all';
+  var statusOf = MB.card.achievementStatus;
+  /* Institutions see the institution badge set. Stage 2: /me decides. */
+  var params = new URLSearchParams(location.search);
+  var type = params.get('type');
 
-  MB.api.get('achievements').then(function (r) {
-    var d = r.data || {};
-    var badges = d.badges || [];
-    var summary = d.summary || {};
-
-    /* summary */
-    MB.$('#achvEarned').textContent = summary.earned || 0;
-    MB.$('#achvTotal').textContent = summary.total || 10;
-    var pct = Math.round(((summary.earned || 0) / (summary.total || 10)) * 100);
-    MB.$('#achvPct').textContent = pct + '%';
-    var circ = 2 * Math.PI * 34;
-    MB.$('#achvArc').setAttribute('stroke-dashoffset', circ - (circ * pct / 100));
-
-    var rarest = badges.find(function (b) { return b.id === summary.rarest; });
-    if (rarest) { MB.$('#achvRarest').textContent = rarest.name; }
-
-    /* render grid */
-    function renderGrid(filter) {
-      var list = badges;
-      if (filter === 'earned') { list = badges.filter(function (b) { return b.earned; }); }
-      if (filter === 'locked') { list = badges.filter(function (b) { return !b.earned; }); }
-
-      MB.$('#achvGrid').innerHTML = list.map(function (b) {
-        return MB.card.achievement(b);
-      }).join('');
+  function unlocks(b) {
+    if (!MB.kx || !MB.kx.badges) { return ''; }
+    var info = MB.kx.badges.info(b.id) || {};
+    var chips = [];
+    if (MB.kx.badges.isPerformanceAward(b.id)) {
+      chips.push('<span class="achv-unlock is-award">' + MB.icon('crown', 11) + 'Performance award · recognition only</span>');
+    } else if (info.unlocks_signals) {
+      chips.push('<span class="achv-unlock is-signal">' + MB.icon('signals', 11) + 'Unlocks signal posting</span>');
     }
-
-    renderGrid('all');
-
-    /* filter tabs */
-    MB.$$('#achvFilter .tab').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        MB.$$('#achvFilter .tab').forEach(function (t) { t.classList.remove('is-active'); });
-        btn.classList.add('is-active');
-        renderGrid(btn.getAttribute('data-value'));
-      });
+    if (info.points) { chips.push('<span class="achv-unlock is-points">' + MB.icon('gift', 11) + '+' + info.points + ' KX Points</span>'); }
+    (info.perks || []).forEach(function (p) {
+      if (/signal posting/i.test(p)) { return; }
+      chips.push('<span class="achv-unlock">' + MB.icon('check', 11) + MB.esc(p) + '</span>');
     });
+    return chips.length ? '<div class="label mb2">What it unlocks</div><div class="achv-unlocks">' + chips.join('') + '</div>' : '';
+  }
+
+  function renderGrid() {
+    var list = filter === 'all' ? badges : badges.filter(function (b) { return statusOf(b) === filter; });
+    var grid = MB.$('#achvGrid');
+    grid.innerHTML = list.length
+      ? list.map(MB.card.achievement).join('')
+      : '<div class="empty" style="grid-column:1/-1">' + MB.icon('star', 36) + '<h3>Nothing here yet</h3></div>';
+    MB.$('#achvLabel').textContent = (filter === 'all' ? 'All badges' : filter === 'in_progress' ? 'In progress' : filter.charAt(0).toUpperCase() + filter.slice(1)) + ' · ' + list.length;
+  }
+
+  function renderPriv() {
+    if (!MB.kx || !MB.kx.privileges) { MB.$('#achvPriv').hidden = true; return; }
+    var held = badges.filter(function (b) { return statusOf(b) === 'unlocked'; }).map(function (b) { return b.id; });
+    var pv = MB.kx.privileges({ badges: held });
+    var host = MB.$('#achvPriv');
+    host.classList.toggle('is-locked', !pv.can_post_signals);
+    host.innerHTML =
+      '<div class="row g3" style="align-items:flex-start">' +
+        '<span class="kp-ic' + (pv.can_post_signals ? '' : ' is-spend') + '">' + MB.icon(pv.can_post_signals ? 'signals' : 'lock', 18) + '</span>' +
+        '<div class="grow">' +
+          '<div class="t-sm w-bold">Signal posting ' + (pv.can_post_signals ? 'unlocked' : 'locked') + '</div>' +
+          (pv.reasons || []).map(function (r) { return '<div class="t-xs c-2 mt1">' + MB.esc(r) + '</div>'; }).join('') +
+          '<div class="achv-unlocks">' + (pv.eligible_badges || []).map(function (e) {
+            return '<span class="achv-unlock' + (e.held ? ' is-signal' : '') + '">' + MB.icon(e.held ? 'check' : 'lock', 11) + MB.esc(e.name) + '</span>';
+          }).join('') + '</div>' +
+          '<div class="t-xs c-3 mt2">Any one of these is enough. Top Signal Provider is a performance award and is never required.</div>' +
+        '</div></div>';
+    MB.mountIcons(host);
+  }
+
+  function openSheet(b) {
+    MB.$('#achvSheetT').textContent = b.label || b.name;
+    MB.$('#achvSheetBody').innerHTML = MB.card.achievementSheet(b, { unlocks: unlocks(b) });
+    MB.mountIcons(MB.$('#achvSheetBody'));
+    MB.sheet.open('achvSheet');
+  }
+  MB.$('#achvGrid').addEventListener('click', function (e) {
+    var t = e.target.closest('[data-badge]'); if (!t) { return; }
+    var b = badges.filter(function (x) { return x.id === t.getAttribute('data-badge'); })[0];
+    if (b) { openSheet(b); }
   });
-})();
+  MB.$('#achvSheetClose').addEventListener('click', function () { MB.sheet.close('achvSheet'); });
+  MB.$('#achvSheet').addEventListener('click', function (e) { if (e.target === this) { MB.sheet.close('achvSheet'); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { MB.sheet.close('achvSheet'); } });
+
+  MB.$('#achvFilter').addEventListener('mb:change', function (e) { filter = e.detail.value; renderGrid(); });
+
+  var ready = MB.kx && MB.kx.ready ? MB.kx.ready() : Promise.resolve();
+  Promise.all([MB.api.get('achievements'), MB.api.get('me'), ready]).then(function (r) {
+    var d = r[0].data || {};
+    var me = (r[1] && r[1].data) || {};
+    var isInst = type ? type === 'institution' : me.profile_type === 'institution';
+    badges = isInst ? (d.institution_badges || d.badges || []) : (d.badges || []);
+    var earned = badges.filter(function (b) { return statusOf(b) === 'unlocked'; }).length;
+    var total = badges.length || 10;
+    var pct = Math.round(earned / total * 100);
+    MB.$('#achvEarned').textContent = earned;
+    MB.$('#achvTotal').textContent = total;
+    MB.$('#achvPct').textContent = pct + '%';
+    MB.$('#achvBar').style.width = pct + '%';
+    if (isInst) { MB.$('#achvSub').textContent = 'Institution achievements · company badges earned by the whole team.'; }
+    renderGrid();
+    renderPriv();
+  });
+});
 </script>
 </body>
 </html>

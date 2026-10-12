@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wallet &amp; Credits — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Wallet &amp; Credits" data-sub="Your KX platform credit" data-back="../index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <!-- ================================================================
+         KX BALANCE
+         ================================================================ -->
+    <section class="kx-hero">
+      <div class="kx-hero-top">
+        <span class="kx-mark" aria-hidden="true">K</span>
+        <div class="grow">
+          <div class="kx-label">KX Balance</div>
+          <div class="kx-amount num" id="kxBal">0.00<small>KX</small></div>
+          <div class="kx-hero-sub" id="kxUsd">&asymp; $0.00 platform credit &middot; 1 KX = $1</div>
+        </div>
+      </div>
+      <div class="kx-hero-actions">
+        <a class="btn btn-trade btn-block" href="add-funds.html"><span data-icon="plus"></span> Add Funds</a>
+        <a class="btn btn-outline btn-block" href="kx-history.html"><span data-icon="clock"></span> Transaction History</a>
+      </div>
+    </section>
+
+    <div id="kxPending"></div>
+
+    <div class="alert alert-info">
+      <span data-icon="info"></span>
+      <div class="t-xs"><strong>KX is platform credit, not a trading balance.</strong>
+      You buy it with USDT through KaastroPay and spend it on KonfluenX services.
+      It is never sent to Deriv, KonfluenX holds no trading funds, and KX cannot be
+      withdrawn or exchanged back for money.</div>
+    </div>
+
+    <!-- ================================================================
+         WHAT KX IS FOR
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Use KX for</h2></div>
+      <div class="kx-uses">
+        <a class="kx-use" href="../community/rooms.html">
+          <span class="kx-use-ic"><span data-icon="crown"></span></span>
+          <b>Pro Rooms</b><span>Monthly subscriptions to top traders' rooms</span></a>
+        <a class="kx-use" href="../resources/index.html">
+          <span class="kx-use-ic"><span data-icon="book"></span></span>
+          <b>Courses</b><span>Learn from verified creators</span></a>
+        <a class="kx-use" href="../resources/index.html">
+          <span class="kx-use-ic"><span data-icon="play"></span></span>
+          <b>Webinars</b><span>Live sessions and replays</span></a>
+        <div class="kx-use">
+          <span class="kx-use-ic"><span data-icon="star"></span></span>
+          <b>Premium services</b><span>Advanced tools as they launch</span></div>
+      </div>
+      <a class="kx-use is-points" href="../profile/rewards.html" style="flex-direction:row;align-items:center;gap:var(--mb-s3)">
+        <span class="kx-use-ic"><span data-icon="megaphone"></span></span>
+        <span class="grow" style="display:flex;flex-direction:column;gap:2px">
+          <b style="color:var(--mb-text)">Boosting uses KX Points, not KX</b>
+          <span>Boosts and signal posts are paid with points you earn. KX can't buy visibility.</span></span>
+        <span data-icon="chevright"></span>
+      </a>
+    </section>
+
+    <!-- ================================================================
+         RECENT ACTIVITY
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Recent activity</h2><a href="kx-history.html">View all</a></div>
+      <div class="list" id="kxRecent"></div>
+    </section>
+
+    <!-- ================================================================
+         POINTS + CREATOR — separate things, shown separately
+         ================================================================ -->
+    <section class="page-section">
+      <div class="sec-head"><h2>Also in your wallet</h2></div>
+      <div class="list">
+        <a class="list-row is-tight" href="../profile/rewards.html">
+          <span class="kx-row-ic is-subscription"><span data-icon="gift"></span></span>
+          <span class="grow"><span class="lr-title" style="display:block">KX Points</span>
+            <span class="lr-sub">Earned, never bought &middot; used for signals and boosts</span></span>
+          <span class="kx-amt-val num" id="kxPts">0 pts</span>
+          <span class="lr-chev" data-icon="chevright"></span>
+        </a>
+        <a class="list-row is-tight" href="../creator/earnings.html">
+          <span class="kx-row-ic is-topup"><span data-icon="wallet"></span></span>
+          <span class="grow"><span class="lr-title" style="display:block">Creator Earnings</span>
+            <span class="lr-sub">Money from your rooms and courses &middot; separate from KX</span></span>
+          <span class="lr-chev" data-icon="chevright"></span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  function draw() {
+    var bal = MB.kx.balance();
+    MB.$('#kxBal').innerHTML = MB.fmt.price(bal, 2) + '<small>KX</small>';
+    MB.$('#kxUsd').innerHTML = '&asymp; ' + MB.fmt.money(MB.kx.usd(bal)) + ' platform credit &middot; 1 KX = $1';
+    MB.$('#kxPts').textContent = MB.fmt.compact(MB.kx.points.balance()) + ' pts';
+
+    var rows = MB.kx.transactions().slice(0, 4);
+    MB.$('#kxRecent').innerHTML = rows.length ? rows.map(function (t) { return MB.kx.ui.txRow(t); }).join('')
+      : '<div class="empty">' + MB.icon('coin', 40) + '<h3>No KX activity yet</h3><p>Add funds to start using KX.</p></div>';
+    MB.mountIcons(MB.$('#kxRecent'));
+
+    /* A top-up the user has not finished — or that is still confirming. */
+    var open = MB.kx.payments.list().filter(function (p) {
+      return p.status === 'awaiting_payment' || p.status === 'confirming' || p.status === 'underpaid';
+    })[0];
+    var host = MB.$('#kxPending');
+    if (!open) { host.innerHTML = ''; return; }
+    var msg = { awaiting_payment: 'Waiting for your payment', confirming: 'Awaiting network confirmation',
+                underpaid: 'Partially received — action needed' }[open.status];
+    host.innerHTML = '<a class="alert alert-warn" href="pay.html?id=' + encodeURIComponent(open.id) + '" style="color:inherit">' +
+      MB.icon('hourglass', 18) + '<div class="t-xs grow"><strong>' + MB.esc(msg) + '</strong><br>' +
+      MB.esc(MB.fmt.price(open.amount, 2) + ' USDT (' + open.network + ') for ' + MB.fmt.price(open.kx, 2) + ' KX. ') +
+      'KX is credited only after KaastroPay confirms the payment.</div>' + MB.icon('chevright', 16) + '</a>';
+  }
+
+  draw();
+  MB.kx.ready().then(draw);
+  MB.kx.on(draw);
+  setInterval(function () { MB.kx.payments.settle(); }, 3000);
+  MB.mountIcons(document);
+});
+</script>
+</body>
+</html>

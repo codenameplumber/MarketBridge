@@ -1,0 +1,458 @@
+{
+  "data": [
+    {
+      "username": "FX_ProTrader",
+      "display_name": "FX_ProTrader",
+      "profile_type": "individual",
+      "room": {
+        "id": "room_u_FX_ProTrader",
+        "name": "FX_ProTrader's Room",
+        "tier": "premium"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 14,
+        "resolved": 10,
+        "wins": 4,
+        "losses": 6,
+        "win_rate": 40,
+        "waiting": 2,
+        "active": 0,
+        "expired": 2,
+        "extended_targets": 2,
+        "points": {
+          "pips": 313,
+          "pts": 79.4
+        },
+        "disputes_open": 1
+      },
+      "deriv": {
+        "connected": true,
+        "source": "Deriv account data (read-only API)",
+        "accounts": [
+          {
+            "login": "CR•••4821",
+            "label": "Deriv USD (CR)",
+            "platform": "Deriv",
+            "public": true
+          }
+        ],
+        "window": "90d",
+        "trades": 412,
+        "win_rate": 71,
+        "net_pl": 6240.35,
+        "max_drawdown": 9.8,
+        "last_sync": "2026-09-02T04:30:00Z"
+      },
+      "matching": {
+        "eligible_signals": 10,
+        "matched": 10,
+        "rate": 100,
+        "applies": true
+      }
+    },
+    {
+      "username": "QueenTrader",
+      "display_name": "QueenTrader",
+      "profile_type": "individual",
+      "room": {
+        "id": "room_u_QueenTrader",
+        "name": "QueenTrader's Room",
+        "tier": "premium"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 12,
+        "resolved": 10,
+        "wins": 8,
+        "losses": 2,
+        "win_rate": 80,
+        "waiting": 0,
+        "active": 2,
+        "expired": 0,
+        "extended_targets": 6,
+        "points": {
+          "pips": 553.6,
+          "pts": 960.8
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": true,
+        "source": "Deriv account data (read-only API)",
+        "accounts": [
+          {
+            "login": "CR•••7310",
+            "label": "Deriv USD (CR)",
+            "platform": "Deriv",
+            "public": true
+          }
+        ],
+        "window": "90d",
+        "trades": 286,
+        "win_rate": 66,
+        "net_pl": 2911.8,
+        "max_drawdown": 14.2,
+        "last_sync": "2026-09-02T04:12:00Z"
+      },
+      "matching": {
+        "eligible_signals": 12,
+        "matched": 8,
+        "rate": 67,
+        "applies": true
+      }
+    },
+    {
+      "username": "AlphaKing",
+      "display_name": "AlphaKing",
+      "profile_type": "individual",
+      "room": {
+        "id": "room_u_AlphaKing",
+        "name": "AlphaKing's Room",
+        "tier": "pro"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 15,
+        "resolved": 12,
+        "wins": 6,
+        "losses": 6,
+        "win_rate": 50,
+        "waiting": 0,
+        "active": 2,
+        "expired": 1,
+        "extended_targets": 4,
+        "points": {
+          "pips": -61.9,
+          "pts": 331.3
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": true,
+        "source": "Deriv account data (read-only API)",
+        "accounts": [
+          {
+            "login": "CR•••1092",
+            "label": "Deriv USD (CR)",
+            "platform": "Deriv",
+            "public": true
+          }
+        ],
+        "window": "90d",
+        "trades": 318,
+        "win_rate": 72,
+        "net_pl": 9120.4,
+        "max_drawdown": 11.5,
+        "last_sync": "2026-09-02T04:40:00Z"
+      },
+      "matching": {
+        "eligible_signals": 14,
+        "matched": 10,
+        "rate": 71,
+        "applies": true
+      }
+    },
+    {
+      "username": "SwingMaster",
+      "display_name": "SwingMaster",
+      "profile_type": "individual",
+      "room": {
+        "id": "room_u_SwingMaster",
+        "name": "SwingMaster's Room",
+        "tier": "premium"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 16,
+        "resolved": 12,
+        "wins": 6,
+        "losses": 6,
+        "win_rate": 50,
+        "waiting": 2,
+        "active": 0,
+        "expired": 2,
+        "extended_targets": 4,
+        "points": {
+          "pips": 35.4,
+          "pts": 312.5
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": true,
+        "source": "Deriv account data (read-only API)",
+        "accounts": [
+          {
+            "login": "MT5•••3348",
+            "label": "Deriv MT5 Financial",
+            "platform": "MT5",
+            "public": true
+          }
+        ],
+        "window": "90d",
+        "trades": 94,
+        "win_rate": 58,
+        "net_pl": -412.6,
+        "max_drawdown": 18.9,
+        "last_sync": "2026-09-01T22:05:00Z"
+      },
+      "matching": {
+        "eligible_signals": 12,
+        "matched": 9,
+        "rate": 75,
+        "applies": true
+      }
+    },
+    {
+      "username": "JamesFX",
+      "display_name": "JamesFX",
+      "profile_type": "individual",
+      "room": {
+        "id": "room_u_JamesFX",
+        "name": "JamesFX's Room",
+        "tier": "trader"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 19,
+        "resolved": 15,
+        "wins": 12,
+        "losses": 3,
+        "win_rate": 80,
+        "waiting": 0,
+        "active": 3,
+        "expired": 1,
+        "extended_targets": 6,
+        "points": {
+          "pips": 1175.1,
+          "pts": 881.8
+        },
+        "disputes_open": 1
+      },
+      "deriv": {
+        "connected": false
+      },
+      "matching": {
+        "eligible_signals": 0,
+        "matched": 0,
+        "rate": null,
+        "applies": false
+      }
+    },
+    {
+      "username": "Mr_Market",
+      "display_name": "Mr_Market",
+      "profile_type": "individual",
+      "room": {
+        "id": "room_u_Mr_Market",
+        "name": "Mr_Market's Room",
+        "tier": "trader"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 9,
+        "resolved": 8,
+        "wins": 4,
+        "losses": 4,
+        "win_rate": 50,
+        "waiting": 0,
+        "active": 0,
+        "expired": 1,
+        "extended_targets": 3,
+        "points": {
+          "pips": -13.2,
+          "pts": 373.3
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": true,
+        "source": "Deriv account data (read-only API)",
+        "accounts": [
+          {
+            "login": "CR•••5527",
+            "label": "Deriv USD (CR)",
+            "platform": "Deriv",
+            "public": true
+          }
+        ],
+        "window": "90d",
+        "trades": 57,
+        "win_rate": 61,
+        "net_pl": 388.1,
+        "max_drawdown": 12,
+        "last_sync": "2026-09-01T18:40:00Z"
+      },
+      "matching": {
+        "eligible_signals": 0,
+        "matched": 0,
+        "rate": null,
+        "applies": false
+      }
+    },
+    {
+      "username": "ChainScalp",
+      "display_name": "ChainScalp",
+      "profile_type": "individual",
+      "room": null,
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 20,
+        "resolved": 13,
+        "wins": 8,
+        "losses": 5,
+        "win_rate": 62,
+        "waiting": 1,
+        "active": 3,
+        "expired": 3,
+        "extended_targets": 5,
+        "points": {
+          "pips": 420.6,
+          "pts": 750.4
+        },
+        "disputes_open": 3
+      },
+      "deriv": {
+        "connected": false
+      },
+      "matching": {
+        "eligible_signals": 0,
+        "matched": 0,
+        "rate": null,
+        "applies": false
+      }
+    },
+    {
+      "username": "PipHunter",
+      "display_name": "PipHunter",
+      "profile_type": "individual",
+      "room": null,
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 17,
+        "resolved": 12,
+        "wins": 6,
+        "losses": 6,
+        "win_rate": 50,
+        "waiting": 1,
+        "active": 0,
+        "expired": 4,
+        "extended_targets": 4,
+        "points": {
+          "pips": 265.3,
+          "pts": 134.5
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": false
+      },
+      "matching": {
+        "eligible_signals": 0,
+        "matched": 0,
+        "rate": null,
+        "applies": false
+      }
+    },
+    {
+      "username": "GoldDigger",
+      "display_name": "GoldDigger",
+      "profile_type": "individual",
+      "room": null,
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 9,
+        "resolved": 4,
+        "wins": 2,
+        "losses": 2,
+        "win_rate": 50,
+        "waiting": 1,
+        "active": 3,
+        "expired": 1,
+        "extended_targets": 0,
+        "points": {
+          "pips": 85.5,
+          "pts": 62
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": false
+      },
+      "matching": {
+        "eligible_signals": 0,
+        "matched": 0,
+        "rate": null,
+        "applies": false
+      }
+    },
+    {
+      "username": "JTCapital",
+      "display_name": "JT Capital",
+      "profile_type": "institution",
+      "room": {
+        "id": "room_inst_jtcapital",
+        "name": "JT Capital Desk",
+        "tier": "premium"
+      },
+      "konfluenx": {
+        "source": "KonfluenX price-feed verification",
+        "published": 8,
+        "resolved": 5,
+        "wins": 2,
+        "losses": 3,
+        "win_rate": 40,
+        "waiting": 0,
+        "active": 1,
+        "expired": 2,
+        "extended_targets": 1,
+        "points": {
+          "pips": -71.1,
+          "pts": 315.3
+        },
+        "disputes_open": 0
+      },
+      "deriv": {
+        "connected": true,
+        "source": "Deriv account data (read-only API)",
+        "accounts": [
+          {
+            "login": "MTR40012884",
+            "label": "MT5 Standard",
+            "platform": "MT5",
+            "public": true
+          },
+          {
+            "login": "MTR40015321",
+            "label": "MT5 Synthetic",
+            "platform": "MT5",
+            "public": true
+          },
+          {
+            "login": "MTR40018790",
+            "label": "MT5 Financial",
+            "platform": "MT5",
+            "public": false
+          }
+        ],
+        "window": "90d",
+        "trades": 5188,
+        "win_rate": 69,
+        "net_pl": 27030.5,
+        "max_drawdown": 12.4,
+        "last_sync": "2026-09-02T04:45:00Z"
+      },
+      "matching": {
+        "eligible_signals": 6,
+        "matched": 4,
+        "rate": 67,
+        "applies": true
+      }
+    }
+  ],
+  "meta": {
+    "generated_for": "users/signals/provider.html",
+    "note": "KonfluenX signal performance and verified Deriv performance are separate sources and are never combined."
+  }
+}

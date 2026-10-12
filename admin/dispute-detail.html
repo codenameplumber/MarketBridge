@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dispute Review — KonfluenX Admin</title>
+<meta name="theme-color" content="#080B0F">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/signals.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="admin" data-role="admin" data-nav="disputes" data-root="../">
+
+<div class="admin">
+  <div data-render="admin-rail"></div>
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <button class="icon-btn admin-burger" id="adminBurger" aria-label="Menu">
+        <span data-icon="menu"></span></button>
+      <a class="icon-btn none" href="disputes.html" aria-label="Back to disputes"><span data-icon="back"></span></a>
+      <div class="grow">
+        <h1 id="pageTitle">Dispute</h1>
+        <div class="sub" id="pageSub">Moderator review of an automated signal result</div>
+      </div>
+      <button class="theme-toggle none" data-theme-toggle aria-label="Switch theme"></button>
+    </header>
+    <main class="admin-body">
+      <div class="detail-hero" id="hero"></div>
+
+      <section class="panel">
+        <div class="panel-head between"><h2>Market price history</h2><span class="t-xs c-3" id="chartNote"></span></div>
+        <div class="panel-body" id="chart"></div>
+      </section>
+
+      <div class="detail-cols">
+        <div class="stack g4">
+          <section class="panel">
+            <div class="panel-head"><h2>User's reason</h2></div>
+            <div class="panel-body" id="reason"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>TP / SL hit sequence</h2></div>
+            <div class="panel-body" id="sequence"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Automated calculation</h2></div>
+            <div class="panel-body" id="calc"></div>
+          </section>
+        </div>
+        <div class="stack g4">
+          <section class="panel">
+            <div class="panel-head"><h2>Original signal</h2></div>
+            <div class="panel-body"><div class="info-list" id="signal"></div></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Decision</h2></div>
+            <div class="panel-body" id="decision"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h2>Audit log</h2></div>
+            <div class="panel-body"><div class="info-list" id="audit"></div></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/signal-tracker.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/components/datatable.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script>
+
+/* Decisions taken in this browser (prototype).
+   Stage 2: POST /admin/disputes/{id}/uphold | /correct { reason, outcome };
+   the server writes the audit entry, updates the signal and notifies the user. */
+var DKEY = 'mb.disputes.decisions';
+var REASON_MIN = 20;
+function decisions() {
+  try { return JSON.parse(localStorage.getItem(DKEY) || '{}'); } catch (e) { return {}; }
+}
+function saveDecision(id, rec) {
+  var all = decisions(); all[id] = rec;
+  try { localStorage.setItem(DKEY, JSON.stringify(all)); } catch (e) { /* storage unavailable */ }
+}
+function info(k, v, sub) {
+  return '<div class="info-row"><span class="ir-k">' + MB.esc(k) + '</span>' +
+    '<span class="ir-v">' + v + (sub ? '<span class="sub">' + MB.esc(sub) + '</span>' : '') + '</span></div>';
+}
+function when(iso) { return iso ? MB.card.sx.timeOf(iso) : '—'; }
+function outcomeChip(o, pts, unit) {
+  var cls = { won: 'sx-won', lost: 'sx-lost', expired: 'sx-exp', void: 'sx-wait' }[o] || 'sx-wait';
+  var lbl = { won: 'WIN', lost: 'LOSS', expired: 'EXPIRED', void: 'VOID' }[o] || String(o || '—').toUpperCase();
+  return '<span class="sx-chip ' + cls + '">' + lbl +
+    ((o === 'won' || o === 'lost') && pts !== undefined ? ' ' + MB.card.sx.fmtPts(pts, unit) : '') + '</span>';
+}
+function statusBadge(st) {
+  var map = { open: ['badge-warn', 'Open — awaiting review'], upheld: ['badge-info', 'Upheld'], corrected: ['badge-active', 'Corrected'] };
+  var d = map[st] || ['badge-neutral', st];
+  return '<span class="badge ' + d[0] + '">' + d[1] + '</span>';
+}
+
+MB.ready(function () {
+  var id = new URLSearchParams(location.search).get('id');
+  var T = MB.signalTracker;
+
+  MB.api.list('admin/disputes').then(function (rows) {
+    var d = rows.filter(function (x) { return x.id === id; })[0];
+    if (!d && T) { d = fromLocal(T.disputes().filter(function (x) { return x.id === id; })[0]); }
+    if (!d) { d = rows[0]; }
+    var dec = decisions()[d.id];
+    if (dec) {
+      d.status = dec.action === 'correct' ? 'corrected' : 'upheld';
+      d.resolution = dec;
+      d.audit = (d.audit || []).concat(dec.audit || []);
+    }
+    render(d);
+  });
+
+  /* A dispute raised from the app in this browser. Stage 2 attaches the tick history. */
+  function fromLocal(x) {
+    if (!x) { return null; }
+    var s = x.signal || {};
+    return {
+      id: x.id, local: true, status: x.status, opened_at: x.at, reason: x.reason,
+      raised_by: { username: 'you (this browser)', role: 'follower' },
+      signal: { id: x.signal_id, author: { username: s.author || '—' },
+        market: { short_name: s.pair || s.symbol, symbol: s.symbol, decimal_places: 5 },
+        direction: String(s.direction || 'buy').toLowerCase(), levels: s.levels || { tps: [] },
+        published_at: s.published_at, timeframe: null, room: null, version: 1 },
+      system: { outcome: s.status, points: s.points, unit: s.unit, events: [] },
+      prices: [], resolution: null,
+      audit: [{ at: x.at, by: 'you', action: 'dispute_opened', note: x.reason }]
+    };
+  }
+
+  function render(d) {
+    var s = d.signal, lv = s.levels, m = s.market;
+    var dp = m.decimal_places !== undefined ? m.decimal_places : 2;
+    var dir = String(s.direction).toUpperCase();
+    var px = function (v) { return MB.fmt.price(v, dp); };
+
+    document.getElementById('pageTitle').textContent = 'Dispute ' + d.id;
+    document.getElementById('pageSub').textContent = dir + ' ' + m.short_name + ' by @' + s.author.username +
+      ' · raised ' + MB.fmt.ago(d.opened_at);
+
+    /* --- replay the price history through the same engine as the app --- */
+    var rep = d.prices && d.prices.length && T ? T.replay(s, d.prices) : null;
+    var ev = rep ? rep.events : (d.system.events || []);
+    var sysOutcome = rep ? (rep.record.status === 'pending' ? 'expired' : rep.record.status) : d.system.outcome;
+    var sysPts = rep ? rep.record.points : d.system.points;
+    var matches = !rep || sysOutcome === d.system.outcome;
+
+    document.getElementById('hero').innerHTML =
+      MB.avatar({ username: s.author.username }, 'avatar-xl') +
+      '<div class="dh-main">' +
+        '<div class="dh-name"><span class="' + (dir === 'SELL' ? 'c-down' : 'c-up') + '">' + dir + '</span> ' + MB.esc(m.short_name) + '</div>' +
+        '<div class="dh-sub">Signal ' + MB.esc(s.id) + ' · @' + MB.esc(s.author.username) +
+          (s.author.profile_type === 'institution' ? ' (institution)' : '') + ' · raised by ' + MB.esc(d.raised_by.username) +
+          ' (' + MB.esc(d.raised_by.role) + ')</div>' +
+        '<div class="dh-badges">' + statusBadge(d.status) +
+          '<span class="t-xs c-3" style="align-self:center">Automated result</span>' + outcomeChip(d.system.outcome, d.system.points, d.system.unit) +
+          (d.resolution && d.resolution.action === 'correct'
+            ? '<span class="t-xs c-3" style="align-self:center">Corrected to</span>' + outcomeChip(d.resolution.outcome, d.resolution.points, d.system.unit) : '') +
+        '</div>' +
+      '</div>';
+
+    /* --- chart --- */
+    var chart = document.getElementById('chart');
+    if (d.prices && d.prices.length) {
+      chart.innerHTML = MB.card.sigPriceChart({ prices: d.prices, entry: lv.entry, sl: lv.sl, tps: lv.tps, events: ev, dp: dp, h: 280 }) +
+        '<div class="row g4 wrap t-xs c-3 mt3">' +
+          '<span><span class="c-info">●</span> Entry hit</span><span><span class="c-up">●</span> TP hit</span>' +
+          '<span><span class="c-down">●</span> SL hit</span><span><span class="c-warn">●</span> Invalid print</span>' +
+          '<span>Dashed lines: locked levels (v' + (s.version || 1) + ')</span></div>';
+      document.getElementById('chartNote').textContent = d.prices.length + ' price points · ' +
+        when(d.prices[0].t) + ' → ' + when(d.prices[d.prices.length - 1].t);
+    } else {
+      chart.innerHTML = '<div class="t-sm c-3">No price history is attached in this prototype. ' +
+        'Stage 2: the server attaches the Deriv tick history from publish to result.</div>';
+    }
+
+    /* --- reason --- */
+    document.getElementById('reason').innerHTML =
+      '<blockquote class="t-sm" style="margin:0;padding-left:12px;border-left:3px solid var(--mb-warn)">“' + MB.esc(d.reason) + '”</blockquote>' +
+      '<div class="t-xs c-3 mt3">Raised ' + when(d.opened_at) + ' by ' + MB.esc(d.raised_by.username) + '. ' +
+      'Community opinion never overrides the system — decide from the data only.</div>';
+
+    /* --- sequence --- */
+    var seq = [];
+    seq.push({ cls: '', t: s.published_at, txt: 'Published and locked — entry ' + px(lv.entry) + ', SL ' + px(lv.sl) +
+      ', ' + lv.tps.map(function (tp, i) { return 'TP' + (i + 1) + ' ' + px(tp); }).join(', ') });
+    (d.prices || []).forEach(function (p) {
+      if (p.glitch) { seq.push({ cls: 'is-glitch', t: p.t, txt: 'Invalid print at ' + px(p.p) + ' (flagged by the feed provider)' }); }
+    });
+    ev.forEach(function (e) {
+      var map = {
+        entry: ['is-entry', 'Entry hit at ' + px(lv.entry) + ' — signal active'],
+        tp: ['is-tp', 'TP' + e.level + ' HIT ✓ at ' + px(lv.tps[e.level - 1]) + (e.level === 1 ? ' — WIN (permanent)' : ' — adds points')],
+        sl: ['is-sl', 'SL hit at ' + px(lv.sl) + ' — LOSS' + (e.ambiguous ? ' (TP and SL inside one tick → against the author)' : '')],
+        sl_after_win: ['is-sl', 'Back at SL ' + px(lv.sl) + ' after the win — monitoring ends, WIN unchanged'],
+        expired: ['', 'Entry not reached within 24 hours — EXPIRED']
+      }[e.type];
+      if (map) { seq.push({ cls: map[0], t: e.at, txt: map[1] }); }
+    });
+    seq.sort(function (a, b) { return Date.parse(a.t) - Date.parse(b.t); });
+    document.getElementById('sequence').innerHTML = '<div class="sx-seq">' + seq.map(function (x, i) {
+      return '<div class="sx-seq-i ' + x.cls + '"><span class="sx-seq-n">' + (i + 1) + '</span>' +
+        '<div class="grow"><div>' + MB.esc(x.txt) + '</div><div class="t-xs c-3">' + MB.esc(when(x.t)) + '</div></div></div>';
+    }).join('') + '</div>';
+
+    /* --- calculation --- */
+    var unitInfo = T ? T.unit({ symbol: m.symbol, category: m.category, pair: m.pair }) : { unit: d.system.unit, basis: '' };
+    var calc = '';
+    var entryEv = ev.filter(function (e) { return e.type === 'entry'; })[0];
+    calc += '<b>Rule:</b> ' + dir + ' — ' + (dir === 'BUY' ? 'SL &lt; Entry &lt; TP1' : 'TP1 &lt; Entry &lt; SL') + '. TP1 is the official win target.<br>';
+    calc += '<b>Entry:</b> ' + (entryEv ? px(lv.entry) + ' reached ' + MB.esc(when(entryEv.at)) : 'not reached') + '<br>';
+    if (sysOutcome === 'won') {
+      var hits = ev.filter(function (e) { return e.type === 'tp'; });
+      var top = hits.length ? hits[hits.length - 1].level : 1;
+      calc += '<b>First level reached after entry:</b> TP1 → WIN<br>';
+      calc += '<b>Points:</b> entry ' + px(lv.entry) + ' → TP' + top + ' ' + px(lv.tps[top - 1]) + ' = <b>' +
+        MB.card.sx.fmtPts(sysPts, unitInfo.unit) + '</b> (' + MB.esc(unitInfo.basis) + ')<br>';
+    } else if (sysOutcome === 'lost') {
+      calc += '<b>First level reached after entry:</b> SL → LOSS<br>';
+      calc += '<b>Points:</b> entry ' + px(lv.entry) + ' → SL ' + px(lv.sl) + ' = <b>' +
+        MB.card.sx.fmtPts(sysPts, unitInfo.unit) + '</b> (' + MB.esc(unitInfo.basis) + ')<br>';
+    } else {
+      calc += '<b>Result:</b> EXPIRED — no points either way<br>';
+    }
+    if (d.prices && d.prices.length) {
+      var hi = Math.max.apply(null, d.prices.map(function (p) { return p.p; }));
+      var lo = Math.min.apply(null, d.prices.map(function (p) { return p.p; }));
+      calc += '<b>Range in window:</b> ' + px(lo) + ' – ' + px(hi) + '<br>';
+    }
+    calc += '<b>Replay check:</b> ' + (rep
+      ? (matches ? 'replaying the recorded history gives the same result ✓' : '<span class="c-warn">replay differs from the recorded result — investigate</span>')
+      : 'no history attached');
+    document.getElementById('calc').innerHTML = '<div class="sx-calc">' + calc + '</div>';
+
+    /* --- original signal --- */
+    document.getElementById('signal').innerHTML =
+      info('Provider', '@' + MB.esc(s.author.username), s.author.profile_type === 'institution' ? 'Institution' : null) +
+      info('Market', MB.esc(m.short_name), m.symbol) +
+      info('Direction', '<span class="' + (dir === 'SELL' ? 'c-down' : 'c-up') + ' w-bold">' + dir + '</span>') +
+      info('Published', MB.esc(when(s.published_at)), s.room ? s.room.name : null) +
+      info('Timeframe', MB.esc(s.timeframe || '—')) +
+      info('Entry', '<span class="num">' + px(lv.entry) + '</span>', entryEv ? 'hit ' + when(entryEv.at) : 'not reached') +
+      info('Stop loss', '<span class="num c-down">' + px(lv.sl) + '</span>') +
+      lv.tps.map(function (tp, i) {
+        return info('TP' + (i + 1) + (i === 0 ? ' · win target' : ''), '<span class="num c-up">' + px(tp) + '</span>');
+      }).join('') +
+      info('Version', 'v' + (s.version || 1), (s.version || 1) > 1 ? 'corrected before entry — see signal history' : 'locked on publish') +
+      info('Open in app', '<a class="link" href="../users/signals/detail-analysis.html?id=' + encodeURIComponent(s.id) + '">' + MB.esc(s.id) + '</a>');
+
+    /* --- decision --- */
+    var dec = document.getElementById('decision');
+    if (d.status === 'open') {
+      dec.innerHTML =
+        '<p class="t-sm c-2" style="margin-top:0">Uphold the automated result, or correct it only if the underlying data was wrong. ' +
+        'Both need a written reason (at least ' + REASON_MIN + ' characters) and are recorded in the audit log.</p>' +
+        '<div class="row g2 wrap mt3">' +
+          '<button class="btn btn-trade btn-sm" id="btnUphold" data-can="signal.result.uphold">' + MB.icon('check', 15) + ' Uphold result</button>' +
+          '<button class="btn btn-ghost btn-sm" id="btnCorrect" data-can="signal.result.correct">' + MB.icon('edit', 15) + ' Correct result</button>' +
+        '</div>';
+      MB.on('#btnUphold', 'click', function () { decide(d, 'uphold'); });
+      MB.on('#btnCorrect', 'click', function () { decide(d, 'correct'); });
+    } else {
+      var r = d.resolution || {};
+      dec.innerHTML = '<div class="alert ' + (d.status === 'corrected' ? 'alert-green' : 'alert-info') + '">' + MB.icon('gavel', 18) +
+        '<div class="t-sm"><strong>' + (d.status === 'corrected' ? 'Result corrected' : 'Result upheld') + '</strong>' +
+        (r.by ? ' by ' + MB.esc(r.by) : '') + (r.at ? ' · ' + MB.esc(when(r.at)) : '') +
+        (r.reason ? '<div class="t-xs c-2 mt2">“' + MB.esc(r.reason) + '”</div>' : '') + '</div></div>';
+    }
+
+    /* --- audit --- */
+    var LABEL = { dispute_opened: 'Dispute opened', review_started: 'Review started',
+                  result_upheld: 'Result upheld', result_corrected: 'Result corrected' };
+    document.getElementById('audit').innerHTML = (d.audit || []).slice().sort(function (a, b) {
+      return Date.parse(a.at) - Date.parse(b.at);
+    }).map(function (a) {
+      return info(LABEL[a.action] || a.action, MB.esc(a.by) + ' · ' + MB.esc(when(a.at)), a.note);
+    }).join('') || '<div class="t-sm c-3">No entries.</div>';
+
+    MB.mountIcons();
+    if (MB.applyPermissions) { MB.applyPermissions(document); }
+  }
+
+  function decide(d, action) {
+    var correct = action === 'correct';
+    MB.modal({
+      title: correct ? 'Correct the result' : 'Uphold the automated result',
+      sub: correct ? 'Only when the data was wrong. The original automated result stays in the record.'
+                   : 'The automated result stands. The user is told why.',
+      body: (correct
+        ? '<div class="field"><label for="decOutcome">Corrected result</label>' +
+            '<select class="select" id="decOutcome">' +
+              ['won', 'lost', 'expired', 'void'].filter(function (o) { return o !== d.system.outcome; }).map(function (o) {
+                return '<option value="' + o + '">' + { won: 'WIN', lost: 'LOSS', expired: 'EXPIRED', void: 'VOID (not counted)' }[o] + '</option>';
+              }).join('') + '</select></div>' : '') +
+        '<div class="field mt3"><label for="decReason">Written reason <span class="sc-req">*</span></label>' +
+          '<textarea class="textarea" id="decReason" maxlength="1000" placeholder="' +
+            (correct ? 'What was wrong with the data, and how was it verified?' : 'Why the automated result is correct under the rules') + '"></textarea>' +
+          '<span class="field-hint"><span id="decCount">0</span> characters · at least ' + REASON_MIN + '</span></div>',
+      actions: [
+        { label: 'Cancel', kind: 'ghost', close: true },
+        { label: correct ? 'Correct result' : 'Uphold result', kind: 'trade', disabled: true, onClick: function (m) {
+            var reason = m.$('#decReason').value.trim();
+            if (reason.length < REASON_MIN) { return; }
+            var outcome = correct ? m.$('#decOutcome').value : d.system.outcome;
+            var at = new Date().toISOString();
+            var by = 'superadmin (you)';
+            var rec = { action: action, outcome: outcome, reason: reason, by: by, at: at,
+              audit: [{ at: at, by: by, action: correct ? 'result_corrected' : 'result_upheld',
+                        note: (correct ? 'Corrected ' + d.system.outcome + ' → ' + outcome + '. ' : '') + reason }] };
+            saveDecision(d.id, rec);
+            if (d.local && MB.signalTracker) { MB.signalTracker.resolveDispute(d.signal.id, action, reason, outcome); }
+            MB.api.post('admin/disputes/' + d.id + '/' + action, { reason: reason, outcome: outcome });
+            m.close();
+            MB.toast(correct ? 'Result corrected — recorded in the audit log' : 'Result upheld — recorded in the audit log');
+            d.status = correct ? 'corrected' : 'upheld';
+            d.resolution = rec;
+            d.audit = (d.audit || []).concat(rec.audit);
+            render(d);
+          } }
+      ],
+      onOpen: function (w, m) {
+        var ta = m.$('#decReason');
+        ta.addEventListener('input', function () {
+          m.$('#decCount').textContent = ta.value.trim().length;
+          m.setAction(1, { disabled: ta.value.trim().length < REASON_MIN });
+        });
+        setTimeout(function () { ta.focus(); }, 60);
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>

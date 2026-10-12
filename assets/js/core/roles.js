@@ -59,8 +59,11 @@
     { id: 'resources',    label: 'Resources',    icon: 'book',      href: 'resources.html' },
     { group: 'Operations' },
     { id: 'reports',      label: 'Reports',      icon: 'flag',      href: 'reports.html', count: 7 },
+    { id: 'disputes',     label: 'Signal Disputes', icon: 'gavel',  href: 'disputes.html' },
     { id: 'markets',      label: 'Markets',      icon: 'markets',   href: 'markets.html' },
-    { id: 'transactions', label: 'Transactions', icon: 'wallet',    href: 'transactions.html' }
+    { id: 'transactions', label: 'Transactions', icon: 'wallet',    href: 'transactions.html' },
+    { group: 'Growth' },
+    { id: 'referrals',    label: 'Referral & Partnerships', icon: 'handshake', href: 'referrals.html' }
   ];
 
   var SUPERADMIN_PAGES = ADMIN_PAGES.concat([
@@ -107,6 +110,13 @@
     'market.create', 'market.edit', 'market.disable',
     'transaction.view', 'transaction.approve', 'transaction.reject',
     'analytics.view',
+    /* signal results: automated by default, a moderator review only on dispute */
+    'signal.dispute.review', 'signal.result.uphold', 'signal.result.correct',
+    /* Pro rooms: a Premium room that completes 3 qualifying months is approved here */
+    'room.pro.review', 'room.pro.approve', 'room.pro.reject',
+    /* Referral & Partnerships — investigate and report, never change the rules */
+    'referral.view', 'referral.investigate', 'referral.verify_status', 'referral.export',
+    'referral.suspend_earnings',
     /* an admin is also a user, so they carry the community powers too */
     'room.view_all', 'room.monitor', 'message.flag', 'room.flag',
     'post.flag', 'signal.flag', 'user.flag'
@@ -118,6 +128,10 @@
     'agent.view', 'agent.toggle_visibility', 'agent.sync',
     'achievement.manage', 'achievement.edit_criteria',
     'capability.edit',
+    /* referral programme rules and money — every adjustment needs a reason and is audited */
+    'referral.configure', 'referral.suspend_program', 'referral.adjust', 'referral.settlement',
+    /* KX credits, KX Points rules and the creator commission */
+    'kx.configure', 'points.configure', 'creator.commission',
     'settings.edit',
     'user.delete',
     'transaction.override'

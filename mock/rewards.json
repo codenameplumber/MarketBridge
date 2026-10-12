@@ -1,183 +1,123 @@
 {
   "data": {
-    "balance": 2140,
-    "lifetime": 5820,
-    "redeemed": 3680,
-    "tier": "Silver",
-    "next_tier": "Gold",
-    "tier_at": 3000,
+    "balance": 340,
+    "lifetime": 1180,
     "streak_days": 12,
-    "rank": 184,
-    "earn": [
-      {
-        "id": "e1",
-        "label": "Post a signal that resolves",
-        "points": 25,
-        "icon": "signals",
-        "done": true
-      },
-      {
-        "id": "e2",
-        "label": "Win rate above 60% over 20 signals",
-        "points": 200,
-        "icon": "results",
-        "done": true
-      },
-      {
-        "id": "e3",
-        "label": "Complete a course",
-        "points": 120,
-        "icon": "resources",
-        "done": true
-      },
-      {
-        "id": "e4",
-        "label": "Refer a trader who funds",
-        "points": 350,
-        "icon": "userplus",
-        "done": false
-      },
-      {
-        "id": "e5",
-        "label": "7-day activity streak",
-        "points": 70,
-        "icon": "flame",
-        "done": true
-      },
-      {
-        "id": "e6",
-        "label": "Answer 10 questions in a market room",
-        "points": 60,
-        "icon": "chat",
-        "done": false
-      }
-    ],
-    "catalogue": [
-      {
-        "id": "r1",
-        "name": "Boost one signal for 24h",
-        "cost": 400,
-        "kind": "boost",
-        "desc": "Your next signal appears at the top of its market feed for a day.",
-        "stock": "unlimited"
-      },
-      {
-        "id": "r2",
-        "name": "Pro badge \u2014 30 days",
-        "cost": 900,
-        "kind": "badge",
-        "desc": "The Pro badge next to your name across signals, rooms and the leaderboard.",
-        "stock": "unlimited"
-      },
-      {
-        "id": "r3",
-        "name": "Any paid course, free",
-        "cost": 1500,
-        "kind": "course",
-        "desc": "Unlock one paid course from the Learning Hub permanently.",
-        "stock": "unlimited"
-      },
-      {
-        "id": "r4",
-        "name": "Custom room banner",
-        "cost": 600,
-        "kind": "cosmetic",
-        "desc": "Upload a banner image for your personal trader room.",
-        "stock": "unlimited"
-      },
-      {
-        "id": "r5",
-        "name": "Priority support queue",
-        "cost": 800,
-        "kind": "support",
-        "desc": "Your support tickets jump the queue for 90 days.",
-        "stock": "unlimited"
-      }
-    ],
+    "purchasable": false,
     "history": [
       {
-        "id": "PT7100",
-        "label": "Signal resolved \u2014 win",
-        "points": -25,
-        "at": "2026-09-05T08:30:00.000Z"
+        "id": "PT9310",
+        "event": "signal_post",
+        "label": "Signal posted — V75 (1s) Buy",
+        "points": -5,
+        "at": "2026-10-11T07:40:00Z"
       },
       {
-        "id": "PT7111",
-        "label": "Course completed",
-        "points": 38,
-        "at": "2026-09-02T08:30:00.000Z"
+        "id": "PT9304",
+        "event": "helpful_post",
+        "label": "Post marked helpful by 3 traders",
+        "points": 10,
+        "at": "2026-10-10T19:05:00Z"
       },
       {
-        "id": "PT7122",
-        "label": "Boost redeemed",
-        "points": 51,
-        "at": "2026-08-30T08:30:00.000Z"
+        "id": "PT9298",
+        "event": "answer_question",
+        "label": "Answered a question in Boom 1000 room",
+        "points": 5,
+        "at": "2026-10-10T12:21:00Z"
       },
       {
-        "id": "PT7133",
-        "label": "7-day streak",
-        "points": -64,
-        "at": "2026-08-27T08:30:00.000Z"
+        "id": "PT9290",
+        "event": "reversal",
+        "label": "Reversed — comment removed by moderator",
+        "points": -5,
+        "at": "2026-10-09T16:44:00Z"
       },
       {
-        "id": "PT7144",
-        "label": "Pro badge redeemed",
-        "points": 77,
-        "at": "2026-08-24T08:30:00.000Z"
+        "id": "PT9281",
+        "event": "quality_signal",
+        "label": "Quality signal — Boom 1000 hit TP1",
+        "points": 15,
+        "at": "2026-10-08T10:02:00Z"
       },
       {
-        "id": "PT7155",
-        "label": "Room answer upvoted",
-        "points": 90,
-        "at": "2026-08-21T08:30:00.000Z"
+        "id": "PT9275",
+        "event": "boost",
+        "label": "Boosted a post for 24h",
+        "points": -50,
+        "at": "2026-10-07T08:30:00Z"
       },
       {
-        "id": "PT7166",
-        "label": "Signal resolved \u2014 win",
-        "points": -103,
-        "at": "2026-08-18T08:30:00.000Z"
+        "id": "PT9262",
+        "event": "streak_day",
+        "label": "Daily participation streak",
+        "points": 2,
+        "at": "2026-10-07T07:00:00Z"
       },
       {
-        "id": "PT7177",
-        "label": "Course completed",
-        "points": 116,
-        "at": "2026-08-15T08:30:00.000Z"
+        "id": "PT9240",
+        "event": "achievement",
+        "label": "Achievement — Streak Master",
+        "points": 60,
+        "at": "2026-09-28T12:00:00Z"
       },
       {
-        "id": "PT7188",
-        "label": "Boost redeemed",
-        "points": 129,
-        "at": "2026-08-12T08:30:00.000Z"
+        "id": "PT9221",
+        "event": "educational",
+        "label": "Educational post — Reading Boom spikes",
+        "points": 20,
+        "at": "2026-09-24T15:12:00Z"
       },
       {
-        "id": "PT7199",
-        "label": "7-day streak",
-        "points": -142,
-        "at": "2026-08-09T08:30:00.000Z"
+        "id": "PT9188",
+        "event": "signal_refund",
+        "label": "Refund — signal rejected by validation",
+        "points": 5,
+        "at": "2026-09-19T09:41:00Z"
       },
       {
-        "id": "PT7210",
-        "label": "Pro badge redeemed",
-        "points": 155,
-        "at": "2026-08-06T08:30:00.000Z"
+        "id": "PT9187",
+        "event": "signal_post",
+        "label": "Signal posted — Crash 500 Sell",
+        "points": -5,
+        "at": "2026-09-19T09:40:00Z"
       },
       {
-        "id": "PT7221",
-        "label": "Room answer upvoted",
-        "points": 168,
-        "at": "2026-08-03T08:30:00.000Z"
+        "id": "PT9150",
+        "event": "achievement",
+        "label": "Achievement — Market Specialist",
+        "points": 100,
+        "at": "2026-09-05T16:45:00Z"
+      }
+    ],
+    "redemptions": [
+      {
+        "id": "boost",
+        "name": "Boost a post or signal for 24h",
+        "cost": 50,
+        "kind": "promotion",
+        "desc": "Your post or signal is shown higher in its market feed for a day. Boosting is paid in points, never KX."
       },
       {
-        "id": "PT7232",
-        "label": "Signal resolved \u2014 win",
-        "points": -181,
-        "at": "2026-07-31T08:30:00.000Z"
+        "id": "signal_post",
+        "name": "Post a signal",
+        "cost": 5,
+        "kind": "posting",
+        "desc": "Each signal costs a few points so the feed stays high quality. Refunded if validation rejects it."
       },
       {
-        "id": "PT7243",
-        "label": "Course completed",
-        "points": 194,
-        "at": "2026-07-28T08:30:00.000Z"
+        "id": "pin_room",
+        "name": "Pin your analysis in a market room",
+        "cost": 120,
+        "kind": "promotion",
+        "desc": "Keep one analysis post pinned at the top of a market room for 48 hours."
+      },
+      {
+        "id": "spotlight",
+        "name": "Profile spotlight — 7 days",
+        "cost": 200,
+        "kind": "promotion",
+        "desc": "Appear in the Discover traders strip for a week."
       }
     ]
   }

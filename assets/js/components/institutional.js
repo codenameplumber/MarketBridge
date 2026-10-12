@@ -39,9 +39,10 @@
       '<div class="between">' +
         '<div>' +
           '<div class="row g2">' +
-            '<span class="w-semi t-sm">' + MB.esc(a.login) + '</span>' +
+            '<span class="w-semi t-sm">' + MB.esc(a.name || a.login) + '</span>' +
             '<span class="badge">' + MB.esc(a.platform) + '</span>' +
             '<span class="badge">' + MB.esc(a.type) + '</span>' +
+          (a.name ? '<span class="t-xs c-3">' + MB.esc(a.login) + '</span>' : '') +
           '</div>' +
           '<div class="t-sm w-bold mt2">' + fmt.money(a.balance) +
             '<span class="t-xs c-3 w-reg"> ' + a.currency + '</span></div>' +
@@ -54,7 +55,7 @@
           shortSigned(a.profit_total) + '</div>' +
           '<div class="stat-k">Profit</div></div>' +
         '<div class="stat-cell"><div class="stat-v ' + profitCls + '">' +
-          fmt.pct(a.profit_pct) + '</div>' +
+          fmt.pct(a.profit_pct, 1) + '</div>' +
           '<div class="stat-k">Return</div></div>' +
         '<div class="stat-cell"><div class="stat-v">' +
           plainPct(a.win_rate) + '</div>' +
@@ -79,9 +80,10 @@
     return '<div class="card inst-acct-card">' +
       '<div class="between">' +
         '<div class="row g2">' +
-          '<span class="w-semi">' + MB.esc(a.login) + '</span>' +
+          '<span class="w-semi">' + MB.esc(a.name || a.login) + '</span>' +
           '<span class="badge">' + MB.esc(a.platform) + '</span>' +
           '<span class="badge">' + MB.esc(a.type) + '</span>' +
+          (a.name ? '<span class="t-xs c-3">' + MB.esc(a.login) + '</span>' : '') +
         '</div>' +
       '</div>' +
       (o.hideBalances
@@ -94,7 +96,7 @@
           shortSigned(a.profit_total) + '</div>' +
           '<div class="stat-k">Profit</div></div>') +
         '<div class="stat-cell"><div class="stat-v ' + profitCls + '">' +
-          fmt.pct(a.profit_pct) + '</div>' +
+          fmt.pct(a.profit_pct, 1) + '</div>' +
           '<div class="stat-k">Return</div></div>' +
         '<div class="stat-cell"><div class="stat-v">' + plainPct(a.win_rate) + '</div>' +
           '<div class="stat-k">Win Rate</div></div>' +
@@ -109,17 +111,17 @@
     '</div>';
   };
 
+  /* Read-only team row for the dashboard; managing happens on team.html. */
   C.instTeamMember = function (t) {
+    var label = MB.instTeam ? MB.instTeam.label(t.role) : t.role;
     return '<div class="card card-flat row g3">' +
       '<span class="avatar avatar-sm" style="background:' + MB.avatarColor(t.name) + '">' +
-        t.name.charAt(0) + '</span>' +
-      '<div class="grow">' +
-        '<div class="w-semi">' + MB.esc(t.name) + '</div>' +
-        '<div class="t-xs c-3">' + MB.esc(t.email) + '</div>' +
+        MB.esc(t.name.charAt(0)) + '</span>' +
+      '<div class="grow" style="min-width:0">' +
+        '<div class="w-semi truncate">' + MB.esc(t.name) + '</div>' +
+        '<div class="t-xs c-3 truncate">' + MB.esc(t.title || t.email) + '</div>' +
       '</div>' +
-      '<span class="badge">' + MB.esc(t.role) + '</span>' +
-      '<button class="btn btn-sm btn-ghost" aria-label="Remove">' +
-        MB.icon('close', 14) + '</button>' +
+      '<span class="role-chip role-' + MB.esc(t.role) + '">' + MB.esc(label) + '</span>' +
     '</div>';
   };
 
@@ -224,6 +226,198 @@
           return '<a class="btn btn-ghost btn-xs social-chip" href="' + MB.esc(safeUrl(s.url)) +
             '" target="_blank" rel="noopener noreferrer">' + MB.icon(p.icon, 14) + MB.esc(p.label) + '</a>';
         }).join('');
+    }
+  };
+
+  /* ======================================================================
+     PROFILE TYPES (§1)
+     Individual: one Deriv login (its sub-accounts still show under it).
+     Institution: verified business, up to 20 Deriv connections, a team,
+     company achievements and performance. Both climb the same
+     Trader -> Premium -> Pro room path.
+     ====================================================================== */
+  MB.instProfile = {
+    TYPES: {
+      individual:  { label: 'Individual',  max: 1,  icon: 'users',
+        points: ['One Deriv connection', 'Personal achievements', 'Trader → Premium → Pro rooms'] },
+      institution: { label: 'Institution', max: 20, icon: 'bank',
+        points: ['Verified business', 'Up to 20 Deriv connections', 'Team with roles and an audit log',
+                 'Company achievements and performance', 'Trader → Premium → Pro rooms'] }
+    },
+    type: function (d) { return (d && d.profile_type) === 'individual' ? 'individual' : 'institution'; },
+    maxConnections: function (d) { return MB.instProfile.TYPES[MB.instProfile.type(d)].max; },
+    badge: function (d) {
+      var t = MB.instProfile.TYPES[MB.instProfile.type(d)];
+      return '<span class="ptype-chip ptype-' + MB.instProfile.type(d) + '">' + MB.icon(t.icon, 12) +
+        MB.esc(t.label) + (d && d.verified ? ' · Verified' : '') + '</span>';
+    }
+  };
+
+  /* ======================================================================
+     TEAM ROLES & PERMISSIONS (§2)
+     One matrix; every control on the institutional pages asks
+     MB.instTeam.can(role, action). Stage 2: the server enforces the same
+     matrix on every request — hiding a button is not the security.
+     ====================================================================== */
+  var ROLES = [
+    { id: 'owner',             label: 'Owner',             blurb: 'Full control. Cannot be removed; there is always at least one.' },
+    { id: 'admin',             label: 'Administrator',     blurb: 'Runs the institution day to day: team, accounts and settings.' },
+    { id: 'trader',            label: 'Trader',            blurb: 'Publishes signals and trades on the connected accounts.' },
+    { id: 'analyst',           label: 'Analyst',           blurb: 'Writes signal drafts; publishes directly only if the institution allows it.' },
+    { id: 'community_manager', label: 'Community Manager', blurb: 'Runs the rooms and their members.' },
+    { id: 'viewer',            label: 'Viewer',            blurb: 'Read-only access to dashboards and performance.' }
+  ];
+  var ACTIONS = [
+    { id: 'accounts.manage',  label: 'Connected accounts',   hint: 'Connect, remove, show or hide Deriv accounts' },
+    { id: 'signals.publish',  label: 'Publish signals',      hint: 'Post signals under the institution' },
+    { id: 'signals.draft',    label: 'Create drafts',        hint: 'Write signal drafts' },
+    { id: 'signals.approve',  label: 'Approve drafts',       hint: 'Publish or reject analysts’ drafts' },
+    { id: 'rooms.manage',     label: 'Rooms & members',      hint: 'Room settings, members, moderation' },
+    { id: 'team.manage',      label: 'Team',                 hint: 'Invite, change roles, remove' },
+    { id: 'settings.manage',  label: 'Institution settings', hint: 'Profile, approval rules, showcase' },
+    { id: 'audit.view',       label: 'Audit log',            hint: 'See who did what' },
+    { id: 'view',             label: 'View',                 hint: 'Dashboards and performance' }
+  ];
+  var MATRIX = {
+    owner:             ['accounts.manage', 'signals.publish', 'signals.draft', 'signals.approve', 'rooms.manage', 'team.manage', 'settings.manage', 'audit.view', 'view'],
+    admin:             ['accounts.manage', 'signals.publish', 'signals.draft', 'signals.approve', 'rooms.manage', 'team.manage', 'settings.manage', 'audit.view', 'view'],
+    trader:            ['signals.publish', 'signals.draft', 'view'],
+    analyst:           ['signals.draft', 'view'],
+    community_manager: ['rooms.manage', 'view'],
+    viewer:            ['view']
+  };
+  var TEAM_KEY = 'mb.inst.team', SET_KEY = 'mb.inst.teamSettings', ACT_KEY = 'mb.inst.actingAs', DRAFT_KEY = 'mb.inst.drafts';
+
+  function readJSON(k, fb) {
+    try { var raw = localStorage.getItem(k); if (raw) { return JSON.parse(raw); } } catch (e) {}
+    return fb;
+  }
+  function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  MB.instTeam = {
+    ROLES: ROLES, ACTIONS: ACTIONS, MATRIX: MATRIX,
+    label: function (role) {
+      var r = ROLES.filter(function (x) { return x.id === role; })[0];
+      return r ? r.label : String(role || '');
+    },
+    /* settings.analyst_publish: 'direct' | 'approval' */
+    can: function (role, action, settings) {
+      var s = settings || MB.instTeam.settings();
+      if (action === 'signals.publish' && role === 'analyst') { return s.analyst_publish === 'direct'; }
+      return (MATRIX[role] || []).indexOf(action) > -1;
+    },
+    load: function (d) { return readJSON(TEAM_KEY, null) || ((d && d.team) || []).slice(); },
+    save: function (team) { writeJSON(TEAM_KEY, team); },
+    settings: function (d) {
+      return readJSON(SET_KEY, null) || Object.assign({ analyst_publish: 'approval' }, (d && d.team_settings) || {});
+    },
+    saveSettings: function (s) { writeJSON(SET_KEY, s); },
+    drafts: function (d) { return readJSON(DRAFT_KEY, null) || ((d && d.signal_drafts) || []).slice(); },
+    saveDrafts: function (list) { writeJSON(DRAFT_KEY, list); },
+    owners: function (team) { return team.filter(function (t) { return t.role === 'owner'; }).length; },
+
+    /* Demo only: which role the viewer is acting as. Stage 2: the role comes
+       from the signed-in member's record, never from the client. */
+    actingAs: function () {
+      var r = readJSON(ACT_KEY, 'owner');
+      return MATRIX[r] ? r : 'owner';
+    },
+    setActingAs: function (role) { if (MATRIX[role]) { writeJSON(ACT_KEY, role); } },
+    /* The team member whose name goes into audit lines for the acting role. */
+    actor: function (team, role) {
+      var r = role || MB.instTeam.actingAs();
+      var m = team.filter(function (t) { return t.role === r; })[0] || team.filter(function (t) { return t.is_you; })[0] || team[0];
+      return { name: m ? m.name : 'You', role: r };
+    },
+
+    /* A small "Acting as" select. onChange(role) fires after it is saved. */
+    switcher: function (host, onChange) {
+      if (!host) { return; }
+      var cur = MB.instTeam.actingAs();
+      host.innerHTML = '<div class="acting-as">' +
+        '<span class="aa-tag">Demo</span>' +
+        '<label class="aa-l" for="actingAsSel">Acting as</label>' +
+        '<select class="select select-sm" id="actingAsSel">' + ROLES.map(function (r) {
+          return '<option value="' + r.id + '"' + (r.id === cur ? ' selected' : '') + '>' + MB.esc(r.label) + '</option>';
+        }).join('') + '</select></div>';
+      host.querySelector('select').addEventListener('change', function () {
+        MB.instTeam.setActingAs(this.value);
+        MB.toast('Now viewing as ' + MB.instTeam.label(this.value));
+        if (onChange) { onChange(this.value); }
+      });
+    },
+
+    /* Remove every [data-inst-can] control the acting role may not use. */
+    apply: function (root, role) {
+      var r = role || MB.instTeam.actingAs();
+      MB.$$('[data-inst-can]', root || document).forEach(function (el) {
+        var ok = MB.instTeam.can(r, el.getAttribute('data-inst-can'));
+        el.classList.toggle('hide', !ok);
+        if (!ok) { el.setAttribute('aria-hidden', 'true'); } else { el.removeAttribute('aria-hidden'); }
+      });
+    }
+  };
+
+  /* ======================================================================
+     AUDIT LOG (§2) — Stage 1 localStorage, newest first.
+     Stage 2: the server writes every entry; the client only reads.
+     ====================================================================== */
+  var AUDIT_KEY = 'mb.inst.audit';
+  MB.instAudit = {
+    TYPES: { signal: 'Signals', team: 'Team', account: 'Accounts', settings: 'Settings', room: 'Rooms' },
+    load: function (d) {
+      var local = readJSON(AUDIT_KEY, []);
+      var seed = (d && d.audit_log) || [];
+      return local.concat(seed.filter(function (s) {
+        return !local.some(function (l) { return l.id === s.id; });
+      })).sort(function (a, b) { return new Date(b.at) - new Date(a.at); });
+    },
+    log: function (entry) {
+      var list = readJSON(AUDIT_KEY, []);
+      var e = Object.assign({ id: 'au_' + Date.now().toString(36), at: new Date().toISOString() }, entry);
+      list.unshift(e);
+      writeJSON(AUDIT_KEY, list.slice(0, 300));
+      MB.api.post('institutional/audit', e);
+      return e;
+    },
+    /* "Deriv Account 04 connected by Daniel Udo — Administrator" */
+    by: function (actor) { return 'by ' + actor.name + ' — ' + MB.instTeam.label(actor.role); }
+  };
+
+  /* ======================================================================
+     DERIV CONNECTIONS (§3) — up to 20 per institution, OAuth only.
+     ====================================================================== */
+  var ACCT_KEY = 'mb.inst.accounts';
+  MB.instAccounts = {
+    load: function (d) {
+      var local = readJSON(ACCT_KEY, null);
+      var removed = (local && local.removed) || [];
+      var added = (local && local.added) || [];
+      return ((d && d.linked_accounts) || []).filter(function (a) { return removed.indexOf(a.id) < 0; })
+        .concat(added);
+    },
+    add: function (acct) {
+      var local = readJSON(ACCT_KEY, { added: [], removed: [] });
+      local.added = (local.added || []).concat([acct]);
+      writeJSON(ACCT_KEY, local);
+    },
+    remove: function (id) {
+      var local = readJSON(ACCT_KEY, { added: [], removed: [] });
+      local.added = (local.added || []).filter(function (a) { return a.id !== id; });
+      local.removed = (local.removed || []).concat([id]);
+      writeJSON(ACCT_KEY, local);
+    },
+    totals: function (list) {
+      var sum = function (k) { return list.reduce(function (n, a) { return n + (Number(a[k]) || 0); }, 0); };
+      var bal = sum('balance'), pl = sum('profit_total'), trades = sum('trades_total');
+      var wins = list.reduce(function (n, a) { return n + (Number(a.trades_total) || 0) * (Number(a.win_rate) || 0) / 100; }, 0);
+      return {
+        balance: bal, profit: pl, trades: trades,
+        return_pct: bal - pl ? pl / (bal - pl) * 100 : 0,
+        win_rate: trades ? wins / trades * 100 : 0,
+        drawdown: list.reduce(function (m, a) { return Math.max(m, Number(a.drawdown_max) || 0); }, 0),
+        count: list.length
+      };
     }
   };
 

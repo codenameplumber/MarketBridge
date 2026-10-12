@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KX Transaction History — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/kx.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Transaction History" data-sub="Your KX credits ledger" data-back="credits.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div class="chips" data-group id="khTabs">
+      <button class="chip is-active" data-value="all">All</button>
+      <button class="chip" data-value="topup">Top up</button>
+      <button class="chip" data-value="purchase">Purchase</button>
+      <button class="chip" data-value="subscription">Subscription</button>
+    </div>
+
+    <div class="between t-xs c-3">
+      <span><span id="khCount">0</span> transactions</span>
+      <span>Balance <b class="c-1 num" id="khBal">0.00 KX</b></span>
+    </div>
+
+    <section class="list" id="khList"></section>
+
+    <p class="t-xs c-3" style="text-align:center">Only KX credits are listed here. KX Points and
+      Creator Earnings keep their own history.</p>
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var filter = new URLSearchParams(location.search).get('tab') || 'all';
+  var EMPTY = {
+    all: ['No KX activity yet', 'Add funds to start using KX.'],
+    topup: ['No top-ups yet', 'Top-ups appear here once KaastroPay confirms them.'],
+    purchase: ['No purchases yet', 'Courses, webinars and premium services you buy with KX appear here.'],
+    subscription: ['No subscriptions yet', 'Pro room subscriptions paid with KX appear here.']
+  };
+
+  function draw() {
+    var rows = MB.kx.transactions(filter);
+    MB.$('#khCount').textContent = rows.length;
+    MB.$('#khBal').textContent = MB.fmt.price(MB.kx.balance(), 2) + ' KX';
+    var e = EMPTY[filter] || EMPTY.all;
+    MB.$('#khList').innerHTML = rows.length ? rows.map(function (t) { return MB.kx.ui.txRow(t); }).join('')
+      : '<div class="empty">' + MB.icon('receipt', 40) + '<h3>' + MB.esc(e[0]) + '</h3><p>' + MB.esc(e[1]) + '</p></div>';
+    MB.mountIcons(MB.$('#khList'));
+  }
+
+  MB.$$('#khTabs .chip').forEach(function (c) {
+    c.classList.toggle('is-active', c.getAttribute('data-value') === filter);
+  });
+  MB.$('#khTabs').addEventListener('mb:change', function (e) { filter = e.detail.value; draw(); });
+
+  draw();
+  MB.kx.ready().then(draw);
+  MB.kx.on(draw);
+  MB.mountIcons(document);
+});
+</script>
+</body>
+</html>

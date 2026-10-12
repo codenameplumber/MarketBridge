@@ -15,152 +15,186 @@
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/signals.css">
 <script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
 </head>
-<body data-shell="app" data-nav="home" data-root="../../" data-title="My Profile" data-back="../index.html" data-unread="3">
+<body data-shell="app" data-nav="home" data-root="../../" data-title="Profile" data-back="../index.html" data-unread="3">
 
 <div class="app">
   <div data-render="topbar"></div>
   <main class="page">
 
-    <!-- ================================================================
-         IDENTITY
-         ================================================================ -->
-    <a class="pf-card" href="settings.html">
-      <span class="pf-av" id="meAvatar"></span>
-      <span class="pf-id">
-        <span class="pf-name">
-          <span id="meName">&mdash;</span>
-          <span class="pf-tick" id="meTick" hidden data-icon="check" data-icon-size="11"></span>
-          <span class="tag-mod" id="meMod" hidden>
-            <span data-icon="shield" data-icon-size="10"></span> Moderator</span>
-        </span>
-        <span class="pf-handle" id="meHandle">&mdash;</span>
-        <span class="pf-verified" id="meVerified" hidden>
-          <span data-icon="check" data-icon-size="12"></span> Verified Trader
-        </span>
-      </span>
-      <span class="pf-chev" data-icon="chevright" data-icon-size="18"></span>
-    </a>
+    <!-- IDENTITY -->
+    <section class="card prof-hero" aria-label="Profile">
+      <div class="prof-top">
+        <span class="prof-av" id="meAvatar"></span>
+        <div class="prof-id">
+          <div class="prof-name"><span id="meName">&mdash;</span><span class="badge badge-pro" id="mePro" hidden>Pro</span></div>
+          <div class="prof-handle" id="meHandle">&mdash;</div>
+          <div class="prof-title" id="meTitle">&mdash;</div>
+          <div class="prof-chipline" id="meChips"></div>
+        </div>
+      </div>
+      <div class="prof-meta" id="meMeta"></div>
+      <div class="prof-actions" id="meActions"></div>
+    </section>
 
-    <div class="pf-meta">
-      <span class="pf-chip"><i class="dot dot-live"></i> Active Trader</span>
-      <span class="pf-chip"><span data-icon="calendar" data-icon-size="13"></span>
-        <span id="meSince">&mdash;</span></span>
+    <!-- TABS -->
+    <div class="tabs prof-tabs" data-group id="profTabs">
+      <button class="tab is-active" data-value="overview">Overview</button>
+      <button class="tab" data-value="signals">Signals</button>
+      <button class="tab" data-value="results">Results</button>
+      <button class="tab" data-value="posts">Posts</button>
+      <button class="tab" data-value="about">About</button>
     </div>
 
-    <!-- ================================================================
-         TOTAL DERIV BALANCE
-         Computed from the connected accounts — never a number we keep.
-         ================================================================ -->
-    <section class="total-balance tb-compact">
-      <div class="tb-head">
-        <span class="tb-label">Total Deriv Balance</span>
-        <button class="icon-btn" id="btnHide" aria-label="Hide balance"
-                style="width:24px;height:24px"><span data-icon="eye" data-icon-size="15"></span></button>
-        <span class="grow"></span>
-        <select class="select select-sm" id="balRange" aria-label="Balance period">
-          <option value="24H">24H</option>
-          <option value="7D">7D</option>
-          <option value="30D">30D</option>
-          <option value="ALL">All time</option>
-        </select>
+    <!-- OVERVIEW -->
+    <section class="prof-pane" id="paneOverview">
+      <div class="stat-grid prof-stats">
+        <div class="stat-cell"><div class="stat-v" id="stWin">&mdash;</div><div class="stat-k">Win Rate</div></div>
+        <div class="stat-cell"><div class="stat-v" id="stSignals">&mdash;</div><div class="stat-k">Signals</div></div>
+        <div class="stat-cell"><div class="stat-v c-up" id="stPips">&mdash;</div><div class="stat-k">Net Pips</div></div>
+        <div class="stat-cell"><div class="stat-v" id="stFollowers">&mdash;</div><div class="stat-k">Followers</div></div>
       </div>
-      <div class="tb-amount" id="tbAmount">$0.00<span class="cur">USD</span></div>
-      <div class="tb-delta c-up" id="tbDelta">&mdash;</div>
-      <span class="tb-spark"><span data-spark="up" data-seed="pfbal" data-h="56" data-sw="2"></span></span>
-    </section>
+      <p class="t-xs c-3 mt2" style="text-align:center">Signal figures are measured by KonfluenX from published signals.</p>
 
-    <!-- ================================================================
-         DERIV ACCOUNTS
-         ================================================================ -->
-    <section class="page-section">
-      <div class="sec-head"><h2>Deriv Accounts</h2>
-        <a href="../wallet/accounts.html">View all</a></div>
-      <div class="list" id="acctList"></div>
-    </section>
+      <section class="card mt3">
+        <div class="between">
+          <h2 class="t-sm w-bold">Performance (All Time)</h2>
+          <select class="select select-sm" id="perfSrc" aria-label="Performance source">
+            <option value="signals">Pips</option>
+            <option value="deriv">Deriv Verified</option>
+          </select>
+        </div>
+        <div class="t-xs c-3 mt1" id="perfNote">Net pips from published signals · never mixed with Deriv results</div>
+        <div id="perfChartSignals" class="mt3"><div data-chart="area" data-seed="meprofile" data-h="150" data-h-min="120"></div></div>
+        <div id="perfChartDeriv" class="mt3" hidden>
+          <div class="perf-grid mb3">
+            <div><div class="pg-v c-up" id="meWins">&mdash;</div><div class="pg-k">Wins</div></div>
+            <div><div class="pg-v c-down" id="meLosses">&mdash;</div><div class="pg-k">Losses</div></div>
+            <div><div class="pg-v" id="meWinD">&mdash;</div><div class="pg-k">Win Rate</div></div>
+            <div><div class="pg-v num" id="mePL">&mdash;</div><div class="pg-k">Total P/L</div></div>
+          </div>
+          <div data-chart="area" data-seed="mederiv" data-h="150" data-h-min="120"></div>
+        </div>
+        <div class="axis-x" aria-hidden="true">
+          <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span><span>Now</span>
+        </div>
+      </section>
 
-    <!-- ================================================================
-         QUICK ACTIONS
-         ================================================================ -->
-    <section class="page-section">
-      <div class="sec-head"><h2>Quick Actions</h2></div>
-      <nav class="qa-grid" aria-label="Account quick actions">
-        <a class="qa-tile" href="../wallet/transfer.html">
-          <span class="qa-ic" style="color:var(--mb-green)" data-icon="refresh" data-icon-size="20"></span>
-          <span class="qa-t">Transfer<br>Money</span>
+      <section class="page-section">
+        <div class="sec-head"><h2>Achievements <span class="c-3 w-semi" id="achvCount"></span></h2>
+          <a href="achievements.html">View all &rarr;</a></div>
+        <div class="ach-strip" id="achvStrip"></div>
+      </section>
+
+      <div class="pf-kx" id="meKx" hidden>
+        <a class="pf-kx-chip" href="../wallet/credits.html">
+          <span class="pf-kx-ic is-credit">KX</span>
+          <span class="grow"><span class="pf-kx-k">KX Credits</span><span class="pf-kx-v num" id="meKxBal">&mdash;</span></span>
+          <span class="c-3" data-icon="chevright" data-icon-size="15"></span>
         </a>
-        <a class="qa-tile" href="../wallet/history.html">
-          <span class="qa-ic" style="color:var(--vy-teal)" data-icon="file" data-icon-size="20"></span>
-          <span class="qa-t">Transaction<br>History</span>
+        <a class="pf-kx-chip" href="rewards.html">
+          <span class="pf-kx-ic is-points"><span data-icon="star" data-icon-size="15"></span></span>
+          <span class="grow"><span class="pf-kx-k">KX Points</span><span class="pf-kx-v num" id="meKxPts">&mdash;</span></span>
+          <span class="c-3" data-icon="chevright" data-icon-size="15"></span>
         </a>
-        <a class="qa-tile" href="../wallet/statement.html">
-          <span class="qa-ic" style="color:var(--mb-info)" data-icon="book" data-icon-size="20"></span>
-          <span class="qa-t">Account<br>Statement</span>
-        </a>
-        <a class="qa-tile" href="../../contact.html">
-          <span class="qa-ic" style="color:var(--vy-brand)" data-icon="chat" data-icon-size="20"></span>
-          <span class="qa-t">Deriv<br>Support</span>
-        </a>
-      </nav>
+      </div>
+
+      <section class="card mt3" aria-labelledby="progT">
+        <div class="between">
+          <h2 class="t-sm w-bold" id="progT">Your progression</h2>
+          <span class="t-xs c-3" id="progStep">&mdash;</span>
+        </div>
+        <ol class="prog-strip mt3" id="progStrip" aria-label="Progression"></ol>
+        <p class="t-xs c-2 mt3" id="progHint"></p>
+      </section>
     </section>
 
-    <!-- ================================================================
-         PERFORMANCE OVERVIEW
-         ================================================================ -->
-    <section class="card">
-      <div class="between">
-        <div class="t-sm w-bold">Performance Overview</div>
-        <select class="select select-sm" id="perfRange" aria-label="Performance period">
-          <option value="all">All time</option>
-          <option value="90">90 days</option>
-          <option value="30">30 days</option>
-          <option value="7">7 days</option>
-        </select>
-      </div>
-
-      <div class="perf-grid mt3">
-        <div><div class="pg-v c-up" id="meWins">&mdash;</div><div class="pg-k">Wins</div></div>
-        <div><div class="pg-v c-down" id="meLosses">&mdash;</div><div class="pg-k">Losses</div></div>
-        <div><div class="pg-v" id="meWin">&mdash;</div><div class="pg-k">Win Rate</div></div>
-        <div><div class="pg-v c-up num" id="mePL">&mdash;</div><div class="pg-k">Total P/L</div></div>
-      </div>
-
-      <div data-chart="area" data-seed="meprofile" data-h="150" data-h-min="120" class="mt4"></div>
-      <div class="axis-x" aria-hidden="true">
-        <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span>
-        <span>Sep</span><span>Nov</span><span>Now</span>
-      </div>
+    <!-- SIGNALS -->
+    <section class="prof-pane" id="paneSignals" hidden>
+      <div class="between mb2"><div class="label">Published signals</div>
+        <a class="btn btn-primary btn-xs" href="../signals/compose.html"><span data-icon="plus" data-icon-size="13"></span> Post signal</a></div>
+      <div class="stack g3" id="listSignals"></div>
     </section>
 
-    <!-- ================================================================
-         SOCIAL COUNTS
-         ================================================================ -->
-    <div class="stat-grid cols-3">
-      <a class="stat-cell" href="../community/index.html">
-        <div class="stat-v" id="meFollowers">&mdash;</div><div class="stat-k">Followers</div></a>
-      <a class="stat-cell" href="../community/index.html">
-        <div class="stat-v" id="meFollowing">&mdash;</div><div class="stat-k">Following</div></a>
-      <a class="stat-cell" href="../signals/index.html">
-        <div class="stat-v" id="meSignals">&mdash;</div><div class="stat-k">Signals</div></a>
-    </div>
-
-    <!-- ================================================================
-         RECENT SIGNALS / POSTS
-         ================================================================ -->
-    <section class="page-section">
-      <div class="sec-head"><h2>Recent Signals</h2>
-        <a href="../signals/index.html">View all</a></div>
-      <div class="tabs" data-group id="meTabs">
-        <button class="tab is-active" data-value="signals">Signals</button>
-        <button class="tab" data-value="posts">Posts</button>
+    <!-- RESULTS -->
+    <section class="prof-pane" id="paneResults" hidden>
+      <div class="stat-grid cols-3 mb3">
+        <div class="stat-cell"><div class="stat-v c-up" id="rsWon">&mdash;</div><div class="stat-k">Won</div></div>
+        <div class="stat-cell"><div class="stat-v c-down" id="rsLost">&mdash;</div><div class="stat-k">Lost</div></div>
+        <div class="stat-cell"><div class="stat-v" id="rsPts">&mdash;</div><div class="stat-k">Net Pips</div></div>
       </div>
-      <div id="paneMeSignals" class="stack g3 mt3"></div>
-      <div id="paneMePosts" class="stack g3 mt3 hide"></div>
+      <div class="card" id="listResults"></div>
+      <p class="t-xs c-3 mt2">Results are resolved automatically from market prices. TP1 is the winning target.</p>
     </section>
 
-    <a class="btn btn-ghost btn-block" href="settings.html">
-      <span data-icon="settings"></span> Settings &amp; more</a>
+    <!-- POSTS -->
+    <section class="prof-pane" id="paneAboutPosts" hidden>
+      <div class="between mb2"><div class="label">Community posts</div>
+        <a class="btn btn-ghost btn-xs" href="../community/compose.html"><span data-icon="plus" data-icon-size="13"></span> New post</a></div>
+      <div class="stack g3" id="listPosts"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="prof-pane" id="paneAbout" hidden>
+      <section class="card">
+        <div class="label mb2">Bio</div>
+        <p class="t-sm c-2" id="meBio">&mdash;</p>
+        <div class="prof-meta" id="meMeta2"></div>
+      </section>
+
+      <section class="card mt3 perf-card">
+        <div class="perf-head">
+          <span class="perf-ic is-deriv"><span data-icon="verified" data-icon-size="18"></span></span>
+          <div class="grow">
+            <h3 class="t-sm w-bold">Verified Deriv Performance</h3>
+            <div class="perf-src" id="drvSrc">From your Deriv trade history</div>
+          </div>
+        </div>
+        <div class="perf-grid mt3">
+          <div><div class="pg-v c-up" id="abWins">&mdash;</div><div class="pg-k">Wins</div></div>
+          <div><div class="pg-v c-down" id="abLosses">&mdash;</div><div class="pg-k">Losses</div></div>
+          <div><div class="pg-v" id="abWin">&mdash;</div><div class="pg-k">Win Rate</div></div>
+          <div><div class="pg-v num" id="abPL">&mdash;</div><div class="pg-k">Total P/L</div></div>
+        </div>
+      </section>
+
+      <section class="page-section">
+        <div class="sec-head"><h2>Deriv Connection</h2><a href="../wallet/accounts.html">Balances</a></div>
+        <div class="card card-flush">
+          <div class="drv-login">
+            <span class="drv-mark" aria-hidden="true">D</span>
+            <span class="grow" style="min-width:0">
+              <span class="drv-id num" id="drvId">&mdash;</span>
+              <span class="drv-sub" id="drvSub">&mdash;</span>
+            </span>
+            <span class="badge badge-active" id="drvStatus">Connected</span>
+          </div>
+          <div class="drv-total">
+            <span class="t-xs c-3">Total balance</span>
+            <span class="drv-total-v num" id="tbAmount">&mdash;</span>
+            <button class="icon-btn" id="btnHide" aria-label="Hide balance" style="width:24px;height:24px">
+              <span data-icon="eye" data-icon-size="15"></span></button>
+          </div>
+          <div class="list" id="acctList" aria-label="Accounts under this login"></div>
+        </div>
+        <p class="t-xs c-3" id="drvLimit">Individual profiles connect one Deriv login. Its sub-accounts are listed under it.</p>
+      </section>
+
+      <section class="page-section">
+        <div class="sec-head"><h2>Quick Actions</h2></div>
+        <nav class="qa-grid" aria-label="Account quick actions">
+          <a class="qa-tile" href="../wallet/transfer.html"><span class="qa-ic" style="color:var(--mb-green)" data-icon="refresh" data-icon-size="20"></span><span class="qa-t">Transfer<br>Money</span></a>
+          <a class="qa-tile" href="../wallet/history.html"><span class="qa-ic" style="color:var(--vy-teal)" data-icon="file" data-icon-size="20"></span><span class="qa-t">Transaction<br>History</span></a>
+          <a class="qa-tile" href="../wallet/statement.html"><span class="qa-ic" style="color:var(--mb-info)" data-icon="book" data-icon-size="20"></span><span class="qa-t">Account<br>Statement</span></a>
+          <a class="qa-tile" href="partner.html"><span class="qa-ic" style="color:var(--vy-brand)" data-icon="handshake" data-icon-size="20"></span><span class="qa-t">Partner<br>Program</span></a>
+        </nav>
+      </section>
+
+      <a class="btn btn-ghost btn-block mt3" href="settings.html"><span data-icon="settings"></span> Settings &amp; more</a>
+    </section>
+
   </main>
   <div data-render="tabbar"></div>
 </div>
@@ -172,76 +206,200 @@
 <script src="../../assets/js/core/charts.js"></script>
 <script src="../../assets/js/core/ws.js"></script>
 <script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/achievements.js"></script>
+<script src="../../assets/js/core/signal-tracker.js"></script>
+<script src="../../assets/js/core/kx.js"></script>
 <script src="../../assets/js/core/roles.js"></script>
 <script src="../../assets/js/core/shell.js"></script>
 <script src="../../assets/js/core/pwa.js"></script>
 <script>
 MB.ready(function () {
+  var STEPS = [
+    { id: 'participate', label: 'Participate' }, { id: 'achievements', label: 'Achievements' },
+    { id: 'signal_access', label: 'Signal Access' }, { id: 'performance', label: 'Performance' },
+    { id: 'reputation', label: 'Reputation' }, { id: 'premium', label: 'Premium' }, { id: 'pro', label: 'Pro' }
+  ];
+  var ME = null, mySignals = [];
 
-  /* ---- identity, balance and performance ----------------------------- */
-  MB.api.get('me').then(function (r) {
-    var u = r.data, p = u.performance, d = u.deriv || {};
+  function ibVerified() {
+    try { var s = JSON.parse(localStorage.getItem('mb.partner') || '{}') || {}; return !!(s.ib && s.ib.status === 'verified'); }
+    catch (e) { return false; }
+  }
+  function monthYear(iso) {
+    var d = new Date(iso); if (isNaN(d)) { return iso || ''; }
+    return d.toLocaleDateString('en', { month: 'short', year: 'numeric' });
+  }
 
-    MB.$('#meAvatar').innerHTML = MB.avatar(u, 'avatar-xl');
-    MB.$('#meName').textContent = u.display_name;
-    MB.$('#meHandle').textContent = '@' + u.username;
-    if (u.is_verified) { MB.$('#meTick').hidden = false; MB.$('#meVerified').hidden = false; }
-    /* A moderator is a normal member with an extra badge — no separate app. */
-    if (u.role === 'moderator') { MB.$('#meMod').hidden = false; }
-    MB.$('#meSince').textContent = 'Since ' + (u.member_since || 'Apr 2023');
-
-    MB.$('#tbAmount').innerHTML = MB.fmt.money(d.total_balance || 0) +
-      '<span class="cur">' + MB.esc(d.currency || 'USD') + '</span>';
-
-    var up = p.today_pl >= 0;
-    MB.$('#tbDelta').className = 'tb-delta ' + (up ? 'c-up' : 'c-down');
-    MB.$('#tbDelta').textContent =
-      MB.fmt.signed(p.today_pl) + ' (' + MB.fmt.pct(p.today_pct) + ') today';
-
-    MB.$('#meWins').textContent = p.wins;
-    MB.$('#meLosses').textContent = p.losses;
-    MB.$('#meWin').textContent = p.win_rate.toFixed(1) + '%';
-    MB.$('#mePL').textContent = MB.fmt.signed(p.total_pl);
-    MB.$('#meFollowers').textContent = MB.fmt.compact(u.followers);
-    MB.$('#meFollowing').textContent = MB.fmt.compact(u.following);
-    MB.$('#meSignals').textContent = u.signals_count;
-
-    MB.mountIcons(document);
+  /* ---- tabs ------------------------------------------------------------ */
+  var PANES = { overview: 'paneOverview', signals: 'paneSignals', results: 'paneResults', posts: 'paneAboutPosts', about: 'paneAbout' };
+  MB.$('#profTabs').addEventListener('mb:change', function (e) {
+    Object.keys(PANES).forEach(function (k) { MB.$('#' + PANES[k]).hidden = k !== e.detail.value; });
+    if (e.detail.value === 'overview') { MB.mountCharts(MB.$('#paneOverview')); }
   });
 
-  /* ---- the connected Deriv accounts ---------------------------------- */
+  /* ---- identity --------------------------------------------------------- */
+  MB.api.get('me').then(function (r) {
+    var u = ME = r.data, p = u.performance || {}, d = u.deriv || {}, sp = u.signal_performance || {};
+
+    MB.$('#meAvatar').innerHTML = MB.avatar(u, 'avatar-xl') +
+      (u.is_verified ? '<span class="prof-tick" title="Verified">' + MB.icon('check', 12) + '</span>' : '');
+    MB.$('#meName').textContent = u.display_name;
+    MB.$('#mePro').hidden = !u.is_pro;
+    MB.$('#meHandle').textContent = '@' + u.username;
+    MB.$('#meTitle').textContent = u.title || (u.profile_type === 'institution' ? 'Institutional Trader' : 'Trader');
+
+    var meta = '';
+    if (u.country) { meta += '<span>' + MB.icon('globe', 13) + MB.esc(u.country) + '</span>'; }
+    meta += '<span>' + MB.icon('calendar', 13) + 'Joined ' + MB.esc(monthYear(u.joined_at) || u.member_since || '') + '</span>';
+    meta += '<span>' + MB.icon(u.profile_type === 'institution' ? 'bank' : 'users', 13) +
+      (u.profile_type === 'institution' ? 'Institution' : 'Individual Trader') + '</span>';
+    if (u.role === 'moderator') { meta += '<span class="c-info">' + MB.icon('shield', 13) + 'Moderator</span>'; }
+    MB.$('#meMeta').innerHTML = meta;
+    MB.$('#meMeta2').innerHTML = meta;
+
+    /* Own profile: edit + share + more. Stage 2: a public view shows Follow + Message. */
+    MB.$('#meActions').innerHTML =
+      '<a class="btn btn-primary grow" href="settings.html">' + MB.icon('edit', 17) + ' Edit Profile</a>' +
+      '<button class="btn btn-ghost btn-ico" type="button" id="btnShare" aria-label="Share profile">' + MB.icon('share', 18) + '</button>' +
+      '<a class="btn btn-ghost btn-ico" href="settings.html" aria-label="More">' + MB.icon('more', 18) + '</a>';
+    MB.$('#btnShare').addEventListener('click', function () {
+      var url = new URL('../signals/provider.html?u=' + encodeURIComponent(u.username), location.href).href;
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(url).then(function () { MB.toast('Profile link copied'); }, function () { MB.toast(url); }); }
+      else { MB.toast(url); }
+    });
+
+    /* Signal figures (KonfluenX) — mock record plus anything published in this browser */
+    var won = sp.won || 0, lost = sp.lost || 0, open = sp.open || 0, pub = sp.published || 0, pts = sp.performance_points || 0;
+    if (MB.signalTracker && MB.signalTracker.stats) {
+      try { var t = MB.signalTracker.stats(); won += t.won || 0; lost += t.lost || 0; open += t.open || 0; pts += t.points || 0; pub += (t.won || 0) + (t.lost || 0) + (t.open || 0); } catch (e) {}
+    }
+    MB.$('#stWin').textContent = won + lost ? Math.round(won / (won + lost) * 100) + '%' : '—';
+    MB.$('#stSignals').textContent = pub;
+    MB.$('#stPips').textContent = (pts >= 0 ? '+' : '-') + MB.fmt.compact(Math.abs(pts));
+    MB.$('#stPips').className = 'stat-v ' + (pts >= 0 ? 'c-up' : 'c-down');
+    MB.$('#stFollowers').textContent = MB.fmt.compact(u.followers);
+    MB.$('#rsWon').textContent = won; MB.$('#rsLost').textContent = lost;
+    MB.$('#rsPts').textContent = (pts >= 0 ? '+' : '-') + MB.fmt.compact(Math.abs(pts));
+
+    /* Verified Deriv figures — read from Deriv, never from signals */
+    ['meWins', 'abWins'].forEach(function (id) { MB.$('#' + id).textContent = p.wins; });
+    ['meLosses', 'abLosses'].forEach(function (id) { MB.$('#' + id).textContent = p.losses; });
+    ['meWinD', 'abWin'].forEach(function (id) { MB.$('#' + id).textContent = Number(p.win_rate || 0).toFixed(1) + '%'; });
+    ['mePL', 'abPL'].forEach(function (id) { MB.$('#' + id).textContent = MB.fmt.signed(p.total_pl); MB.$('#' + id).className = 'pg-v num ' + MB.fmt.dirClass(p.total_pl); });
+    MB.$('#drvSrc').textContent = 'From your Deriv trade history' + (d.deriv_id ? ' · ' + d.deriv_id : '') + (p.verified_at ? ' · synced ' + MB.fmt.ago(p.verified_at) : '');
+
+    MB.$('#meBio').textContent = u.bio || '';
+    MB.$('#drvId').textContent = d.deriv_id || '—';
+    MB.$('#drvSub').textContent = [d.name, d.account_type === 'real' ? 'Real' : d.account_type, d.currency].filter(Boolean).join(' · ');
+    if (!d.connected) { MB.$('#drvStatus').className = 'badge badge-neutral'; MB.$('#drvStatus').textContent = 'Not connected'; }
+    MB.$('#tbAmount').textContent = MB.fmt.money(d.total_balance || 0, d.currency || 'USD');
+    MB.$('#drvLimit').textContent = 'Individual profiles connect ' + (d.max_connections || 1) + ' Deriv login. Its sub-accounts are listed under it.';
+
+    /* progression */
+    var prog = u.progression || { current: 'participate' };
+    var cur = Math.max(0, STEPS.map(function (s) { return s.id; }).indexOf(prog.current));
+    var host = MB.$('#progStrip');
+    host.innerHTML = STEPS.map(function (s, i) {
+      var cls = i < cur ? 'is-done' : i === cur ? 'is-current' : '';
+      return '<li class="prog-step ' + cls + '"' + (i === cur ? ' aria-current="step"' : '') + '>' +
+        '<span class="prog-dot">' + (i < cur ? MB.icon('check', 12) : (i + 1)) + '</span><span class="prog-l">' + s.label + '</span></li>';
+    }).join('');
+    MB.$('#progStep').textContent = 'Step ' + (cur + 1) + ' of ' + STEPS.length;
+    MB.$('#progHint').textContent = prog.hint || '';
+    var el = host.children[cur]; if (el) { host.scrollLeft = Math.max(0, el.offsetLeft - host.clientWidth / 2 + el.clientWidth / 2); }
+
+    MB.mountIcons(document);
+    loadFeeds(u);
+  });
+
+  /* ---- performance source switch (never combined) ---------------------- */
+  MB.$('#perfSrc').addEventListener('change', function () {
+    var deriv = this.value === 'deriv';
+    MB.$('#perfChartSignals').hidden = deriv; MB.$('#perfChartDeriv').hidden = !deriv;
+    MB.$('#perfNote').textContent = deriv ? 'Verified from your connected Deriv account · never mixed with signal results'
+                                          : 'Net pips from published signals · never mixed with Deriv results';
+    MB.mountCharts(MB.$('#paneOverview'));
+  });
+
+  /* ---- achievements row: earned first, names only ---------------------- */
+  MB.api.get('achievements').then(function (r) {
+    var d = r.data || {};
+    var list = (ME && ME.profile_type === 'institution') ? (d.institution_badges || d.badges || []) : (d.badges || []);
+    var earned = list.filter(function (b) { return MB.card.achievementStatus(b) === 'unlocked'; }).length;
+    MB.$('#achvCount').textContent = '(' + earned + '/' + list.length + ')';
+    MB.$('#achvStrip').innerHTML = MB.card.achievementBadges(list) || '<p class="t-xs c-3">No achievements yet.</p>';
+    MB.$('#meChips').innerHTML = MB.card.topBadge(list) + (ibVerified() ? '<span class="ach-chip tone-green">' + MB.icon('handshake', 12) + 'KonfluenX Partner</span>' : '');
+  }).catch(function () { MB.$('#achvStrip').innerHTML = '<p class="t-xs c-3">Achievements are unavailable right now.</p>'; });
+
+  /* ---- KX credits and points ------------------------------------------- */
+  if (MB.kx) {
+    var paintKx = function () {
+      try {
+        MB.$('#meKxBal').textContent = Number(MB.kx.balance() || 0).toFixed(2) + ' KX';
+        MB.$('#meKxPts').textContent = MB.fmt.compact(MB.kx.points ? MB.kx.points.balance() : 0) + ' pts';
+        MB.$('#meKx').hidden = false;
+      } catch (e) { MB.$('#meKx').hidden = true; }
+    };
+    paintKx(); if (MB.kx.ready) { MB.kx.ready().then(paintKx, function () {}); }
+  }
+
+  /* ---- Signals / Results / Posts --------------------------------------- */
+  function loadFeeds(u) {
+    var mine = function (s) { return s.author && (s.author.username === u.username || s.author.id === u.id); };
+    MB.api.list('signals').then(function (rows) {
+      mySignals = rows.filter(mine);
+      if (MB.signalTracker && MB.signalTracker.list) {
+        try { mySignals = MB.signalTracker.list().map(function (s) { return MB.signalTracker.toFeedSignal(s, u); }).concat(mySignals); } catch (e) {}
+      }
+      var host = MB.$('#listSignals');
+      host.innerHTML = mySignals.length ? mySignals.map(MB.card.sig).join('')
+        : '<div class="card prof-empty">' + MB.icon('signals', 36) + '<h3 class="t-sm w-bold mt2">No signals published yet</h3><p class="t-xs c-3">Qualify through achievements, then post your first signal.</p></div>';
+      MB.mountIcons(host); if (MB.mountCharts) { MB.mountCharts(host); }
+
+      var done = mySignals.filter(function (s) { return s.result && (s.result.outcome === 'won' || s.result.outcome === 'lost'); });
+      var res = MB.$('#listResults');
+      res.innerHTML = done.length ? done.map(function (s) {
+        var buy = !/sell|fall|down|put/i.test(s.direction || '');
+        var ptsV = s.performance && typeof s.performance.points === 'number' ? s.performance.points : null;
+        var wonS = s.result.outcome === 'won';
+        return '<div class="res-row">' +
+          '<span class="res-dir ' + (buy ? 'is-buy' : 'is-sell') + '">' + MB.icon(buy ? 'up' : 'down', 16) + '</span>' +
+          '<span class="grow" style="min-width:0"><span class="t-sm w-semi" style="display:block">' + MB.esc(s.market.short_name) + ' ' + (buy ? 'BUY' : 'SELL') + '</span>' +
+            '<span class="t-xs c-3">' + MB.fmt.date(new Date(s.result.resolved_at || s.published_at)) + ' · ' + (wonS ? (s.result.hit_level || 'tp1').toUpperCase() + ' hit' : 'SL hit') + '</span></span>' +
+          '<span class="badge ' + (wonS ? 'badge-won' : 'badge-lost') + '">' + (wonS ? 'Won' : 'Lost') + '</span>' +
+          (ptsV !== null ? '<span class="res-pts ' + (ptsV >= 0 ? 'c-up' : 'c-down') + '">' + (ptsV >= 0 ? '+' : '') + MB.fmt.compact(ptsV) + '</span>' : '') +
+        '</div>';
+      }).join('') : '<div class="prof-empty">' + MB.icon('results', 36) + '<h3 class="t-sm w-bold mt2">No resolved signals yet</h3></div>';
+      MB.mountIcons(res);
+    });
+    MB.api.list('posts').then(function (rows) {
+      var mineP = rows.filter(mine);
+      var host = MB.$('#listPosts');
+      host.innerHTML = mineP.length ? mineP.map(MB.card.post).join('')
+        : '<div class="card prof-empty">' + MB.icon('community', 36) + '<h3 class="t-sm w-bold mt2">No posts yet</h3></div>';
+      MB.mountIcons(host); if (MB.mountCharts) { MB.mountCharts(host); }
+    });
+  }
+
+  /* ---- accounts under the login ---------------------------------------- */
   MB.api.get('accounts').then(function (r) {
     var host = MB.$('#acctList');
     host.innerHTML = r.data.map(function (a) {
-      return '<a class="acct-row" href="../wallet/account-detail.html?id=' + a.id + '">' +
-        '<span class="acct-badge ' + a.badge + '">' + MB.esc(a.badge_text) + '</span>' +
-        '<span class="grow" style="min-width:0">' +
-          '<span class="ar-n">' + MB.esc(a.short) + '</span>' +
-          '<span class="ar-s">' + MB.esc(a.subtitle) +
-'</span>' +
-        '</span>' +
+      return '<a class="acct-row" href="../wallet/account-detail.html?id=' + encodeURIComponent(a.id) + '">' +
+        '<span class="acct-badge ' + MB.esc(a.badge) + '">' + MB.esc(a.badge_text) + '</span>' +
+        '<span class="grow" style="min-width:0"><span class="ar-n">' + MB.esc(a.short) + '</span>' +
+          '<span class="ar-s">' + MB.esc(a.subtitle) + (a.login ? ' · ' + MB.esc(a.login) : '') + '</span></span>' +
         '<span class="ar-v">' + MB.fmt.money(a.balance, a.currency) + '</span>' +
-        '<span class="ar-chev" data-icon="chevright" data-icon-size="17"></span>' +
-      '</a>';
+        '<span class="ar-chev" data-icon="chevright" data-icon-size="17"></span></a>';
     }).join('');
     MB.mountIcons(host);
   });
 
-  /* ---- feed tabs ------------------------------------------------------ */
-  MB.render({ into: '#paneMeSignals', from: 'signals', limit: 3, template: MB.card.signal });
-  MB.render({ into: '#paneMePosts', from: 'posts', limit: 3, template: MB.card.post });
-  MB.$('#meTabs').addEventListener('mb:change', function (e) {
-    MB.$('#paneMeSignals').classList.toggle('hide', e.detail.value !== 'signals');
-    MB.$('#paneMePosts').classList.toggle('hide', e.detail.value !== 'posts');
-  });
-
-  /* ---- hide the balance ----------------------------------------------- */
   var hidden = false;
   MB.$('#btnHide').addEventListener('click', function () {
-    hidden = !hidden;
-    MB.$('#tbAmount').classList.toggle('is-masked', hidden);
-    MB.$('#tbDelta').classList.toggle('is-masked', hidden);
+    hidden = !hidden; MB.$('#tbAmount').classList.toggle('is-masked', hidden);
     this.innerHTML = MB.icon(hidden ? 'eyeoff' : 'eye', 15);
+    this.setAttribute('aria-label', hidden ? 'Show balance' : 'Hide balance');
   });
 });
 </script>

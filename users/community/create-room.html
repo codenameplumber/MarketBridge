@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create Room — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<link rel="stylesheet" href="../../assets/css/rooms.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="community" data-root="../../" data-title="Create Trader Room" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div class="cr-steps" id="crSteps" aria-label="Progress">
+      <div class="cr-step is-active" data-step="1"><i>1</i>Details</div>
+      <div class="cr-step" data-step="2"><i>2</i>Verify</div>
+      <div class="cr-step" data-step="3"><i>3</i>Review</div>
+    </div>
+
+    <!-- STEP 1 — DETAILS -->
+    <section class="stack g4" id="step1">
+      <div class="field">
+        <label for="crName">Room name <span class="c-down">*</span></label>
+        <input class="input" id="crName" maxlength="40" placeholder="e.g. JamesFX's Room" autocomplete="off">
+        <span class="field-error hide" id="crNameErr">Give the room a name (3–40 characters).</span>
+      </div>
+      <div class="field">
+        <label for="crDesc">Description <span class="c-down">*</span></label>
+        <textarea class="textarea" id="crDesc" maxlength="200" rows="3"
+                  placeholder="Tell members what to expect in this room…"></textarea>
+        <span class="char-count"><span id="crDescCount">0</span>/200</span>
+        <span class="field-error hide" id="crDescErr">Add a short description (at least 10 characters).</span>
+      </div>
+
+      <div class="field">
+        <label>Room type <span class="c-down">*</span></label>
+        <div class="cr-types" id="crTypes">
+          <button class="cr-type is-active" type="button" data-type="trader">
+            <span data-icon="users"></span><span class="ct-t">Trader Room</span>
+            <span class="ct-d">Open room for discussion and signals.</span></button>
+          <button class="cr-type" type="button" data-type="premium">
+            <span data-icon="verified"></span><span class="ct-t">Premium Room</span>
+            <span class="ct-d">Connect Deriv to show verified performance.</span></button>
+          <button class="cr-type" type="button" data-type="pro" disabled aria-disabled="true">
+            <span data-icon="crown"></span><span class="ct-t">Pro Room</span>
+            <span class="ct-d">After 3 qualifying months, apply for monetisation.</span></button>
+        </div>
+        <span class="field-hint" id="crTypeHint">Free to open. Upgrade to Premium any time by connecting Deriv.</span>
+      </div>
+
+      <div class="field">
+        <label>Main markets</label>
+        <div class="mk-pick" id="crMarkets"></div>
+        <select class="select mt2" id="crAddMarket" aria-label="Add a market">
+          <option value="">+ Add market</option>
+        </select>
+        <span class="field-hint">Pick up to 5. Members use these to find your room.</span>
+      </div>
+
+      <button class="btn btn-brand btn-block" type="button" id="btnStep1">Continue</button>
+    </section>
+
+    <!-- STEP 2 — CONNECT DERIV (OPTIONAL) -->
+    <section class="stack g4 hide" id="step2">
+      <div class="card" style="text-align:center">
+        <div class="deriv-art"><span data-icon="link" data-icon-size="40"></span></div>
+        <div class="t-h3 w-bold">Connect your Deriv trading account</div>
+        <p class="t-sm c-2 mt2">Let members see your real trading performance. This builds trust and makes
+          your signals more valuable.</p>
+      </div>
+      <div class="card">
+        <div class="w-bold t-sm">What members will see</div>
+        <ul class="see-list">
+          <li><span data-icon="check"></span><span>Trading statistics (win rate, total trades)</span></li>
+          <li><span data-icon="check"></span><span>Trading history (recent trades)</span></li>
+          <li><span data-icon="check"></span><span>Verified net profit / loss for 7D, 30D, 3M and all time</span></li>
+          <li><span data-icon="check"></span><span>Signal trade matching — whether a trade backs each signal</span></li>
+          <li><span data-icon="check"></span><span>Your eligibility path to a Pro Room (monetisation)</span></li>
+        </ul>
+      </div>
+      <div class="alert alert-info">
+        <span data-icon="lock"></span>
+        <div class="t-xs">You authorize on Deriv&rsquo;s own page with read-only access. KonfluenX never asks for,
+          sees or stores your Deriv password, and cannot trade or withdraw for you.</div>
+      </div>
+      <div id="derivState"></div>
+      <button class="btn btn-deriv btn-block" type="button" id="btnConnectDeriv">
+        <span data-icon="link"></span> Connect Deriv Account</button>
+      <button class="btn btn-ghost btn-block" type="button" id="btnSkipDeriv">Skip for now</button>
+      <p class="t-xs c-3" style="text-align:center">You can connect later from room settings.</p>
+    </section>
+
+    <!-- STEP 3 — REVIEW & CREATE -->
+    <section class="stack g4 hide" id="step3">
+      <div class="card" style="text-align:center">
+        <div id="rvAvatar" style="display:flex;justify-content:center"></div>
+        <div class="t-h3 w-bold mt3" id="rvName">—</div>
+        <div class="room-badges" id="rvBadges" style="justify-content:center"></div>
+      </div>
+      <div class="card">
+        <div class="review-row"><span class="rv-k">Description</span><span class="rv-v" id="rvDesc">—</span></div>
+        <div class="review-row"><span class="rv-k">Main markets</span><span class="rv-v" id="rvMarkets">—</span></div>
+        <div class="review-row"><span class="rv-k">Deriv connection</span><span class="rv-v" id="rvDeriv">—</span></div>
+        <div class="review-row"><span class="rv-k">Members pay</span><span class="rv-v">Nothing — Trader and Premium rooms are free</span></div>
+      </div>
+      <p class="t-xs c-3" id="rvNote"></p>
+      <button class="btn btn-brand btn-block" type="button" id="btnCreate">Create Room</button>
+      <button class="btn btn-ghost btn-block" type="button" id="btnBack3">Back</button>
+    </section>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../../assets/js/core/icons.js"></script>
+<script src="../../assets/js/core/util.js"></script>
+<script src="../../assets/js/core/api.js"></script>
+<script src="../../assets/js/core/collection.js"></script>
+<script src="../../assets/js/core/charts.js"></script>
+<script src="../../assets/js/core/ws.js"></script>
+<script src="../../assets/js/components/cards.js"></script>
+<script src="../../assets/js/components/rooms.js"></script>
+<script src="../../assets/js/core/roles.js"></script>
+<script src="../../assets/js/core/shell.js"></script>
+<script src="../../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var draft = { name: '', description: '', type: 'trader', markets: ['V75 (1s)'], deriv_connected: false };
+  var QUICK = ['V75 (1s)', 'V100 (1s)', 'Boom 1000', 'Crash 500', 'Forex', 'Crypto', 'Commodities', 'Indices'];
+  var step = 1;
+
+  /* ---- steps ---------------------------------------------------------- */
+  function go(n) {
+    step = n;
+    [1, 2, 3].forEach(function (i) {
+      MB.$('#step' + i).classList.toggle('hide', i !== n);
+      var s = MB.$('.cr-step[data-step="' + i + '"]');
+      s.classList.toggle('is-active', i === n);
+      s.classList.toggle('is-done', i < n);
+      s.querySelector('i').innerHTML = i < n ? MB.icon('check', 14) : String(i);
+    });
+    var tt = MB.$('.topbar-title');
+    if (tt) tt.textContent = n === 1 ? 'Create Trader Room' : n === 2 ? 'Connect Deriv (Optional)' : 'Review & Create';
+    if (n === 3) { paintReview(); }
+    window.scrollTo(0, 0);
+  }
+
+  /* ---- step 1 ---------------------------------------------------------- */
+  var desc = MB.$('#crDesc');
+  desc.addEventListener('input', function () { MB.$('#crDescCount').textContent = desc.value.length; });
+
+  MB.$('#crTypes').addEventListener('click', function (e) {
+    var b = e.target.closest('.cr-type');
+    if (!b || b.disabled) { return; }
+    draft.type = b.getAttribute('data-type');
+    MB.$$('#crTypes .cr-type').forEach(function (x) { x.classList.toggle('is-active', x === b); });
+    MB.$('#crTypeHint').textContent = draft.type === 'premium'
+      ? 'Premium needs a Deriv connection — you will connect it on the next step. Still free for members.'
+      : 'Free to open. Upgrade to Premium any time by connecting Deriv.';
+  });
+
+  function paintMarkets() {
+    var all = QUICK.concat(draft.markets.filter(function (m) { return QUICK.indexOf(m) < 0; }));
+    MB.$('#crMarkets').innerHTML = all.map(function (m) {
+      return '<button class="chip' + (draft.markets.indexOf(m) > -1 ? ' is-active' : '') +
+        '" type="button" data-mk="' + MB.esc(m) + '">' + MB.esc(m) + '</button>';
+    }).join('');
+  }
+  paintMarkets();
+  MB.$('#crMarkets').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-mk]');
+    if (!b) { return; }
+    var m = b.getAttribute('data-mk'), i = draft.markets.indexOf(m);
+    if (i > -1) { draft.markets.splice(i, 1); }
+    else if (draft.markets.length >= 5) { MB.toast('Up to 5 main markets', 'err'); return; }
+    else { draft.markets.push(m); }
+    paintMarkets();
+  });
+  MB.api.list('markets').then(function (rows) {
+    MB.$('#crAddMarket').insertAdjacentHTML('beforeend', rows.map(function (m) {
+      return '<option value="' + MB.esc(m.short_name) + '">' + MB.esc(m.short_name) + '</option>';
+    }).join(''));
+  });
+  MB.$('#crAddMarket').addEventListener('change', function () {
+    var m = this.value;
+    this.value = '';
+    if (!m || draft.markets.indexOf(m) > -1) { return; }
+    if (draft.markets.length >= 5) { MB.toast('Up to 5 main markets', 'err'); return; }
+    draft.markets.push(m);
+    paintMarkets();
+  });
+
+  MB.$('#btnStep1').addEventListener('click', function () {
+    draft.name = MB.$('#crName').value.trim();
+    draft.description = desc.value.trim();
+    var okName = draft.name.length >= 3, okDesc = draft.description.length >= 10;
+    MB.$('#crNameErr').classList.toggle('hide', okName);
+    MB.$('#crDescErr').classList.toggle('hide', okDesc);
+    if (!okName || !okDesc) { return; }
+    go(2);
+  });
+
+  /* ---- step 2 — simulated Deriv OAuth --------------------------------- */
+  function paintDeriv() {
+    MB.$('#derivState').innerHTML = draft.deriv_connected
+      ? '<div class="alert alert-green">' + MB.icon('check', 16) +
+        '<div class="t-sm"><b>Deriv connected.</b> Your room opens as a Premium Room with the Deriv Verified badge.</div></div>'
+      : '';
+    MB.$('#btnConnectDeriv').classList.toggle('hide', draft.deriv_connected);
+    MB.$('#btnSkipDeriv').textContent = draft.deriv_connected ? 'Continue' : 'Skip for now';
+  }
+  MB.$('#btnConnectDeriv').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Opening Deriv…';
+    /* Stage 2: redirect to Deriv's OAuth page (read-only scope), come back
+       to /oauth/deriv/callback, and the server stores the token. The app
+       never handles credentials. */
+    setTimeout(function () {
+      draft.deriv_connected = true;
+      btn.disabled = false;
+      btn.innerHTML = MB.icon('link', 18) + ' Connect Deriv Account';
+      if (draft.type === 'trader') { draft.type = 'premium'; }
+      paintDeriv();
+      MB.toast('Deriv account connected (read-only)');
+    }, 1100);
+  });
+  MB.$('#btnSkipDeriv').addEventListener('click', function () {
+    if (!draft.deriv_connected && draft.type === 'premium') {
+      MB.toast('Without Deriv it opens as a Trader Room — upgrade later');
+    }
+    go(3);
+  });
+
+  /* ---- step 3 ---------------------------------------------------------- */
+  function paintReview() {
+    var tier = draft.deriv_connected ? 'premium' : 'trader';
+    var preview = { kind: 'trader', tier: tier, deriv_connected: draft.deriv_connected };
+    MB.$('#rvAvatar').innerHTML = MB.avatar({ username: 'johndavid', display_name: 'John David' }, 'avatar-lg');
+    MB.$('#rvName').textContent = draft.name;
+    MB.$('#rvBadges').innerHTML = MB.rooms.tierBadge(preview) + MB.rooms.derivBadge(preview);
+    MB.$('#rvDesc').textContent = draft.description;
+    MB.$('#rvMarkets').innerHTML = draft.markets.length
+      ? draft.markets.map(function (m) { return '<span class="chip-tag">' + MB.esc(m) + '</span>'; }).join(' ')
+      : '<span class="c-3">None picked</span>';
+    MB.$('#rvDeriv').innerHTML = draft.deriv_connected
+      ? '<span class="badge badge-active">' + MB.icon('check', 11) + ' Connected</span>'
+      : '<span class="badge badge-warn">Not connected</span>';
+    MB.$('#rvNote').textContent = draft.deriv_connected
+      ? 'Premium rooms show verified Deriv performance. After three consecutive qualifying months you can apply to become a Pro Room — subject to KonfluenX approval.'
+      : 'You can connect Deriv later from the room to upgrade it to a Premium Room.';
+  }
+  MB.$('#btnBack3').addEventListener('click', function () { go(2); });
+  MB.$('#btnCreate').addEventListener('click', function () {
+    this.disabled = true;
+    var room = MB.rooms.createRoom(draft);
+    MB.api.post('rooms', { name: draft.name, description: draft.description, markets: draft.markets });
+    MB.toast(room.name + ' is live');
+    setTimeout(function () { location.href = 'room.html?room=' + encodeURIComponent(room.id); }, 500);
+  });
+
+  paintDeriv();
+  go(1);
+});
+</script>
+</body>
+</html>
