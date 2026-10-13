@@ -1828,3 +1828,15 @@ table.data tr.is-selected { background: var(--mb-green-soft); }
 .dc-ver { margin-top: var(--mb-s3); font-size: 10px; color: var(--mb-text-3); }
 .dc-sheet .sheet-foot .btn { min-width: 0; white-space: normal; line-height: 1.2; text-align: center; }
 [data-theme="light"] .dc-links a { background: var(--mb-surface); box-shadow: var(--mb-shadow-sm); }
+
+/* Role badges — shared with the staff console (admin.css keeps its copy) */
+.role-tag {
+  display: inline-flex; align-items: center; padding: 3px var(--mb-s2);
+  border-radius: var(--mb-r-pill); font-size: 10px; font-weight: var(--mb-w-bold);
+  letter-spacing: .05em; text-transform: uppercase; white-space: nowrap;
+  border: 1px solid transparent;
+}
+.role-tag.role-moderator  { background: var(--mb-info-soft);  color: var(--mb-info);  border-color: var(--mb-info-line); }
+.role-tag.role-admin      { background: var(--mb-green-soft); color: var(--mb-green); border-color: var(--mb-green-line); }
+.role-tag.role-superadmin { background: var(--vy-brand-soft); color: var(--vy-brand); border-color: var(--vy-brand-line); }
+

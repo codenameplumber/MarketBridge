@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Users — KonfluenX</title>
+<meta name="theme-color" content="#080B0F">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/app.css">
+<script>(function(){var t='dark';try{t=localStorage.getItem('mb.theme')||'dark';}catch(e){}var m=/[?&]theme=(dark|light|system)\b/.exec(location.search);if(m){t=m[1];}if(t!=='system'){document.documentElement.setAttribute('data-theme',t);}})();</script>
+</head>
+<body data-shell="app" data-nav="people" data-root="../" data-title="Users" data-sub="Find anyone on KonfluenX" data-back="index.html" data-unread="3">
+
+<div class="app">
+  <div data-render="topbar"></div>
+  <main class="page">
+
+    <div class="input-icon">
+      <span data-icon="search"></span>
+      <input class="input" id="q" type="search" placeholder="Search by name, username or email…" autocomplete="off">
+    </div>
+
+    <div class="chips mt3" data-group id="typeChips">
+      <button class="chip is-active" data-value="all">All</button>
+      <button class="chip" data-value="trader">Traders</button>
+      <button class="chip" data-value="provider">Signal providers</button>
+      <button class="chip" data-value="institution">Institutions</button>
+      <button class="chip" data-value="investor">Investors</button>
+      <button class="chip" data-value="moderator">Moderators</button>
+    </div>
+
+    <div class="between mt4 mb2">
+      <div class="label" id="countLabel">&mdash;</div>
+      <select class="select select-sm" id="sortBy" aria-label="Sort">
+        <option value="followers">Most followed</option>
+        <option value="win_rate">Best win rate</option>
+        <option value="signals">Most signals</option>
+        <option value="recent">Recently active</option>
+      </select>
+    </div>
+
+    <div class="card card-flush" id="list"></div>
+    <p class="t-xs c-3 mt3" id="foot"></p>
+
+  </main>
+  <div data-render="tabbar"></div>
+</div>
+
+<script src="../assets/js/core/icons.js"></script>
+<script src="../assets/js/core/util.js"></script>
+<script src="../assets/js/core/api.js"></script>
+<script src="../assets/js/core/collection.js"></script>
+<script src="../assets/js/core/charts.js"></script>
+<script src="../assets/js/core/ws.js"></script>
+<script src="../assets/js/components/cards.js"></script>
+<script src="../assets/js/core/roles.js"></script>
+<script src="../assets/js/core/shell.js"></script>
+<script src="../assets/js/core/pwa.js"></script>
+<script>
+MB.ready(function () {
+  var params = new URLSearchParams(location.search);
+  var type = params.get('type') || 'all', q = '', sort = 'followers', people = [];
+  var staff = MB.roles && MB.roles.isStaff();
+
+  var TYPE = {
+    trader:      { label: 'Trader',          cls: 'badge-neutral' },
+    provider:    { label: 'Signal provider', cls: 'badge-active' },
+    institution: { label: 'Institution',     cls: 'badge-warn' },
+    investor:    { label: 'Investor',        cls: 'badge-info' },
+    moderator:   { label: 'Moderator',       cls: 'badge-mod' }
+  };
+
+  function classify(u) {
+    if (u.role === 'moderator') { return 'moderator'; }
+    if (u.role === 'signal_provider') { return 'provider'; }
+    var t = (u.trading || {}).total_trades || 0;
+    return t > 20 ? 'trader' : 'investor';
+  }
+
+  /* Stage 2: GET /users?type=&q= — one directory the server filters. */
+  Promise.all([MB.api.list('admin/users'), MB.api.list('rooms'), MB.api.get('institutional'), MB.api.list('providers')]).then(function (r) {
+    var users = r[0].map(function (u) {
+      return {
+        id: u.id, username: u.username, display_name: u.display_name, avatar_url: u.avatar_url,
+        email: u.email, is_verified: u.is_verified, status: u.status, type: classify(u),
+        followers: u.followers || 0, signals: u.signals || 0,
+        win_rate: (u.trading || {}).win_rate || 0, last_seen_at: u.last_seen_at,
+        profile: u.role === 'signal_provider' ? '../users/signals/provider.html?u=' + encodeURIComponent(u.username) : null,
+        details: staff ? '../admin/user-detail.html?u=' + encodeURIComponent(u.username) : null
+      };
+    });
+    /* The public signal providers, where not already in the member list. */
+    var seen = {}; users.forEach(function (u) { seen[u.username.toLowerCase()] = true; });
+    (r[3] || []).forEach(function (p) {
+      if (seen[String(p.username).toLowerCase()]) { return; }
+      users.push({
+        id: p.id, username: p.username, display_name: p.display_name || p.username, avatar_url: p.avatar_url,
+        is_verified: p.is_verified, status: 'active', type: 'provider',
+        followers: p.followers || 0, signals: p.signals_count || 0, win_rate: p.win_rate || 0,
+        last_seen_at: p.joined_at, profile: '../users/signals/provider.html?u=' + encodeURIComponent(p.username)
+      });
+    });
+    var insts = r[1].filter(function (x) { return x.owner_type === 'institution' && x.owner; }).map(function (x) {
+      var o = x.owner;
+      return {
+        id: o.id, username: o.username, display_name: o.display_name, avatar_url: o.avatar_url,
+        is_verified: o.is_verified, status: 'active', type: 'institution',
+        followers: o.followers || 0, signals: o.signals_count || 0, win_rate: o.win_rate || 0,
+        last_seen_at: x.created_at, room: x.id,
+        profile: '../users/institutional/portfolio.html?preview=1&inst=' + encodeURIComponent(o.username)
+      };
+    });
+    var d = (r[2] && r[2].data) || {};
+    if (d.company) {
+      insts.unshift({
+        id: 'inst_jt', username: 'jtcapital', display_name: d.company, avatar_url: null, is_verified: !!d.verified,
+        status: 'active', type: 'institution', followers: (d.portfolio_stats || {}).followers || 0,
+        signals: (d.community_performance || {}).signals || 0, win_rate: (d.community_performance || {}).win_rate || 0,
+        last_seen_at: d.verified_at, profile: '../users/institutional/portfolio.html?preview=1'
+      });
+    }
+    people = insts.concat(users);
+    paint();
+  });
+
+  function paint() {
+    var list = people.filter(function (p) {
+      if (type !== 'all' && p.type !== type) { return false; }
+      if (!q) { return true; }
+      var hay = (p.display_name + ' ' + p.username + ' ' + (staff ? p.email || '' : '')).toLowerCase();
+      return hay.indexOf(q) > -1;
+    });
+    list.sort(function (a, b) {
+      if (sort === 'recent') { return new Date(b.last_seen_at || 0) - new Date(a.last_seen_at || 0); }
+      return (b[sort] || 0) - (a[sort] || 0);
+    });
+    MB.$('#countLabel').textContent = list.length + (type === 'all' ? ' people' : ' ' + (TYPE[type].label + (list.length === 1 ? '' : 's')).toLowerCase());
+    var host = MB.$('#list');
+    host.innerHTML = list.length ? list.map(function (p) {
+      var t = TYPE[p.type];
+      var href = p.profile || p.details || '#';
+      return '<a class="list-row" href="' + href + '">' +
+        MB.avatar(p, 'avatar-sm') +
+        '<span class="grow" style="min-width:0">' +
+          '<span class="lr-title row g2">' + MB.esc(p.display_name) +
+            (p.is_verified ? '<span class="c-up">' + MB.icon('check', 12) + '</span>' : '') + '</span>' +
+          '<span class="lr-sub row g2 wrap">@' + MB.esc(p.username) +
+            '<span class="badge ' + t.cls + '">' + t.label + '</span>' +
+            (staff && p.status && p.status !== 'active' ? '<span class="badge badge-sell">' + MB.esc(p.status) + '</span>' : '') +
+          '</span>' +
+        '</span>' +
+        '<span class="none" style="text-align:right">' +
+          '<span class="lr-value num" style="display:block">' + MB.fmt.compact(p.followers) + ' followers</span>' +
+          (p.signals ? '<span class="t-xs c-3">' + p.signals + ' signals · ' + p.win_rate + '%</span>' : '') +
+        '</span>' +
+        '<span class="lr-chev">' + MB.icon('chevright', 18) + '</span>' +
+      '</a>';
+    }).join('') : '<div class="empty">' + MB.icon('search', 36) + '<h3>No one matches</h3><p>Try another name or filter.</p></div>';
+    MB.mountIcons(host);
+    MB.$('#foot').textContent = staff
+      ? 'Staff view: tap a person for their public profile; signal providers and institutions open their profile, other members open the console record.'
+      : 'Tap a trader or institution to view their public profile.';
+  }
+
+  MB.$('#q').addEventListener('input', function () { q = this.value.trim().toLowerCase(); paint(); });
+  MB.$('#typeChips').addEventListener('mb:change', function (e) { type = e.detail.value; paint(); });
+  MB.$('#sortBy').addEventListener('change', function () { sort = this.value; paint(); });
+  var pre = MB.$('#typeChips [data-value="' + type + '"]');
+  if (pre) { MB.$$('#typeChips .chip').forEach(function (c) { c.classList.remove('is-active'); }); pre.classList.add('is-active'); }
+});
+</script>
+</body>
+</html>

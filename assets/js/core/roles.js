@@ -197,7 +197,38 @@
       var b = document.body;
       var r = b && b.getAttribute('data-role');
       if (ROLES[r]) { return r; }
+      /* A staff member who switched into the customer app keeps their role:
+         same screens as any member, minus the money actions. */
+      var s = MB.roles.staffSession();
+      if (s) { return s; }
       return userRole;
+    },
+
+    /** admin and superadmin own a console; a moderator is a member. */
+    isStaff: function (id) {
+      var role = ROLES[id || MB.roles.current()];
+      return !!(role && role.portal);
+    },
+
+    /* ------------------------------------------------------------------
+       STAFF SESSION — "switch profile" between the console and the app.
+       Stage 1 keeps it in localStorage; Stage 2 it is the signed-in
+       account's role from the server and this becomes a plain read.
+       ------------------------------------------------------------------ */
+    staffSession: function () {
+      try {
+        var v = localStorage.getItem('mb.session.role');
+        return ROLES[v] && ROLES[v].portal ? v : null;
+      } catch (e) { return null; }
+    },
+    switchToUser: function (id) {
+      var role = ROLES[id || MB.roles.current()];
+      if (!role || !role.portal) { return null; }
+      try { localStorage.setItem('mb.session.role', role.id); } catch (e) {}
+      return role.id;
+    },
+    endStaffSession: function () {
+      try { localStorage.removeItem('mb.session.role'); } catch (e) {}
     },
 
     /** Called from the customer app once we know who is signed in. */

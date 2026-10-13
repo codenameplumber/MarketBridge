@@ -882,3 +882,13 @@
 .res-dir.is-buy  { background: var(--mb-green-soft); color: var(--mb-green); }
 .res-dir.is-sell { background: var(--mb-sell-soft);  color: var(--mb-sell); }
 .res-pts { font-weight: var(--mb-w-bold); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Staff viewing the customer app as a member */
+.staff-bar {
+  display: flex; align-items: center; gap: var(--mb-s2);
+  padding: 6px var(--mb-s4); font-size: 11px; color: var(--mb-text-2);
+  background: var(--mb-info-soft); border-bottom: 1px solid var(--mb-info-line);
+}
+.staff-bar .grow { min-width: 0; }
+.staff-bar a { display: inline-flex; align-items: center; gap: 4px; font-weight: var(--mb-w-bold); color: var(--mb-info); white-space: nowrap; }
+.staff-bar a svg { width: 14px; height: 14px; }

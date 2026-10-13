@@ -24,7 +24,7 @@
   <main class="page">
 
     <!-- Total balance across every connected Deriv account -->
-    <section class="total-balance">
+    <section class="total-balance" data-not-staff>
       <div class="tb-head">
         <span class="tb-label">Total Balance</span>
         <button class="icon-btn" id="btnHide" aria-label="Hide balance"
@@ -36,16 +36,16 @@
       <span class="tb-spark"><span data-spark="up" data-seed="totalbal" data-h="52" data-sw="2"></span></span>
 
       <div class="tb-actions">
-        <a class="btn btn-primary" href="wallet/deposit.html">
+        <a class="btn btn-primary" href="wallet/deposit.html" data-not-staff>
           <span data-icon="download"></span> Deposit</a>
-        <a class="btn btn-sell" href="wallet/withdraw.html">
+        <a class="btn btn-sell" href="wallet/withdraw.html" data-not-staff>
           <span data-icon="upload"></span> Withdraw</a>
-        <a class="btn btn-ghost" href="wallet/transfer.html">
+        <a class="btn btn-ghost" href="wallet/transfer.html" data-not-staff>
           <span data-icon="refresh"></span> Transfer</a>
       </div>
     </section>
 
-    <nav class="quick" aria-label="Quick actions">
+    <nav class="quick" aria-label="Quick actions" data-not-staff>
       <a class="quick-item q-trade" href="trade/index.html">
         <span data-icon="markets"></span><span>Trade</span></a>
       <a class="quick-item q-signals" href="signals/index.html">
@@ -59,10 +59,29 @@
         <span data-icon="resources"></span><span>Re&shy;sources</span></a>
     </nav>
 
+    <nav class="quick" aria-label="Staff quick actions" data-staff-only>
+      <a class="quick-item q-trade" href="markets/index.html">
+        <span data-icon="markets"></span><span>Markets</span></a>
+      <a class="quick-item q-signals" href="signals/index.html">
+        <span data-icon="signals"></span><span>Signals</span></a>
+      <a class="quick-item q-community" href="community/index.html">
+        <span data-icon="community"></span><span>Rooms</span></a>
+      <a class="quick-item q-resources" href="people.html">
+        <span data-icon="users"></span><span>Users</span></a>
+      <a class="quick-item q-inst" href="people.html?type=institution">
+        <span data-icon="bank"></span><span>Institu&shy;tions</span></a>
+    </nav>
+
     <section class="page-section">
       <div class="sec-head"><h2>Popular Markets</h2>
         <a href="markets/index.html">View all</a></div>
       <div class="hscroll" id="popularMarkets"></div>
+    </section>
+
+    <section class="page-section" data-staff-only>
+      <div class="sec-head"><h2>Top Traders</h2>
+        <a href="results/leaderboard.html">Leaderboard</a></div>
+      <div class="hscroll" id="staffTop"></div>
     </section>
 
     <!-- Institutional Trading — announcement banner. The art is inline SVG
@@ -114,7 +133,7 @@
       </ul>
     </section>
 
-    <section class="page-section">
+    <section class="page-section" data-not-staff>
       <div class="sec-head"><h2>Trade Now</h2>
         <a href="trade/index.html">View all contracts</a></div>
       <div class="chips" data-group id="famChips">
@@ -150,7 +169,7 @@
       <div class="stack g3" id="communityFeed"></div>
     </section>
 
-    <section class="install-card" data-install-block>
+    <section class="install-card" data-install-block data-not-staff>
       <span class="ic-mark" id="installMark"></span>
       <span class="grow">
         <span class="ic-t">Install KonfluenX</span>
@@ -175,11 +194,13 @@
 <script src="../assets/js/core/pwa.js"></script>
 <script>
 MB.ready(function () {
-  document.getElementById('installMark').innerHTML = MB.brandMark(26);
+  var installMark = document.getElementById('installMark');
+  if (installMark) { installMark.innerHTML = MB.brandMark(26); }
   MB.mountIcons();
 
   /* ---- total balance — a cached read across every real account -------- */
-  MB.api.get('accounts').then(function (r) {
+  /* Staff browse without an account: the balance card is not on the page. */
+  if (document.getElementById('tbAmount')) { MB.api.get('accounts').then(function (r) {
     var m = r.meta;
     document.getElementById('tbAmount').innerHTML =
       MB.fmt.money(m.total_balance) + '<span class="cur">' + m.currency + '</span>';
@@ -193,10 +214,10 @@ MB.ready(function () {
     };
     paint();
     setInterval(paint, 60000);
-  });
+  }); }
 
   var hidden = false;
-  document.getElementById('btnHide').addEventListener('click', function () {
+  MB.on('#btnHide', 'click', function () {
     hidden = !hidden;
     document.getElementById('tbAmount').style.filter = hidden ? 'blur(10px)' : '';
     this.innerHTML = MB.icon(hidden ? 'eyeoff' : 'eye', 15);
@@ -228,6 +249,7 @@ MB.ready(function () {
   });
 
   /* ---- trade now — browse markets by category ------------------------- */
+  if (document.getElementById('tradeMarkets')) {
   var tradeCol = MB.collection({
     from: 'markets', into: '#tradeMarkets', template: MB.card.mktRow,
     perPage: 4, mode: 'more', skeleton: false,
@@ -238,6 +260,7 @@ MB.ready(function () {
     emptyText: 'No markets in this category yet.'
   });
   tradeCol.bind('#famChips', 'category');
+  }
 
   MB.render({ into: '#liveSignals', from: 'signals', limit: 3, skeletonCount: 3,
     filter: function (s) { return s.status === 'active'; },

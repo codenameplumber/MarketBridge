@@ -150,7 +150,18 @@
     if (document.getElementById('acctDrawer')) { return; }
     var r = MB.root();
 
-    var items = ACCT_NAV.map(function (n) {
+    var STAFF_NAV = [
+      { group: null },
+      { label: 'Users',               icon: 'users',     href: 'users/people.html' },
+      { label: 'Institutions',        icon: 'bank',      href: 'users/people.html?type=institution' },
+      { label: 'Leaderboard',         icon: 'results',   href: 'users/results/leaderboard.html' },
+      { label: 'All rooms',           icon: 'community', href: 'users/community/index.html' },
+      { group: 'More' },
+      { label: 'Notifications',       icon: 'bell',      href: 'users/notifications.html', count: 3 },
+      { label: 'Help & Support',      icon: 'info',      href: 'faq.html' },
+      { label: 'Settings',            icon: 'settings',  href: 'users/profile/settings.html' }
+    ];
+    var items = (staffView() ? STAFF_NAV : ACCT_NAV).map(function (n) {
       if (n.group === null) { return '</div><div class="acct-drawer-group">'; }
       if (n.group) {
         return '</div><div class="acct-drawer-group"><div class="acct-drawer-label">' + n.group + '</div>';
@@ -163,6 +174,17 @@
       '</a>';
     }).join('');
 
+    /* A staff member in the app gets the way back to their console first. */
+    var staff = MB.roles ? MB.roles.staffSession() : null;
+    var staffRole = staff ? MB.roles.get(staff) : null;
+    var switchItem = staffRole
+      ? '<div class="acct-drawer-group">' +
+          '<a class="acct-drawer-item" href="' + r + staffRole.home + 'index.html">' +
+            MB.icon('shield', 18) + '<span>Switch to ' + MB.esc(staffRole.label) + ' console</span>' +
+            '<span class="chev">' + MB.icon('chevright', 16) + '</span></a>' +
+        '</div>'
+      : '';
+
     var html =
       '<div class="acct-drawer-scrim" id="acctScrim"></div>' +
       '<aside class="acct-drawer" id="acctDrawer" role="dialog" aria-modal="true" aria-label="Account menu">' +
@@ -172,19 +194,23 @@
             MB.avatarColor('johntrader') + '">JT</span>' +
           '<div class="grow">' +
             '<div class="t-h3 w-bold" id="acctName">John Trader</div>' +
-            '<div class="t-xs c-up w-semi">' + MB.icon('check', 11) + ' Verified Trader</div>' +
+            (staffRole
+              ? '<div class="t-xs w-semi"><span class="role-tag role-' + staff + '">' + MB.esc(staffRole.label) + '</span></div>'
+              : '<div class="t-xs c-up w-semi">' + MB.icon('check', 11) + ' Verified Trader</div>') +
           '</div>' +
           '<button class="acct-drawer-close" id="acctClose" aria-label="Close">' +
             MB.icon('close', 19) + '</button>' +
         '</div>' +
+        (staffRole ? '' :
         '<a class="acct-drawer-bal" href="' + r + 'users/wallet/accounts.html">' +
           '<div class="grow"><div class="k">Total Deriv Balance</div>' +
             '<div class="v" id="acctBal">—</div></div>' +
           '<span style="width:110px"><span data-spark="up" data-seed="acctbal" data-h="34" data-sw="2"></span></span>' +
-        '</a>' +
+        '</a>') +
+        switchItem +
         '<div class="acct-drawer-group">' + items + '</div>' +
         '<div class="acct-drawer-group">' +
-          '<a class="acct-drawer-item is-danger" href="' + r + 'auth/login.html">' +
+          '<a class="acct-drawer-item is-danger" href="' + r + 'auth/login.html" id="acctLogout">' +
             MB.icon('logout', 18) + '<span>Log out</span></a>' +
         '</div>' +
         '<div class="acct-drawer-foot">' + MB.brand({ href: null, small: true }) + '</div>' +
@@ -208,6 +234,10 @@
     }
     if (open) { open.addEventListener('click', show); }
     document.getElementById('acctClose').addEventListener('click', hide);
+    /* Logging out ends a staff "view as member" session too. */
+    document.getElementById('acctLogout').addEventListener('click', function () {
+      if (MB.roles) { MB.roles.endStaffSession(); }
+    });
     scrim.addEventListener('click', hide);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && drawer.classList.contains('is-open')) { hide(); }
@@ -217,7 +247,7 @@
     if (MB.mountCharts) { MB.mountCharts(drawer); }
 
     /* The headline figure is a cached read, same as everywhere else. */
-    if (MB.api) {
+    if (MB.api && document.getElementById('acctBal')) {
       MB.api.get('accounts').then(function (r2) {
         document.getElementById('acctBal').textContent =
           MB.fmt.money(r2.meta.total_balance, r2.meta.currency);
@@ -236,13 +266,25 @@
     { id: 'community', label: 'Community', icon: 'community', href: 'users/community/index.html' }
   ];
 
+  /* Staff browse the app: markets, signals, rooms and people — nothing of their own. */
+  var STAFF_TABS = [
+    { id: 'home',      label: 'Home',      icon: 'home',      href: 'users/index.html' },
+    { id: 'markets',   label: 'Markets',   icon: 'markets',   href: 'users/markets/index.html' },
+    { id: 'signals',   label: 'Signals',   icon: 'signals',   href: 'users/signals/index.html' },
+    { id: 'community', label: 'Community', icon: 'community', href: 'users/community/index.html' },
+    { id: 'people',    label: 'Users',     icon: 'users',     href: 'users/people.html' }
+  ];
+
+  function staffView() { return !!(MB.roles && MB.roles.staffSession()); }
+
   function renderTabbar(body) {
     var host = MB.$('[data-render="tabbar"]');
     if (!host) { return; }
     var active = body.getAttribute('data-nav');
     var r = MB.root();
+    var tabs = staffView() ? STAFF_TABS : TABS;
 
-    host.outerHTML = '<nav class="tabbar" aria-label="Main">' + TABS.map(function (t) {
+    host.outerHTML = '<nav class="tabbar" aria-label="Main">' + tabs.map(function (t) {
       return '<a href="' + r + t.href + '"' +
              (t.id === active ? ' class="is-active" aria-current="page"' : '') + '>' +
              MB.icon(t.icon, 22) + '<span>' + t.label + '</span></a>';
@@ -285,10 +327,10 @@
         '<nav class="admin-nav" aria-label="' + (role ? MB.esc(role.label) : 'Staff') + '">' +
           items + '</nav>' +
         '<div class="admin-rail-foot">' +
-          '<a class="admin-nav" href="' + r + 'users/index.html" style="display:block">' +
+          '<a class="admin-nav" href="' + r + 'users/index.html" id="railSwitchUser" style="display:block">' +
             '<span style="display:flex;align-items:center;gap:12px;padding:10px 12px;' +
             'font-size:13px;font-weight:600;color:var(--mb-text-2)">' +
-            MB.icon('external', 18) + 'Customer app</span></a>' +
+            MB.icon('refresh', 18) + 'Switch to user view</span></a>' +
           '<a class="admin-nav" href="' + r + 'auth/login.html" style="display:block">' +
             '<span style="display:flex;align-items:center;gap:12px;padding:10px 12px;' +
             'font-size:13px;font-weight:600;color:var(--mb-sell)">' +
@@ -434,6 +476,11 @@
       });
       if (!ok) { el.remove(); }
     });
+    /* Staff browse the app without an account of their own: member-only
+       blocks (balance, wallet, trades, own profile) carry data-not-staff and
+       go; staff-only blocks carry data-staff-only and go for everyone else. */
+    var staff = MB.roles.isStaff(role);
+    MB.$$(staff ? '[data-not-staff]' : '[data-staff-only]', scope || document).forEach(function (el) { el.remove(); });
   }
   MB.applyPermissions = applyPermissions;
 
@@ -762,19 +809,76 @@
     MB.api.get('me').then(function (r) {
       var u = r.data || {};
       MB.session = u;
-      MB.roles.setUser(u.role);
+      /* A staff member who switched in keeps their console role here. */
+      MB.roles.setUser(MB.roles.staffSession() || u.role);
       if (MB.applyPermissions) { MB.applyPermissions(); }
       document.dispatchEvent(new CustomEvent('mb:session', { detail: { user: u } }));
     }).catch(function () { /* a signed-out visitor simply has no role */ });
+  }
+
+  /* ======================================================================
+     SWITCH PROFILE — console <-> customer app for admin / superadmin.
+     In the app a staff member is an ordinary member with the money actions
+     removed (data-not-staff) and the funding pages closed (data-staff-blocked).
+     ====================================================================== */
+  function wireSwitchToUser() {
+    var a = document.getElementById('railSwitchUser');
+    if (!a || !MB.roles) { return; }
+    a.addEventListener('click', function () { MB.roles.switchToUser(MB.roles.current()); });
+  }
+
+  function renderStaffBar(body) {
+    if (!MB.roles) { return; }
+    var staff = MB.roles.staffSession();
+    if (!staff) { return; }
+    var role = MB.roles.get(staff);
+    var r = MB.root();
+    var top = MB.$('.topbar');
+    if (!top) { return; }
+    top.insertAdjacentHTML('afterend',
+      '<div class="staff-bar" role="status">' +
+        '<span class="role-tag role-' + staff + '">' + MB.esc(role.label) + '</span>' +
+        '<span class="grow">Staff view &middot; browse markets, signals, rooms and users</span>' +
+        '<a href="' + r + role.home + 'index.html">' + MB.icon('back', 14) + ' Console</a>' +
+      '</div>');
+
+    /* Staff have no wallet, trades, signals of their own or member profile. */
+    var path = location.pathname.replace(/\\/g, '/');
+    var MEMBER_ONLY = /\/users\/(trade|wallet|creator)\/|\/users\/profile\/(index|rewards|achievements|partner[^/]*|saved)\.html|\/users\/signals\/compose\.html|\/users\/institutional\/(index|apply|team|audit|accounts)\.html/;
+    if (body.hasAttribute('data-staff-blocked') || MEMBER_ONLY.test(path)) {
+      var main = MB.$('main.page');
+      if (main) {
+        main.innerHTML = '<div class="empty" style="padding:64px 20px">' + MB.icon('shield', 44) +
+          '<h3>Staff accounts don’t have this</h3>' +
+          '<p>There is no wallet, trading, own signals or member profile on a staff account. ' +
+          'Browse markets, signals, rooms and users, or open someone’s profile from Users.</p>' +
+          '<div class="row g2 center mt4" style="justify-content:center">' +
+            '<a class="btn btn-primary btn-sm" href="' + r + 'users/people.html">' + MB.icon('users', 16) + ' Users</a>' +
+            '<a class="btn btn-ghost btn-sm" href="' + r + role.home + 'index.html">Console</a>' +
+          '</div></div>';
+        MB.mountIcons(main);
+      }
+      return;
+    }
+    /* "Institutional" entry points lead staff to the institutions directory. */
+    MB.$$('a[href$="institutional/index.html"]').forEach(function (a) {
+      a.setAttribute('href', r + 'users/people.html?type=institution');
+    });
+    /* Top traders on the staff home, each opening a public profile. */
+    var top5 = document.getElementById('staffTop');
+    if (top5 && MB.render && MB.card && MB.card.provider) {
+      MB.render({ into: '#staffTop', from: 'providers', limit: 5, template: MB.card.provider });
+    }
   }
 
   MB.mountShell = function () {
     var body = document.body;
     var shell = body.getAttribute('data-shell');
 
-    if (shell === 'app')   { renderTopbar(body); renderTabbar(body); renderAcctDrawer(); body.classList.add('has-app'); bootSession(); gateByPath(); }
-    if (shell === 'auth')  { body.classList.add('has-auth'); }
-    if (shell === 'admin') { renderAdminRail(body); applyPermissions(); }
+    if (shell === 'app')   { renderTopbar(body); renderTabbar(body); renderAcctDrawer(); body.classList.add('has-app'); renderStaffBar(body); applyPermissions(); bootSession(); gateByPath(); }
+    /* Auth pages do not load roles.js — end a staff session directly. */
+    if (shell === 'auth')  { body.classList.add('has-auth'); try { localStorage.removeItem('mb.session.role'); } catch (e) {} }
+    if (shell === 'admin') { renderAdminRail(body); applyPermissions(); wireSwitchToUser(); }
     if (shell === 'site')  { renderSiteHeader(body); renderSiteFooter(); }
 
     MB.mountIcons();
